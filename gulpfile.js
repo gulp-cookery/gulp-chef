@@ -1,14 +1,5 @@
 var gulp = require('gulp');
 
-var mocha = require('gulp-mocha');
-gulp.task('test', function () {
-    return gulp.src(['test/specs/**/*_test.js'], { read: false })
-        .pipe(mocha({
-            reporter: 'spec'
-        }));
-});
-return;
-
 //var createGulpTasks = require('gulp-config-task-runner');
 var createGulpTasks = require('./src');
 
@@ -134,24 +125,26 @@ var ideaTaskConfigs = {
         }
     },
     styles: {
-        dest: 'css',    // 輸出到 css 目錄
-        // 針對每個目錄，合併目錄下所有的檔案，輸出到單一檔案，
-        // 檔名為 css/{目錄名稱}.min.css
-        // '#dir in views'
-        eachdir: 'views/*', // src/views/*
-        '~minify!': {
-            file: '{{dir}}.min.js',
-            join: {
-                // 合併所有的檔案，輸出到單一檔案，檔名為 css/{目錄名稱}.css
-                file: '{{dir}}.js',
-                stylus: {
-                    src: '**/*.stylus', // src/views/{{dir}}/**/*.stylus
-                    options: {
-                    }
-                },
-                css: {
-                    '~autoprefix': {
-                        src: '**/*.css'
+        eachdir: {
+            src: 'views',
+            dest: 'css',    // 輸出到 css 目錄
+            // 針對每個目錄，合併目錄下所有的檔案，輸出到單一檔案，
+            // 檔名為 css/{目錄名稱}.min.css
+            // '#dir in views'
+            '~minify!': {
+                file: '{{dir}}.min.js',
+                join: {
+                    // 合併所有的檔案，輸出到單一檔案，檔名為 css/{目錄名稱}.css
+                    file: '{{dir}}.js',
+                    stylus: {
+                        src: '**/*.stylus', // src/views/{{dir}}/**/*.stylus
+                        options: {
+                        }
+                    },
+                    css: {
+                        '~autoprefix': {
+                            src: '**/*.css'
+                        }
                     }
                 }
             }
@@ -243,20 +236,22 @@ var ideaTaskConfigs = {
 
     },
     modules: {
+        src: 'modules',
         dest: 'lib',
-        eachdir: 'modules',
-        task: {
-            scripts: {
+        eachdir: {
+            task: {
+                scripts: {
 
-            },
-            styles: {
+                },
+                styles: {
 
-            },
-            markups: {
+                },
+                markups: {
 
-            },
-            images: {
+                },
+                images: {
 
+                }
             }
         }
     },
@@ -305,33 +300,64 @@ var taskConfigs = {
             src: '**/*.js',
         }
     },
+    '_concat': {
+        concat: {
+            src: 'modules/**/*.js',
+            file: 'main.js'
+        }
+    },
+    '_eachdir': {
+        src: 'modules',
+        eachdir: {
+            copy: {
+                src: '{{dir}}/**/*.js',
+                dest: '{{dir}}',
+                flatten: true
+            }
+        }
+    },
+    browserify: {
+        options: {
+            //plugin: [],
+            'transform': [],
+            'browserify-shim': {
+            }
+        },
+        bundle: {
+            // TODO: let entries behavies the same as src: inherits from parent.
+            entries: 'src/modules/services/index.js',
+            require: '',
+            external: '',
+            file: 'services.js',
+        }
+    },
     // Bundle modules with concat for each folder.
-    modules: {
-        eachdir: 'modules',
-        dest: 'dist',
-        'minify!': {
-            outputFile: '{{dir}}.min.js',
-            concat: {
+    'modules:concat': {
+        src: 'modules',
+        'uglify!': {
+            file: 'main.min.js',
+            '~concat': {
                 src: '**/*.js',
-                file: '{{dir}}.js',
+                file: 'main.js',
             }
         }
     },
     // Bundle modules with Browserify for each folder.
     modules: {
-        eachdir: 'modules',
-        dest: 'dist',
-        browserify: {
-            options: {
-                'transform': [],
-                'browserify-shim': {
+        src: 'modules',
+        eachdir: {
+            '~browserify': {
+                options: {
+                    'transform': [],
+                    'browserify-shim': {
+                    }
+                },
+                bundle: {
+                    entries: '{{cwd}}/index.js',
+                    require: '',
+                    external: '',
+                    file: '{{dir}}.js',
                 }
-            },
-            bundle: {
-                entries: 'index',
-                require: '',
-                external: '',
-                file: '{{dir}}.js',
             }
         }
     },
@@ -348,7 +374,13 @@ var taskConfigs = {
 
     },
     test: {
-
+        task: function() {
+            var mocha = require('gulp-mocha');
+            return gulp.src(['test/specs/**/*_test.js'], { read: false })
+                .pipe(mocha({
+                    reporter: 'spec'
+                }));
+        }
     },
     bump: {
 
@@ -374,9 +406,15 @@ var taskConfigs = {
     },
     deploy: {
     },
-    'default': {
-        depends: ['build']
-    }
+    // 'default': {
+    //     depends: ['build']
+    // }
 };
 
 createGulpTasks(taskConfigs, config);
+
+// gulp.task('default', function() {
+//     gulp.start('modules');
+// });
+
+// gulp.start('modules');

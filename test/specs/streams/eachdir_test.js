@@ -64,6 +64,12 @@ var testCases = {
     }
 };
 
+try {
+    eachdir({ src: 'src' }, []);
+}
+catch (ex) {
+}
+
 describe('stream processor', function() {
     
     describe('eachdir()', function() {
@@ -78,7 +84,7 @@ describe('stream processor', function() {
         });
         
         beforeEach(function() {
-            tasks = Sinon.spy();
+            tasks = [Sinon.spy(), Sinon.spy()];
         });
         
         afterEach(function() {
@@ -127,11 +133,11 @@ describe('stream processor', function() {
                 src: testCase.path
             };
             var visits = [];
-            var tasks = Sinon.spy(function(config, done) {
+            var task = Sinon.spy(function(config, done) {
                 visits.push(config.dir);
                 return through.obj();
             });
-            eachdir(config, tasks);
+            eachdir(config, [task]);
             expect(visits).to.deep.equal(testCase.result);        
         });
     
@@ -140,9 +146,9 @@ describe('stream processor', function() {
             var config = {
                 src: testCase.path
             };
-            var tasks = function(config, done) {
+            var task = function(config, done) {
             };
-            expect(function() { eachdir(config, tasks); }).to.throw(IllegalTaskError);        
+            expect(function() { eachdir(config, [task]); }).to.throw(IllegalTaskError);        
         });
     
         it('should always return a stream, even if dir does not exist or is a file', function() {

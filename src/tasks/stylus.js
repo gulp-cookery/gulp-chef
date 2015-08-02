@@ -1,10 +1,3 @@
-var autoprefixer = require('gulp-autoprefixer');
-var stylus = require('gulp-stylus');
-var flatten = require('gulp-flatten');
-var gulpIf = require('gulp-if');
-var gulp = require('gulp');
-var _ = require('lodash');
-
 var defaults = {
     options: {
         stylus: {
@@ -20,6 +13,14 @@ var defaults = {
 };
 
 function stylusTask(config) {
+    // lazy loading required modules.
+    var autoprefixer = require('gulp-autoprefixer');
+    var stylus = require('gulp-stylus');
+    var flatten = require('gulp-flatten');
+    var gulpIf = require('gulp-if');
+    var gulp = require('gulp');
+    var _ = require('lodash');
+
     var options = _.extend({}, config.options, defaults.options);
     return gulp.src(config.src)
         .pipe(stylus(options.stylus))

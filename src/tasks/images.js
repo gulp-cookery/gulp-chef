@@ -1,9 +1,3 @@
-var imagemin = require('gulp-imagemin');
-var flatten = require('gulp-flatten');
-var gulp = require('gulp');
-var gulpIf = require('gulp-if');
-var _ = require('lodash');
-
 var defaults = {
     options: {
         optimizationLevel: 3,
@@ -26,6 +20,13 @@ var defaults = {
  * https://github.com/armed/gulp-flatten
  */
 function imagesTask(config) {
+    // lazy loading required modules.
+    var imagemin = require('gulp-imagemin');
+    var flatten = require('gulp-flatten');
+    var gulp = require('gulp');
+    var gulpIf = require('gulp-if');
+    var _ = require('lodash');
+
     var options = _.extend({}, config.options, defaults.options);
     return gulp.src(config.src)
         .pipe(gulpIf(!config.debug, imagemin(options)))

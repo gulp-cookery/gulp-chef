@@ -1,8 +1,3 @@
-var _ = require('lodash');
-var gulp = require('gulp');
-var bump = require('gulp-bump');
-var configSync = require('gulp-config-sync');
-var prompt = require('gulp-prompt').prompt;
 
 var defaults = {
     source: 'package.json',
@@ -21,6 +16,13 @@ var message = {
 };
 
 function bumpTask(config, done) {
+    // lazy loading required modules.
+    var _ = require('lodash');
+    var gulp = require('gulp');
+    var bump = require('gulp-bump');
+    var configSync = require('gulp-config-sync');
+    var prompt = require('gulp-prompt').prompt;
+
     var options = _.extend({}, config.options, defaults.options);
 
     gulp.src('')

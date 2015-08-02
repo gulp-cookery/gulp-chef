@@ -1,7 +1,3 @@
-var gulp = require('gulp');
-var jscs = require('jscs');
-var _ = require('lodash');
-
 var defaults = {
     options: {
         esnext: true,
@@ -10,6 +6,11 @@ var defaults = {
 };
 
 function jscsTask(config) {
+    // lazy loading required modules.
+    var gulp = require('gulp');
+    var jscs = require('jscs');
+    var _ = require('lodash');
+
     var options = _.extend({}, config.options, defaults.options);
     return gulp.src(config.src)
         .pipe(cached())

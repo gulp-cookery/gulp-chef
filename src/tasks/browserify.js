@@ -3,28 +3,32 @@
    Bundle javascripty things with browserify!
 */
 
-var _ = require('lodash');
-var browserify = require('browserify');
-var browserSync = require('browser-sync');
-var gulp = require('gulp');
-var merge = require('merge-stream');
-var source = require('vinyl-source-stream');
-var watchify = require('watchify');
-
 var defaults = {
     options: {
     }
 };
 
-function handleErrors() {
+function handleErrors(ex) {
+    debugger;
+    console.log('browserify error:' + ex);
 }
 
 function browserifyTask(config) {
+
+    // lazy loading required modules.
+    var _ = require('lodash');
+    var browserify = require('browserify');
+    var browserSync = require('browser-sync');
+    var gulp = require('gulp');
+    var merge = require('merge-stream');
+    var source = require('vinyl-source-stream');
+    var watchify = require('watchify');
+
     var options, bundles;
     
-    options = _.extend({}, config.options, defaults.options);
+    options = _.defaults({}, config.options, defaults.options);
 
-    bundles = config.bungles || config.bungle;
+    bundles = config.bundles || config.bundle;
     if (!_.isArray(bundles)) {
         bundles = [bundles];
     }
@@ -33,7 +37,7 @@ function browserifyTask(config) {
 
     function browserifyThis(bundleConfig) {
 
-        bundleConfig = _.extend({}, bundleConfig, options);
+        bundleConfig = _.defaults({}, bundleConfig, options);
 
         if (config.debug) {
             // Add watchify args and debug (sourcemaps) option
@@ -89,5 +93,6 @@ function browserifyTask(config) {
 }
 
 browserifyTask.description = 'Bundle JavaScript things with Browserify.';
+browserifyTask.consumes = ['bundle', 'bundles', 'options'];
 
 module.exports = browserifyTask;

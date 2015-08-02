@@ -1,7 +1,8 @@
-var gulp = require('gulp');
-var _ = require('lodash');
-
 function watchTask(config) {
+    // lazy loading required modules.
+    var gulp = require('gulp');
+    var _ = require('lodash');
+
     var depends, watchFiles;
     
     if (config.depends) {
