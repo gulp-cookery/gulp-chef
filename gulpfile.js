@@ -317,19 +317,23 @@ var taskConfigs = {
         }
     },
     browserify: {
-        options: {
-            //plugin: [],
-            'transform': [],
-            'browserify-shim': {
-            }
-        },
-        bundle: {
+        bundles: [{
             // TODO: let entries behavies the same as src: inherits from parent.
-            entries: 'src/modules/services/index.js',
-            require: '',
-            external: '',
+            entries: ['src/modules/directives/index.js'],
+            file: 'directives.js',
+        }, {
+            // TODO: let entries behavies the same as src: inherits from parent.
+            entries: ['src/modules/services/index.js'],
             file: 'services.js',
-        }
+        }]
+    },
+    each: {
+        values: [
+            { dir: 'directives' }, 
+            { dir: 'services' }, 
+            { dir: 'views' }
+        ],
+        
     },
     // Bundle modules with concat for each folder.
     'modules:concat': {
@@ -347,16 +351,44 @@ var taskConfigs = {
         src: 'modules',
         eachdir: {
             '~browserify': {
-                options: {
-                    'transform': [],
-                    'browserify-shim': {
-                    }
-                },
+                // options: {
+                //     require: '',
+                //     external: '',
+                //     transform: [],
+                //     shim: {
+                //     }
+                // },
                 bundle: {
-                    entries: '{{cwd}}/index.js',
-                    require: '',
-                    external: '',
+                    entries: '{{src}}/{{dir}}/index.js',
+                    // require: '',
+                    // external: '',
                     file: '{{dir}}.js',
+                }
+            }
+        }
+    },
+    module2: {
+        directives: {
+            '~browserify': {
+                bundle: {
+                    entries: 'src/modules/directives/index.js',
+                    file: 'directives.js',
+                }
+            }
+        },
+        services: {
+            '~browserify': {
+                bundle: {
+                    entries: 'src/modules/services/index.js',
+                    file: 'services.js',
+                }
+            }
+        },
+        views: {
+            '~browserify': {
+                bundle: {
+                    entries: 'src/modules/views/index.js',
+                    file: 'views.js',
                 }
             }
         }
@@ -411,10 +443,53 @@ var taskConfigs = {
     // }
 };
 
+gulp.task('b', function() {
+    var merge = require('merge-stream');
+
+    //return runTask('services');
+    
+    //return merge(runTask('views'));
+
+    return eachdir(merge, runTask);
+
+    function runTask(dir) {    
+        return browserify({
+            dest: 'dist',
+            bundle: {
+                entries: 'src/modules/' + dir + '/index.js',
+                file: dir + '.js'
+            }
+        });
+    }
+    
+    function browserify(c) {
+        var browserify = require('browserify');
+        var source = require('vinyl-source-stream');
+    
+        // set up the browserify instance on a task basis
+        var b = browserify({
+            entries: c.bundle.entries,
+            debug: false
+        });
+        
+        return b.bundle()
+            .pipe(source(c.bundle.file))
+            .pipe(gulp.dest(c.dest));
+    }
+    
+    function queue(streams) {
+        var StreamQueue = require('streamqueue');
+        var streamQueue = new StreamQueue({ objectMode: true });
+        return streamQueue.done.apply(streamQueue, streams);
+    }
+    
+    function eachdir(fo, fi) {
+        var srcs = ['directives', 'services', 'views'];
+        return fo(srcs.map(function(src) {
+            return fi(src);
+        }));
+        
+    }
+});
+
 createGulpTasks(taskConfigs, config);
-
-// gulp.task('default', function() {
-//     gulp.start('modules');
-// });
-
-// gulp.start('modules');

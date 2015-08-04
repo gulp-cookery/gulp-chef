@@ -11,7 +11,7 @@ function jscsTask(config) {
     var jscs = require('jscs');
     var _ = require('lodash');
 
-    var options = _.extend({}, config.options, defaults.options);
+    var options = _.defaultsDeep({}, config.options, defaults.options);
     return gulp.src(config.src)
         .pipe(cached())
         .pipe(jscs(options))

@@ -27,7 +27,7 @@ function imagesTask(config) {
     var gulpIf = require('gulp-if');
     var _ = require('lodash');
 
-    var options = _.extend({}, config.options, defaults.options);
+    var options = _.defaultsDeep({}, config.options, defaults.options);
     return gulp.src(config.src)
         .pipe(gulpIf(!config.debug, imagemin(options)))
         .pipe(gulpIf(config.flatten, flatten()))

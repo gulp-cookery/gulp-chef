@@ -7,18 +7,34 @@
  *  
  */
 function merge(config, tasks) {
-    var _merge = require('merge-stream');
-    var _ = require('lodash');
-    
     var gulp = this;
     
-    return _merge(_.map(tasks, function(task) {
-        // make sure runtime config being injected to configs of sub tasks.
-        var taskConfig = _.defaults({}, task.config, config);
-        return task.run(gulp, taskConfig, done);                
-    }));
+    // lazy loading required modules.
+    var Stream = require('stream');
+    var _merge = require('merge-stream');
     
-    function done() {
+    var IllegalTaskError = require('../errors/illegal_task_error.js');
+    
+    // TODO: return a empty stream that already end.
+    if (tasks.length === 0) {
+        return null;
+    }
+    
+    if (tasks.length === 1) {
+        return runTask(tasks[0]);
+    }
+    
+    return _merge(tasks.map(runTask));
+    
+    function runTask(task) {
+        var stream = task.run(gulp, config, done);
+        if (! (stream instanceof Stream)) {
+            throw new IllegalTaskError('sub task must return a stream');
+        }
+        return stream;
+    
+        function done() {
+        }
     }
 }
 

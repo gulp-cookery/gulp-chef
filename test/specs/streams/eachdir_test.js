@@ -64,18 +64,20 @@ var testCases = {
     }
 };
 
-try {
-    eachdir({ src: 'src' }, []);
-}
-catch (ex) {
-}
-
 describe('stream processor', function() {
     
     describe('eachdir()', function() {
         var tasks;
         
         before(function() {
+            // NOTE: because mockfs affects require() too, 
+            // and we use lazy module loading,
+            // call eachdir() first to force module loading here.
+            try {
+                eachdir({ src: 'not-exist' }, []);
+            }
+            catch (ex) {
+            }
             mockfs(dirs);
         });
         

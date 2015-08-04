@@ -7,33 +7,15 @@
  *  
  */
 function concat(config, tasks) {
+    var gulp = this;
+    
     // lazy loading required modules.
-    var queue = require('streamqueue');
+    var queue = require('./queue');
     var gulpConcat = require('gulp-concat');
-    var _ = require('lodash');
     
-    var gulp, streams, streamQueue;
-    
-    gulp = this;
-    
-    if (tasks && tasks.length) {
-        streams = _.map(tasks, function(task) {
-            var taskConfig = _.defaults({}, task.config, config);
-            return task.run(gulp, taskConfig, done);
-        });
-        streamQueue = queue({ objectMode: true }); 
-        streams = streamQueue.queue.apply(streamQueue, streams);
-    }
-    else {
-        streams = gulp.src(config.src);
-    }
-
-    return streams
+    return queue.call(gulp, config, tasks)
         .pipe(gulpConcat(config.file))
         .pipe(gulp.dest(config.dest));
-    
-    function done() {
-    }
 }
 
 

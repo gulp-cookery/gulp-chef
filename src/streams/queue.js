@@ -7,23 +7,38 @@
  *  
  */
 function queue(config, tasks) {
-    var _ = require('lodash');
-    var Queue = require('streamqueue');
-    
     var gulp = this;
     
-    var queue, streams;
+    // lazy loading required modules.
+    var Stream = require('stream');
+    var StreamQueue = require('streamqueue');
+
+    var IllegalTaskError = require('../errors/illegal_task_error.js');
     
-    streams = _.map(tasks, function(task) {
-        // make sure runtime config being injected to configs of sub tasks.
-        var taskConfig = _.defaults({}, task.config, config);
-        return task.run(gulp, taskConfig, done);                
-    });
+    var streams, streamQueue;
     
-    queue = new Queue({ objectMode: true });
-    return queue.done.apply(queue, streams);
+    // TODO: return a empty stream that already end.
+    if (tasks.length === 0) {
+        return null;
+    }
     
-    function done() {
+    if (tasks.length === 1) {
+        return runTask(tasks[0]);
+    }
+
+    streams = tasks.map(runTask);
+    streamQueue = new StreamQueue({ objectMode: true });
+    return streamQueue.done.apply(streamQueue, streams);
+    
+    function runTask(task) {
+        var stream = task.run(gulp, config, done);
+        if (! (stream instanceof Stream)) {
+            throw new IllegalTaskError('sub task must return a stream');
+        }
+        return stream;
+
+        function done() {
+        }
     }
 }
 

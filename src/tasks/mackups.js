@@ -13,7 +13,7 @@ function mackupTask(config) {
     var gulp = require('gulp');
     var _ = require('lodash');
     
-    var options = _.extend({}, config.options, defaults.options);
+    var options = _.defaultsDeep({}, config.options, defaults.options);
     return gulp.src(config.src)
         .pipe(gulpIf(!config.dev, htmlmin(options)))
         .pipe(gulpIf(config.flatten, flatten()))

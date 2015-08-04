@@ -2,6 +2,16 @@ var fs = require('fs');
 var path = require('path');
 var _ = require('lodash');
 
+// glob support in src:
+function globFolders(globs, options) {
+    var globby = require('globby');
+    options = options || {};
+    return globby.sync(globs, options)
+        .filter(function(file) {
+            return fs.statSync(path.join(options.base || '', file)).isDirectory();
+        });
+}
+
 function globJoins(paths, globs, force) {
     try {
         if (force || fs.statSync(paths).isDirectory()) {

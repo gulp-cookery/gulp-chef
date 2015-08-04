@@ -1,18 +1,15 @@
 /*jshint node: true */
 /*global process: true*/
 'use stricts';
-var merge = require('merge-stream');
-var through = require('through2');
-var fs = require('fs');
-var path = require('path');
-var flatten = require('gulp-flatten');
 var gulp = require('gulp');
 var gulpIf = require('gulp-if');
+var flatten = require('gulp-flatten');
+var merge = require('merge-stream');
 var path = require('path');
 var _ = require('lodash');
 
 var globJoins = require('./util/glob_util');
-var resolveVariables = require('./util/resolve_variables');
+var realizeVariables = require('./util/realize_variables');
 var safeRequireDir = require('./util/safe_require_dir');
 
 var stuff = {
@@ -67,7 +64,7 @@ function sortConfigs(name, taskConfig, parentConfig) {
     }
     consumes = defaults.consumes.concat(consumes);
 
-    inheritedConfig = _.defaults(inheritedConfig, taskConfig, parentConfig);
+    inheritedConfig = _.defaultsDeep(inheritedConfig, taskConfig, parentConfig);
     inheritedConfig = _.pick(inheritedConfig, consumes);
     subTaskConfigs = _.omit(taskConfig, consumes);
 
@@ -85,13 +82,14 @@ function createSubGulpTasks(prefix, subTaskConfigs, parentConfig) {
     function _createGulpTask(name, taskConfig) {
         var taskInfo, task;
     
-        if (name === '_eachdir') {
+        taskInfo = getTaskRuntimeInfo(name);
+
+        if (name === 'modules') {
             debugger;
         }
     
-        taskInfo = getTaskRuntimeInfo(name);
         task = createTaskRunner(prefix, taskInfo, taskConfig, parentConfig);
-        console.log('creating task: ' + prefix + task.displayName);
+        //console.log('creating task: ' + prefix + task.displayName);
         // TODO: call parallel for depends
         if (!task.hidden) { 
             gulp.task(prefix + task.displayName, taskConfig.depends || [], task);
@@ -133,6 +131,28 @@ function hasSubTaskConfig(subTaskConfigs) {
     return _.size(subTaskConfigs) > 0;
 }
 
+// TODO: make sure config is inherited at config time and injectable at runtime.
+function wrapTaskRunner(taskInfo, taskConfig, configurableRunner) {
+    // invoked from stream processor
+    var run = function(gulp, injectConfig, done) {
+        //inject runtime configuration.
+        var config = realizeVariables(taskConfig, injectConfig);
+        return configurableRunner.call(gulp, config, done);
+    };
+    // invoked from gulp
+    var task = function(done) {
+        debugger;
+        return run(this, taskConfig, done);
+    };
+    task.displayName = taskInfo.name;
+    task.description = taskConfig.description || configurableRunner.description;
+    task.config = taskConfig;
+    task.hidden = taskInfo.hidden;
+    task.runtime = taskInfo.runtime;
+    task.run = run;
+    return task;
+}
+
 function createStreamTaskRunner(prefix, taskInfo, taskConfig, subTaskConfigs) {
     // TODO: remove stream runner form parent's config.
     var hidden, streamTask, tasks; 
@@ -153,22 +173,24 @@ function createStreamTaskRunner(prefix, taskInfo, taskConfig, subTaskConfigs) {
     tasks = createSubGulpTasks(prefix, subTaskConfigs, taskConfig);    
 
     return function(config /*, done*/) {
-        return streamTask.call(gulp, config, tasks);
+        return streamTask.call(this, config, tasks);
     };
 }
 
 function createSoloTaskRunner(taskInfo, taskConfig) {
+    var gulp = this;
+    
     if (typeof taskConfig.task === 'string') {
-        return function (done) {
+        return function(done) {
             var task = gulp.task(taskConfig.task);
             return task.call(gulp, done);
         };
     }
     
     if (_.isArray(taskConfig.task)) {
-        return function (done) {
-            var tasks = Array.map(taskConfig.task, function(task) {
-                return gulp.task(task);
+        return function(done) {
+            var tasks = Array.map(taskConfig.task, function(name) {
+                return gulp.task(name);
             });
             return stuff.streams.parallel(tasks).call(gulp);
         };
@@ -179,29 +201,6 @@ function createSoloTaskRunner(taskInfo, taskConfig) {
     }
 
     return stuff.recipes[taskInfo.name] || copyConfigurableRunner;
-}
-
-// TODO: make sure config is inherited at config time and injectable at runtime.
-function wrapTaskRunner(taskInfo, taskConfig, configurableRunner) {
-    // invoked from stream processor
-    var run = function(gulp, injectConfig, done) {
-        //inject runtime configuration.
-        var config = _.defaults({}, taskConfig, injectConfig);
-        resolveVariables(config, injectConfig);
-        return configurableRunner.call(gulp, config, done);
-    };
-    // invoked from gulp
-    var task = function(done) {
-        debugger;
-        return run(this, taskConfig, done);
-    };
-    task.displayName = taskInfo.name;
-    task.description = taskConfig.description || configurableRunner.description;
-    task.config = taskConfig;
-    task.hidden = taskInfo.hidden;
-    task.runtime = taskInfo.runtime;
-    task.run = run;
-    return task;
 }
 
 // NOTE: 
