@@ -118,26 +118,4 @@ function browserifyTask(config) {
 browserifyTask.description = 'Bundle JavaScript things with Browserify.';
 browserifyTask.consumes = ['bundle', 'bundles', 'dest', 'options'];
 
-    function browserifyTask(c) {
-        var gulp = this;
-        
-        var browserify = require('browserify');
-        var source = require('vinyl-source-stream');
-    
-        // set up the browserify instance on a task basis
-        var b = browserify({
-            entries: c.bundle.entries,
-            debug: false
-        });
-        
-        return b.bundle()
-            .on('error', function() {
-                this.emit('end'); 
-                console.log(JSON.stringify(arguments)); 
-             })
-            .pipe(source(c.bundle.file))
-            .pipe(gulp.dest(c.dest));
-    }
-
-
 module.exports = browserifyTask;
