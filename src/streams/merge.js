@@ -15,9 +15,10 @@ function merge(config, tasks) {
     
     var IllegalTaskError = require('../errors/illegal_task_error.js');
     
-    // TODO: return a empty stream that already end.
+    // TODO: make sure throw error is good decision.
     if (tasks.length === 0) {
-        return null;
+        throw new IllegalTaskError('no sub task specified');
+        //stream.emit('error', new PluginError('no sub task specified', e));
     }
     
     if (tasks.length === 1) {

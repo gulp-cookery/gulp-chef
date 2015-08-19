@@ -4,7 +4,7 @@ var interpolate = /{{([\s\S]+?)}}/g;
 
 function realizeVariables(original, additional) {
     
-    var values = _.defaultsDeep({}, original, additional);
+    var values = _.defaults({}, original, additional);
     
     return realizeAll({}, values);
 

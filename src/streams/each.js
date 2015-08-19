@@ -13,18 +13,17 @@ function each(config, tasks) {
     var mergeStream = require('merge-stream');
     var merge = require('./merge');
     
-    var streams;
+    var ConfigurationError = require('../errors/configuration_error')
     
-    // TODO: return a empty stream that already end.
     if (config.values.length === 0) {
-        return null;
+        throw new ConfigurationError('required configuration "values" not specified.');
     }
     
     if (config.values.length === 1) {
         return processValue(config.values[0]);
     }
     
-    streams = config.values.map(processValue);
+    var streams = config.values.map(processValue);
     return mergeStream(streams);
     
     function processValue(value) {

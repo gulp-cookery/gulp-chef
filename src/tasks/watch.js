@@ -1,35 +1,46 @@
+/**
+ * 基本想法：
+ *   watch 只要指定相依的 task 即可。
+ * 
+ *   watchTask 首先會執行各個 task，確保需要監控的檔案已經正確產出。
+ * 
+ *   然後自動由相依的 task 找出需要監控的對應檔案，
+ *   並在檔案變動時，自動執行相關的 task。
+ * 
+ * Ingredients:
+ * 
+ */
 function watchTask(config) {
+    var gulp = this;
+    
     // lazy loading required modules.
-    var gulp = require('gulp');
     var _ = require('lodash');
 
-    var depends, watchFiles;
+    var depends, globs;
     
     if (config.depends) {
         depends = config.depends;
     }
-    else if (typeof config.task === 'function') {
-        depends = [];
-    }
     else if (typeof config.task === 'string') {
         depends = [ config.task ];
     }
-    else if (Array.isArray(config.task)) {
+    else if (_.isArray(config.task)) {
         depends = config.task;
     }
     
     // TODO: find all src recursively.
-    watchFiles = depends.map(function(name) {
-        var task = _.find(gulp.tasks, name);
+    globs = depends.map(function(name) {
+        var task = gulp.task(name);
         if (task) {
             //task.config
         }
     });
     
     // first run all depends and then watch their sources.
-    gulp.task('watch', depends, function() {
-        gulp.watch(watchFiles, config.task);
-    });
+    gulp.watch(globs, depends);
 }
+
+watchTask.descriptions = '';
+watchTask.consumes = [];
 
 module.export = watchTask;

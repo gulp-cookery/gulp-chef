@@ -53,7 +53,7 @@ var ideaTaskConfigs = {
                 }
             },
             css: {
-                '~autoprefix': {
+                '.autoprefix': {
                     src: '**/*.css'
                 }
             }
@@ -66,16 +66,17 @@ var ideaTaskConfigs = {
     // 但最終以 merge-stream 合併，輸出為單一 stream，做為 styles 的輸出 stream。
     styles: {
         dest: 'css',    // 統一輸出到 css 目錄
-        '~minify!': {   // 在名稱前端加上 ~ 的 task，不會輸出為 task；
-                        // 在名稱尾端加上 ? 的 task 只在 develop mode 下執行 (直接 by pass，不影響 sub task 的執行，sub task 仍然會繼承相關 config)；
-                        // 在名稱尾端加上 ! 的 task 只在 product mode 下執行 (直接 by pass，不影響 sub task 的執行，sub task 仍然會繼承相關 config)。
+        '.minify!': {   // 在名稱前端加上 . 的 task 將被隱藏，名稱不會輸出 (不會成為 gulp task)，但仍然可透過父 task 間接執行；
+                        // 在名稱前端加上 # 的 task，連同其全部的子 task，將直接被忽略，不會輸出為 task (即如同註解效果，暫時移除該 task)；
+                        // 在名稱尾端加上 ? 的 task 只在 development mode 下執行 (直接 by pass，不影響 sub task 的執行，sub task 仍然會繼承相關 config)；
+                        // 在名稱尾端加上 ! 的 task 只在 production mode 下執行 (直接 by pass，不影響 sub task 的執行，sub task 仍然會繼承相關 config)。
             stylus: {
                 src: '**/*.stylus',
                 options: {
                 }
             },
             css: {
-                'autoprefix~': {
+                '.autoprefix': {
                     src: '**/*.css'
                 }
             }
@@ -90,14 +91,14 @@ var ideaTaskConfigs = {
     styles: {
         flatten: true,  // 打散目錄結構
         dest: 'css',    // 統一輸出到 css 目錄
-        '~minify!': {
+        '.minify!': {
             stylus: {
                 src: '**/*.stylus',
                 options: {
                 }
             },
             css: {
-                'autoprefix~': {
+                '.autoprefix': {
                     src: '**/*.css'
                 }
             }
@@ -105,7 +106,7 @@ var ideaTaskConfigs = {
     },
     styles: {
         dest: 'css',    // 輸出到 css 目錄
-        '~minify!': {
+        '.minify!': {
             // 合併所有的檔案，輸出到單一檔案，檔名為 css/main.min.css
             file: 'main.min.css',
             join: {
@@ -117,7 +118,7 @@ var ideaTaskConfigs = {
                     }
                 },
                 css: {
-                    'autoprefix~': {
+                    '.autoprefix': {
                         src: '**/*.css'
                     }
                 }
@@ -131,7 +132,7 @@ var ideaTaskConfigs = {
             // 針對每個目錄，合併目錄下所有的檔案，輸出到單一檔案，
             // 檔名為 css/{目錄名稱}.min.css
             // '#dir in views'
-            '~minify!': {
+            '.minify!': {
                 file: '{{dir}}.min.js',
                 join: {
                     // 合併所有的檔案，輸出到單一檔案，檔名為 css/{目錄名稱}.css
@@ -142,7 +143,7 @@ var ideaTaskConfigs = {
                         }
                     },
                     css: {
-                        '~autoprefix': {
+                        '.autoprefix': {
                             src: '**/*.css'
                         }
                     }
@@ -153,7 +154,7 @@ var ideaTaskConfigs = {
     // 合併相關的檔案，輸出到個別的指定檔案
     styles: {
         dest: 'css',    // 輸出到 css 目錄
-        '~minify!': [
+        '.minify!': [
             {
                 file: 'common.min.css',
                 join: {
@@ -164,7 +165,7 @@ var ideaTaskConfigs = {
                         }
                     },
                     css: {
-                        'autoprefix~': {
+                        '.autoprefix': {
                             src: 'common/*.css'
                         }
                     }
@@ -180,7 +181,7 @@ var ideaTaskConfigs = {
                         }
                     },
                     css: {
-                        'autoprefix~': {
+                        '.autoprefix': {
                             src: 'app/*.css'
                         }
                     }
@@ -196,7 +197,7 @@ var ideaTaskConfigs = {
                         }
                     },
                     css: {
-                        'autoprefix~': {
+                        '.autoprefix': {
                             src: 'options/**/*.css'
                         }
                     }
@@ -255,7 +256,7 @@ var ideaTaskConfigs = {
             }
         }
     },
-    build: [['clean'], ['scripts', 'styles', 'markups', 'images']],
+    build: [['clean'], ['scripts', ['stylus', 'css'], 'markups', 'images']],
     watch: ['scripts', 'styles', 'markups', 'images']
 };
 
@@ -278,8 +279,8 @@ var taskConfigs = {
     scripts: {
         browserify: {
             options: {
-                'transform': [],
-                'browserify-shim': {
+                transform: [],
+                shim: {
                 }
             },
             bundles: [
@@ -302,12 +303,12 @@ var taskConfigs = {
     },
     '_concat': {
         concat: {
-            src: 'modules/**/*.js',
+            src: '../test/_fixtures/modules/**/*.js',
             file: 'main.js'
         }
     },
     '_eachdir': {
-        src: 'modules',
+        src: '../test/_fixtures/modules',
         eachdir: {
             copy: {
                 src: '{{dir}}/**/*.js',
@@ -319,28 +320,36 @@ var taskConfigs = {
     browserify: {
         bundles: [{
             // TODO: let entries behavies the same as src: inherits from parent.
-            entries: ['src/modules/directives/index.js'],
+            entries: ['../test/_fixtures/modules/directives/index.js'],
             file: 'directives.js',
         }, {
             // TODO: let entries behavies the same as src: inherits from parent.
-            entries: ['src/modules/services/index.js'],
+            entries: ['../test/_fixtures/modules/services/index.js'],
             file: 'services.js',
         }]
     },
-    each: {
-        values: [
-            { dir: 'directives' }, 
-            { dir: 'services' }, 
-            { dir: 'views' }
-        ],
-        
+    foreach: {
+        each: {
+            values: [
+                { dir: 'directives' }, 
+                { dir: 'services' }, 
+                { dir: 'views' }
+            ],
+            process: {
+                task: function(config) {
+                    var EmptyStream  = require('./src/util/empty_stream');
+                    console.log(config.dir);
+                    return new EmptyStream();
+                }
+            }
+        }
     },
     // Bundle modules with concat for each folder.
     'modules:concat': {
-        src: 'modules',
+        src: '../test/_fixtures/modules',
         'uglify!': {
             file: 'main.min.js',
-            '~concat': {
+            '.concat': {
                 src: '**/*.js',
                 file: 'main.js',
             }
@@ -348,148 +357,97 @@ var taskConfigs = {
     },
     // Bundle modules with Browserify for each folder.
     modules: {
-        src: 'modules',
+        src: '../test/_fixtures/modules',
         eachdir: {
-            '~browserify': {
-                // options: {
-                //     require: '',
-                //     external: '',
-                //     transform: [],
-                //     shim: {
-                //     }
-                // },
+            '.browserify': {
                 bundle: {
-                    entries: '{{src}}/{{dir}}/index.js',
-                    // require: '',
-                    // external: '',
+                    entries: '{{dir}}/index.js',
                     file: '{{dir}}.js',
                 }
             }
         }
     },
-    module2: {
-        directives: {
-            '~browserify': {
-                bundle: {
-                    entries: 'src/modules/directives/index.js',
-                    file: 'directives.js',
-                }
-            }
-        },
-        services: {
-            '~browserify': {
-                bundle: {
-                    entries: 'src/modules/services/index.js',
-                    file: 'services.js',
-                }
-            }
-        },
-        views: {
-            '~browserify': {
-                bundle: {
-                    entries: 'src/modules/views/index.js',
-                    file: 'views.js',
-                }
-            }
-        }
-    },
-    manifest: {
+    // module2: {
+    //     src: '../test/_fixtures/modules',
+    //     directives: {
+    //         '.browserify': {
+    //             bundle: {
+    //                 entries: 'directives/index.js',
+    //                 file: 'directives.js',
+    //             }
+    //         }
+    //     },
+    //     services: {
+    //         '.browserify': {
+    //             bundle: {
+    //                 entries: 'services/index.js',
+    //                 file: 'services.js',
+    //             }
+    //         }
+    //     },
+    //     views: {
+    //         '.browserify': {
+    //             bundle: {
+    //                 entries: 'views/index.js',
+    //                 file: 'views.js',
+    //             }
+    //         }
+    //     }
+    // },
+    // manifest: {
 
-    },
-    locales: {
+    // },
+    // locales: {
 
-    },
-    watch: {
+    // },
+    // watch: {
 
-    },
-    serve: {
+    // },
+    // serve: {
 
-    },
-    test: {
-        task: function() {
-            var mocha = require('gulp-mocha');
-            return gulp.src(['test/specs/**/*_test.js'], { read: false })
-                .pipe(mocha({
-                    reporter: 'spec'
-                }));
-        }
-    },
-    bump: {
+    // },
+    // test: {
+    //     task: function() {
+    //         var mocha = require('gulp-mocha');
+    //         return gulp.src(['test/specs/**/*_test.js'], { read: false })
+    //             .pipe(mocha({
+    //                 reporter: 'spec'
+    //             }));
+    //     }
+    // },
+    // through: {
+    //     task: function() {
+    //         var EmptyStream  = require('./src/util/empty_stream');
+    //         return new EmptyStream();
+    //     }
+    // },
+    // bump: {
 
-    },
-    clean: {
+    // },
+    // clean: {
 
-    },
-    lint: {
+    // },
+    // lint: {
 
-    },
-    build: {
-        depends: ['clean'],
-        task: ['scripts', 'styles', 'markups', 'images']
-    },
-    build2: {
-        depends: ['clean'],
-        task: function() {
-            gulp.start('scripts', 'styles', 'markups', 'images');
-        }
-    },
-    watch: {
-        task: ['scripts', 'styles', 'markups', 'images']
-    },
-    deploy: {
-    },
+    // },
+    // build: {
+    //     depends: ['clean'],
+    //     task: ['scripts', 'styles', 'markups', 'images']
+    // },
+    // build2: {
+    //     depends: ['clean'],
+    //     task: function() {
+    //         gulp.start('scripts', 'styles', 'markups', 'images');
+    //     }
+    // },
+    // watch: {
+    //     task: ['scripts', 'styles', 'markups', 'images']
+    // },
+    // deploy: {
+    // },
     // 'default': {
     //     depends: ['build']
     // }
 };
-
-gulp.task('b', function() {
-    var merge = require('merge-stream');
-
-    //return runTask('services');
-    
-    //return merge(runTask('views'));
-
-    return eachdir(merge, runTask);
-
-    function runTask(dir) {    
-        return browserify({
-            dest: 'dist',
-            bundle: {
-                entries: 'src/modules/' + dir + '/index.js',
-                file: dir + '.js'
-            }
-        });
-    }
-    
-    function browserify(c) {
-        var browserify = require('browserify');
-        var source = require('vinyl-source-stream');
-    
-        // set up the browserify instance on a task basis
-        var b = browserify({
-            entries: c.bundle.entries,
-            debug: false
-        });
-        
-        return b.bundle()
-            .pipe(source(c.bundle.file))
-            .pipe(gulp.dest(c.dest));
-    }
-    
-    function queue(streams) {
-        var StreamQueue = require('streamqueue');
-        var streamQueue = new StreamQueue({ objectMode: true });
-        return streamQueue.done.apply(streamQueue, streams);
-    }
-    
-    function eachdir(fo, fi) {
-        var srcs = ['directives', 'services', 'views'];
-        return fo(srcs.map(function(src) {
-            return fi(src);
-        }));
-        
-    }
-});
 
 createGulpTasks(taskConfigs, config);

@@ -1,121 +1,303 @@
 /* browserify task
    ---------------
-   Bundle javascripty things with browserify!
+   Bundle JavaScript things with Browserify!
    
-   references:
+   References:
    
+   Fast browserify builds with watchify
+   https://github.com/gulpjs/gulp/blob/master/docs/recipes/fast-browserify-builds-with-watchify.md
+   
+   Browserify + Globs
+   https://github.com/gulpjs/gulp/blob/master/docs/recipes/browserify-with-globs.md
+   
+   Gulp + Browserify: The Everything Post
+   http://viget.com/extend/gulp-browserify-starter-faq
+   
+   Speedy Browserifying with Multiple Bundles
+   https://lincolnloop.com/blog/speedy-browserifying-multiple-bundles/
+   
+   gulp-starter/gulp/tasks/browserify.js   
+   https://github.com/greypants/gulp-starter/blob/master/gulp/tasks/browserify.js
+   
+   browserify-handbook
+   https://github.com/substack/browserify-handbook
+   
+   partitioning
+   https://github.com/substack/browserify-handbook#partitioning
+
    gulp + browserify, the gulp-y way
    https://medium.com/@sogko/gulp-browserify-the-gulp-y-way-bb359b3f9623
 
-   gulp-starter/gulp/tasks/browserify.js   
-   https://github.com/greypants/gulp-starter/blob/master/gulp/tasks/browserify.js
 */
 
 var defaults = {
-    options: {
+    // sourcemap: 'external',  // inline, external, false
+    options: {              
     }
 };
 
+/**
+ * config: {
+ *   // NOTE: options will be injected to each bundles. Put common configuration here.
+ *   options: {
+ *     require: '',
+ *     plugin: [
+ *       [tsify, { noImplicitAny: true }],
+ *       errorify
+ *     ],
+ *     transform: [],
+ * 
+ *     // using browserify methods
+ *     external: [],
+ * 
+ *     exclude: []
+ *     ignore: []
+ * 
+ *     // using browserify-shim
+ *     shim: {
+ *     }
+ *   },
+ *   bundles: [{
+ *     entries: ['app.js'],
+ *     external: '',
+ *     require: '',
+ *     file: 'app.bundle.js'
+ *   }, {
+ *     entries: ['console.js'],
+ *     file: 'console.bundle.js'
+ *   }, {
+ *     entries: ['common.js'],
+ *     file: 'common.js'
+ *   }]
+ * }
+ * 
+ * NOTE:
+ *   Browserify constructor supports the following options:
+ * 
+ *   entries: string|[string]
+ *   noparse|noParse: boolean
+ *   basedir: string
+ *   browserField: boolean
+ *   builtins: boolean|[string]
+ *   debug: boolean
+ *   detectGlobals: boolean
+ *   extensions: []
+ *   insertGlobals: boolean
+ *      commondir: boolean
+ *   insertGlobalVars: boolean
+ *   bundleExternal: boolean
+ * 
+ *   ignoreTransform: []
+ *   transform: [string|{}|[]]
+ *      basedir: string
+ *      global: boolean
+ *   require: []
+ *      file: string
+ *      entry: boolean
+ *      external
+ *      transform
+ *      basedir: string
+ *      expose: boolean
+ *   plugin: [string|{}|[]]
+ *      basedir: string
+ * 
+ * Reference:
+ * 
+ * node-browserify/index.js
+ * https://github.com/substack/node-browserify/blob/master/index.js
+ *  
+ * browserify-handbook - configuring transforms
+ * https://github.com/substack/browserify-handbook#configuring-transforms
+ * 
+ * Ingredients:
+ * 
+ * browser-sync
+ * https://github.com/BrowserSync/browser-sync
+ * 
+ * node-browserify
+ * https://github.com/substack/node-browserify
+ * 
+ * globby
+ * https://github.com/sindresorhus/globby
+ * 
+ * gulp-sourcemaps
+ * https://github.com/floridoo/gulp-sourcemaps
+ * 
+ * gulp-uglify
+ * https://github.com/terinjokes/gulp-uglify
+ * 
+ * vinyl-source-stream
+ * https://github.com/hughsk/vinyl-source-stream
+ * 
+ * vinyl-buffer
+ * https://github.com/hughsk/vinyl-buffer
+ * 
+ * watchify
+ * https://github.com/substack/watchify
+ * 
+ */
 function browserifyTask(config) {
     var gulp = this;
 
     // lazy loading required modules.
-    var _ = require('lodash');
-    var Browserify = require('browserify');
+    var browserify = require('browserify');
     var browserSync = require('browser-sync');
-    var merge = require('merge-stream');
-    var source = require('vinyl-source-stream');
     var buffer = require('vinyl-buffer');
-    var watchify = require('watchify');
+    // var globby = require('globby');
+    // var globsJoin = require('../util/glob_util').join;
     var log = require('gulp-util').log;
+    var merge = require('merge-stream');
+    var notify = require('gulp-notify');
+    var sourcemaps = require('gulp-sourcemaps');
+    var uglify = require('gulp-uglify');
+    var vinylify = require('vinyl-source-stream');
+    var watchify = require('watchify');
+    var _ = require('lodash');
 
-    var options, bundles;
-    
-    options = _.defaultsDeep({}, config.options, defaults.options);
+    _.defaults(config, defaults);
 
-    bundles = config.bundles || config.bundle;
+    var bundles = config.bundles || config.bundle;
     if (_.isArray(bundles)) {
         // Start bundling with Browserify for each bundle config specified
         return merge(_.map(bundles, browserifyThis));
     }
     return browserifyThis(bundles);
 
-    function browserifyThis(bundleConfig) {
-        
-        bundleConfig = _.defaultsDeep({}, bundleConfig, options, config);
+    function browserifyThis(bundleOptions) {
 
-        if (bundleConfig.debug) {
-            // Add watchify args and debug (sourcemaps) option
-            _.defaultsDeep(bundleConfig, watchify.args, { debug: true });
+        var options = realizeOptions(bundleOptions, config.options, config);
+        
+        if (config.debug) {
+            // Add watchify args
+            _.defaults(options, watchify.args);
             // A watchify require/external bug that prevents proper recompiling,
             // so (for now) we'll ignore these options during development. Running
             // `gulp browserify` directly will properly require and externalize.
-            bundleConfig = _.omit(bundleConfig, ['external', 'require']);
+            options = _.omit(options, ['external', 'require']);
+        }
+        
+        // Transform must be registered after plugin.
+        // (tsify use transform internally, so make sure it registered first.)
+        var transform;
+        if (options.plugin && options.transform) {
+            transform = options.transform;
+            delete options.transform;
         }
 
-        var browserify = new Browserify(bundleConfig);
-
-        if (bundleConfig.debug) {
+        var _browserify = browserify(options)
+               // .on('dep', function(row) {
+                //    var d = _.omit(row, ['source']);
+                //    console.log('dep: ' + JSON.stringify(d));
+               // })
+               .on('log', log);
+        
+        if (transform) {
+            _browserify.transform(transform);
+        }
+        
+        if (config.debug) {
             // Wrap with watchify and rebundle on changes
-            browserify = watchify(browserify);
+            _browserify = watchify(_browserify);
             // Rebundle on update
-            browserify.on('update', bundle);
+            _browserify.on('update', bundle);
             // bundleLogger.watch(bundleConfig.file);
         } 
         else {
+            // NOTE: options.require is processed properly in constructor of browserify. 
+            //   No need further process here.
+            //
             // Sort out shared dependencies.
-            // b.require exposes modules externally
-            if (bundleConfig.require) {
-                browserify.require(bundleConfig.require);
-            }
-            // b.external excludes modules from the bundle, and expects
-            // they'll be available externally
-            if (bundleConfig.external) {
-                browserify.external(bundleConfig.external);
+            // browserify.require exposes modules externally
+            // if (bundleConfig.require) {
+            //     _browserify.require(bundleConfig.require);
+            // }
+            
+            // browserify.external excludes modules from the bundle,
+            // and expects they'll be available externally
+            if (options.external) {
+                _browserify.external(options.external);
             }
         }
+        
+        return bundle();
 
         function bundle() {
             // Log when bundling starts
             // bundleLogger.start(bundleConfig.file);
     
-            return browserify
+            var stream = _browserify
                 .bundle()
                 // Report compile errors
                 .on('error', handleErrors)
-                .on('log', log)
-                // Use vinyl-source-stream to make the
-                // stream gulp compatible. Specify the
-                // desired output filename here.
-                .pipe(source(bundleConfig.file))
-                .pipe(buffer())
-                // Specify the output destination
-                .pipe(gulp.dest(bundleConfig.dest))
+                // Use vinyl-source-stream to make the stream gulp compatible. 
+                // Specify the desired output filename here.
+                .pipe(vinylify(options.file))
+                // optional, remove if you don't need to buffer file contents
+                .pipe(buffer());
+                
+            if (options.sourcemap) {
+                // Loads map from browserify file
+                stream = stream.pipe(sourcemaps.init({ loadMaps: true }));
+            }
+            
+            if (!config.debug) {
+                stream = stream.pipe(uglify());
+            }
+            
+            if (options.sourcemap) {
+                // Prepares sourcemaps, either internal or external.
+                stream = stream.pipe(sourcemaps.write(options.sourcemap === 'external' ? '.' : undefined));
+            }
+            
+            // Specify the output destination
+            return stream.pipe(gulp.dest(options.dest || config.dest))
                 .pipe(browserSync.reload({
                     stream: true
                 }));
         }
-        
-        return bundle();
-    }
-
-    function handleErrors() {
-        var notify = require('gulp-notify');
-        
-        var args = Array.prototype.slice.call(arguments);
-        log(JSON.stringify(args));
-
-        // Send error to notification center with gulp-notify
-        notify.onError({
-            title: "Compile Error",
-            message: "<%= error %>"
-        }).apply(this, args);
-          
-        this.emit('end');
+    
+        function realizeOptions(bundleOptions, commonOptions, inheritedConfig) {
+            var entries, options;
+            
+            options = {};
+            
+            entries = bundleOptions.entries || bundleOptions.entry || bundleOptions.src;
+            // if (inheritedConfig.src && entries) {
+            //     entries = globsJoin(inheritedConfig.src, entries);
+            // }
+            // entries = globby.sync(entries);
+            
+            _.defaults(options, { entries: entries }, bundleOptions, commonOptions);
+            
+            options.sourcemap = options.sourcemap || options.sourcemaps || inheritedConfig.sourcemap || inheritedConfig.sourcemaps;                     
+            
+            // add sourcemap option
+            if (options.sourcemap) {
+                // browserify use 'debug' option for sourcemaps, 
+                // but sometimes we want sourcemaps even in production mode.
+                options.debug = true;
+            }
+    
+            return options;
+        }
+    
+        function handleErrors() {
+            var args = Array.prototype.slice.call(arguments);
+            log(JSON.stringify(args));
+    
+            // Send error to notification center with gulp-notify
+            notify.onError({
+                title: "Compile Error",
+                message: "<%= error %>"
+            }).apply(this, args);
+              
+            this.emit('end');
+        }
     }
 }
 
 browserifyTask.description = 'Bundle JavaScript things with Browserify.';
-browserifyTask.consumes = ['bundle', 'bundles', 'dest', 'options'];
+browserifyTask.defaults = defaults;
+browserifyTask.consumes = ['bundle', 'bundles', 'dest', 'options', 'sourcemap', 'sourcemaps', 'src'];
 
 module.exports = browserifyTask;

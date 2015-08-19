@@ -5,19 +5,26 @@ var defaults = {
     }
 };
 
+/**
+ * Ingredients:
+ * 
+ * 
+ */
 function jscsTask(config) {
+    var gulp = this;
+    
     // lazy loading required modules.
-    var gulp = require('gulp');
     var jscs = require('jscs');
     var _ = require('lodash');
 
-    var options = _.defaultsDeep({}, config.options, defaults.options);
+    var options = _.defaults({}, config.options, defaults.options);
+
     return gulp.src(config.src)
-        .pipe(cached())
-        .pipe(jscs(options))
-        .pipe(remember());
+        .pipe(jscs(options));
 }
 
 jscsTask.description = '';
+jscsTask.defaults = defaults;
+jscsTask.consumes = ['options', 'src'];
 
 module.exports = jscsTask;

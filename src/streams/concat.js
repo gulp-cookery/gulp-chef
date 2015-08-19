@@ -12,8 +12,16 @@ function concat(config, tasks) {
     // lazy loading required modules.
     var queue = require('./queue');
     var gulpConcat = require('gulp-concat');
+    var stream;
     
-    return queue.call(gulp, config, tasks)
+    if (tasks.length === 0) {
+        stream = gulp.src(config.src);
+    }
+    else {
+        stream = queue.call(gulp, config, tasks);
+    }
+    
+    return stream
         .pipe(gulpConcat(config.file))
         .pipe(gulp.dest(config.dest));
 }

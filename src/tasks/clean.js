@@ -2,6 +2,10 @@ var defaults = {
     src: 'dist'
 };
 
+/**
+ * Ingredients:
+ * 
+ */
 function cleanTask(config, done) {
     // lazy loading required modules.
     var del = require('del');
@@ -11,5 +15,7 @@ function cleanTask(config, done) {
 }
 
 cleanTask.description = '';
+cleanTask.defaults = defaults;
+cleanTask.consumes = ['dest', 'src'];
 
 module.exports = cleanTask;

@@ -25,11 +25,15 @@ function eachdir(config, tasks) {
     var cwd, folders, values, inject;
     
     if (typeof config.src !== 'string') {
-        throw ConfigurationError('configuration "src" is required and should be a string of folder name');
+        throw ConfigurationError('required configuration "src" not found');
     }
     
     cwd = process.cwd();
     folders = getFolders(config.src);
+    if (folders.length === 0) {
+        throw new ConfigurationError('no sub folders found in ' + config.src);
+    }
+    
     values = folders.map(function(folder) {
         return {
             dir: folder,

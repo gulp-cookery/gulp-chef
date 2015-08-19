@@ -1,35 +1,35 @@
-var fs = require('fs');
-var path = require('path');
-var _ = require('lodash');
+var FileSystem = require('fs');
+var Path = require('path');
+var globby = require('globby');
 
 // glob support in src:
-function globFolders(globs, options) {
-    var globby = require('globby');
+function folders(globs, options) {
+    var base;
+    
     options = options || {};
+    base = options.base || '';
     return globby.sync(globs, options)
         .filter(function(file) {
-            return fs.statSync(path.join(options.base || '', file)).isDirectory();
+            return FileSystem.statSync(Path.join(base, file)).isDirectory();
         });
 }
 
-function globJoins(paths, globs, force) {
+function join(path, globs, force) {
     try {
-        if (force || fs.statSync(paths).isDirectory()) {
-            if (_.isArray(globs)) {
-                return _.map(globs, function(glob) {
-                    return _join(paths, glob);
-                });
+        if (force || FileSystem.statSync(path).isDirectory()) {
+            if (Array.isArray(globs)) {
+                return globs.map(_join);
             }
-            return _join(paths, globs);
+            return _join(globs);
         }
     }
     catch (ex) {
-        // directory not exist;
+        // the directory path not exist;
     }
     // globs override path
     return globs;
     
-    function _join(paths, glob) {
+    function _join(glob) {
         var negative;
         
         if (glob[0] === '!') {
@@ -39,8 +39,11 @@ function globJoins(paths, globs, force) {
         else {
             negative = '';
         }
-        return negative + path.join(paths, glob);
+        return negative + Path.join(path, glob);
     }
 }
 
-module.exports = globJoins;
+module.exports = {
+    folders: folders,
+    join: join
+};

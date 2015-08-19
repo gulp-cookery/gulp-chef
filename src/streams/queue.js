@@ -15,19 +15,16 @@ function queue(config, tasks) {
 
     var IllegalTaskError = require('../errors/illegal_task_error.js');
     
-    var streams, streamQueue;
-    
-    // TODO: return a empty stream that already end.
     if (tasks.length === 0) {
-        return null;
+        throw new IllegalTaskError('no sub task specified');
     }
     
     if (tasks.length === 1) {
         return runTask(tasks[0]);
     }
 
-    streams = tasks.map(runTask);
-    streamQueue = new StreamQueue({ objectMode: true });
+    var streams = tasks.map(runTask);
+    var streamQueue = new StreamQueue({ objectMode: true });
     return streamQueue.done.apply(streamQueue, streams);
     
     function runTask(task) {

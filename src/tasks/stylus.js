@@ -1,34 +1,67 @@
 var defaults = {
+    sourcemap: 'external',  // inline, external, false
     options: {
-        stylus: {
-            'compress': true,
-            'include css': true,
-            'resolve url': true,
-            'urlfunc': 'url'
-        },
-        autoprefixer: [
-            'last 1 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'
-        ]
+        'include css': true,
+        'resolve url': true,
+        'urlfunc': 'url'
     }
 };
 
+/**
+ * Ingredients:
+ * 
+ * gulp-stylus
+ * https://github.com/stevelacy/gulp-stylus
+ * 
+ * gulp-flatten
+ * https://github.com/armed/gulp-flatten
+ * 
+ * gulp-newer
+ * https://github.com/tschaub/gulp-newer
+ * 
+ * gulp-sourcemaps
+ * https://github.com/floridoo/gulp-sourcemaps
+ * 
+ */
 function stylusTask(config) {
+    var gulp = this;
+    
     // lazy loading required modules.
-    var autoprefixer = require('gulp-autoprefixer');
     var stylus = require('gulp-stylus');
     var flatten = require('gulp-flatten');
-    var gulpIf = require('gulp-if');
-    var gulp = require('gulp');
+    var newer = require('gulp-newer');
+    var sourcemaps = require('gulp-sourcemaps');
     var _ = require('lodash');
 
-    var options = _.defaultsDeep({}, config.options, defaults.options);
-    return gulp.src(config.src)
-        .pipe(stylus(options.stylus))
-        .pipe(autoprefixer.apply(null, options.autoprefixer))
-        .pipe(gulpIf(config.flatten, flatten()))
+    var options = _.defaults({}, config.options, defaults.options, { compress: !config.debug });
+    var sourcemap = !config.debug && (config.sourcemap || config.sourcemaps);
+
+    var stream = gulp.src(config.src);
+    
+    if (config.flatten) {
+        stream = stream.pipe(flatten());
+    }
+
+    stream = stream.pipe(newer(config.dest));
+    
+    if (sourcemap) {
+        stream = stream.pipe(sourcemaps.init());
+    }
+    
+    stream = stream.pipe(stylus(options));
+
+    if (sourcemap) {
+        // To write external source map files, 
+        // pass a path relative to the destination to sourcemaps.write().
+        stream = stream.pipe(sourcemaps.write(sourcemap === 'inline' ? undefined : '.'));
+    }
+    
+    return stream
         .pipe(gulp.dest(config.dest));
 }
 
 stylusTask.description = '';
+stylusTask.defaults = defaults;
+stylusTask.consumes = ['dest', 'flatten', 'options', 'sourcemap', 'sourcemaps', 'src'];
 
 module.exports = stylusTask;
