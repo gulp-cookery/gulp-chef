@@ -10,7 +10,6 @@ function queue(config, tasks) {
     var gulp = this;
     
     // lazy loading required modules.
-    var Stream = require('stream');
     var StreamQueue = require('streamqueue');
 
     var IllegalTaskError = require('../errors/illegal_task_error.js');
@@ -29,13 +28,17 @@ function queue(config, tasks) {
     
     function runTask(task) {
         var stream = task.run(gulp, config, done);
-        if (! (stream instanceof Stream)) {
+        if (!isStream(stream)) {
             throw new IllegalTaskError('sub task must return a stream');
         }
         return stream;
 
         function done() {
         }
+    }
+    
+    function isStream(target) {
+        return (typeof target.pipe === 'function');
     }
 }
 

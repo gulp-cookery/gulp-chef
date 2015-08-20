@@ -1,4 +1,4 @@
-function copy(config) {
+function copyTask(config) {
     var gulp = this;
     
     var flatten = require('gulp-flatten');
@@ -10,7 +10,7 @@ function copy(config) {
     return stream.pipe(gulp.dest(config.dest));
 }
 
-copy.description = '';
-copy.consumes = ['dest', 'flatten', 'src'];
+copyTask.description = '';
+copyTask.consumes = ['dest', 'flatten', 'src'];
 
-module.exports = copy;
+module.exports = copyTask;
