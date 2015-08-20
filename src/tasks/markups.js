@@ -22,22 +22,25 @@ var defaults = {
  * gulp-sourcemaps
  * https://github.com/floridoo/gulp-
  * 
- * html-minifier
- * https://github.com/kangax/html-minifier
- * 
  */
-function mackupTask(config) {
+function markupsTask(config) {
     var gulp = this;
     
+    return gulp.src(config.src)
+        .pipe(transform(config))
+        .pipe(gulp.dest(config.dest));
+}
+
+function transform(config) {
     // lazy loading required modules.
     var flatten = require('gulp-flatten');
     var htmlmin = require('gulp-htmlmin');
     var newer = require('gulp-newer');
+    var through = require('through2');
     var _ = require('lodash');
     
     var options = _.defaults({}, config.options, defaults.options);
-    
-    var stream = gulp.src(config.src);
+    var stream = through.obj();
     
     if (config.flatten) {
         stream = stream.pipe(flatten());
@@ -49,12 +52,12 @@ function mackupTask(config) {
         stream = stream.pipe(htmlmin(options));
     }
     
-    return stream
-        .pipe(gulp.dest(config.dest));
+    return stream;
 }
 
-mackupTask.description = '';
-mackupTask.defaults = defaults;
-mackupTask.consumes = ['dest', 'flatten', 'options', 'src'];
+markupsTask.description = '';
+markupsTask.defaults = defaults;
+markupsTask.consumes = ['dest', 'flatten', 'options', 'src'];
+markupsTask.transform = transform;
 
-module.exports = mackupTask;
+module.exports = markupsTask;
