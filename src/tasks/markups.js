@@ -26,21 +26,19 @@ var defaults = {
 function markupsTask(config) {
     var gulp = this;
     
-    return gulp.src(config.src)
-        .pipe(transform(config))
-        .pipe(gulp.dest(config.dest));
+    var stream = gulp.src(config.src);
+    stream = transform(gulp, config, stream);
+    return stream.pipe(gulp.dest(config.dest));
 }
 
-function transform(config) {
+function transform(gulp, config, stream) {
     // lazy loading required modules.
     var flatten = require('gulp-flatten');
     var htmlmin = require('gulp-htmlmin');
     var newer = require('gulp-newer');
-    var through = require('through2');
     var _ = require('lodash');
     
     var options = _.defaults({}, config.options, defaults.options);
-    var stream = through.obj();
     
     if (config.flatten) {
         stream = stream.pipe(flatten());

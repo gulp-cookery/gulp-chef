@@ -190,6 +190,13 @@ function wrapTaskRunner(taskInfo, taskConfig, configurableRunner) {
     task.hidden = taskInfo.hidden;
     task.runtime = taskInfo.runtime;
     task.run = run;
+    if (configurableRunner.transform) {
+        task.transform = function(gulp, injectConfig, stream) {
+            //inject runtime configuration.
+            var config = realizeVariables(taskConfig, injectConfig);
+            return configurableRunner.transform(gulp, config, stream);
+        };
+    }
     return task;
 }
 

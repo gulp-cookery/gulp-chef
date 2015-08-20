@@ -265,9 +265,6 @@ var taskConfigs = {
         src: '**/*.{png,jpg,gif}',
         flatten: true
     },
-    markups: {
-        src: '*.html'
-    },
     styles: {
         stylus: {
             src: '**/*.stylus'
@@ -355,6 +352,25 @@ var taskConfigs = {
             }
         }
     },
+    'modules:pipe': {
+        src: '../test/_fixtures/modules',
+        pipe: {
+            '.concat': {
+                src: '**/*.js',
+                file: 'main.js',
+            },
+            '.uglify': {
+                file: { extname: '.min.js' }
+            }
+        }
+    },
+    'modules:uglify': {
+        src: '../test/_fixtures/modules',
+        '.uglify': {
+            src: '**/*.js',
+            file: { extname: '.min.js' }
+        }
+    },
     // Bundle modules with Browserify for each folder.
     modules: {
         src: '../test/_fixtures/modules',
@@ -366,6 +382,10 @@ var taskConfigs = {
                 }
             }
         }
+    },
+    markups: {
+        src: '../test/_fixtures/modules/**/*.html',
+        flatten: true
     },
     // module2: {
     //     src: '../test/_fixtures/modules',
@@ -450,4 +470,4 @@ var taskConfigs = {
     // }
 };
 
-createGulpTasks(taskConfigs, config);
+createGulpTasks(gulp, taskConfigs, config);
