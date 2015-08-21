@@ -15,7 +15,7 @@ var safeRequireDir = require('./util/safe_require_dir');
 var cwd = process.cwd();
 
 var stuff = {
-    filters: safeRequireDir(path.join(cwd, 'gulp/filters'), './filters'),
+    flows: safeRequireDir('./flows'),
     streams: safeRequireDir(path.join(cwd, 'gulp/streams'), './streams'),
     recipes: safeRequireDir(path.join(cwd, 'gulp'), path.join(cwd, 'gulp/tasks'), './tasks')
 };
@@ -125,7 +125,7 @@ function createTaskRunner(prefix, taskInfo, taskConfig, parentConfig) {
 
 function getTaskConsumes(name) {
     var consumes = defaults.consumes;
-    var configurableTask = stuff.filters[name] || stuff.streams[name] || stuff.recipes[name];
+    var configurableTask = stuff.streams[name] || stuff.recipes[name];
     if (configurableTask) {
         consumes = consumes.concat(configurableTask.consumes);
     }
