@@ -6,7 +6,7 @@ var defaults = {
  * Ingredients:
  * 
  */
-function cleanTask(config, done) {
+function cleanTask(gulp, config, stream, done) {
     // lazy loading required modules.
     var del = require('del');
     

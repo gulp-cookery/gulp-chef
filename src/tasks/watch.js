@@ -10,9 +10,7 @@
  * Ingredients:
  * 
  */
-function watchTask(config) {
-    var gulp = this;
-    
+function watchTask(gulp, config, stream, done) {
     // lazy loading required modules.
     var _ = require('lodash');
 
@@ -24,7 +22,7 @@ function watchTask(config) {
     else if (typeof config.task === 'string') {
         depends = [ config.task ];
     }
-    else if (_.isArray(config.task)) {
+    else if (Array.isArray(config.task)) {
         depends = config.task;
     }
     

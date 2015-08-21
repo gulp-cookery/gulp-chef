@@ -18,18 +18,15 @@ var defaults = {
  * gulp-newer
  * https://github.com/tschaub/gulp-newer
  */
-function imagesTask(config) {
-    var gulp = this;
-    
+function imagesTask(gulp, config, stream, done) {
     // lazy loading required modules.
     var flatten = require('gulp-flatten');
     var imagemin = require('gulp-imagemin');
     var newer = require('gulp-newer');
-    var _ = require('lodash');
-
-    var options = _.defaultsDeep({}, config.options, defaults.options);
     
-    var stream = gulp.src(config.src);
+    if (!stream) {
+        stream = gulp.src(config.src);
+    }
 
     if (config.flatten) {
         stream = stream.pipe(flatten());
@@ -38,28 +35,25 @@ function imagesTask(config) {
     stream = stream.pipe(newer(config.dest));
         
     if (!config.debug) {
-        stream = stream.pipe(imagemin(options));
+        stream = stream.pipe(imagemin(config.options));
     } 
     
     return stream
         .pipe(gulp.dest(config.dest));
 }
 
-function imagesTaskV2(config) {
-    var gulp = this;
-    
+function imagesTaskV2(gulp, config, stream, done) {
     // lazy loading required modules.
     var contents = require('file-contents');
     var flatten = require('gulp-flatten');
     var imagemin = require('gulp-imagemin');
     var newer = require('gulp-newer');
     var path = require('path');
-    var _ = require('lodash');
 
-    var options = _.defaults({}, config.options, defaults.options);
-    
     // we don't want waste time to read unchanged files.
-    var stream = gulp.src(config.src, { read: false });
+    if (!stream) {
+        stream = gulp.src(config.src, { read: false });
+    }
     
     // so, must first filter newer files.
     var newerOptions = {
@@ -82,7 +76,7 @@ function imagesTaskV2(config) {
     }
         
     if (!config.debug) {
-        stream = stream.pipe(imagemin(options));
+        stream = stream.pipe(imagemin(config.options));
     } 
     
     return stream

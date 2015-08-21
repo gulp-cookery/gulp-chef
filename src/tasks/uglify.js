@@ -5,28 +5,21 @@ var defaults = {
     }    
 };
 
-function uglifyTask(config) {
-    var gulp = this;
-    
-    var stream = gulp.src(config.src);
-    stream = transform(gulp, config, stream);
-    if (!config.file) {
-        stream = stream.pipe(gulp.dest(config.dest));
-    }
-    return stream;
-}
-
-function transform(gulp, config, stream) {
+function uglifyTask(gulp, config, stream) {
     var rename = require('gulp-rename');
     var uglify = require('gulp-uglify');
-    var _ = require('lodash');
     
-    var options = _.defaults({}, config.options, defaults.options);
-    
+    if (!stream) {
+        stream = gulp.src(config.src);
+    }
+
     if (!config.debug) {
-        stream = stream.pipe(uglify(options));
+        stream = stream.pipe(uglify(config.options));
     }
     
+    // TODO: determine when to write file:
+    //    1.only if config.file exist? but if user don't want to rename?
+    //    2.only if config.dest exist? but config.dest usally set globally.
     if (config.file) {
         stream = stream.pipe(rename(config.file))
             .pipe(gulp.dest(config.dest));
@@ -35,9 +28,9 @@ function transform(gulp, config, stream) {
     return stream;
 }
 
+
 uglifyTask.description = '';
 uglifyTask.defaults = defaults;
 uglifyTask.consumes = ['dest', 'file', 'options', 'src'];
-uglifyTask.transform = transform;
 
 module.exports = uglifyTask;

@@ -22,9 +22,7 @@ var message = {
  * Ingredients:
  * 
  */
-function bumpTask(config, done) {
-    var gulp = this;
-    
+function bumpTask(gulp, config, stream, done) {
     // lazy loading required modules.
     var _ = require('lodash');
     var bump = require('gulp-bump');

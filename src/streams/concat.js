@@ -6,19 +6,16 @@
  * @tasks 傳入的子 tasks 為 configurableTask，是尚未綁定 config 的 task 形式。
  *  
  */
-function concat(config, tasks) {
-    var gulp = this;
-    
+function concat(gulp, config, stream, tasks) {
     // lazy loading required modules.
     var queue = require('./queue');
     var gulpConcat = require('gulp-concat');
-    var stream;
     
     if (tasks.length === 0) {
-        stream = gulp.src(config.src);
+        stream = stream || gulp.src(config.src);
     }
     else {
-        stream = queue.call(gulp, config, tasks);
+        stream = queue(gulp, config, stream, tasks);
     }
     
     return stream

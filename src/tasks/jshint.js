@@ -21,22 +21,22 @@ var defaults = {
  * gulp-jshint
  * https://github.com/spalger/gulp-jshint
  */
-function jshintTask(config) {
-    var gulp = this;
+function jshintTask(gulp, config, stream, done) {
     
     // lazy loading required modules.
     var jshint = require('gulp-jshint');
     var _ = require('lodash');
-    
-    var options = _.defaults({}, config.options, defaults.options);
 
-    var stream = gulp.src(config.src)
-        .pipe(jshint());
-    if (typeof options.reporter === 'string') {
-        stream = stream.pipe(jshint.reporter(options.reporter));
+    if (!stream) {
+        stream = gulp.src(config.src);
+    }
+    stream = stream.pipe(jshint());
+    
+    if (typeof config.options.reporter === 'string') {
+        stream = stream.pipe(jshint.reporter(config.options.reporter));
     }
     else {
-        _.each(options.reporter, function(options, name) {
+        _.each(config.options.reporter, function(options, name) {
             if (typeof name === 'number') {
                 name = options;
                 options = {};

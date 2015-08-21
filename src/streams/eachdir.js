@@ -12,9 +12,7 @@
  * @tasks 傳入的子 tasks 為 configurableTask，是尚未綁定 config 的 task 形式。
  *  
  */
-function eachdir(config, tasks) {
-    var gulp = this;
-    
+function eachdir(gulp, config, stream, tasks) {
     // lazy loading required modules.
     var fs = require('fs');
     var path = require('path');
@@ -45,7 +43,7 @@ function eachdir(config, tasks) {
         values: values
     };
     
-    return each.call(gulp, inject, tasks);
+    return each(gulp, inject, stream, tasks);
 
     function getFolders(dir) {
         try {

@@ -23,22 +23,16 @@ var defaults = {
  * https://github.com/floridoo/gulp-
  * 
  */
-function markupsTask(config) {
-    var gulp = this;
-    
-    var stream = gulp.src(config.src);
-    stream = transform(gulp, config, stream);
-    return stream.pipe(gulp.dest(config.dest));
-}
-
-function transform(gulp, config, stream) {
+function markupsTask(gulp, config, stream, done) {
+   
     // lazy loading required modules.
     var flatten = require('gulp-flatten');
     var htmlmin = require('gulp-htmlmin');
     var newer = require('gulp-newer');
-    var _ = require('lodash');
     
-    var options = _.defaults({}, config.options, defaults.options);
+    if (!stream) {
+        stream = gulp.src(config.src);
+    }
     
     if (config.flatten) {
         stream = stream.pipe(flatten());
@@ -47,15 +41,14 @@ function transform(gulp, config, stream) {
     stream = stream.pipe(newer(config.dest));
     
     if (!config.debug) {
-        stream = stream.pipe(htmlmin(options));
+        stream = stream.pipe(htmlmin(config.options));
     }
-    
-    return stream;
+
+    return stream.pipe(gulp.dest(config.dest));
 }
 
 markupsTask.description = '';
 markupsTask.defaults = defaults;
 markupsTask.consumes = ['dest', 'flatten', 'options', 'src'];
-markupsTask.transform = transform;
 
 module.exports = markupsTask;

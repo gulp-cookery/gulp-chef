@@ -1,9 +1,10 @@
-function copyTask(config) {
-    var gulp = this;
-    
+function copyTask(gulp, config, stream, done) {
     var flatten = require('gulp-flatten');
     
-    var stream = gulp.src(config.src);
+    if (!stream) {
+        stream = gulp.src(config.src);
+    }
+
     if (config.flatten) {
         stream = stream.pipe(flatten());
     }

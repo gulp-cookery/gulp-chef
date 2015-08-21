@@ -6,9 +6,7 @@
  * @tasks 傳入的子 tasks 為 configurableTask，是尚未綁定 config 的 task 形式。
  *  
  */
-function queue(config, tasks) {
-    var gulp = this;
-    
+function queue(gulp, config, stream, tasks) {
     // lazy loading required modules.
     var StreamQueue = require('streamqueue');
 
@@ -27,7 +25,7 @@ function queue(config, tasks) {
     return streamQueue.done.apply(streamQueue, streams);
     
     function runTask(task) {
-        var stream = task.run(gulp, config, done);
+        var stream = task.run(gulp, config, stream, done);
         if (!isStream(stream)) {
             throw new IllegalTaskError('sub task must return a stream');
         }

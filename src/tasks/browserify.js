@@ -136,9 +136,7 @@ var defaults = {
  * https://github.com/substack/watchify
  * 
  */
-function browserifyTask(config) {
-    var gulp = this;
-
+function browserifyTask(gulp, config, stream) {
     // lazy loading required modules.
     var browserify = require('browserify');
     var browserSync = require('browser-sync');
@@ -153,8 +151,6 @@ function browserifyTask(config) {
     var vinylify = require('vinyl-source-stream');
     var watchify = require('watchify');
     var _ = require('lodash');
-
-    _.defaults(config, defaults);
 
     var bundles = config.bundles || config.bundle;
     if (_.isArray(bundles)) {

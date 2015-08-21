@@ -23,9 +23,7 @@ var defaults = {
  * https://github.com/floridoo/gulp-sourcemaps
  * 
  */
-function stylusTask(config) {
-    var gulp = this;
-    
+function stylusTask(gulp, config, stream, done) {
     // lazy loading required modules.
     var stylus = require('gulp-stylus');
     var flatten = require('gulp-flatten');
@@ -36,7 +34,9 @@ function stylusTask(config) {
     var options = _.defaults({}, config.options, defaults.options, { compress: !config.debug });
     var sourcemap = !config.debug && (config.sourcemap || config.sourcemaps);
 
-    var stream = gulp.src(config.src);
+    if (!stream) {
+        stream = gulp.src(config.src);
+    }
     
     if (config.flatten) {
         stream = stream.pipe(flatten());

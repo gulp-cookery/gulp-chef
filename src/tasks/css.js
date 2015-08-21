@@ -36,9 +36,7 @@ var defaults = {
  * gulp-sourcemaps
  * https://github.com/floridoo/gulp-sourcemaps
  */
-function cssTask(config) {
-    var gulp = this;
-    
+function cssTask(gulp, config, stream, done) {
     // lazy loading required modules.
     var autoprefixer = require('gulp-autoprefixer');
     var flatten = require('gulp-flatten');
@@ -51,7 +49,9 @@ function cssTask(config) {
     var options = _.defaultsDeep({}, config.options, defaults.options);
     var sourcemap = !config.debug && (config.sourcemap || config.sourcemaps);
 
-    var stream = gulp.src(config.src);
+    if (!stream) {
+        stream = gulp.src(config.src);
+    }
 
     if (config.flatten) {
         stream = stream.pipe(flatten());

@@ -10,17 +10,12 @@ var defaults = {
  * 
  * 
  */
-function jscsTask(config) {
-    var gulp = this;
-    
+function jscsTask(gulp, config, stream, done) {
     // lazy loading required modules.
     var jscs = require('jscs');
-    var _ = require('lodash');
-
-    var options = _.defaults({}, config.options, defaults.options);
 
     return gulp.src(config.src)
-        .pipe(jscs(options));
+        .pipe(jscs(config.options));
 }
 
 jscsTask.description = '';
