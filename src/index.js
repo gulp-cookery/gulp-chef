@@ -176,7 +176,7 @@ function wrapTaskRunner(taskInfo, taskConfig, configurableRunner) {
     // invoked from stream processor
     var run = function(gulp, injectConfig, done) {
         //inject runtime configuration.
-        var config = realizeVariables(taskConfig, injectConfig);
+        var config = realizeVariables(taskConfig, injectConfig, configurableRunner.defaults);
         return configurableRunner.call(gulp, config, done);
     };
     // invoked from gulp

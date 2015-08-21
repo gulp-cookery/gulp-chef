@@ -2,9 +2,9 @@ var _ = require('lodash');
 
 var interpolate = /{{([\s\S]+?)}}/g;
 
-function realizeVariables(original, additional) {
+function realizeVariables(original, additional, defaults) {
     
-    var values = _.defaults({}, original, additional);
+    var values = _.defaultsDeep({}, original, additional, defaults);
     
     return realizeAll({}, values);
 
