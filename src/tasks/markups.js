@@ -48,7 +48,7 @@ function markupsTask(gulp, config, stream, done) {
 }
 
 markupsTask.description = '';
-markupsTask.defaults = defaults;
 markupsTask.consumes = ['dest', 'flatten', 'options', 'src'];
+markupsTask.defaults = defaults;
 
 module.exports = markupsTask;

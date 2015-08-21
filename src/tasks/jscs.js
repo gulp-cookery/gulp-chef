@@ -19,7 +19,7 @@ function jscsTask(gulp, config, stream, done) {
 }
 
 jscsTask.description = '';
-jscsTask.defaults = defaults;
 jscsTask.consumes = ['options', 'src'];
+jscsTask.defaults = defaults;
 
 module.exports = jscsTask;

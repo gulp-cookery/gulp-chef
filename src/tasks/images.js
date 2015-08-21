@@ -84,7 +84,7 @@ function imagesTaskV2(gulp, config, stream, done) {
 }
 
 imagesTask.description = 'Optimize images.';
-imagesTask.defaults = defaults;
 imagesTask.consumes = ['dest', 'flatten', 'options', 'src'];
+imagesTask.defaults = defaults;
 
 module.exports = imagesTaskV2;

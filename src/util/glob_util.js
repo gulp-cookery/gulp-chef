@@ -43,7 +43,5 @@ function join(path, globs, force) {
     }
 }
 
-module.exports = {
-    folders: folders,
-    join: join
-};
+exports.folders = folders;
+exports.join = join;

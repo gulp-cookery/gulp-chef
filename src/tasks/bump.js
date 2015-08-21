@@ -48,7 +48,7 @@ function bumpTask(gulp, config, stream, done) {
 }
 
 bumpTask.description = '';
-bumpTask.defaults = defaults;
 bumpTask.consumes = ['base', 'options', 'source', 'target'];
+bumpTask.defaults = defaults;
 
 module.exports = bumpTask;

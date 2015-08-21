@@ -84,7 +84,7 @@ function cssTask(gulp, config, stream, done) {
 }
 
 cssTask.description = '';
-cssTask.defaults = defaults;
 cssTask.consumes = ['dest', 'flatten', 'options', 'sourcemap', 'sourcemaps', 'src', "min.css"];
+cssTask.defaults = defaults;
 
 module.exports = cssTask;

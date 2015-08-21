@@ -61,7 +61,7 @@ function stylusTask(gulp, config, stream, done) {
 }
 
 stylusTask.description = '';
-stylusTask.defaults = defaults;
 stylusTask.consumes = ['dest', 'flatten', 'options', 'sourcemap', 'sourcemaps', 'src'];
+stylusTask.defaults = defaults;
 
 module.exports = stylusTask;

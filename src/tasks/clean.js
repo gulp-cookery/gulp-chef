@@ -15,7 +15,7 @@ function cleanTask(gulp, config, stream, done) {
 }
 
 cleanTask.description = '';
-cleanTask.defaults = defaults;
 cleanTask.consumes = ['dest', 'src'];
+cleanTask.defaults = defaults;
 
 module.exports = cleanTask;

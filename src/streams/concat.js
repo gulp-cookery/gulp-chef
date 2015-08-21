@@ -24,7 +24,7 @@ function concat(gulp, config, stream, tasks) {
 }
 
 
-concat.consumes = ['file', 'src'];
 concat.description = 'Concatenates files';
+concat.consumes = ['file', 'src'];
 
 module.exports = concat;

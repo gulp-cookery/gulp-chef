@@ -30,7 +30,7 @@ function uglifyTask(gulp, config, stream) {
 
 
 uglifyTask.description = '';
-uglifyTask.defaults = defaults;
 uglifyTask.consumes = ['dest', 'file', 'options', 'src'];
+uglifyTask.defaults = defaults;
 
 module.exports = uglifyTask;

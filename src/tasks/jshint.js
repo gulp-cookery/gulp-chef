@@ -48,7 +48,7 @@ function jshintTask(gulp, config, stream, done) {
 }
 
 jshintTask.description = '';
-jshintTask.defaults = defaults;
 jshintTask.consumes = ['options', 'src'];
+jshintTask.defaults = defaults;
 
 module.exports = jshintTask;

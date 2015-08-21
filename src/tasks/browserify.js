@@ -263,7 +263,7 @@ function browserifyTask(gulp, config, stream) {
             // }
             // entries = globby.sync(entries);
             
-            _.defaults(options, { entries: entries }, bundleOptions, commonOptions);
+            _.defaults(options, { entries: entries, basedir: inheritedConfig.src }, bundleOptions, commonOptions);
             
             options.sourcemap = options.sourcemap || options.sourcemaps || inheritedConfig.sourcemap || inheritedConfig.sourcemaps;                     
             
@@ -293,7 +293,7 @@ function browserifyTask(gulp, config, stream) {
 }
 
 browserifyTask.description = 'Bundle JavaScript things with Browserify.';
-browserifyTask.defaults = defaults;
 browserifyTask.consumes = ['bundle', 'bundles', 'dest', 'options', 'sourcemap', 'sourcemaps', 'src'];
+browserifyTask.defaults = defaults;
 
 module.exports = browserifyTask;

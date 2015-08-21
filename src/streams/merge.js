@@ -40,4 +40,6 @@ function merge(gulp, config, stream, tasks) {
     }
 }
 
+merge.description = '';
+
 module.exports = merge;

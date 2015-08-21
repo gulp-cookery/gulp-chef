@@ -18,6 +18,5 @@ function pipe(gulp, config, stream, tasks) {
 }
 
 pipe.description = '';
-pipe.consumes = [];
 
 module.exports = pipe;
