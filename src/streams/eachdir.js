@@ -23,13 +23,13 @@ function eachdir(gulp, config, stream, tasks) {
     var cwd, folders, values, inject;
     
     if (typeof config.src !== 'string') {
-        throw ConfigurationError('required configuration "src" not found');
+        throw ConfigurationError('eachdir', 'required configuration "src" not found');
     }
     
     cwd = process.cwd();
     folders = getFolders(config.src);
     if (folders.length === 0) {
-        throw new ConfigurationError('no sub folders found in ' + config.src);
+        throw new ConfigurationError('eachdir', 'no sub folders found in ' + config.src);
     }
     
     values = folders.map(function(folder) {

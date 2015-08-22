@@ -14,7 +14,7 @@ function each(gulp, config, stream, tasks) {
     var ConfigurationError = require('../errors/configuration_error')
     
     if (config.values.length === 0) {
-        throw new ConfigurationError('required configuration "values" not specified.');
+        throw new ConfigurationError('each', 'required configuration "values" not specified.');
     }
     
     if (config.values.length === 1) {

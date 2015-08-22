@@ -14,7 +14,7 @@ function merge(gulp, config, stream, tasks) {
     
     // TODO: make sure throw error is good decision.
     if (tasks.length === 0) {
-        throw new IllegalTaskError('no sub task specified');
+        throw new IllegalTaskError('merge', 'no sub task specified');
         //stream.emit('error', new PluginError('no sub task specified', e));
     }
     
@@ -27,7 +27,7 @@ function merge(gulp, config, stream, tasks) {
     function runTask(task) {
         var stream = task.run(gulp, config, stream, done);
         if (!isStream(stream)) {
-            throw new IllegalTaskError('sub task must return a stream');
+            throw new IllegalTaskError('merge', 'sub task must return a stream');
         }
         return stream;
     

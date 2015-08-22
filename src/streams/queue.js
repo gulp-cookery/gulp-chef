@@ -13,7 +13,7 @@ function queue(gulp, config, stream, tasks) {
     var IllegalTaskError = require('../errors/illegal_task_error.js');
     
     if (tasks.length === 0) {
-        throw new IllegalTaskError('no sub task specified');
+        throw new IllegalTaskError('queue', 'no sub task specified');
     }
     
     if (tasks.length === 1) {
@@ -27,7 +27,7 @@ function queue(gulp, config, stream, tasks) {
     function runTask(task) {
         var stream = task.run(gulp, config, stream, done);
         if (!isStream(stream)) {
-            throw new IllegalTaskError('sub task must return a stream');
+            throw new IllegalTaskError('queue', 'sub task must return a stream');
         }
         return stream;
 

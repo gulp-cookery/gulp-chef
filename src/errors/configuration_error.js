@@ -9,12 +9,14 @@
 //
 // Issue 228909: custom Errors are reported as "Uncaught [object Object]"
 // https://code.google.com/p/chromium/issues/detail?id=228909
-function ConfigurationError(message) {
-    this.message = message;
-    this.stack = new Error().stack;
+var inherits = require('util').inherits;
+var PluginError = require('gulp-util').PluginError;
+
+function ConfigurationError(plugin, message, options) {
+    PluginError.call(this, plugin, message, options);
 }
 
-ConfigurationError.prototype = new Error();
+inherits(ConfigurationError, PluginError);
 ConfigurationError.prototype.name = 'ConfigurationError';
 
-module.export = ConfigurationError;
+module.exports = ConfigurationError;

@@ -1,9 +1,11 @@
-function IllegalTaskError(message) {
-    this.message = message;
-    this.stack = new Error().stack;
+var inherits = require('util').inherits;
+var PluginError = require('gulp-util').PluginError;
+
+function IllegalTaskError(plugin, message, options) {
+    PluginError.call(this, plugin, message, options);
 }
 
-IllegalTaskError.prototype = new Error();
+inherits(IllegalTaskError, PluginError);
 IllegalTaskError.prototype.name = 'IllegalTaskError';
 
-module.export = IllegalTaskError;
+module.exports = IllegalTaskError;
