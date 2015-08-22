@@ -43,5 +43,11 @@ function join(path, globs, force) {
     }
 }
 
+var regexGlobPattern = /[!^{}|*?+@]/;
+function test(pattern) {
+    return regexGlobPattern.test(pattern);
+}
+
 exports.folders = folders;
 exports.join = join;
+exports.test = test;

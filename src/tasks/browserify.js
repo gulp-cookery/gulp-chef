@@ -109,6 +109,16 @@ var defaults = {
  * browserify-handbook - configuring transforms
  * https://github.com/substack/browserify-handbook#configuring-transforms
  * 
+ * pull: Make sure entry paths are always full paths #1248
+ * https://github.com/substack/node-browserify/pull/1248
+ * 
+ * issues: 8.1.1 fails to resolve modules from "browser" field #1072
+ * https://github.com/substack/node-browserify/issues/1072#issuecomment-70323972
+ * 
+ * issues: browser field in package.json no longer works #1250
+ * https://github.com/substack/node-browserify/issues/1250
+ * https://github.com/substack/node-browserify/issues/1250#issuecomment-99970224
+ * 
  * Ingredients:
  * 
  * browser-sync
@@ -141,8 +151,8 @@ function browserifyTask(gulp, config, stream) {
     var browserify = require('browserify');
     var browserSync = require('browser-sync');
     var buffer = require('vinyl-buffer');
-    // var globby = require('globby');
-    // var globsJoin = require('../util/glob_util').join;
+    var globby = require('globby');
+    var globs = require('../util/glob_util');
     var log = require('gulp-util').log;
     var merge = require('merge-stream');
     var notify = require('gulp-notify');
@@ -181,10 +191,6 @@ function browserifyTask(gulp, config, stream) {
         }
 
         var _browserify = browserify(options)
-               // .on('dep', function(row) {
-                //    var d = _.omit(row, ['source']);
-                //    console.log('dep: ' + JSON.stringify(d));
-               // })
                .on('log', log);
         
         if (transform) {
@@ -237,7 +243,7 @@ function browserifyTask(gulp, config, stream) {
             }
             
             if (!config.debug) {
-                stream = stream.pipe(uglify());
+                //stream = stream.pipe(uglify());
             }
             
             if (options.sourcemap) {
@@ -252,20 +258,26 @@ function browserifyTask(gulp, config, stream) {
                 }));
         }
     
-        function realizeOptions(bundleOptions, commonOptions, inheritedConfig) {
+        function realizeOptions(bundleOptions, commonOptions, config) {
             var entries, options;
             
             options = {};
             
-            entries = bundleOptions.entries || bundleOptions.entry || bundleOptions.src;
-            // if (inheritedConfig.src && entries) {
-            //     entries = globsJoin(inheritedConfig.src, entries);
-            // }
-            // entries = globby.sync(entries);
+            entries = bundleOptions.entries || bundleOptions.entry;
+            if (!Array.isArray(entries)) {
+                entries = [entries];
+            }
+            entries = entries.reduce(function(ret, entry) {
+                var file = globs.join(config.src || '', entry.file || entry);
+                if (globs.test(file)) {
+                    file = globby.sync(file);
+                }
+                return ret.concat(file);
+            }, []);
             
-            _.defaults(options, { entries: entries, basedir: inheritedConfig.src }, bundleOptions, commonOptions);
+            _.defaults(options, { entries: entries }, bundleOptions, commonOptions);
             
-            options.sourcemap = options.sourcemap || options.sourcemaps || inheritedConfig.sourcemap || inheritedConfig.sourcemaps;                     
+            options.sourcemap = options.sourcemap || options.sourcemaps || config.sourcemap || config.sourcemaps;                     
             
             // add sourcemap option
             if (options.sourcemap) {
@@ -279,11 +291,10 @@ function browserifyTask(gulp, config, stream) {
     
         function handleErrors() {
             var args = Array.prototype.slice.call(arguments);
-            log(JSON.stringify(args));
     
             // Send error to notification center with gulp-notify
             notify.onError({
-                title: "Compile Error",
+                title: "Browserify Error",
                 message: "<%= error %>"
             }).apply(this, args);
               
