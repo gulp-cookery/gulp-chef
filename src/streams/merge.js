@@ -12,10 +12,8 @@ function merge(gulp, config, stream, tasks) {
     
     var IllegalTaskError = require('../errors/illegal_task_error.js');
     
-    // TODO: make sure throw error is good decision.
     if (tasks.length === 0) {
         throw new IllegalTaskError('merge', 'no sub task specified');
-        //stream.emit('error', new PluginError('no sub task specified', e));
     }
     
     if (tasks.length === 1) {

@@ -42,7 +42,7 @@ var ideaTaskConfigs = {
     // (merge-stream 不會合併含入的 stream 的內容，
     // 僅僅只是為了方便處理非同步的多個 stream：
     // 當所有的 stream 都 end 時，輸出的 stream 才會觸發 end event。)
-    styles: {
+    'styles:1': {
         dest: 'css',
         parallel: {
             stylus: {
@@ -64,7 +64,7 @@ var ideaTaskConfigs = {
     // stylus 與 css 兩個子 task 分別依檔案類型 (.stylus, .css) 進行個別處理；
     // 由於未指定 stylus 與 css 的合併行為，兩個 stream 將各自獨立並行處理，
     // 但最終以 merge-stream 合併，輸出為單一 stream，做為 styles 的輸出 stream。
-    styles: {
+    'styles:2': {
         dest: 'css',    // 統一輸出到 css 目錄
         '.minify!': {   // 在名稱前端加上 . 的 task 將被隱藏，名稱不會輸出 (不會成為 gulp task)，但仍然可透過父 task 間接執行；
                         // 在名稱前端加上 # 的 task，連同其全部的子 task，將直接被忽略，不會輸出為 task (即如同註解效果，暫時移除該 task)；
@@ -88,7 +88,7 @@ var ideaTaskConfigs = {
     // 由於未指定 stylus 與 css 的合併行為，兩個 stream 將各自獨立並行處理，
     // 但最終以 merge-stream 合併，輸出為單一 stream，做為 styles 的輸出 stream。
     // (跟上一個項目的區別，僅在於有無 flatten: true)
-    styles: {
+    'styles:3': {
         flatten: true,  // 打散目錄結構
         dest: 'css',    // 統一輸出到 css 目錄
         '.minify!': {
@@ -104,7 +104,7 @@ var ideaTaskConfigs = {
             }
         }
     },
-    styles: {
+    'styles:4': {
         dest: 'css',    // 輸出到 css 目錄
         '.minify!': {
             // 合併所有的檔案，輸出到單一檔案，檔名為 css/main.min.css
@@ -125,7 +125,7 @@ var ideaTaskConfigs = {
             }
         }
     },
-    styles: {
+    'styles:5': {
         eachdir: {
             src: 'views',
             dest: 'css',    // 輸出到 css 目錄
@@ -152,7 +152,7 @@ var ideaTaskConfigs = {
         }
     },
     // 合併相關的檔案，輸出到個別的指定檔案
-    styles: {
+    'styles:6': {
         dest: 'css',    // 輸出到 css 目錄
         '.minify!': [
             {
@@ -206,20 +206,6 @@ var ideaTaskConfigs = {
         ]
     },
     incremental: {
-        scripts: {
-
-        },
-        styles: {
-
-        },
-        markups: {
-
-        },
-        images: {
-
-        }
-    },
-    watch: {
         scripts: {
 
         },
@@ -315,13 +301,12 @@ var taskConfigs = {
         }
     },
     browserify: {
+        src: '../test/_fixtures/modules',
         bundles: [{
-            // TODO: let entries behavies the same as src: inherits from parent.
-            entries: ['../test/_fixtures/modules/directives/index.js'],
+            entries: ['directives/index.js'],
             file: 'directives.js',
         }, {
-            // TODO: let entries behavies the same as src: inherits from parent.
-            entries: ['../test/_fixtures/modules/services/index.js'],
+            entries: ['services/index.js'],
             file: 'services.js',
         }]
     },

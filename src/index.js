@@ -79,6 +79,7 @@ function createSubGulpTasks(prefix, subTaskConfigs, parentConfig) {
         // TODO: call parallel for depends and then remove it from taskConfig.
         if (!task.hidden) {
             // TODO: warning about name collision.
+            // TODO: what about the exec order of task's depends and depends' depends?
             // TODO: what about hidden task's depends?
             gulp.task(prefix + task.displayName, taskConfig.depends || [], task);
         }
