@@ -25,7 +25,7 @@ function imagesTask(gulp, config, stream, done) {
     var newer = require('gulp-newer');
     
     if (!stream) {
-        stream = gulp.src(config.src);
+        stream = gulp.src(config.src.globs, config.src.options);
     }
 
     if (config.flatten) {
@@ -39,7 +39,7 @@ function imagesTask(gulp, config, stream, done) {
     } 
     
     return stream
-        .pipe(gulp.dest(config.dest));
+        .pipe(gulp.dest(config.dest.path, config.dest.options));
 }
 
 function imagesTaskV2(gulp, config, stream, done) {
@@ -49,10 +49,11 @@ function imagesTaskV2(gulp, config, stream, done) {
     var imagemin = require('gulp-imagemin');
     var newer = require('gulp-newer');
     var path = require('path');
-
+    var _ = require('lodash');
+    
     // we don't want waste time to read unchanged files.
     if (!stream) {
-        stream = gulp.src(config.src, { read: false });
+        stream = gulp.src(config.src.globs, _.defaults({ read: false }, config.src.options));
     }
     
     // so, must first filter newer files.
@@ -80,7 +81,7 @@ function imagesTaskV2(gulp, config, stream, done) {
     } 
     
     return stream
-        .pipe(gulp.dest(config.dest));
+        .pipe(gulp.dest(config.dest.path, config.dest.options));
 }
 
 imagesTask.description = 'Optimize images.';

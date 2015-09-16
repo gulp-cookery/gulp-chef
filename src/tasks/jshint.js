@@ -28,7 +28,7 @@ function jshintTask(gulp, config, stream, done) {
     var _ = require('lodash');
 
     if (!stream) {
-        stream = gulp.src(config.src);
+        stream = gulp.src(config.src.globs, config.src.options);
     }
     stream = stream.pipe(jshint());
     

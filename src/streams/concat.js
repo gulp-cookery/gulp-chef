@@ -11,8 +11,22 @@ function concat(gulp, config, stream, tasks) {
     var queue = require('./queue');
     var gulpConcat = require('gulp-concat');
     
+    var ConfigurationError = require('../errors/configuration_error');
+    
+    if (!config.file) {
+        throw new ConfigurationError('concat', 'configuration property "file" is required')
+    }
+    
+    if (!config.dest) {
+        throw new ConfigurationError('concat', 'configuration property "dest" is required')
+    }
+    
     if (tasks.length === 0) {
-        stream = stream || gulp.src(config.src);
+        if (!config.src) {
+            throw new ConfigurationError('concat', 'configuration property "src" is required')
+        }
+        
+        stream = stream || gulp.src(config.src.globs, config.src.options);
     }
     else {
         stream = queue(gulp, config, stream, tasks);
@@ -20,11 +34,11 @@ function concat(gulp, config, stream, tasks) {
     
     return stream
         .pipe(gulpConcat(config.file))
-        .pipe(gulp.dest(config.dest));
+        .pipe(gulp.dest(config.dest.path, config.dest.options));
 }
 
 
 concat.description = 'Concatenates files';
-concat.consumes = ['file', 'src'];
+concat.consumes = ['dest', 'file', 'src'];
 
 module.exports = concat;

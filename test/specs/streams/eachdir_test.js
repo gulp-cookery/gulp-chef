@@ -1,8 +1,7 @@
-/*global describe, it, before, after, beforeEach, afterEach */
+/*global describe, it, before, after, beforeEach, afterEach, process */
 /*jshint expr: true*/
 'use strict';
 
-var mockfs = require('mock-fs');
 var Sinon = require('sinon');
 var Chai = require('chai');
 var Promised = require("chai-as-promised");
@@ -18,158 +17,187 @@ var _ = require('lodash');
 
 var gulp = require('gulp');
 
-var eachdir = require('../../../src/streams/eachdir.js');
-var ConfigurationError = require('../../../src/errors/configuration_error.js');
-var IllegalTaskError = require('../../../src/errors/illegal_task_error.js');
+var module = process.cwd();
+
+var eachdir = require(module + '/src/streams/eachdir');
+var ConfigurationError = require(module + '/src/errors/configuration_error');
+var IllegalTaskError = require(module + '/src/errors/illegal_task_error');
 
 var dirs = {
-    'app': {
-        'index.html': '<html></html>',
-        'modules': {
-            'directive': {},
-            'modules.js': '',
-            'service': {}
-        },
-        'views': {
-            'about': {},
-            'all.js': '',
-            'auth': {},
-            'main': {}
-        }
-    },
-    'README.md': 'bla bla...',
-    'package.json': '{}'
+	'app': {
+		'modules': {
+			'directives': {
+				'ngfor': {
+					'ngfor.js': ''
+				},
+				'ngif': {
+					'ngif.js': ''
+				},
+				'index.js': ''
+			},
+			'services': {
+				'http': {
+					'http.js': ''
+				},
+				'sqlite': {
+					'sqlite.js': ''
+				},
+				'index.js': ''
+			}
+		},
+		'views': {
+			'about': {
+				'about.css': '',
+				'about.html': '',
+				'about.js': ''
+			},
+			'auth': {
+				'auth.css': '',
+				'auth.html': '',
+				'auth.js': ''
+			},
+			'main': {
+				'main.css': '',
+				'main.html': '',
+				'main.js': ''
+			},
+			'index.html': '',
+			'index.js': ''
+		},
+		'index.html': '<html></html>'
+	},
+	'README.md': 'bla bla...',
+	'package.json': '{}'
 };
 
 var testCases = {
-    'mock-fs': {
-        path: 'app/modules',
-        result: ['directive', 'modules.js', 'service']
-    },
-    'modules': {
-        path: 'app/modules',
-        result: ['directive', 'service']
-    },
-    'views': {
-        path: 'app.views',
-        result: ['about', 'auth', 'main']
-    },
-    'file': {
-        path: 'app/index.html',
-        result: []
-    },
-    'not-exist': {
-        path: 'not-exist',
-        result: []
-    }
+	'modules': {
+		path: 'app/modules',
+		result: Object.keys(dirs.app.modules)
+	},
+	'views': {
+		path: 'app/views',
+		result: Object.keys(dirs.app.views)
+	},
+	'file': {
+		path: 'app/index.html',
+		result: []
+	},
+	'not-exist': {
+		path: 'not-exist',
+		result: []
+	}
 };
 
-describe('stream processor', function() {
-    
-    describe('eachdir()', function() {
-        var tasks;
-        
-        before(function() {
-            // NOTE: because mockfs affects require() too, 
-            // and we use lazy module loading,
-            // call eachdir() first to force module loading here.
-            try {
-                eachdir({ src: 'not-exist' }, []);
-            }
-            catch (ex) {
-            }
-            mockfs(dirs);
-        });
-        
-        after(function() {
-            mockfs.restore();
-        });
-        
-        beforeEach(function() {
-            tasks = [Sinon.spy(), Sinon.spy()];
-        });
-        
-        afterEach(function() {
-        });
-        
-        it('should mock-fs works (prerequisite)', function() {
-            var testCase = testCases['mock-fs'];
-            expect(fs.readdirSync(testCase.path)).to.be.deep.equal(testCase.result);
-        });        
-    
-        it('should gulp.src() always return a stream (prerequisite)', function() {
-            var stream = gulp.src('not-exist');
-            expect(stream).to.be.an.instanceof(Stream);
-            expect(stream).to.have.property('on');
-        });
+function prepareTask(fn) {
+	var task = function(done) {};
+	task.run = Sinon.spy(fn || function(gulp, config, stream, done) {});
+	return task;
+}
 
-        it('should throw if config.src is not a valid string', function() {
-            var configs = {
-                empty: {
-                },
-                emptyString: {
-                    src: ''
-                },
-                number: {
-                    src: 1024
-                },
-                array: {
-                    src: ['app/views']
-                },
-                arrayEmptyString: {
-                    src: ['']
-                },
-                emptyArray: {
-                    src: []
-                },
-            };
-            _.forOwn(configs, function(config) {
-                //console.log(JSON.stringify(config));
-                expect(function() { eachdir(config, tasks); }).to.throw(ConfigurationError);
-            });
-        });
-    
-        it('should invoke the given task for each folder', function() {
-            var testCase = testCases.modules;
-            var config = {
-                src: testCase.path
-            };
-            var visits = [];
-            var task = Sinon.spy(function(config, done) {
-                visits.push(config.dir);
-                return through.obj();
-            });
-            eachdir(config, [task]);
-            expect(visits).to.deep.equal(testCase.result);        
-        });
-    
-        it('should throw if the given task does not return a stream', function() {
-            var testCase = testCases.modules;
-            var config = {
-                src: testCase.path
-            };
-            var task = function(config, done) {
-            };
-            expect(function() { eachdir(config, [task]); }).to.throw(IllegalTaskError);        
-        });
-    
-        it('should always return a stream, even if dir does not exist or is a file', function() {
-            var configs = {
-                exist: {
-                    src: testCases.views.path
-                },
-                notExist: {
-                    src: testCases['not-exist'].path
-                },
-                file: {
-                    src: testCases.file.path
-                }
-            };
-            _.forOwn(configs, function(config) {
-                //console.log(JSON.stringify(config));
-                expect(eachdir(config, tasks)).to.be.an.instanceof(Stream);
-            });
-        });
-    
-    });
+describe('stream processor', function() {
+	var cwd = process.cwd();
+
+	describe('eachdir()', function() {
+		var tasks;
+
+		before(function() {
+			process.chdir('./test/_fixtures');
+		});
+
+		after(function() {
+			process.chdir(cwd);
+		});
+
+		beforeEach(function() {
+			tasks = [prepareTask(), prepareTask()];
+		});
+
+		afterEach(function() {});
+
+		it('should gulp.src() always return a stream (prerequisite)', function() {
+			var stream = gulp.src('not-exist');
+			expect(stream).to.be.an.instanceof(Stream);
+			expect(stream).to.have.property('on');
+		});
+
+		it('should throw if config.src is not a valid string', function() {
+			var configs = {
+				empty: {},
+				emptyString: {
+					src: ''
+				},
+				number: {
+					src: 1024
+				},
+				array: {
+					src: ['app/views']
+				},
+				arrayEmptyString: {
+					src: ['']
+				},
+				emptyArray: {
+					src: []
+				},
+			};
+			_.forOwn(configs, function(config) {
+				expect(function() {
+					eachdir(gulp, config, null, tasks);
+				}).to.throw(ConfigurationError);
+			});
+		});
+
+		it('should throw if no sub folder found', function() {
+			var configs = {
+				notExist: {
+					src: testCases['not-exist'].path
+				},
+				file: {
+					src: testCases.file.path
+				}
+			};
+			_.forOwn(configs, function(config) {
+				expect(function() {
+					eachdir(gulp, config, null, tasks);
+				}).to.throw(ConfigurationError);
+			});
+		});
+
+		it('should invoke the given task for each folder', function() {
+			var testCase = testCases.modules;
+			var config = {
+				src: testCase.path
+			};
+			var visits = [];
+			var task = prepareTask(function(gulp, config, stream, done) {
+				visits.push(config.dir);
+				return through.obj();
+			});
+			eachdir(gulp, config, null, [task]);
+			expect(visits).to.deep.equal(testCase.result);
+		});
+
+		it('should throw if the given task does not return a stream', function() {
+			var testCase = testCases.modules;
+			var config = {
+				src: testCase.path
+			};
+			var task = prepareTask(function(gulp, config, stream, done) {
+				return true;
+			});
+			expect(function() {
+				eachdir(gulp, config, null, [task]);
+			}).to.throw(IllegalTaskError);
+		});
+
+		it('should return a stream', function() {
+			var config = {
+				src: testCases.views.path
+			};
+			var task = prepareTask(function(gulp, config, stream, done) {
+				return through.obj();
+			});
+			expect(eachdir(gulp, config, null, [task])).to.be.an.instanceof(Stream);
+		});
+	});
 });

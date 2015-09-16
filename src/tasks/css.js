@@ -50,7 +50,7 @@ function cssTask(gulp, config, stream, done) {
     var sourcemap = !config.debug && (config.sourcemap || config.sourcemaps);
 
     if (!stream) {
-        stream = gulp.src(config.src);
+        stream = gulp.src(config.src.globs, config.src.options);
     }
 
     if (config.flatten) {
@@ -67,7 +67,7 @@ function cssTask(gulp, config, stream, done) {
     
     if (!config.debug) {
         if (config['min.css']) {
-            stream = stream.pipe(gulp.dest(config.dest))
+            stream = stream.pipe(gulp.dest(config.dest.path, config.dest.options))
                 .pipe(rename({ extname: '.min.css' })); 
         }
         stream = stream.pipe(minify(options.minify || options));
@@ -80,7 +80,7 @@ function cssTask(gulp, config, stream, done) {
     }
 
     return stream
-        .pipe(gulp.dest(config.dest));
+        .pipe(gulp.dest(config.dest.path, config.dest.options));
 }
 
 cssTask.description = '';

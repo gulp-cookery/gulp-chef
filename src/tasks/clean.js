@@ -10,7 +10,7 @@ function cleanTask(gulp, config, stream, done) {
     // lazy loading required modules.
     var del = require('del');
     
-    //del(config.src || config.dest || defaults.src, done);
+    //del(config.dest.path, done);
     done();
 }
 

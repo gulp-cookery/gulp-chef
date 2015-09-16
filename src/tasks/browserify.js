@@ -252,7 +252,8 @@ function browserifyTask(gulp, config, stream) {
             }
             
             // Specify the output destination
-            return stream.pipe(gulp.dest(options.dest || config.dest))
+            return stream
+                .pipe(gulp.dest((options.dest || config.dest).path, (options.dest || config.dest).options))
                 .pipe(browserSync.reload({
                     stream: true
                 }));
@@ -268,7 +269,7 @@ function browserifyTask(gulp, config, stream) {
                 entries = [entries];
             }
             entries = entries.reduce(function(ret, entry) {
-                var file = globs.join(config.src || '', entry.file || entry);
+                var file = globs.join(config.src ? config.src.globs : '', entry.file || entry);
                 if (globs.test(file)) {
                     file = globby.sync(file);
                 }

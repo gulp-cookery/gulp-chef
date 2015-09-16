@@ -35,14 +35,14 @@ function stylusTask(gulp, config, stream, done) {
     var sourcemap = !config.debug && (config.sourcemap || config.sourcemaps);
 
     if (!stream) {
-        stream = gulp.src(config.src);
+        stream = gulp.src(config.src.globs, config.src.options);
     }
     
     if (config.flatten) {
         stream = stream.pipe(flatten());
     }
 
-    stream = stream.pipe(newer(config.dest));
+    stream = stream.pipe(newer(config.dest.path));
     
     if (sourcemap) {
         stream = stream.pipe(sourcemaps.init());
@@ -57,7 +57,7 @@ function stylusTask(gulp, config, stream, done) {
     }
     
     return stream
-        .pipe(gulp.dest(config.dest));
+        .pipe(gulp.dest(config.dest.path, config.dest.options));
 }
 
 stylusTask.description = '';

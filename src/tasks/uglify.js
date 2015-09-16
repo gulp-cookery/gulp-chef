@@ -10,7 +10,7 @@ function uglifyTask(gulp, config, stream) {
     var uglify = require('gulp-uglify');
     
     if (!stream) {
-        stream = gulp.src(config.src);
+        stream = gulp.src(config.src.globs, config.src.options);
     }
 
     if (!config.debug) {
@@ -22,7 +22,7 @@ function uglifyTask(gulp, config, stream) {
     //    2.only if config.dest exist? but config.dest usally set globally.
     if (config.file) {
         stream = stream.pipe(rename(config.file))
-            .pipe(gulp.dest(config.dest));
+            .pipe(gulp.dest(config.dest.path, config.dest.options));
     }
     
     return stream;

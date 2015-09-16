@@ -14,26 +14,36 @@ var config = {
 // (options 是保留字，做為傳遞給 task 的選項結構)
 // (join, merge, 是 stream 處理選項，不會輸出為 task)
 var ideaTaskConfigs = {
-    'glob-samples': [
-        {
-            // single glob
+    // TODO: globs with options
+    'glob-samples': {
+        'single-glob': {
+            // same as:
+            //   gulp.src('**/*.css')
             src: '**/*.css',
+            // The path (output folder) to write files to.
             dest: 'css'
         },
-        {
-            // multiple globs
+        'multiple-globs': {
+            // same as:
+            //   gulp.src(['bootstrap/css/**/*.{css,less}','views/**/*.{css,stylus}'])
             src: ['bootstrap/css/**/*.{css,less}','views/**/*.{css,stylus}'],
             dest: 'css'
         },
-        {
-            // with options
+        'with-options': {
+            // same as:
+            //   gulp.src(['app/*.css', 'views/**/*.stylus'], { base: '.', read: false })
             src: {
-                glob: ['app/*.css', 'views/**/*.stylus'],
-                base: '.'
+                globs /* or glob */: ['app/*.css', 'views/**/*.stylus'],
+                base: '.',
+                read: false
             },
-            dest: 'css'
+            //
+            dest: { 
+                path: 'css',
+                cwd: 'src'
+            }
         }
-    ],
+    },
     // 維持目錄結構，但以 css 目錄為輸出目錄；
     // 所有的檔案個別獨立輸入輸出處理，輸出時維持匹配的目錄結構與檔名；
     // stylus 與 css 兩個子 task 分別依檔案類型 (.stylus, .css) 進行個別處理；
@@ -414,7 +424,7 @@ var taskConfigs = {
     // test: {
     //     task: function() {
     //         var mocha = require('gulp-mocha');
-    //         return gulp.src(['test/specs/**/*_test.js'], { read: false })
+    //         return gulp.src(['test/specs/util/**/*_test.js'], { read: false })
     //             .pipe(mocha({
     //                 reporter: 'spec'
     //             }));
@@ -455,4 +465,14 @@ var taskConfigs = {
     // }
 };
 
-createGulpTasks(gulp, taskConfigs, config);
+//createGulpTasks(gulp, taskConfigs, config);
+
+gulp.task('test', function() {
+    var mocha = require('gulp-mocha');
+    return gulp.src(['test/specs/**/*_test.js'], { read: false })
+        .pipe(mocha({
+            reporter: 'spec',
+            timeout: Infinity
+        }));
+});
+

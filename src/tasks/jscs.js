@@ -14,7 +14,7 @@ function jscsTask(gulp, config, stream, done) {
     // lazy loading required modules.
     var jscs = require('jscs');
 
-    return gulp.src(config.src)
+    return gulp.src(config.src.globs, config.src.options)
         .pipe(jscs(config.options));
 }
 

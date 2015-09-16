@@ -31,20 +31,20 @@ function markupsTask(gulp, config, stream, done) {
     var newer = require('gulp-newer');
     
     if (!stream) {
-        stream = gulp.src(config.src);
+        stream = gulp.src(config.src.globs, config.src.options);
     }
     
     if (config.flatten) {
         stream = stream.pipe(flatten());
     }
     
-    stream = stream.pipe(newer(config.dest));
+    stream = stream.pipe(newer(config.dest.path));
     
     if (!config.debug) {
         stream = stream.pipe(htmlmin(config.options));
     }
 
-    return stream.pipe(gulp.dest(config.dest));
+    return stream.pipe(gulp.dest(config.dest.path, config.dest.options));
 }
 
 markupsTask.description = '';

@@ -14,28 +14,32 @@
  */
 function eachdir(gulp, config, stream, tasks) {
     // lazy loading required modules.
+    var _ = require('lodash');
     var fs = require('fs');
     var path = require('path');
     var each = require('./each');
     
     var ConfigurationError = require('../errors/configuration_error.js');
     
-    var cwd, folders, values, inject;
+    var cwd, folders, inject, values, src;
     
-    if (typeof config.src !== 'string') {
-        throw ConfigurationError('eachdir', 'required configuration "src" not found');
+    if (config.src) {
+        src = config.src.globs || config.src;
+    }
+    if (typeof src !== 'string') {
+        throw new ConfigurationError('eachdir', 'required configuration "src" not found');
     }
     
     cwd = process.cwd();
-    folders = getFolders(config.src);
+    folders = getFolders(src);
     if (folders.length === 0) {
-        throw new ConfigurationError('eachdir', 'no sub folders found in ' + config.src);
+        throw new ConfigurationError('eachdir', 'no sub folders found in ' + src);
     }
     
     values = folders.map(function(folder) {
         return {
             dir: folder,
-            path: path.join(cwd, config.src, folder)
+            path: path.join(cwd, src, folder)
         };
     });
     
