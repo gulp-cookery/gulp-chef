@@ -1,21 +1,21 @@
 var defaults = {
-    options: {
-        esnext: true,
-        reporter: 'console'
-    }
+	options: {
+		esnext: true,
+		reporter: 'console'
+	}
 };
 
 /**
  * Ingredients:
- * 
- * 
+ *
+ *
  */
 function jscsTask(gulp, config, stream, done) {
-    // lazy loading required modules.
-    var jscs = require('jscs');
+	// lazy loading required modules.
+	var jscs = require('jscs');
 
-    return gulp.src(config.src.globs, config.src.options)
-        .pipe(jscs(config.options));
+	return gulp.src(config.src.globs, config.src.options)
+		.pipe(jscs(config.options));
 }
 
 jscsTask.description = '';
