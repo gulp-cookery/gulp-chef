@@ -20,6 +20,21 @@ function getTaskRuntimeInfo(name) {
 	};
 }
 
+function createReferenceTask(taskName) {
+	return function(gulp, config, stream, done) {
+		var task = gulp.task(taskName);
+		if (!task) {
+			throw new ConfigurationError(taskName, 'referring task not found: ' + taskName);
+		}
+		if (task.run) {
+			return task.run(gulp, config, stream, done);
+		}
+		// support for tasks registered directlly via gulp.task().
+		return task.call(gulp, done);
+	};
+}
+
 module.exports = {
-	getTaskRuntimeInfo: getTaskRuntimeInfo
+	getTaskRuntimeInfo: getTaskRuntimeInfo,
+	createReferenceTask: createReferenceTask
 };

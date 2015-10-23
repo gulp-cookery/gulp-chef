@@ -13,6 +13,24 @@ var test = require(base + '/test/testcase_runner');
 var ConfigurableTask = require(base + '/src/configurable_task');
 var ConfigurationError = require(base + '/src/errors/configuration_error');
 
+function FakeGulp() {
+	this.taskRegistry = {};
+}
+
+FakeGulp.prototype.task = function(name, runner) {
+	if (typeof name === 'function') {
+		runner = name;
+		name = runner.displayName || runner.name;
+	}
+	if (typeof name === 'string' && typeof runner === 'function') {
+		this.taskRegistry[name] = runner;
+	}
+	return this.taskRegistry[name];
+};
+
+function done(err) {
+}
+
 describe('Core', function() {
 	describe('ConfigurableTask', function() {
 		describe('getTaskRuntimeInfo()', function() {
@@ -82,6 +100,45 @@ describe('Core', function() {
 				error: ConfigurationError
 			}];
 			test(ConfigurableTask.getTaskRuntimeInfo, testCases);
+		});
+
+		describe('createReferenceTask()', function() {
+			var gulp, spy, configurable, run;
+
+			beforeEach(function () {
+				gulp = new FakeGulp();
+
+				spy = Sinon.spy();
+				spy.displayName = 'spy';
+				gulp.task(spy);
+
+				run = Sinon.spy();
+				configurable = Sinon.spy();
+				configurable.displayName = 'configurable';
+				gulp.task(configurable);
+				configurable.run = run;
+			});
+
+			it('should create a ConfigurableTask instance', function() {
+				var actual = ConfigurableTask.createReferenceTask('spy');
+				expect(actual).to.be.a('function');
+				actual.call(gulp, gulp, {}, null, done);
+				expect(spy.calledOn(gulp)).to.be.true;
+				expect(spy.calledWithExactly(done)).to.be.true;
+			});
+
+			it('should throw at runtime if the referring task not found', function() {
+				var actual = ConfigurableTask.createReferenceTask('not-exist');
+				expect(function () { actual.call(gulp, gulp, {}, null, done); }).to.throw(ConfigurationError);
+			});
+
+			it('should call run() if a configurableTask', function() {
+				var actual = ConfigurableTask.createReferenceTask('configurable');
+				expect(actual).to.be.a('function');
+				actual.call(gulp, gulp, {}, null, done);
+				expect(run.calledOn(configurable)).to.be.true;
+				expect(run.calledWithExactly(gulp, {}, null, done)).to.be.true;
+			});
 		});
 	});
 });

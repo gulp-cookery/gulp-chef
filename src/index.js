@@ -183,14 +183,7 @@ function createSoloTaskRunner(taskInfo, taskConfig) {
     delete taskConfig.task;
 
     if (typeof task === 'string') {
-        return function(gulp, config, stream, done) {
-            var task = gulp.task(task);
-            if (task.run) {
-                return task.run(gulp, config, stream, done);
-            }
-            // support for tasks registered directlly via gulp.task().
-            return task.call(gulp, done);
-        };
+		return ConfigurableTask.createReferenceTask(task);
     }
 
     if (_.isArray(task)) {
