@@ -48,6 +48,7 @@
     "imagemin": "^3.2.0",
     "jscs": "^1.13.1",
     "jshint": "^2.8.0",
+    "json-normalizer": "^0.1.1",
     "lodash": "^3.10.0",
     "merge-stream": "^0.1.8",
     "mocha": "^2.2.5",

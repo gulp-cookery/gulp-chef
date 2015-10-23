@@ -8,9 +8,10 @@ var merge = require('merge-stream');
 var path = require('path');
 var _ = require('lodash');
 
-var globsJoin = require('./util/glob_util').join;
-var realizeVariables = require('./util/realize_variables');
+var configUtil = require('./util/config_util');
 var safeRequireDir = require('./util/safe_require_dir');
+
+var defaults = require('./defaults');
 
 var cwd = process.cwd();
 
@@ -20,32 +21,12 @@ var stuff = {
     recipes: safeRequireDir(path.join(cwd, 'gulp'), path.join(cwd, 'gulp/tasks'), './tasks')
 };
 
-var defaults = {
-    // TODO: should dest be default?
-    config: {
-        dest: 'dist'
-    },
-    consumes: [
-        // task
-        'depends', 'task', 'options',
-        // runtime
-        'name', 'hidden', 'runtime',
-        // src
-        'base', 'cwd', 'src',
-        // dest
-        'dest', 'file', 'flatten'
-    ]
-};
-
-function createGulpTasks(useGulp, taskConfigs, globalConfig) {
+function createGulpTasks(useGulp, taskConfigs) {
     var configs;
 
     gulp = useGulp;
 
-    if (!globalConfig) {
-        globalConfig = {};
-    }
-    configs = sortConfigs(taskConfigs, globalConfig, defaults.consumes);
+    configs = configUtil.sort(taskConfigs, {}, defaults.consumes);
     createSubGulpTasks('', configs.subTaskConfigs, configs.taskConfig);
     gulp.task('help', helpTaskRunner);
 }
@@ -104,7 +85,7 @@ function createTaskRunner(prefix, taskInfo, taskConfig, parentConfig) {
     var configs, consumes, configurableRunner;
 
     consumes = getTaskConsumes(taskInfo.name);
-    configs = sortConfigs(taskConfig, parentConfig, consumes);
+    configs = configUtil.sort(taskConfig, parentConfig, consumes);
 
     // if there is a matching recipe, use it and ignore any sub-configs.
     if (isRecipeTask(taskInfo.name)) {
@@ -133,33 +114,6 @@ function getTaskConsumes(name) {
     return consumes;
 }
 
-/**
- * If both parentConfig and taskConfig specified src property
- * then try to join paths.
- */
-function sortConfigs(taskConfig, parentConfig, consumes) {
-    var inheritedConfig, subTaskConfigs;
-
-    inheritedConfig = {};
-
-    if (parentConfig.src && taskConfig.src) {
-        inheritedConfig.src = globsJoin(parentConfig.src, taskConfig.src);
-    }
-    if (parentConfig.dest && taskConfig.dest) {
-        // force dest since it may not already exists (asumes dest always be a folder).
-        inheritedConfig.dest = globsJoin(parentConfig.dest, taskConfig.dest, true);
-    }
-
-    inheritedConfig = _.defaults(inheritedConfig, taskConfig, parentConfig);
-    inheritedConfig = _.pick(inheritedConfig, consumes);
-    subTaskConfigs = _.omit(taskConfig, consumes);
-
-    return {
-        taskConfig: inheritedConfig,
-        subTaskConfigs: subTaskConfigs
-    };
-}
-
 function isRecipeTask(name) {
     return stuff.recipes[name];
 }
@@ -177,7 +131,7 @@ function wrapTaskRunner(taskInfo, taskConfig, configurableRunner) {
     // invoked from stream processor
     var run = function(gulp, injectConfig, stream, done) {
         //inject runtime configuration.
-        var config = realizeVariables(taskConfig, injectConfig, configurableRunner.defaults);
+        var config = configUtil.realize(taskConfig, injectConfig, configurableRunner.defaults);
         return configurableRunner(gulp, config, stream, done);
     };
     // invoked from gulp
