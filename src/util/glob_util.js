@@ -15,21 +15,34 @@ function folders(globs, options) {
 		});
 }
 
-function join(path, globs, force) {
-	try {
-		if (force || FileSystem.statSync(path).isDirectory()) {
-			if (Array.isArray(globs)) {
-				return globs.map(_join);
-			}
-			return _join(globs);
-		}
-	} catch (ex) {
-		// the directory path not exist;
+function join(paths, globs, force) {
+	if (Array.isArray(paths)) {
+		globs = paths.map(_path);
+		return [].concat(globs);
 	}
-	// globs override path
-	return globs;
+	return _path(paths);
 
-	function _join(glob) {
+	function _path(path) {
+		try {
+			var cwd = process.cwd();
+			console.log(cwd);
+			if (force || FileSystem.statSync(path).isDirectory()) {
+				if (Array.isArray(globs)) {
+					return globs.map(function(glob) {
+						return _join(path, glob);
+					});
+				}
+				return _join(path, globs);
+			}
+		} catch (ex) {
+			// the directory path not exist;
+		}
+
+		// path not exist or not a folder, assumes that globs override path.
+		return globs;
+	}
+
+	function _join(path, glob) {
 		var negative;
 
 		if (glob[0] === '!') {
@@ -44,10 +57,10 @@ function join(path, globs, force) {
 
 var regexGlobPattern = /[!^{}|*?+@]/;
 
-function test(pattern) {
+function isGlob(pattern) {
 	return regexGlobPattern.test(pattern);
 }
 
 exports.folders = folders;
 exports.join = join;
-exports.test = test;
+exports.isGlob = isGlob;

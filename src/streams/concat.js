@@ -1,9 +1,8 @@
-/*jshint node: true */
-/*global process*/
-
 /**
- * @config 針對本 task 的 configuration。
- * @tasks 傳入的子 tasks 為 configurableTask，是尚未綁定 config 的 task 形式。
+ * @param gulp the gulp instance running this task
+ * @param config configuration for the task
+ * @param stream up-stream, if not null, the task must handle source from the stream
+ * @param tasks configurable sub-tasks
  *
  */
 function concat(gulp, config, stream, tasks) {
@@ -21,14 +20,13 @@ function concat(gulp, config, stream, tasks) {
 		throw new ConfigurationError('concat', 'configuration property "dest" is required')
 	}
 
-	if (tasks.length === 0) {
+	if (tasks.length !== 0) {
+		stream = queue(gulp, config, stream, tasks);
+	} else {
 		if (!config.src) {
 			throw new ConfigurationError('concat', 'configuration property "src" is required')
 		}
-
 		stream = stream || gulp.src(config.src.globs, config.src.options);
-	} else {
-		stream = queue(gulp, config, stream, tasks);
 	}
 
 	return stream
