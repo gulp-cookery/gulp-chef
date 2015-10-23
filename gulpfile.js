@@ -247,57 +247,58 @@ var ideaTaskConfigs = {
 };
 
 var taskConfigs = {
-	images: {
-		src: '**/*.{png,jpg,gif}',
-		flatten: true
-	},
-	styles: {
-		stylus: {
-			src: '**/*.stylus'
-		},
-		css: {
-			src: '**/*.css'
-		}
-	},
-	scripts: {
-		browserify: {
-			options: {
-				transform: [],
-				shim: {}
-			},
-			bundles: [{
-				entries: 'index',
-				require: '',
-				external: '',
-				file: '1',
-				//dest: ''
-			}, {
-				entries: 'options',
-				file: '2'
-			}]
-		},
-		bookmarklet: {
-			src: '**/*.js',
-		}
-	},
-	'_concat': {
-		concat: {
-			src: '../test/_fixtures/modules/**/*.js',
-			file: 'main.js'
-		}
-	},
-	'_eachdir': {
-		src: '../test/_fixtures/modules',
-		eachdir: {
-			copy: {
-				src: '{{dir}}/**/*.js',
-				dest: '{{dir}}',
-				flatten: true
-			}
-		}
-	},
+	//images: {
+	//	src: '**/*.{png,jpg,gif}',
+	//	flatten: true
+	//},
+	//styles: {
+	//	stylus: {
+	//		src: '**/*.stylus'
+	//	},
+	//	css: {
+	//		src: '**/*.css'
+	//	}
+	//},
+	//scripts: {
+	//	browserify: {
+	//		options: {
+	//			transform: [],
+	//			shim: {}
+	//		},
+	//		bundles: [{
+	//			entries: 'index',
+	//			require: '',
+	//			external: '',
+	//			file: '1',
+	//			//dest: ''
+	//		}, {
+	//			entries: 'options',
+	//			file: '2'
+	//		}]
+	//	},
+	//	bookmarklet: {
+	//		src: '**/*.js',
+	//	}
+	//},
+	//'_concat': {
+	//	concat: {
+	//		src: '../test/_fixtures/modules/**/*.js',
+	//		file: 'main.js'
+	//	}
+	//},
+	//'_eachdir': {
+	//	src: '../test/_fixtures/modules',
+	//	eachdir: {
+	//		copy: {
+	//			src: '{{dir}}/**/*.js',
+	//			dest: '{{dir}}',
+	//			flatten: true
+	//		}
+	//	}
+	//},
 	browserify: {
-		src: '../test/_fixtures/modules',
+		src: 'test/_fixtures/app/modules',
+		dest: 'dist',
 		bundles: [{
 			entries: ['directives/index.js'],
 			file: 'directives.js',
@@ -306,74 +307,74 @@ var taskConfigs = {
 			file: 'services.js',
 		}]
 	},
-	foreach: {
-		each: {
-			values: [{
-				dir: 'directives'
-			}, {
-				dir: 'services'
-			}, {
-				dir: 'views'
-			}],
-			process: {
-				task: function(config) {
-					var EmptyStream = require('./src/util/empty_stream');
-					console.log(config.dir);
-					return new EmptyStream();
-				}
-			}
-		}
-	},
-	// Bundle modules with concat for each folder.
-	'modules:concat': {
-		src: '../test/_fixtures/modules',
-		'uglify!': {
-			file: 'main.min.js',
-			'.concat': {
-				src: '**/*.js',
-				file: 'main.js',
-			}
-		}
-	},
-	'modules:pipe': {
-		src: '../test/_fixtures/modules',
-		pipe: {
-			'.concat': {
-				src: '**/*.js',
-				file: 'main.js',
-			},
-			'.uglify': {
-				file: {
-					extname: '.min.js'
-				}
-			}
-		}
-	},
-	'modules:uglify': {
-		src: '../test/_fixtures/modules',
-		'.uglify': {
-			src: '**/*.js',
-			file: {
-				extname: '.min.js'
-			}
-		}
-	},
-	// Bundle modules with Browserify for each folder.
-	modules: {
-		src: '../test/_fixtures/modules',
-		eachdir: {
-			'.browserify': {
-				bundle: {
-					entries: '{{dir}}/index.js',
-					file: '{{dir}}.js',
-				}
-			}
-		}
-	},
-	markups: {
-		src: '../test/_fixtures/modules/**/*.html',
-		flatten: true
-	},
+	//foreach: {
+	//	each: {
+	//		values: [{
+	//			dir: 'directives'
+	//		}, {
+	//			dir: 'services'
+	//		}, {
+	//			dir: 'views'
+	//		}],
+	//		process: {
+	//			task: function(config) {
+	//				var EmptyStream = require('./src/util/empty_stream');
+	//				console.log(config.dir);
+	//				return new EmptyStream();
+	//			}
+	//		}
+	//	}
+	//},
+	//// Bundle modules with concat for each folder.
+	//'modules:concat': {
+	//	src: '../test/_fixtures/modules',
+	//	'uglify!': {
+	//		file: 'main.min.js',
+	//		'.concat': {
+	//			src: '**/*.js',
+	//			file: 'main.js',
+	//		}
+	//	}
+	//},
+	//'modules:pipe': {
+	//	src: '../test/_fixtures/modules',
+	//	pipe: {
+	//		'.concat': {
+	//			src: '**/*.js',
+	//			file: 'main.js',
+	//		},
+	//		'.uglify': {
+	//			file: {
+	//				extname: '.min.js'
+	//			}
+	//		}
+	//	}
+	//},
+	//'modules:uglify': {
+	//	src: '../test/_fixtures/modules',
+	//	'.uglify': {
+	//		src: '**/*.js',
+	//		file: {
+	//			extname: '.min.js'
+	//		}
+	//	}
+	//},
+	//// Bundle modules with Browserify for each folder.
+	//modules: {
+	//	src: '../test/_fixtures/modules',
+	//	eachdir: {
+	//		'.browserify': {
+	//			bundle: {
+	//				entries: '{{dir}}/index.js',
+	//				file: '{{dir}}.js',
+	//			}
+	//		}
+	//	}
+	//},
+	//markups: {
+	//	src: '../test/_fixtures/modules/**/*.html',
+	//	flatten: true
+	//},
 	// module2: {
 	//     src: '../test/_fixtures/modules',
 	//     directives: {
@@ -450,7 +451,7 @@ var taskConfigs = {
 	// }
 };
 
-//createGulpTasks(gulp, taskConfigs, config);
+createGulpTasks(gulp, taskConfigs, config);
 
 gulp.task('test', function() {
 	var mocha = require('gulp-mocha');

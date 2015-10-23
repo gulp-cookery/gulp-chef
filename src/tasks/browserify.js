@@ -30,11 +30,6 @@ https://medium.com/@sogko/gulp-browserify-the-gulp-y-way-bb359b3f9623
 
 */
 
-var defaults = {
-	// sourcemap: 'external',  // inline, external, false
-	options: {}
-};
-
 /**
  * config: {
  *   // NOTE: options will be injected to each bundles. Put common configuration here.
@@ -151,7 +146,7 @@ function browserifyTask(gulp, config, stream) {
 	var browserSync = require('browser-sync');
 	var buffer = require('vinyl-buffer');
 	var globby = require('globby');
-	var globs = require('../util/glob_util');
+	var Globs = require('../util/glob_util');
 	var log = require('gulp-util').log;
 	var merge = require('merge-stream');
 	var notify = require('gulp-notify');
@@ -260,27 +255,34 @@ function browserifyTask(gulp, config, stream) {
 		}
 
 		function realizeOptions(bundleOptions, commonOptions, config) {
-			var entries, options;
+			var src, entries, options;
 
 			options = {};
-
-			entries = bundleOptions.entries || bundleOptions.entry;
-			if (!Array.isArray(entries)) {
-				entries = [entries];
+			src = config.src || options.src;
+			if (src) {
+				src = src.map(function(src) {
+					return src.globs;
+				});
+			} else {
+				src = '';
 			}
-			entries = entries.reduce(function(ret, entry) {
-				var file = globs.join(config.src ? config.src.globs : '', entry.file || entry);
-				if (globs.test(file)) {
-					file = globby.sync(file);
-				}
-				return ret.concat(file);
+
+			entries = bundleOptions.entries.reduce(function(result, entry) {
+				var files = Globs.join(src, entry.file || entry);
+				ret = files.reduce(function(ret, file) {
+					if (Globs.isGlob(file)) {
+						return ret.concat(globby.sync(file));
+					}
+					return ret.concat(file);
+				}, []);
+				return result.concat(ret);
 			}, []);
 
 			_.defaults(options, {
 				entries: entries
 			}, bundleOptions, commonOptions);
 
-			options.sourcemap = options.sourcemap || options.sourcemaps || config.sourcemap || config.sourcemaps;
+			options.sourcemap = options.sourcemap || config.sourcemap;
 
 			// add sourcemap option
 			if (options.sourcemap) {
@@ -308,6 +310,106 @@ function browserifyTask(gulp, config, stream) {
 
 browserifyTask.description = 'Bundle JavaScript things with Browserify.';
 browserifyTask.consumes = ['bundle', 'bundles', 'dest', 'options', 'sourcemap', 'sourcemaps', 'src'];
-browserifyTask.defaults = defaults;
+browserifyTask.schema = {
+	"definitions": {
+		"io": {
+			"properties": {
+				"src": {
+					"description": "",
+						"type": "array"
+				},
+				"dest": {
+					"description": "",
+						"type": "string"
+				}
+			}
+		},
+		"options": {
+			"properties": {
+				"extensions": {
+					"description": "",
+					"type": "array",
+					"alias": ["extension"]
+				},
+				"require": {
+					"description": "",
+					"type": "array",
+					"alias": ["requires"]
+				},
+				"external": {
+					"description": "",
+					"type": "array",
+					"alias": ["externals"]
+				},
+				"plugin": {
+					"description": "",
+					"type": "array",
+					"alias": ["plugins"]
+				},
+				"transform": {
+					"description": "",
+					"type": "array",
+					"alias": ["transforms"]
+				},
+				"exclude": {
+					"description": "",
+					"type": "array",
+					"alias": ["excludes"]
+				},
+				"ignore": {
+					"description": "",
+					"type": "array",
+					"alias": ["ignores"]
+				},
+				"shim": {
+					"description": "which library to shim?",
+					"type": "array",
+					"alias": ["shims", "browserify-shim", "browserify-shims"]
+				},
+				"sourcemap": {
+					"description": "generate sourcemap file or not?",
+					"enum": [
+						"inline", "external", false
+					],
+					"alias": ["sourcemaps"],
+					"default": false
+				}
+			}
+		}
+	},
+	"extends": { "$ref": "#/definitions/io" },
+	"properties": {
+		"options": {
+			"description": "common options for all bundles",
+			"extends": { "$ref": "#/definitions/options" },
+			"type": "object"
+		},
+		"bundles": {
+			"description": "",
+			"alias": ["bundle"],
+			"type": "array",
+			"extends": [
+				{ "$ref": "#/definitions/io" },
+				{ "$ref": "#/definitions/options" }
+			],
+			"properties": {
+				"file": {
+					"description": "",
+					"type": "string"
+				},
+				"entries": {
+					"description": "",
+					"alias": ["entry"],
+					"type": "array"
+				},
+				"options": {
+					"extends": { "$ref": "#/definitions/options" }
+				}
+			},
+			"required": ["file", "entries"]
+		}
+	},
+	"required": ["bundles"]
+};
 
 module.exports = browserifyTask;
