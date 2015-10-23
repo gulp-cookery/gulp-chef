@@ -12,6 +12,7 @@ var configUtil = require('./util/config_util');
 var safeRequireDir = require('./util/safe_require_dir');
 
 var defaults = require('./defaults');
+var ConfigurableTask = require('./configurable_task');
 
 var cwd = process.cwd();
 
@@ -45,7 +46,7 @@ function createSubGulpTasks(prefix, subTaskConfigs, parentConfig) {
     function _createGulpTask(name, taskConfig) {
         var taskInfo, task;
 
-	taskInfo = getTaskRuntimeInfo(name);
+        taskInfo = ConfigurableTask.getTaskRuntimeInfo(name);
 
         if (name === 'modules') {
             debugger;
@@ -66,20 +67,6 @@ function createSubGulpTasks(prefix, subTaskConfigs, parentConfig) {
         }
         return task;
     }
-}
-
-var regexRuntimeOptions = /^([.#]?)([-\w]+)([!?]?)$/;
-
-function getTaskRuntimeInfo(name) {
-	var match;
-
-	name = _.trim(name);
-	match = regexRuntimeOptions.exec(name) || [];
-	return {
-		name: match[2] || name,
-		hidden: match[1] || '',
-		runtime: match[3] || ''
-	};
 }
 
 function createTaskRunner(prefix, taskInfo, taskConfig, parentConfig) {
