@@ -58,14 +58,6 @@ function createReferenceTaskRunner(taskName) {
 	}
 }
 
-function createWrapperTaskRunner(task) {
-	if (typeof task === 'function') {
-		return function(gulp, config, stream, done) {
-			return task.call(gulp, done);
-		}
-	}
-}
-
 function createParallelTaskRunner(tasks) {
 	if (Array.isArray(tasks)) {
 		return function(gulp, config, stream, done) {
@@ -74,9 +66,17 @@ function createParallelTaskRunner(tasks) {
 	}
 }
 
+function createWrapperTaskRunner(task) {
+	if (typeof task === 'function') {
+		return function(gulp, config, stream, done) {
+			return task.call(gulp, done);
+		}
+	}
+}
+
 module.exports = {
 	getTaskRuntimeInfo: getTaskRuntimeInfo,
 	createReferenceTaskRunner: createReferenceTaskRunner,
-	createWrapperTaskRunner: createWrapperTaskRunner,
-	createParallelTaskRunner: createParallelTaskRunner
+	createParallelTaskRunner: createParallelTaskRunner,
+	createWrapperTaskRunner: createWrapperTaskRunner
 };

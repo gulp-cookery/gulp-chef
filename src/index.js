@@ -1,5 +1,5 @@
 'use stricts';
-var gulp
+var gulp;
 
 // TODO: resolve too many dependencies problem. (optionalDependencies?)
 
@@ -183,16 +183,11 @@ function createSoloTaskRunner(taskInfo, taskConfig) {
     delete taskConfig.task;
 
     if (typeof task === 'string') {
-		return ConfigurableTask.createReferenceTask(task);
+		return ConfigurableTask.createReferenceTaskRunner(task);
     }
 
     if (Array.isArray(task)) {
-        return function(gulp, config, stream, done) {
-            var tasks = task.map(function(name) {
-                return gulp.task(name);
-            });
-            return stuff.streams.parallel(gulp, config, stream, tasks);
-        };
+        return ConfigurableTask.createParallelTaskRunner(task);
     }
 
     if (typeof task === 'function') {
