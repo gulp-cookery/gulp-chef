@@ -8,11 +8,11 @@ var merge = require('merge-stream');
 var path = require('path');
 var _ = require('lodash');
 
-var configUtil = require('./util/config_util');
 var safeRequireDir = require('./util/safe_require_dir');
 
+var ConfigurableTask = require('./core/configurable_task');
+var Configuration = require('./core/configuration');
 var defaults = require('./defaults');
-var ConfigurableTask = require('./configurable_task');
 
 var cwd = process.cwd();
 
@@ -27,7 +27,7 @@ function createGulpTasks(useGulp, taskConfigs) {
 
     gulp = useGulp;
 
-    configs = configUtil.sort(taskConfigs, {}, defaults.consumes);
+    configs = Configuration.sort(taskConfigs, {}, defaults.consumes);
     createSubGulpTasks('', configs.subTaskConfigs, configs.taskConfig);
     gulp.task('help', helpGulpTask);
 }
@@ -76,9 +76,9 @@ function createTaskRunner(prefix, taskInfo, taskConfig, parentConfig) {
     consumes = getTaskConsumes(taskInfo.name);
 
     if (schema) {
-        configs = configUtil._sort(taskConfig, parentConfig, schema);
+        configs = Configuration._sort(taskConfig, parentConfig, schema);
     } else {
-        configs = configUtil.sort(taskConfig, parentConfig, consumes);
+        configs = Configuration.sort(taskConfig, parentConfig, consumes);
     }
 
     // if there is a matching recipe, use it and ignore any sub-configs.
@@ -133,7 +133,7 @@ function wrapTaskRunner(taskInfo, taskConfig, configurableRunner) {
     // invoked from stream processor
     var run = function(gulp, injectConfig, stream, done) {
         //inject runtime configuration.
-        var config = configUtil.realize(taskConfig, injectConfig, configurableRunner.defaults);
+        var config = Configuration.realize(taskConfig, injectConfig, configurableRunner.defaults);
         return configurableRunner(gulp, config, stream, done);
     };
     // invoked from gulp

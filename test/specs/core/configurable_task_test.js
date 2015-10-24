@@ -12,10 +12,10 @@ var expect = Chai.expect;
 var _ = require('lodash');
 var base = process.cwd();
 
-var ConfigurableTask = require(base + '/src/configurable_task');
+var ConfigurableTask = require(base + '/src/core/configurable_task');
 var ConfigurationError = require(base + '/src/errors/configuration_error');
 
-var FakeGulp = require('./fake_gulp');
+var FakeGulp = require('./../fake_gulp');
 var test = require(base + '/test/testcase_runner');
 
 function done(err) {
