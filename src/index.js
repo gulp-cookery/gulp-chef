@@ -29,7 +29,7 @@ function createGulpTasks(useGulp, taskConfigs) {
 
     configs = configUtil.sort(taskConfigs, {}, defaults.consumes);
     createSubGulpTasks('', configs.subTaskConfigs, configs.taskConfig);
-    gulp.task('help', helpTaskRunner);
+    gulp.task('help', helpGulpTask);
 }
 
 function createSubGulpTasks(prefix, subTaskConfigs, parentConfig) {
@@ -197,14 +197,14 @@ function createSoloTaskRunner(taskInfo, taskConfig) {
     return stuff.recipes['copy'];
 }
 
-function noopConfigurableRunner(gulp, config, stream, done) {
+function noopTaskRunner(gulp, config, stream, done) {
     done();
 }
 
 // NOTE:
-// TaskRunner is ready for gulp.task() call.
-// ConfigurableTask is called with config, and eventually be wrapped as TaskRunner.
-function helpTaskRunner(done) {
+// GulpTask is ready for gulp.task() call.
+// ConfigurableTask is called with config, and eventually be wrapped as GulpTask.
+function helpGulpTask(done) {
     Object.keys(gulp.tasks).sort().forEach(function(name) {
         var task = gulp.tasks[name];
         console.log(name);
