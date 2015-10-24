@@ -2,38 +2,41 @@
 
 var Sinon = require('sinon');
 var Chai = require('chai');
-var Promised = require("chai-as-promised");
+//var SinonChai = require("sinon-chai");
+//var Promised = require("chai-as-promised");
 var expect = Chai.expect;
-Chai.use(Promised);
+//Chai.should();
+//Chai.use(SinonChai);
+//Chai.use(Promised);
 
 var _ = require('lodash');
 var base = process.cwd();
 
-var test = require(base + '/test/testcase_runner');
 var ConfigurableTask = require(base + '/src/configurable_task');
 var ConfigurationError = require(base + '/src/errors/configuration_error');
 
-function FakeGulp() {
-	this.taskRegistry = {};
-}
-
-FakeGulp.prototype.task = function(name, runner) {
-	if (typeof name === 'function') {
-		runner = name;
-		name = runner.displayName || runner.name;
-	}
-	if (typeof name === 'string' && typeof runner === 'function') {
-		this.taskRegistry[name] = runner;
-	}
-	return this.taskRegistry[name];
-};
+var FakeGulp = require('./fake_gulp');
+var test = require(base + '/test/testcase_runner');
 
 function done(err) {
 }
 
-describe('Core', function() {
-	describe('ConfigurableTask', function() {
-		describe('getTaskRuntimeInfo()', function() {
+function createSpyGulpTask(gulp, name) {
+	var task = Sinon.spy();
+	task.displayName = name;
+	gulp.task(task);
+	return task;
+}
+
+function createSpyConfigurableTask(gulp, name) {
+	var task = createSpyGulpTask(gulp, name);
+	task.run = Sinon.spy();
+	return task;
+}
+
+describe('Core', function () {
+	describe('ConfigurableTask', function () {
+		describe('getTaskRuntimeInfo()', function () {
 			var testCases = [{
 				title: 'should accept normal task name',
 				value: 'build',
@@ -56,14 +59,6 @@ describe('Core', function() {
 				expected: {
 					name: 'build',
 					hidden: '.',
-					runtime: ''
-				}
-			}, {
-				title: 'should accept # prefix and mark task undefined',
-				value: '#build',
-				expected: {
-					name: 'build',
-					hidden: '#',
 					runtime: ''
 				}
 			}, {
@@ -101,9 +96,38 @@ describe('Core', function() {
 			}];
 			test(ConfigurableTask.getTaskRuntimeInfo, testCases);
 		});
+		describe('createReferenceTaskRunner()', function () {
+			var gulp, gulpTask, configurableTask;
 
-		describe('createReferenceTask()', function() {
-			var gulp, spy, configurable, run;
+			beforeEach(function () {
+				gulp = new FakeGulp();
+				gulpTask = createSpyGulpTask(gulp, 'spy');
+				configurableTask = createSpyConfigurableTask(gulp, 'configurable');
+			});
+
+			it('should throw at runtime if the referring task not found', function() {
+				var actual = ConfigurableTask.createReferenceTaskRunner('not-exist');
+				expect(function () { actual.call(gulp, gulp, {}, null, done); }).to.throw(ConfigurationError);
+			});
+
+			it('should wrap a normal gulp task', function() {
+				var actual = ConfigurableTask.createReferenceTaskRunner('spy');
+				expect(actual).to.be.a('function');
+				actual.call(gulp, gulp, {}, null, done);
+				expect(gulpTask.calledOn(gulp)).to.be.true;
+				expect(gulpTask.calledWithExactly(done)).to.be.true;
+			});
+
+			it("should call target's run() at runtime if already a ConfigurableTask", function() {
+				var actual = ConfigurableTask.createReferenceTaskRunner('configurable');
+				expect(actual).to.be.a('function');
+				actual.call(gulp, gulp, {}, null, done);
+				expect(configurableTask.run.calledOn(configurableTask)).to.be.true;
+				expect(configurableTask.run.calledWithExactly(gulp, {}, null, done)).to.be.true;
+			});
+		});
+		describe('createParallelTaskRunner()', function () {
+			var gulp, spy, configurable, run, tasks;
 
 			beforeEach(function () {
 				gulp = new FakeGulp();
@@ -117,27 +141,31 @@ describe('Core', function() {
 				configurable.displayName = 'configurable';
 				gulp.task(configurable);
 				configurable.run = run;
+
+				tasks = [
+					fn(),
+					fn(),
+					fn()
+				];
+
+				function fn(f) {
+					var task = function () {};
+					task.run = Sinon.spy(f);
+					return task;
+				}
 			});
 
-			it('should create a ConfigurableTask instance', function() {
-				var actual = ConfigurableTask.createReferenceTask('spy');
+			it('should create a function', function() {
+				var actual = ConfigurableTask.createParallelTaskRunner(tasks);
 				expect(actual).to.be.a('function');
-				actual.call(gulp, gulp, {}, null, done);
-				expect(spy.calledOn(gulp)).to.be.true;
-				expect(spy.calledWithExactly(done)).to.be.true;
 			});
 
-			it('should throw at runtime if the referring task not found', function() {
-				var actual = ConfigurableTask.createReferenceTask('not-exist');
-				expect(function () { actual.call(gulp, gulp, {}, null, done); }).to.throw(ConfigurationError);
-			});
-
-			it('should call run() if a configurableTask', function() {
-				var actual = ConfigurableTask.createReferenceTask('configurable');
-				expect(actual).to.be.a('function');
+			it('should each tasks eventually be called when call the generated function', function() {
+				var actual = ConfigurableTask.createParallelTaskRunner(tasks);
 				actual.call(gulp, gulp, {}, null, done);
-				expect(run.calledOn(configurable)).to.be.true;
-				expect(run.calledWithExactly(gulp, {}, null, done)).to.be.true;
+				expect(tasks[0].run.called).to.be.true;
+				expect(tasks[1].run.called).to.be.true;
+				expect(tasks[2].run.called).to.be.true;
 			});
 		});
 	});

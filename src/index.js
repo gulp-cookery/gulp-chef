@@ -186,7 +186,7 @@ function createSoloTaskRunner(taskInfo, taskConfig) {
 		return ConfigurableTask.createReferenceTask(task);
     }
 
-    if (_.isArray(task)) {
+    if (Array.isArray(task)) {
         return function(gulp, config, stream, done) {
             var tasks = task.map(function(name) {
                 return gulp.task(name);
