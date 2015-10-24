@@ -27,7 +27,7 @@ function createGulpTasks(useGulp, taskConfigs) {
 
     gulp = useGulp;
 
-    configs = Configuration.sort(taskConfigs, {}, defaults.consumes);
+    configs = Configuration.sort_deprecated(taskConfigs, {}, defaults.consumes);
     createSubGulpTasks('', configs.subTaskConfigs, configs.taskConfig);
     gulp.task('help', helpGulpTask);
 }
@@ -76,9 +76,9 @@ function createTaskRunner(prefix, taskInfo, taskConfig, parentConfig) {
     consumes = getTaskConsumes(taskInfo.name);
 
     if (schema) {
-        configs = Configuration._sort(taskConfig, parentConfig, schema);
+        configs = Configuration.sort(taskConfig, parentConfig, schema);
     } else {
-        configs = Configuration.sort(taskConfig, parentConfig, consumes);
+        configs = Configuration.sort_deprecated(taskConfig, parentConfig, consumes);
     }
 
     // if there is a matching recipe, use it and ignore any sub-configs.
@@ -205,7 +205,7 @@ function noopTaskRunner(gulp, config, stream, done) {
 // GulpTask is ready for gulp.task() call.
 // ConfigurableTask is called with config, and eventually be wrapped as GulpTask.
 function helpGulpTask(done) {
-    Object.keys(gulp.tasks).sort().forEach(function(name) {
+    Object.keys(gulp.tasks).sort_deprecated().forEach(function(name) {
         var task = gulp.tasks[name];
         console.log(name);
         console.log(' ', task.fn.description || '(no description)');

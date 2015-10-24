@@ -43,7 +43,11 @@ var src = normalize.bind(null, {
 	"properties": {
 		"globs": {
 			"description": "",
-			"alternatives": ["glob"]
+			"type": "array",
+			"items": {
+				"type": "string"
+			},
+			"alias": ["glob"]
 		},
 		"options": {
 			"description": "",
@@ -88,7 +92,7 @@ var dest = normalize.bind(null, {
 });
 
 
-function _sort(taskConfig, parentConfig, schema) {
+function sort(taskConfig, parentConfig, schema) {
 	var inheritedConfig, subTaskConfigs, value;
 
 	inheritedConfig = {};
@@ -124,7 +128,7 @@ function _sort(taskConfig, parentConfig, schema) {
  * If both parentConfig and taskConfig specified src property
  * then try to join paths.
  */
-function sort(taskConfig, parentConfig, consumes) {
+function sort_deprecated(taskConfig, parentConfig, consumes) {
 	var inheritedConfig, subTaskConfigs, value;
 
 	inheritedConfig = {};
@@ -159,7 +163,7 @@ module.exports = {
 	dest: dest,
 	normalize: normalize,
 	realize: realize,
+	sort_deprecated: sort_deprecated,
 	sort: sort,
-	_sort: _sort,
 	src: src,
 };
