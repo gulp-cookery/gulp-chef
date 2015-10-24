@@ -17,11 +17,12 @@ var _ = require('lodash');
 
 var gulp = require('gulp');
 
-var module = process.cwd();
+var base = process.cwd();
+var fixtures = base + '/test/_fixtures';
 
-var eachdir = require(module + '/src/streams/eachdir');
-var ConfigurationError = require(module + '/src/errors/configuration_error');
-var IllegalTaskError = require(module + '/src/errors/illegal_task_error');
+var eachdir = require(base + '/src/streams/eachdir');
+var ConfigurationError = require(base + '/src/errors/configuration_error');
+var IllegalTaskError = require(base + '/src/errors/illegal_task_error');
 
 var dirs = {
 	'app': {
@@ -95,18 +96,16 @@ function prepareTask(fn) {
 	return task;
 }
 
-describe('stream processor', function() {
-	var cwd = process.cwd();
-
+describe('Stream Processor', function() {
 	describe('eachdir()', function() {
 		var tasks;
 
 		before(function() {
-			process.chdir('./test/_fixtures');
+			process.chdir(fixtures);
 		});
 
 		after(function() {
-			process.chdir(cwd);
+			process.chdir(base);
 		});
 
 		beforeEach(function() {

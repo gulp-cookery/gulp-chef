@@ -11,7 +11,7 @@ function getTaskRuntimeInfo(name) {
 	name = _.trim(name);
 	match = regexRuntimeOptions.exec(name);
 	if (!match) {
-		throw new ConfigurationError(name, 'invalid task name: ' + name);
+		throw new ConfigurationError(__filename, 'invalid task name: ' + name);
 	}
 	return {
 		name: match[2] || name,
@@ -24,7 +24,7 @@ function createReferenceTask(taskName) {
 	return function(gulp, config, stream, done) {
 		var task = gulp.task(taskName);
 		if (!task) {
-			throw new ConfigurationError(taskName, 'referring task not found: ' + taskName);
+			throw new ConfigurationError(__filename, 'referring task not found: ' + taskName);
 		}
 		if (task.run) {
 			return task.run(gulp, config, stream, done);
