@@ -18,14 +18,12 @@ function folders(globs, options) {
 function join(paths, globs, force) {
 	if (Array.isArray(paths)) {
 		globs = paths.map(_path);
-		return [].concat(globs);
+		return Array.prototype.concat.apply([], globs);
 	}
 	return _path(paths);
 
 	function _path(path) {
 		try {
-			var cwd = process.cwd();
-			console.log(cwd);
 			if (force || FileSystem.statSync(path).isDirectory()) {
 				if (Array.isArray(globs)) {
 					return globs.map(function(glob) {

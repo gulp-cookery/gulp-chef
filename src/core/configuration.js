@@ -5,6 +5,29 @@ var _ = require('lodash');
 
 var interpolate = /{{([\s\S]+?)}}/g;
 
+// TODO: remove temp hack for _.defaultsDeep() until bug fix public available:
+// defaultsDeep() try to mix string characters into array
+// https://github.com/lodash/lodash/issues/1560
+_.defaultsDeep = defaultsDeep;
+
+function defaultsDeep(object) {
+	var sources = Array.prototype.splice.call(arguments, 1);
+	sources.forEach(function(source) {
+		_defaults(object, source);
+	});
+	return object;
+
+	function _defaults(target, source) {
+		_.forIn(source, function(value, key) {
+			if (_.isPlainObject(value) && _.isPlainObject(target[key])) {
+				_defaults(target[key], value);
+			} else if (! key in target) {
+				target[key] = value;
+			}
+		})
+	}
+}
+
 function realize(original, additional, defaults) {
 
 	var values = _.defaultsDeep({}, original, additional, defaults);
@@ -100,6 +123,9 @@ function sort(taskConfig, parentConfig, schema) {
 	if (taskConfig.src) {
 		value = src(taskConfig.src);
 		if (parentConfig.src) {
+			if (!Array.isArray(parentConfig.src.globs)) {
+				throw TypeError('parentConfig.src not normalized');
+			}
 			value.globs = globsJoin(parentConfig.src.globs, value.globs);
 		}
 		inheritedConfig.src = value;
@@ -107,6 +133,9 @@ function sort(taskConfig, parentConfig, schema) {
 	if (taskConfig.dest) {
 		value = dest(taskConfig.dest);
 		if (parentConfig.dest) {
+			if (typeof parentConfig.dest.path !== 'string') {
+				throw TypeError('parentConfig.dest not normalized');
+			}
 			// force dest since it may not already exists (dest must be a folder).
 			value.path = globsJoin(parentConfig.dest.path, value.path, true);
 		}
@@ -165,5 +194,5 @@ module.exports = {
 	realize: realize,
 	sort_deprecated: sort_deprecated,
 	sort: sort,
-	src: src,
+	src: src
 };

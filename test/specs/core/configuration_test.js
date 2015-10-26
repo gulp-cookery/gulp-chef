@@ -10,6 +10,7 @@ var Configuration = require(base + '/src/core/configuration');
 var ConfigurationError = require(base + '/src/errors/configuration_error');
 
 var test = require(base + '/test/testcase_runner');
+var _ = require('lodash');
 
 describe('Core', function () {
 	describe('Configuration', function () {
@@ -24,6 +25,12 @@ describe('Core', function () {
 				var actual = Configuration.src('src/**/*.js');
 				expect(actual).to.deep.equal({
 					globs: ["src/**/*.js"]
+				});
+			});
+			it('should accept globs array', function () {
+				var actual = Configuration.src(['src/**/*.js', 'lib/**/*.js']);
+				expect(actual).to.deep.equal({
+					globs: ['src/**/*.js', 'lib/**/*.js']
 				});
 			});
 			it('should accept globs object with options', function () {
@@ -96,6 +103,11 @@ describe('Core', function () {
 			});
 		});
 		describe('sort()', function () {
+			it('_.defaultsDeep should not merge string characters into array', function() {
+				expect(_.defaultsDeep({ src: ['src'] }, { src: 'src' })).to.deep.equal({
+					src: ['src']
+				});
+			});
 			it('should accept empty config', function () {
 				var actual = Configuration.sort({}, {}, {});
 				expect(actual).to.deep.equal({
@@ -115,6 +127,47 @@ describe('Core', function () {
 						},
 						dest: {
 							path: "dist"
+						}
+					},
+					subTaskConfigs: {}
+				});
+			});
+			it('should inherit parent config', function () {
+				var actual = Configuration.sort({
+					src: 'src',
+					dest: 'dist'
+				}, {}, {});
+				expect(actual).to.deep.equal({
+					taskConfig: {
+						src: {
+							globs: ["src"]
+						},
+						dest: {
+							path: "dist"
+						}
+					},
+					subTaskConfigs: {}
+				});
+			});
+			it('should join parent path config', function () {
+				var actual = Configuration.sort({
+					src: ['services/**/*.js', 'views/**/*.js'],
+					dest: 'lib'
+				}, {
+					src: {
+						globs: ['src']
+					},
+					dest: {
+						path: 'dist'
+					}
+				}, {});
+				expect(actual).to.deep.equal({
+					taskConfig: {
+						src: {
+							globs: ['src/services/**/*.js', 'src/views/**/*.js'],
+						},
+						dest: {
+							path: "dist/lib"
 						}
 					},
 					subTaskConfigs: {}
