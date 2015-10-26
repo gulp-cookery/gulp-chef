@@ -120,22 +120,23 @@ function sort(taskConfig, parentConfig, schema) {
 
 	inheritedConfig = {};
 
+	if (parentConfig.src && !Array.isArray(parentConfig.src.globs)) {
+		throw TypeError('parentConfig.src not normalized');
+	}
 	if (taskConfig.src) {
 		value = src(taskConfig.src);
 		if (parentConfig.src) {
-			if (!Array.isArray(parentConfig.src.globs)) {
-				throw TypeError('parentConfig.src not normalized');
-			}
 			value.globs = globsJoin(parentConfig.src.globs, value.globs);
 		}
 		inheritedConfig.src = value;
 	}
+
+	if (parentConfig.dest && typeof parentConfig.dest.path !== 'string') {
+		throw TypeError('parentConfig.dest not normalized');
+	}
 	if (taskConfig.dest) {
 		value = dest(taskConfig.dest);
 		if (parentConfig.dest) {
-			if (typeof parentConfig.dest.path !== 'string') {
-				throw TypeError('parentConfig.dest not normalized');
-			}
 			// force dest since it may not already exists (dest must be a folder).
 			value.path = globsJoin(parentConfig.dest.path, value.path, true);
 		}

@@ -132,20 +132,29 @@ describe('Core', function () {
 					subTaskConfigs: {}
 				});
 			});
-			it('should inherit parent config', function () {
-				var actual = Configuration.sort({
-					src: 'src',
-					dest: 'dist'
-				}, {}, {});
-				expect(actual).to.deep.equal({
-					taskConfig: {
-						src: {
-							globs: ["src"]
-						},
-						dest: {
-							path: "dist"
-						}
+			it('should throw if parent config not normalized', function () {
+				expect(function () {
+					Configuration.sort({}, {
+						src: 'src'
+					}, {});
+				}).to.throw(TypeError);
+				expect(function () {
+					Configuration.sort({}, {
+						dest: 'dist'
+					}, {});
+				}).to.throw(TypeError);
+			});
+			it('should not mixin parent config (only inherit parent config at runtime, not compile time)', function () {
+				var actual = Configuration.sort({}, {
+					src: {
+						globs: ['src']
 					},
+					dest: {
+						path: 'dist'
+					}
+				}, {});
+				expect(actual).to.deep.equal({
+					taskConfig: {},
 					subTaskConfigs: {}
 				});
 			});
