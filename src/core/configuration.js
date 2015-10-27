@@ -3,9 +3,64 @@ var globsJoin = require('../util/glob_util').join;
 var normalize = require('json-normalizer').sync;
 var _ = require('lodash');
 
-var interpolate = /{{([\s\S]+?)}}/g;
+var INTERPOLATE = /{{([\s\S]+?)}}/g;
+var SCHEMA_DEFAULTS = {
+	"properties": {
+		"src": {
+			"properties": {
+				"globs": {
+					"description": "",
+					"type": "array",
+					"items": {
+						"type": "string"
+					},
+					"alias": ["glob"]
+				},
+				"options": {
+					"description": "",
+					"properties": {
+						"base": {
+							"description": ""
+						},
+						"buffer": {
+							"description": ""
+						},
+						"read": {
+							"description": ""
+						}
+					}
+				},
+				"required": ["globs"]
+			},
+			"primary": "globs",
+			"gathering": "options"
+		},
+		"dest": {
+			"properties": {
+				"path": {
+					"description": ""
+				},
+				"options": {
+					"description": "",
+					"properties": {
+						"cwd": {
+							"description": ""
+						},
+						"mode": {
+							"description": ""
+						}
+					}
+				},
+				"required": ["path"]
+			},
+			"primary": 'path',
+			"gathering": 'options'
+		}
+	},
+	"gathering": "others"
+};
 
-// TODO: remove temp hack for _.defaultsDeep() until bug fix public available:
+// TODO: remove temp hack for _.defaultsDeep() when bug fix public available:
 // defaultsDeep() try to mix string characters into array
 // https://github.com/lodash/lodash/issues/1560
 _.defaultsDeep = defaultsDeep;
@@ -19,10 +74,10 @@ function defaultsDeep(object) {
 
 	function _defaults(target, source) {
 		_.forIn(source, function(value, key) {
-			if (_.isPlainObject(value) && _.isPlainObject(target[key])) {
+			if (_.isPlainObject(target[key]) && _.isPlainObject(value)) {
 				_defaults(target[key], value);
-			} else if (! key in target) {
-				target[key] = value;
+			} else if (! (key in target)) {
+				target[key] = _.cloneDeep(value);
 			}
 		})
 	}
@@ -43,7 +98,7 @@ function realize(original, additional, defaults) {
 
 	function realize(source) {
 		if (typeof source === 'string') {
-			return source.replace(interpolate, function(match, p1) {
+			return source.replace(INTERPOLATE, function(match, p1) {
 				return values[p1] || p1;
 			});
 		}
@@ -62,58 +117,8 @@ function realize(original, additional, defaults) {
 	}
 }
 
-var src = normalize.bind(null, {
-	"properties": {
-		"globs": {
-			"description": "",
-			"type": "array",
-			"items": {
-				"type": "string"
-			},
-			"alias": ["glob"]
-		},
-		"options": {
-			"description": "",
-			"properties": {
-				"base": {
-					"description": ""
-				},
-				"buffer": {
-					"description": ""
-				},
-				"read": {
-					"description": ""
-				}
-			}
-		},
-		"required": ["globs"]
-	},
-	"primary": "globs",
-	"gathering": "options"
-});
-
-var dest = normalize.bind(null, {
-	"properties": {
-		"path": {
-			"description": ""
-		},
-		"options": {
-			"description": "",
-			"properties": {
-				"cwd": {
-					"description": ""
-				},
-				"mode": {
-					"description": ""
-				}
-			}
-		},
-		"required": ["path"]
-	},
-	"primary": 'path',
-	"gathering": 'options'
-});
-
+var src = normalize.bind(null, SCHEMA_DEFAULTS.properties.src);
+var dest = normalize.bind(null, SCHEMA_DEFAULTS.properties.dest);
 
 function sort(taskConfig, parentConfig, schema) {
 	var inheritedConfig, subTaskConfigs, value;
@@ -143,8 +148,10 @@ function sort(taskConfig, parentConfig, schema) {
 		inheritedConfig.dest = value;
 	}
 
+	schema = _.defaultsDeep(schema, SCHEMA_DEFAULTS);
+
 	inheritedConfig = _.defaultsDeep(inheritedConfig, taskConfig, parentConfig);
-	inheritedConfig = normalize(schema, inheritedConfig);
+	inheritedConfig = normalize(schema, inheritedConfig) || {};
 	subTaskConfigs = inheritedConfig.others || {};
 	delete inheritedConfig.others;
 
