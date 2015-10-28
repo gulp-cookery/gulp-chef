@@ -144,8 +144,7 @@ describe('Core', function () {
 					}, {});
 				}).to.throw(TypeError);
 			});
-			// TODO: make sure this is good itea.
-			it.skip('should not mixin parent config (only inherit parent config at runtime, not compile time)', function () {
+			it('should inherit parent config', function () {
 				var actual = Configuration.sort({}, {
 					src: {
 						globs: ['src']
@@ -155,7 +154,14 @@ describe('Core', function () {
 					}
 				}, {});
 				expect(actual).to.deep.equal({
-					taskConfig: {},
+					taskConfig: {
+						src: {
+							globs: ['src']
+						},
+						dest: {
+							path: 'dist'
+						}
+					},
 					subTaskConfigs: {}
 				});
 			});
@@ -217,6 +223,184 @@ describe('Core', function () {
 						options: {
 							extensions: ['.js', '.ts', '.coffee']
 						}
+					}
+				});
+			});
+			it('should normalize config using the given schema', function () {
+				var schema = {
+					"definitions": {
+						"io": {
+							"properties": {
+								"src": {
+									"description": "",
+									"type": "array"
+								},
+								"dest": {
+									"description": "",
+									"type": "string"
+								}
+							}
+						},
+						"options": {
+							"properties": {
+								"extensions": {
+									"description": "",
+									"type": "array",
+									"alias": ["extension"]
+								},
+								"require": {
+									"description": "",
+									"type": "array",
+									"alias": ["requires"]
+								},
+								"external": {
+									"description": "",
+									"type": "array",
+									"alias": ["externals"]
+								},
+								"plugin": {
+									"description": "",
+									"type": "array",
+									"alias": ["plugins"]
+								},
+								"transform": {
+									"description": "",
+									"type": "array",
+									"alias": ["transforms"]
+								},
+								"exclude": {
+									"description": "",
+									"type": "array",
+									"alias": ["excludes"]
+								},
+								"ignore": {
+									"description": "",
+									"type": "array",
+									"alias": ["ignores"]
+								},
+								"shim": {
+									"description": "",
+									"type": "array",
+									"alias": ["shims", "browserify-shim", "browserify-shims"]
+								}
+							}
+						}
+					},
+					"extends": { "$ref": "#/definitions/io" },
+					"properties": {
+						"options": {
+							"description": "common options for all bundles",
+							"extends": { "$ref": "#/definitions/options" },
+							"type": "object"
+						},
+						"bundles": {
+							"description": "",
+							"alias": ["bundle"],
+							"type": "array",
+							"extends": [
+								{ "$ref": "#/definitions/io" },
+								{ "$ref": "#/definitions/options" }
+							],
+							"properties": {
+								"file": {
+									"description": "",
+									"type": "string"
+								},
+								"entries": {
+									"description": "",
+									"alias": ["entry"],
+									"type": "array"
+								},
+								"options": {
+									"extends": { "$ref": "#/definitions/options" }
+								}
+							},
+							"required": ["file", "entries"]
+						}
+					},
+					"required": ["bundles"],
+					"default": {
+						"options": {}
+					}
+				};
+				var options = {
+					"extensions": [".js", ".json", ".jsx", ".es6", ".ts"],
+					"plugin": ["tsify"],
+					"transform": ["brfs"]
+				};
+				var config = {
+					"bundles": [{
+					"file": "deps.js",
+					"entries": [{
+						"file": "traceur/bin/traceur-runtime"
+					}, {
+						"file": "rtts_assert/rtts_assert"
+					}, {
+						"file": "reflect-propertydata"
+					}, {
+						"file": "zone.js"
+					}],
+					"require": ["angular2/angular2", "angular2/router"]
+				}, {
+					"file": "services.js",
+					"entry": "services/*/index.js",
+					"external": ["angular2/angular2", "angular2/router"],
+					"options": options
+				}, {
+					"file": "index.js",
+					"entry": "index.js",
+					"external": "./services",
+					"options": options
+				}, {
+					"file": "auth.js",
+					"entry": "auth/index.js",
+					"external": "./services",
+					"options": options
+				}, {
+					"file": "dashboard.js",
+					"entry": "dashboard/index.js",
+					"external": "./services",
+					"options": options
+				}]
+				};
+				var expected = {
+					"bundles": [{
+						"file": "deps.js",
+						"entries": [{
+							"file": "traceur/bin/traceur-runtime"
+						}, {
+							"file": "rtts_assert/rtts_assert"
+						}, {
+							"file": "reflect-propertydata"
+						}, {
+							"file": "zone.js"
+						}],
+						"require": ["angular2/angular2", "angular2/router"]
+					}, {
+						"file": "services.js",
+						"entries": ["services/*/index.js"],
+						"external": ["angular2/angular2", "angular2/router"],
+						"options": options
+					}, {
+						"file": "index.js",
+						"entries": ["index.js"],
+						"external": ["./services"],
+						"options": options
+					}, {
+						"file": "auth.js",
+						"entries": ["auth/index.js"],
+						"external": ["./services"],
+						"options": options
+					}, {
+						"file": "dashboard.js",
+						"entries": ["dashboard/index.js"],
+						"external": ["./services"],
+						"options": options
+					}]
+				};
+				expect(Configuration.sort(config, {}, schema)).to.deep.equal({
+					taskConfig: expected,
+					subTaskConfigs: {
 					}
 				});
 			});
