@@ -98,8 +98,8 @@ function realize(original, additional, defaults) {
 
 	function realize(source) {
 		if (typeof source === 'string') {
-			return source.replace(INTERPOLATE, function(match, p1) {
-				return values[p1] || p1;
+			return source.replace(INTERPOLATE, function(match, path) {
+				return _.get(values, path) || path;
 			});
 		}
 		if (typeof source === 'function') {
@@ -110,7 +110,7 @@ function realize(original, additional, defaults) {
 		if (_.isArray(source)) {
 			return realizeAll([], source);
 		}
-		if (_.isObject(source)) {
+		if (_.isPlainObject(source)) {
 			return realizeAll({}, source);
 		}
 		return source;

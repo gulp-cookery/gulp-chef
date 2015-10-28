@@ -405,5 +405,33 @@ describe('Core', function () {
 				});
 			});
 		});
+		describe('realize()', function () {
+			it('should render template using given values', function () {
+				var values = {
+					self: "Hello {{target}}!",
+					nested: {
+						noPath: "Hello {{target}}!",
+						withPath: {
+							message: "Hello {{nested.target}}!"
+						},
+						target: "Inner World"
+					},
+					target: "World"
+				};
+				var expected = {
+					self: "Hello World!",
+					nested: {
+						noPath: "Hello World!",
+						withPath: {
+							message: "Hello Inner World!"
+						},
+						target: "Inner World"
+					},
+					target: "World"
+				}
+				var actual = Configuration.realize(values);
+				expect(actual).to.deep.equal(expected);
+			});
+		});
 	});
 });
