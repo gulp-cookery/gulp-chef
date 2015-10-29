@@ -4,6 +4,14 @@ var normalize = require('json-normalizer').sync;
 var _ = require('lodash');
 
 var INTERPOLATE = /{{([\s\S]+?)}}/g;
+var TASK_PROPERTIES = [
+	// task
+	'depends', 'task',
+	// runtime
+	'name', 'hidden', 'runtime',
+	// dest
+	'flatten'
+];
 var SCHEMA_DEFAULTS = {
 	"properties": {
 		"src": {
@@ -123,7 +131,10 @@ var src = normalize.bind(null, SCHEMA_DEFAULTS.properties.src);
 var dest = normalize.bind(null, SCHEMA_DEFAULTS.properties.dest);
 
 function sort(taskConfig, parentConfig, schema) {
-	var inheritedConfig, subTaskConfigs, value;
+	var taskSettings, inheritedConfig, subTasks, value;
+
+	taskSettings = _.pick(taskConfig, TASK_PROPERTIES);
+	taskConfig = _.omit(taskConfig, TASK_PROPERTIES);
 
 	inheritedConfig = {};
 
@@ -154,12 +165,13 @@ function sort(taskConfig, parentConfig, schema) {
 
 	inheritedConfig = _.defaultsDeep(inheritedConfig, taskConfig, parentConfig);
 	inheritedConfig = normalize(schema, inheritedConfig) || {};
-	subTaskConfigs = inheritedConfig.others || {};
+	subTasks = inheritedConfig.others || {};
 	delete inheritedConfig.others;
 
 	return {
+		taskSettings: taskSettings,
 		taskConfig: inheritedConfig,
-		subTaskConfigs: subTaskConfigs
+		subTasks: subTasks
 	};
 }
 

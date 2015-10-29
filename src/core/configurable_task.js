@@ -27,6 +27,19 @@ var ConfigurationError = require('../errors/configuration_error');
 
 var regexRuntimeOptions = /^([.#]?)([_\w][-_\s\w]*)([!?]?)$/;
 
+var CONSTANT = {
+	VISIBILITY: {
+		HIDDEN: '.',
+		DISABLED: '#',
+		NORMAL: ''
+	},
+	RUNTIME: {
+		PRODUCTION: '!',
+		DEVELOPMENT: '?',
+		ALL: ''
+	}
+};
+
 function getTaskRuntimeInfo(name) {
 	var match;
 
@@ -37,7 +50,7 @@ function getTaskRuntimeInfo(name) {
 	}
 	return {
 		name: match[2] || name,
-		hidden: match[1] || '',
+		visibility: match[1] || '',
 		runtime: match[3] || ''
 	};
 }
@@ -75,6 +88,7 @@ function createWrapperTaskRunner(task) {
 }
 
 module.exports = {
+	CONSTANT: CONSTANT,
 	getTaskRuntimeInfo: getTaskRuntimeInfo,
 	createReferenceTaskRunner: createReferenceTaskRunner,
 	createParallelTaskRunner: createParallelTaskRunner,

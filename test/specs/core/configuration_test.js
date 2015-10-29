@@ -111,8 +111,9 @@ describe('Core', function () {
 			it('should accept empty config', function () {
 				var actual = Configuration.sort({}, {}, {});
 				expect(actual).to.deep.equal({
+					taskSettings: {},
 					taskConfig: {},
-					subTaskConfigs: {}
+					subTasks: {}
 				});
 			});
 			it('should always accept src and dest property even schema not defined', function () {
@@ -121,6 +122,7 @@ describe('Core', function () {
 					dest: 'dist'
 				}, {}, {});
 				expect(actual).to.deep.equal({
+					taskSettings: {},
 					taskConfig: {
 						src: {
 							globs: ["src"]
@@ -129,7 +131,7 @@ describe('Core', function () {
 							path: "dist"
 						}
 					},
-					subTaskConfigs: {}
+					subTasks: {}
 				});
 			});
 			it('should throw if parent config not normalized', function () {
@@ -154,6 +156,7 @@ describe('Core', function () {
 					}
 				}, {});
 				expect(actual).to.deep.equal({
+					taskSettings: {},
 					taskConfig: {
 						src: {
 							globs: ['src']
@@ -162,7 +165,7 @@ describe('Core', function () {
 							path: 'dist'
 						}
 					},
-					subTaskConfigs: {}
+					subTasks: {}
 				});
 			});
 			it('should join parent path config', function () {
@@ -178,6 +181,7 @@ describe('Core', function () {
 					}
 				}, {});
 				expect(actual).to.deep.equal({
+					taskSettings: {},
 					taskConfig: {
 						src: {
 							globs: ['src/services/**/*.js', 'src/views/**/*.js'],
@@ -186,7 +190,7 @@ describe('Core', function () {
 							path: "dist/lib"
 						}
 					},
-					subTaskConfigs: {}
+					subTasks: {}
 				});
 			});
 			it('should put unknown properties to subTaskConfigs', function () {
@@ -208,6 +212,7 @@ describe('Core', function () {
 					}
 				}, {});
 				expect(actual).to.deep.equal({
+					taskSettings: {},
 					taskConfig: {
 						src: {
 							globs: ['src/services/**/*.js', 'src/views/**/*.js'],
@@ -216,7 +221,7 @@ describe('Core', function () {
 							path: "dist/lib"
 						}
 					},
-					subTaskConfigs: {
+					subTasks: {
 						bundles: {
 							entries: ['a', 'b', 'c']
 						},
@@ -399,8 +404,9 @@ describe('Core', function () {
 					}]
 				};
 				expect(Configuration.sort(config, {}, schema)).to.deep.equal({
+					taskSettings: {},
 					taskConfig: expected,
-					subTaskConfigs: {
+					subTasks: {
 					}
 				});
 			});

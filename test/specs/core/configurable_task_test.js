@@ -42,7 +42,7 @@ describe('Core', function () {
 				value: 'build',
 				expected: {
 					name: 'build',
-					hidden: '',
+					visibility: '',
 					runtime: ''
 				}
 			}, {
@@ -50,7 +50,7 @@ describe('Core', function () {
 				value: '_build the-project',
 				expected: {
 					name: '_build the-project',
-					hidden: '',
+					visibility: '',
 					runtime: ''
 				}
 			}, {
@@ -58,7 +58,7 @@ describe('Core', function () {
 				value: '.build',
 				expected: {
 					name: 'build',
-					hidden: '.',
+					visibility: '.',
 					runtime: ''
 				}
 			}, {
@@ -66,7 +66,7 @@ describe('Core', function () {
 				value: '#build',
 				expected: {
 					name: 'build',
-					hidden: '#',
+					visibility: '#',
 					runtime: ''
 				}
 			}, {
@@ -74,7 +74,7 @@ describe('Core', function () {
 				value: 'build!',
 				expected: {
 					name: 'build',
-					hidden: '',
+					visibility: '',
 					runtime: '!'
 				}
 			}, {
@@ -82,7 +82,7 @@ describe('Core', function () {
 				value: 'build?',
 				expected: {
 					name: 'build',
-					hidden: '',
+					visibility: '',
 					runtime: '?'
 				}
 			}, {

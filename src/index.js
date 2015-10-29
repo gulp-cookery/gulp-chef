@@ -27,8 +27,8 @@ function createGulpTasks(useGulp, taskConfigs) {
 
     gulp = useGulp;
 
-    configs = Configuration.sort_deprecated(taskConfigs, {}, defaults.consumes);
-    createSubGulpTasks('', configs.subTaskConfigs, configs.taskConfig);
+    configs = Configuration.sort(taskConfigs, {}, {});
+    createSubGulpTasks('', configs.subTasks, configs.taskConfig);
     gulp.task('help', helpGulpTask);
 }
 
@@ -48,18 +48,18 @@ function createSubGulpTasks(prefix, subTaskConfigs, parentConfig) {
 
         taskInfo = ConfigurableTask.getTaskRuntimeInfo(name);
 
-        if (name === 'modules') {
+        if (taskConfig.debug) {
             debugger;
         }
 
-        if (taskInfo.hidden === '#') {
+        if (taskInfo.visibility === ConfigurableTask.CONSTANT.VISIBILITY.DISABLED) {
             return null;
         }
 
         task = createTaskRunner(prefix, taskInfo, taskConfig, parentConfig);
         //console.log('creating task: ' + prefix + task.displayName);
         // TODO: call parallel for depends and then remove it from taskConfig.
-        if (!task.hidden) {
+        if (!task.visibility) {
             // TODO: warning about name collision.
             // TODO: what about the exec order of task's depends and depends' depends?
             // TODO: what about hidden task's depends?
@@ -83,14 +83,14 @@ function createTaskRunner(prefix, taskInfo, taskConfig, parentConfig) {
 
     // if there is a matching recipe, use it and ignore any sub-configs.
     if (isRecipeTask(taskInfo.name)) {
-        if (hasSubTaskConfig(configs.subTaskConfigs)) {
+        if (hasSubTaskConfig(configs.subTasks)) {
             // TODO: warn about ignoring sub-configs.
         }
         configurableRunner = createRecipeTaskRunner(taskInfo, configs.taskConfig);
     }
     // if there is configurations not being consumed, then treat them as subtasks.
-    else if (isStreamTask(taskInfo.name, configs.subTaskConfigs)) {
-        configurableRunner = createStreamTaskRunner(taskInfo, configs.taskConfig, prefix, configs.subTaskConfigs);
+    else if (isStreamTask(taskInfo.name, configs.subTasks)) {
+        configurableRunner = createStreamTaskRunner(taskInfo, configs.taskConfig, prefix, configs.subTasks);
     } else {
         configurableRunner = createSoloTaskRunner(taskInfo, configs.taskConfig);
     }
@@ -144,7 +144,7 @@ function wrapTaskRunner(taskInfo, taskConfig, configurableRunner) {
     task.displayName = taskInfo.name;
     task.description = taskConfig.description || configurableRunner.description;
     task.config = taskConfig;
-    task.hidden = taskInfo.hidden;
+    task.visibility = taskInfo.visibility;
     task.runtime = taskInfo.runtime;
     task.run = run;
     return task;
@@ -161,9 +161,9 @@ function createStreamTaskRunner(taskInfo, taskConfig, prefix, subTaskConfigs) {
     streamTask = stuff.streams[taskInfo.name];
     if (streamTask) {
         hidden = true;
-        taskInfo.hidden = '~';
+        taskInfo.visibility = ConfigurableTask.CONSTANT.VISIBILITY.HIDDEN;
     } else {
-        hidden = taskInfo.hidden;
+        hidden = taskInfo.visibility;
         streamTask = stuff.streams['merge'];
     }
     if (!hidden) {
@@ -205,7 +205,7 @@ function noopTaskRunner(gulp, config, stream, done) {
 // GulpTask is ready for gulp.task() call.
 // ConfigurableTask is called with config, and eventually be wrapped as GulpTask.
 function helpGulpTask(done) {
-    Object.keys(gulp.tasks).sort_deprecated().forEach(function(name) {
+    Object.keys(gulp.tasks).sort().forEach(function(name) {
         var task = gulp.tasks[name];
         console.log(name);
         console.log(' ', task.fn.description || '(no description)');
