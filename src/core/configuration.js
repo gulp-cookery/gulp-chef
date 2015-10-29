@@ -77,7 +77,7 @@ function defaultsDeep(object) {
 			if (_.isPlainObject(target[key]) && _.isPlainObject(value)) {
 				_defaults(target[key], value);
 			} else if (! (key in target)) {
-				target[key] = _.cloneDeep(value);
+				target[key] = typeof value === 'function' ? value : _.cloneDeep(value);
 			}
 		})
 	}
@@ -99,13 +99,15 @@ function realize(original, additional, defaults) {
 	function realize(source) {
 		if (typeof source === 'string') {
 			return source.replace(INTERPOLATE, function(match, path) {
-				return _.get(values, path) || path;
+				var value = _.get(values, path) || path;
+				if (typeof value === 'function') {
+					value = value(values);
+				}
+				return value;
 			});
 		}
 		if (typeof source === 'function') {
-			debugger;
-			console.log('realize by fn');
-			return source.call(values);
+			return source(values);
 		}
 		if (_.isArray(source)) {
 			return realizeAll([], source);

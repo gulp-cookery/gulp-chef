@@ -406,28 +406,47 @@ describe('Core', function () {
 			});
 		});
 		describe('realize()', function () {
-			it('should render template using given values', function () {
+			it('should call resolver function', function () {
+				var resolved = 'resolver called';
 				var values = {
-					self: "Hello {{target}}!",
-					nested: {
-						noPath: "Hello {{target}}!",
-						withPath: {
-							message: "Hello {{nested.target}}!"
-						},
-						target: "Inner World"
-					},
-					target: "World"
+					runtime: Sinon.spy(function() {
+						return resolved;
+					})
 				};
 				var expected = {
-					self: "Hello World!",
+					runtime: resolved
+				}
+				expect(Configuration.realize(values)).to.deep.equal(expected);
+				expect(values.runtime.calledWith(values)).to.be.true;
+			});
+			it('should render template using given values', function () {
+				var rootResolver = function () {
+					return 'value from rootResolver()'
+				};
+				var nestResolver = function () {
+					return 'value from nestedResolver()'
+				};
+				var template = "Hello {{plainValue}}! {{nested.plainValue}}, {{resolver}} and {{nested.resolver}}.";
+				var realized = "Hello World! Inner World, value from rootResolver() and value from nestedResolver().";
+				var values = {
+					message: template,
 					nested: {
-						noPath: "Hello World!",
-						withPath: {
-							message: "Hello Inner World!"
-						},
-						target: "Inner World"
+						message: template,
+						resolver: nestResolver,
+						plainValue: "Inner World"
 					},
-					target: "World"
+					resolver: rootResolver,
+					plainValue: "World"
+				};
+				var expected = {
+					message: realized,
+					nested: {
+						message: realized,
+						resolver: nestResolver(),
+						plainValue: "Inner World"
+					},
+					resolver: rootResolver(),
+					plainValue: "World"
 				}
 				var actual = Configuration.realize(values);
 				expect(actual).to.deep.equal(expected);
