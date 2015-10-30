@@ -259,13 +259,7 @@ function browserifyTask(gulp, config, stream) {
 
 			options = {};
 			src = config.src || options.src;
-			if (src) {
-				src = src.map(function(src) {
-					return src.globs;
-				});
-			} else {
-				src = '';
-			}
+			src = src && src.globs || '';
 
 			entries = bundleOptions.entries.reduce(function(result, entry) {
 				var files = Globs.join(src, entry.file || entry);
@@ -312,18 +306,6 @@ browserifyTask.description = 'Bundle JavaScript things with Browserify.';
 browserifyTask.consumes = ['bundle', 'bundles', 'dest', 'options', 'sourcemap', 'sourcemaps', 'src'];
 browserifyTask.schema = {
 	"definitions": {
-		"io": {
-			"properties": {
-				"src": {
-					"description": "",
-						"type": "array"
-				},
-				"dest": {
-					"description": "",
-						"type": "string"
-				}
-			}
-		},
 		"options": {
 			"properties": {
 				"extensions": {
@@ -377,7 +359,6 @@ browserifyTask.schema = {
 			}
 		}
 	},
-	"extends": { "$ref": "#/definitions/io" },
 	"properties": {
 		"options": {
 			"description": "common options for all bundles",
