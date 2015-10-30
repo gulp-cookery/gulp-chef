@@ -10,6 +10,7 @@ var base = process.cwd();
 var ConfigurableTask = require(base + '/src/core/configurable_task');
 var ConfigurationError = require(base + '/src/errors/configuration_error');
 
+var FakeGulp = require(base + '/test/fake_gulp');
 var test = require(base + '/test/testcase_runner');
 
 function done(err) {
@@ -76,6 +77,48 @@ describe('Core', function () {
 				error: ConfigurationError
 			}];
 			test(ConfigurableTask.getTaskRuntimeInfo, testCases);
+		});
+		describe('createConfigurableTask()', function () {
+			var gulp, taskInfo, taskConfig, stream, done, configurableRunner, actual;
+
+			gulp = new FakeGulp();
+
+			taskInfo = {
+				name: 'configurable-task',
+				visibility: ConfigurableTask.CONSTANT.VISIBILITY.NORMAL,
+				runtime: ConfigurableTask.CONSTANT.RUNTIME.ALL
+			};
+
+			taskConfig = {
+				name: 'taskConfig'
+			};
+
+			stream = {
+				name: 'fake stream'
+			};
+
+			done = function() {};
+
+			beforeEach(function() {
+				configurableRunner = Sinon.spy();
+				actual = ConfigurableTask.createConfigurableTask(taskInfo, taskConfig, configurableRunner);
+			})
+
+			it('should return a ConfigurableTask (a function with run() method)', function () {
+				expect(actual).to.be.a('function');
+				expect(actual.run).to.be.a('function');
+				expect(actual.displayName).to.equal('configurable-task');
+				expect(actual.visibility).to.equal(ConfigurableTask.CONSTANT.VISIBILITY.NORMAL);
+				expect(actual.runtime).to.equal(ConfigurableTask.CONSTANT.RUNTIME.ALL);
+			});
+			it('should wrap configurableRunner in run() method', function () {
+				actual.run(gulp, taskConfig, stream, done);
+				expect(configurableRunner.calledWith(gulp, taskConfig, stream, done)).to.be.true;
+			});
+			it('should wrap configurableRunner in ConfigurableTask main method', function () {
+				actual.call(gulp, done);
+				expect(configurableRunner.calledWith(gulp, taskConfig, null, done)).to.be.true;
+			});
 		});
 	});
 });

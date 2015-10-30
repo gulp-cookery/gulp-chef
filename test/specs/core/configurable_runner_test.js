@@ -10,7 +10,7 @@ var base = process.cwd();
 var ConfigurableRunner = require(base + '/src/core/configurable_runner');
 var ConfigurationError = require(base + '/src/errors/configuration_error');
 
-var FakeGulp = require('./../fake_gulp');
+var FakeGulp = require(base + '/test/fake_gulp');
 var test = require(base + '/test/testcase_runner');
 
 function done(err) {

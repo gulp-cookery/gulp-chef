@@ -77,7 +77,7 @@ function createConfigurableRunner(prefix, taskInfo, taskConfig, parentConfig) {
     }
 
 	configurableRunner = recipeRunner() || streamRunner() || referRunner() || defaultRunner();
-    return createConfigurableTask(taskInfo, configs.taskConfig, configurableRunner);
+    return ConfigurableTask.createConfigurableTask(taskInfo, configs.taskConfig, configurableRunner);
 
 	/**
 	 * if there is a matching recipe, use it and ignore any sub-configs.
@@ -158,27 +158,6 @@ function getTaskConsumes(name) {
 
 function hasSubTasks(subTasks) {
     return _.size(subTasks) > 0;
-}
-
-// TODO: make sure config is inherited at config time and injectable at runtime.
-function createConfigurableTask(taskInfo, taskConfig, configurableRunner) {
-    // invoked from stream processor
-    var run = function(gulp, injectConfig, stream, done) {
-        // inject and realize runtime configuration.
-        var config = Configuration.realize(taskConfig, injectConfig, configurableRunner.defaults);
-        return configurableRunner(gulp, config, stream, done);
-    };
-    // invoked from gulp
-    var configurableTask = function(done) {
-        return run(this, taskConfig, null, done);
-    };
-    configurableTask.displayName = taskInfo.name;
-    configurableTask.description = taskConfig.description || configurableRunner.description;
-    configurableTask.config = taskConfig;
-    configurableTask.visibility = taskInfo.visibility;
-    configurableTask.runtime = taskInfo.runtime;
-    configurableTask.run = run;
-    return configurableTask;
 }
 
 function createStreamTaskRunner(taskInfo, taskConfig, prefix, subTasks) {
