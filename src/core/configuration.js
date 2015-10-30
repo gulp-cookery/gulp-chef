@@ -17,7 +17,7 @@ var SCHEMA_DEFAULTS = {
 		"src": {
 			"properties": {
 				"globs": {
-					"description": "",
+					"description": "Glob or array of globs to read.",
 					"type": "array",
 					"items": {
 						"type": "string"
@@ -25,16 +25,16 @@ var SCHEMA_DEFAULTS = {
 					"alias": ["glob"]
 				},
 				"options": {
-					"description": "",
+					"description": "Options to pass to node-glob through glob-stream.",
 					"properties": {
 						"base": {
-							"description": ""
+							"description": "Used for relative pathing. Typically where a glob starts."
 						},
 						"buffer": {
-							"description": ""
+							"description": "Setting this to false will return file.contents as a stream and not buffer files. This is useful when working with large files."
 						},
 						"read": {
-							"description": ""
+							"description": "Setting this to false will return file.contents as null and not read the file at all."
 						}
 					}
 				},
@@ -46,16 +46,16 @@ var SCHEMA_DEFAULTS = {
 		"dest": {
 			"properties": {
 				"path": {
-					"description": ""
+					"description": "The path (output folder) to write files to."
 				},
 				"options": {
 					"description": "",
 					"properties": {
 						"cwd": {
-							"description": ""
+							"description": "cwd for the output folder, only has an effect if provided output folder is relative."
 						},
 						"mode": {
-							"description": ""
+							"description": "Octal permission string specifying mode for any folders that need to be created for output folder."
 						}
 					}
 				},
