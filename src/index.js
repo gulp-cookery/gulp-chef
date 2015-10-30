@@ -26,17 +26,7 @@ function loadRegistry() {
 	return new ConfigurableTaskRegistry(tasks);
 }
 
-function createGulpTasks(useGulp, taskConfigs) {
-    var configs;
-
-    gulp = useGulp;
-
-    configs = Configuration.sort(taskConfigs, {}, {});
-    createSubGulpTasks('', configs.subTasks, configs.taskConfig);
-    gulp.task('help', require('./task_helper')(useGulp));
-}
-
-function createSubGulpTasks(prefix, subTaskConfigs, parentConfig) {
+function createGulpTasks(prefix, subTaskConfigs, parentConfig) {
     var tasks = [];
 
     _.keys(subTaskConfigs).forEach(function(name) {
@@ -85,22 +75,67 @@ function createTaskRunner(prefix, taskInfo, taskConfig, parentConfig) {
         configs = Configuration.sort_deprecated(taskConfig, parentConfig, consumes);
     }
 
-    // if there is a matching recipe, use it and ignore any sub-configs.
-    if (isRecipeTask(taskInfo.name)) {
-        if (hasSubTaskConfig(configs.subTasks)) {
-            // TODO: warn about ignoring sub-configs.
-        }
-        configurableRunner = createRecipeTaskRunner(taskInfo, configs.taskConfig);
-    }
-    // if there is configurations not being consumed, then treat them as subtasks.
-    else if (isStreamTask(taskInfo.name, configs.subTasks)) {
-        configurableRunner = createStreamTaskRunner(taskInfo, configs.taskConfig, prefix, configs.subTasks);
-    } else {
-        configurableRunner = createSoloTaskRunner(taskInfo, configs.taskConfig);
-    }
-
+	configurableRunner = recipeRunner() || streamRunner() || referRunner() || defaultRunner();
     return wrapTaskRunner(taskInfo, configs.taskConfig, configurableRunner);
+
+	/**
+	 * if there is a matching recipe, use it and ignore any sub-configs.
+	 */
+	function recipeRunner() {
+		if (isRecipeTask(taskInfo.name)) {
+			if (hasSubTasks(configs.subTasks)) {
+				// TODO: warn about ignoring sub-configs.
+			}
+			return stuff.recipes.lookup(taskInfo.name);
+		}
+
+		function isRecipeTask(name) {
+			return !!stuff.recipes.lookup(name);
+		}
+	}
+
+	/**
+	 * if there is configurations not being consumed, then treat them as sub-tasks.
+	 */
+	function streamRunner() {
+		if (isStreamTask(taskInfo.name, configs.subTasks)) {
+			return createStreamTaskRunner(taskInfo, configs.taskConfig, prefix, configs.subTasks);
+		}
+
+		function isStreamTask(name, subTaskConfigs) {
+			return !!stuff.streams.lookup(name) || hasSubTasks(subTaskConfigs);
+		}
+	}
+
+	function referRunner() {
+		var task = configs.taskSettings.task;
+		delete configs.taskSettings.task;
+		return inlineRunner() || referenceRunner() || parallelRunner();
+
+		function inlineRunner() {
+			if (typeof task === 'function') {
+				return task;
+			}
+		}
+
+		function referenceRunner() {
+			if (typeof task === 'string') {
+				return ConfigurableTask.createReferenceTaskRunner(task);
+			}
+		}
+
+		function parallelRunner() {
+			if (Array.isArray(task)) {
+				return ConfigurableTask.createParallelTaskRunner(task);
+			}
+		}
+	}
+
+	function defaultRunner() {
+		return stuff.recipes.lookup('copy');
+	}
 }
+
 
 function getTaskSchema(name) {
     var schema;
@@ -120,16 +155,8 @@ function getTaskConsumes(name) {
     return consumes;
 }
 
-function isRecipeTask(name) {
-    return !!stuff.recipes.lookup(name);
-}
-
-function isStreamTask(name, subTaskConfigs) {
-    return !!stuff.streams.lookup(name) || hasSubTaskConfig(subTaskConfigs);
-}
-
-function hasSubTaskConfig(subTaskConfigs) {
-    return _.size(subTaskConfigs) > 0;
+function hasSubTasks(subTasks) {
+    return _.size(subTasks) > 0;
 }
 
 // TODO: make sure config is inherited at config time and injectable at runtime.
@@ -154,10 +181,6 @@ function wrapTaskRunner(taskInfo, taskConfig, configurableRunner) {
     return task;
 }
 
-function createRecipeTaskRunner(taskInfo, taskConfig) {
-    return stuff.recipes.lookup(taskInfo.name);
-}
-
 function createStreamTaskRunner(taskInfo, taskConfig, prefix, subTaskConfigs) {
     // TODO: remove stream runner form parent's config.
     var hidden, streamTask, tasks;
@@ -167,38 +190,24 @@ function createStreamTaskRunner(taskInfo, taskConfig, prefix, subTaskConfigs) {
         hidden = true;
         taskInfo.visibility = ConfigurableTask.CONSTANT.VISIBILITY.HIDDEN;
     } else {
-        hidden = taskInfo.visibility;
+        hidden = !!taskInfo.visibility;
         streamTask = stuff.streams.lookup('merge');
     }
     if (!hidden) {
         prefix = prefix + taskInfo.name + ':';
     }
 
-    tasks = createSubGulpTasks(prefix, subTaskConfigs, taskConfig);
+    tasks = createGulpTasks(prefix, subTaskConfigs, taskConfig);
 
     return function(gulp, config, stream /*, done*/ ) {
         return streamTask(gulp, config, stream, tasks);
     };
 }
 
-function createSoloTaskRunner(taskInfo, taskConfig) {
-    var task = taskConfig.task;
+module.exports = function (useGulp, taskConfigs) {
+	gulp = useGulp;
 
-    delete taskConfig.task;
-
-    if (typeof task === 'string') {
-		return ConfigurableTask.createReferenceTaskRunner(task);
-    }
-
-    if (Array.isArray(task)) {
-        return ConfigurableTask.createParallelTaskRunner(task);
-    }
-
-    if (typeof task === 'function') {
-        return task;
-    }
-
-    return stuff.recipes.lookup('copy');
-}
-
-module.exports = createGulpTasks;
+	var configs = Configuration.sort(taskConfigs, {}, {});
+	createGulpTasks('', configs.subTasks, configs.taskConfig);
+	gulp.task('help', require('./task_helper')(useGulp));
+};
