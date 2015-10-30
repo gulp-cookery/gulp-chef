@@ -1,4 +1,6 @@
 /**
+ * ConfigurableTask is called with config, and eventually be wrapped as GulpTask.
+ *
  * Normal Gulp Task:
  *
  * function gulpTask(done) {

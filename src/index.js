@@ -29,7 +29,7 @@ function createGulpTasks(useGulp, taskConfigs) {
 
     configs = Configuration.sort(taskConfigs, {}, {});
     createSubGulpTasks('', configs.subTasks, configs.taskConfig);
-    gulp.task('help', helpGulpTask);
+    gulp.task('help', require('./task_helper')(useGulp));
 }
 
 function createSubGulpTasks(prefix, subTaskConfigs, parentConfig) {
@@ -195,19 +195,6 @@ function createSoloTaskRunner(taskInfo, taskConfig) {
     }
 
     return stuff.recipes['copy'];
-}
-
-// NOTE:
-// GulpTask is ready for gulp.task() call.
-// ConfigurableTask is called with config, and eventually be wrapped as GulpTask.
-function helpGulpTask(done) {
-    Object.keys(gulp.tasks).sort().forEach(function(name) {
-        var task = gulp.tasks[name];
-        console.log(name);
-        console.log(' ', task.fn.description || '(no description)');
-        console.log('');
-    });
-    done();
 }
 
 module.exports = createGulpTasks;
