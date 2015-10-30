@@ -1,7 +1,6 @@
 /**
- * ConfigurableTask is called with config, and eventually be wrapped as GulpTask.
  *
- * Normal Gulp Task:
+ * Normal GulpTask:
  *
  * function gulpTask(done) {
  * }
@@ -15,9 +14,14 @@
  *
  *
  * ConfigurableTask Runner:
+ * ConfigurableTask Runner is called with config, and be wrapped in ConfigurableTask.run().
  *
  * configurableTask.run = function(gulp, config, stream, done) {
  * }
+ *
+ * configurableTask.displayName
+ * configurableTask.description
+ * configurableTask.schema
  *
  */
 'use strict';

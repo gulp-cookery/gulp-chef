@@ -2,17 +2,12 @@
 
 var Sinon = require('sinon');
 var Chai = require('chai');
-//var SinonChai = require("sinon-chai");
-//var Promised = require("chai-as-promised");
 var expect = Chai.expect;
-//Chai.should();
-//Chai.use(SinonChai);
-//Chai.use(Promised);
 
 var _ = require('lodash');
 var base = process.cwd();
 
-var ConfigurableTask = require(base + '/src/core/configurable_task');
+var ConfigurableRunner = require(base + '/src/core/configurable_runner');
 var ConfigurationError = require(base + '/src/errors/configuration_error');
 
 var FakeGulp = require('./../fake_gulp');
@@ -94,7 +89,7 @@ describe('Core', function () {
 				value: '?build',
 				error: ConfigurationError
 			}];
-			test(ConfigurableTask.getTaskRuntimeInfo, testCases);
+			test(ConfigurableRunner.getTaskRuntimeInfo, testCases);
 		});
 		describe('createReferenceTaskRunner()', function () {
 			var gulp, gulpTask, configurableTask;
@@ -106,12 +101,12 @@ describe('Core', function () {
 			});
 
 			it('should throw at runtime if the referring task not found', function() {
-				var actual = ConfigurableTask.createReferenceTaskRunner('not-exist');
+				var actual = ConfigurableRunner.createReferenceTaskRunner('not-exist');
 				expect(function () { actual.call(gulp, gulp, {}, null, done); }).to.throw(ConfigurationError);
 			});
 
 			it('should wrap a normal gulp task', function() {
-				var actual = ConfigurableTask.createReferenceTaskRunner('spy');
+				var actual = ConfigurableRunner.createReferenceTaskRunner('spy');
 				expect(actual).to.be.a('function');
 				actual.call(gulp, gulp, {}, null, done);
 				expect(gulpTask.calledOn(gulp)).to.be.true;
@@ -119,7 +114,7 @@ describe('Core', function () {
 			});
 
 			it("should call target's run() at runtime if already a ConfigurableTask", function() {
-				var actual = ConfigurableTask.createReferenceTaskRunner('configurable');
+				var actual = ConfigurableRunner.createReferenceTaskRunner('configurable');
 				expect(actual).to.be.a('function');
 				actual.call(gulp, gulp, {}, null, done);
 				expect(configurableTask.run.calledOn(configurableTask)).to.be.true;
@@ -156,12 +151,12 @@ describe('Core', function () {
 			});
 
 			it('should create a function', function() {
-				var actual = ConfigurableTask.createParallelTaskRunner(tasks);
+				var actual = ConfigurableRunner.createParallelTaskRunner(tasks);
 				expect(actual).to.be.a('function');
 			});
 
 			it('should each tasks eventually be called when call the generated function', function() {
-				var actual = ConfigurableTask.createParallelTaskRunner(tasks);
+				var actual = ConfigurableRunner.createParallelTaskRunner(tasks);
 				actual.call(gulp, gulp, {}, null, done);
 				expect(tasks[0].run.called).to.be.true;
 				expect(tasks[1].run.called).to.be.true;
