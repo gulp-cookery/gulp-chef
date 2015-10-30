@@ -1,8 +1,6 @@
 'use stricts';
 var gulp;
 
-// TODO: resolve too many dependencies problem. (optionalDependencies?)
-
 var flatten = require('gulp-flatten');
 var merge = require('merge-stream');
 var path = require('path');
@@ -10,6 +8,7 @@ var _ = require('lodash');
 
 var safeRequireDir = require('./util/safe_require_dir');
 
+var ConfigurableTaskRegistry = require('./core/configurable_task_registry');
 var ConfigurableTask = require('./core/configurable_task');
 var Configuration = require('./core/configuration');
 var defaults = require('./defaults');
@@ -17,10 +16,15 @@ var defaults = require('./defaults');
 var cwd = process.cwd();
 
 var stuff = {
-    flows: safeRequireDir('./flows'),
-    streams: safeRequireDir(path.join(cwd, 'gulp/streams'), './streams'),
-    recipes: safeRequireDir(path.join(cwd, 'gulp'), path.join(cwd, 'gulp/tasks'), './tasks')
+    flows: loadRegistry(path.join(cwd, 'gulp/flows'), './flows'),
+    streams: loadRegistry(path.join(cwd, 'gulp/streams'), './streams'),
+    recipes: loadRegistry(path.join(cwd, 'gulp'), path.join(cwd, 'gulp/tasks'), './tasks')
 };
+
+function loadRegistry() {
+	var tasks = safeRequireDir.apply(null, arguments);
+	return new ConfigurableTaskRegistry(tasks);
+}
 
 function createGulpTasks(useGulp, taskConfigs) {
     var configs;
@@ -100,7 +104,7 @@ function createTaskRunner(prefix, taskInfo, taskConfig, parentConfig) {
 
 function getTaskSchema(name) {
     var schema;
-    var configurableTask = stuff.streams[name] || stuff.recipes[name];
+    var configurableTask = stuff.streams.lookup(name) || stuff.recipes.lookup(name);
     if (configurableTask) {
         schema = configurableTask.schema;
     }
@@ -109,7 +113,7 @@ function getTaskSchema(name) {
 
 function getTaskConsumes(name) {
     var consumes = defaults.consumes;
-    var configurableTask = stuff.streams[name] || stuff.recipes[name];
+    var configurableTask = stuff.streams.lookup(name) || stuff.recipes.lookup(name);
     if (configurableTask) {
         consumes = consumes.concat(configurableTask.consumes);
     }
@@ -117,11 +121,11 @@ function getTaskConsumes(name) {
 }
 
 function isRecipeTask(name) {
-    return stuff.recipes[name];
+    return !!stuff.recipes.lookup(name);
 }
 
 function isStreamTask(name, subTaskConfigs) {
-    return stuff.streams[name] || hasSubTaskConfig(subTaskConfigs);
+    return !!stuff.streams.lookup(name) || hasSubTaskConfig(subTaskConfigs);
 }
 
 function hasSubTaskConfig(subTaskConfigs) {
@@ -151,20 +155,20 @@ function wrapTaskRunner(taskInfo, taskConfig, configurableRunner) {
 }
 
 function createRecipeTaskRunner(taskInfo, taskConfig) {
-    return stuff.recipes[taskInfo.name];
+    return stuff.recipes.lookup(taskInfo.name);
 }
 
 function createStreamTaskRunner(taskInfo, taskConfig, prefix, subTaskConfigs) {
     // TODO: remove stream runner form parent's config.
     var hidden, streamTask, tasks;
 
-    streamTask = stuff.streams[taskInfo.name];
+    streamTask = stuff.streams.lookup(taskInfo.name);
     if (streamTask) {
         hidden = true;
         taskInfo.visibility = ConfigurableTask.CONSTANT.VISIBILITY.HIDDEN;
     } else {
         hidden = taskInfo.visibility;
-        streamTask = stuff.streams['merge'];
+        streamTask = stuff.streams.lookup('merge');
     }
     if (!hidden) {
         prefix = prefix + taskInfo.name + ':';
@@ -194,7 +198,7 @@ function createSoloTaskRunner(taskInfo, taskConfig) {
         return task;
     }
 
-    return stuff.recipes['copy'];
+    return stuff.recipes.lookup('copy');
 }
 
 module.exports = createGulpTasks;
