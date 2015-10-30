@@ -197,10 +197,6 @@ function createSoloTaskRunner(taskInfo, taskConfig) {
     return stuff.recipes['copy'];
 }
 
-function noopTaskRunner(gulp, config, stream, done) {
-    done();
-}
-
 // NOTE:
 // GulpTask is ready for gulp.task() call.
 // ConfigurableTask is called with config, and eventually be wrapped as GulpTask.
