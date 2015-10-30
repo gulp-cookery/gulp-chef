@@ -1,7 +1,7 @@
 "use strict";
 var log = require('gulp-util').log;
 
-module.export = function (gulp) {
+module.exports = function (gulp) {
 
 	/**
 	 * help GulpTask
