@@ -10,6 +10,7 @@ var safeRequireDir = require('./util/safe_require_dir');
 
 var ConfigurableRunnerRegistry = require('./core/configurable_runner_registry');
 var ConfigurableRunner = require('./core/configurable_runner');
+var ConfigurableTask = require('./core/configurable_task');
 var Configuration = require('./core/configuration');
 var defaults = require('./defaults');
 
@@ -41,13 +42,13 @@ function createGulpTasks(prefix, subTasks, parentConfig) {
 function createGulpTask(prefix, name, taskConfig, parentConfig) {
 	var taskInfo, task;
 
-	taskInfo = ConfigurableRunner.getTaskRuntimeInfo(name);
+	taskInfo = ConfigurableTask.getTaskRuntimeInfo(name);
 
 	if (taskConfig.debug) {
 		debugger;
 	}
 
-	if (taskInfo.visibility === ConfigurableRunner.CONSTANT.VISIBILITY.DISABLED) {
+	if (taskInfo.visibility === ConfigurableTask.CONSTANT.VISIBILITY.DISABLED) {
 		return null;
 	}
 
@@ -187,7 +188,7 @@ function createStreamTaskRunner(taskInfo, taskConfig, prefix, subTasks) {
     streamTask = stuff.streams.lookup(taskInfo.name);
     if (streamTask) {
         hidden = true;
-        taskInfo.visibility = ConfigurableRunner.CONSTANT.VISIBILITY.HIDDEN;
+        taskInfo.visibility = ConfigurableTask.CONSTANT.VISIBILITY.HIDDEN;
     } else {
         hidden = !!taskInfo.visibility;
         streamTask = stuff.streams.lookup('merge');

@@ -30,67 +30,7 @@ function createSpyConfigurableTask(gulp, name) {
 }
 
 describe('Core', function () {
-	describe('ConfigurableTask', function () {
-		describe('getTaskRuntimeInfo()', function () {
-			var testCases = [{
-				title: 'should accept normal task name',
-				value: 'build',
-				expected: {
-					name: 'build',
-					visibility: '',
-					runtime: ''
-				}
-			}, {
-				title: 'should accept task name with space, underscore, dash',
-				value: '_build the-project',
-				expected: {
-					name: '_build the-project',
-					visibility: '',
-					runtime: ''
-				}
-			}, {
-				title: 'should accept . prefix and mark task hidden',
-				value: '.build',
-				expected: {
-					name: 'build',
-					visibility: '.',
-					runtime: ''
-				}
-			}, {
-				title: 'should accept # prefix and mark task undefined',
-				value: '#build',
-				expected: {
-					name: 'build',
-					visibility: '#',
-					runtime: ''
-				}
-			}, {
-				title: 'should accept ! postfix and mark task available in production mode only',
-				value: 'build!',
-				expected: {
-					name: 'build',
-					visibility: '',
-					runtime: '!'
-				}
-			}, {
-				title: 'should accept ? postfix and mark task available in development mode only',
-				value: 'build?',
-				expected: {
-					name: 'build',
-					visibility: '',
-					runtime: '?'
-				}
-			}, {
-				title: 'should throw if invalid name',
-				value: 'build?!',
-				error: ConfigurationError
-			}, {
-				title: 'should throw if invalid name',
-				value: '?build',
-				error: ConfigurationError
-			}];
-			test(ConfigurableRunner.getTaskRuntimeInfo, testCases);
-		});
+	describe('ConfigurableRunner', function () {
 		describe('createReferenceTaskRunner()', function () {
 			var gulp, gulpTask, configurableTask;
 
