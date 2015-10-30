@@ -27,7 +27,7 @@ var _ = require('lodash');
 var parallel = require('../flows/parallel');
 var ConfigurationError = require('../errors/configuration_error');
 
-var regexRuntimeOptions = /^([.#]?)([_\w][-_\s\w]*)([!?]?)$/;
+var REGEX_RUNTIME_OPTIONS = /^([.#]?)([_\w][-_\s\w]*)([!?]?)$/;
 
 var CONSTANT = {
 	VISIBILITY: {
@@ -46,7 +46,7 @@ function getTaskRuntimeInfo(name) {
 	var match;
 
 	name = _.trim(name);
-	match = regexRuntimeOptions.exec(name);
+	match = REGEX_RUNTIME_OPTIONS.exec(name);
 	if (!match) {
 		throw new ConfigurationError(__filename, 'invalid task name: ' + name);
 	}
