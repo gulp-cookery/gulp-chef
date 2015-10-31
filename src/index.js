@@ -97,7 +97,7 @@ function createConfigurableRunner(prefix, taskInfo, configs) {
 	 */
 	function streamRunner() {
 		if (isStreamTask(taskInfo.name, configs.subTasks)) {
-			return ConfigurableRunner.createStreamTaskRunner(taskInfo, configs.taskConfig, prefix, configs.subTasks, createConfigurableTasks);
+			return ConfigurableRunner.createStreamTaskRunner(taskInfo, configs.taskConfig, prefix, configs.subTasks, stuff.streams, createConfigurableTasks);
 		}
 
 		function isStreamTask(name, subTaskConfigs) {
