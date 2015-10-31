@@ -28,7 +28,39 @@
 
 var parallel = require('../flows/parallel');
 
+var ConfigurableTask = require('./configurable_task');
 var ConfigurationError = require('../errors/configuration_error');
+
+function createStreamTaskRunner(taskInfo, taskConfig, prefix, subTasks, registry, createConfigurableTasks) {
+	// TODO: remove stream runner form parent's config.
+	var hidden, runner, tasks;
+
+	runner = explicitRunner() || implicitRunner();
+	if (!hidden) {
+		prefix = prefix + taskInfo.name + ':';
+	}
+
+	tasks = createConfigurableTasks(prefix, subTasks, taskConfig);
+
+	// NOTE: important! watch the difference of signature between recipe runner and stream runner.
+	return function(gulp, config, stream /*, done*/ ) {
+		return runner(gulp, config, stream, tasks);
+	};
+
+	function explicitRunner() {
+		var runner = registry.lookup(taskInfo.name);
+		if (runner) {
+			hidden = true;
+			taskInfo.visibility = ConfigurableTask.CONSTANT.VISIBILITY.HIDDEN;
+			return runner;
+		}
+	}
+
+	function implicitRunner() {
+		hidden = !!taskInfo.visibility;
+		return registry.lookup('merge');
+	}
+}
 
 function createReferenceTaskRunner(taskName) {
 	if (typeof taskName === 'string') {
@@ -63,6 +95,7 @@ function createWrapperTaskRunner(task) {
 }
 
 module.exports = {
+	createStreamTaskRunner: createStreamTaskRunner,
 	createReferenceTaskRunner: createReferenceTaskRunner,
 	createParallelTaskRunner: createParallelTaskRunner,
 	createWrapperTaskRunner: createWrapperTaskRunner

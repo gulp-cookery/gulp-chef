@@ -27,11 +27,11 @@ function loadRegistry() {
 	return new ConfigurableRunnerRegistry(tasks);
 }
 
-function createGulpTasks(prefix, subTasks, parentConfig) {
+function createConfigurableTasks(prefix, subTasks, parentConfig) {
     var tasks = [];
 
     _.keys(subTasks).forEach(function(name) {
-        var task = createGulpTask(prefix, name, subTasks[name], parentConfig);
+        var task = createConfigurableTask(prefix, name, subTasks[name], parentConfig);
         if (task) {
             tasks.push(task);
         }
@@ -39,8 +39,8 @@ function createGulpTasks(prefix, subTasks, parentConfig) {
     return tasks;
 }
 
-function createGulpTask(prefix, name, taskConfig, parentConfig) {
-	var taskInfo, task;
+function createConfigurableTask(prefix, name, taskConfig, parentConfig) {
+	var schema, consumes, configs, taskInfo, runner, task;
 
 	taskInfo = ConfigurableTask.getTaskRuntimeInfo(name);
 
@@ -52,8 +52,17 @@ function createGulpTask(prefix, name, taskConfig, parentConfig) {
 		return null;
 	}
 
-	task = createConfigurableRunner(prefix, taskInfo, taskConfig, parentConfig);
-	//console.log('creating task: ' + prefix + task.displayName);
+	schema = getTaskSchema(taskInfo.name);
+	consumes = getTaskConsumes(taskInfo.name);
+
+	if (schema) {
+		configs = Configuration.sort(taskConfig, parentConfig, schema);
+	} else {
+		configs = Configuration.sort_deprecated(taskConfig, parentConfig, consumes);
+	}
+	runner = createConfigurableRunner(prefix, taskInfo, configs);
+	task = ConfigurableTask.createConfigurableTask(taskInfo, configs.taskConfig, runner);
+
 	// TODO: call parallel for depends and then remove it from taskConfig.
 	if (!task.visibility) {
 		// TODO: warning about name collision.
@@ -64,20 +73,8 @@ function createGulpTask(prefix, name, taskConfig, parentConfig) {
 	return task;
 }
 
-function createConfigurableRunner(prefix, taskInfo, taskConfig, parentConfig) {
-    var configs, schema, consumes, configurableRunner;
-
-    schema = getTaskSchema(taskInfo.name);
-    consumes = getTaskConsumes(taskInfo.name);
-
-    if (schema) {
-        configs = Configuration.sort(taskConfig, parentConfig, schema);
-    } else {
-        configs = Configuration.sort_deprecated(taskConfig, parentConfig, consumes);
-    }
-
-	configurableRunner = recipeRunner() || streamRunner() || referRunner() || defaultRunner();
-    return ConfigurableTask.createConfigurableTask(taskInfo, configs.taskConfig, configurableRunner);
+function createConfigurableRunner(prefix, taskInfo, configs) {
+	return recipeRunner() || streamRunner() || taskRunner() || defaultRunner();
 
 	/**
 	 * if there is a matching recipe, use it and ignore any sub-configs.
@@ -100,7 +97,7 @@ function createConfigurableRunner(prefix, taskInfo, taskConfig, parentConfig) {
 	 */
 	function streamRunner() {
 		if (isStreamTask(taskInfo.name, configs.subTasks)) {
-			return createStreamTaskRunner(taskInfo, configs.taskConfig, prefix, configs.subTasks);
+			return createStreamTaskRunner(taskInfo, configs.taskConfig, prefix, configs.subTasks, createConfigurableTasks);
 		}
 
 		function isStreamTask(name, subTaskConfigs) {
@@ -108,7 +105,7 @@ function createConfigurableRunner(prefix, taskInfo, taskConfig, parentConfig) {
 		}
 	}
 
-	function referRunner() {
+	function taskRunner() {
 		var task = configs.taskSettings.task;
 		delete configs.taskSettings.task;
 		return inlineRunner() || referenceRunner() || parallelRunner();
@@ -137,7 +134,6 @@ function createConfigurableRunner(prefix, taskInfo, taskConfig, parentConfig) {
 	}
 }
 
-
 function getTaskSchema(name) {
     var schema;
     var configurableTask = stuff.streams.lookup(name) || stuff.recipes.lookup(name);
@@ -160,33 +156,14 @@ function hasSubTasks(subTasks) {
     return _.size(subTasks) > 0;
 }
 
-function createStreamTaskRunner(taskInfo, taskConfig, prefix, subTasks) {
-    // TODO: remove stream runner form parent's config.
-    var hidden, streamTask, tasks;
-
-    streamTask = stuff.streams.lookup(taskInfo.name);
-    if (streamTask) {
-        hidden = true;
-        taskInfo.visibility = ConfigurableTask.CONSTANT.VISIBILITY.HIDDEN;
-    } else {
-        hidden = !!taskInfo.visibility;
-        streamTask = stuff.streams.lookup('merge');
-    }
-    if (!hidden) {
-        prefix = prefix + taskInfo.name + ':';
-    }
-
-    tasks = createGulpTasks(prefix, subTasks, taskConfig);
-
-    return function(gulp, config, stream /*, done*/ ) {
-        return streamTask(gulp, config, stream, tasks);
-    };
+function createHelpGulpTask(gulp) {
+	gulp.task('help', require('./task_helper')(gulp));
 }
 
 module.exports = function (useGulp, taskConfigs) {
 	gulp = useGulp;
 
 	var configs = Configuration.sort(taskConfigs, {}, {});
-	createGulpTasks('', configs.subTasks, configs.taskConfig);
-	gulp.task('help', require('./task_helper')(useGulp));
+	createConfigurableTasks('', configs.subTasks, configs.taskConfig);
+	createHelpGulpTask(useGulp);
 };

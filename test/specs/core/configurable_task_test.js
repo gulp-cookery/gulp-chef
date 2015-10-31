@@ -107,9 +107,9 @@ describe('Core', function () {
 			it('should return a ConfigurableTask (a function with run() method)', function () {
 				expect(actual).to.be.a('function');
 				expect(actual.run).to.be.a('function');
-				expect(actual.displayName).to.equal('configurable-task');
-				expect(actual.visibility).to.equal(ConfigurableTask.CONSTANT.VISIBILITY.NORMAL);
-				expect(actual.runtime).to.equal(ConfigurableTask.CONSTANT.RUNTIME.ALL);
+				expect(actual.displayName).to.equal(taskInfo.name);
+				expect(actual.visibility).to.equal(taskInfo.visibility);
+				expect(actual.runtime).to.equal(taskInfo.runtime);
 			});
 			it('should wrap configurableRunner in run() method', function () {
 				actual.run(gulp, taskConfig, stream, done);
