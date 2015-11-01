@@ -34,11 +34,19 @@ function createSpyConfigurableTask(gulp, name, configurableRunner) {
 describe('Core', function () {
 	describe('ConfigurableRunner', function () {
 		describe('createStreamTaskRunner()', function () {
-			var taskInfo = {
-				name: 'stream-task'
-			};
 			var prefix = '';
-			var taskConfig = {
+			var configs = {
+				taskInfo: {
+					name: 'stream-task'
+				},
+				taskConfig: {
+				},
+				subTaskConfigs: {
+					task1: {
+					},
+					task2: {
+					}
+				}
 			};
 			var streamRunner = function (gulp, config, stream, tasks) {
 				tasks.forEach(function (task) {
@@ -49,12 +57,6 @@ describe('Core', function () {
 				'stream-task': Sinon.spy(streamRunner),
 				'merge': Sinon.spy(streamRunner)
 			});
-			var subTaskConfigs = {
-				task1: {
-				},
-				task2: {
-				}
-			};
 			var subTasks;
 			var createConfigurableTasks = Sinon.spy(function (prefix, subTaskConfigs, parentConfig) {
 				return subTasks = _.map(subTaskConfigs, function(config, name) {
@@ -63,11 +65,11 @@ describe('Core', function () {
 			});
 
 			it('should create a stream runner', function () {
-				var actual = ConfigurableRunner.createStreamTaskRunner(taskInfo, taskConfig, prefix, subTaskConfigs, registry, createConfigurableTasks);
+				var actual = ConfigurableRunner.createStreamTaskRunner(prefix, configs, registry, createConfigurableTasks);
 				expect(actual).to.be.a('function');
 			});
 			it('should invoke sub-tasks at runtime', function () {
-				var actual = ConfigurableRunner.createStreamTaskRunner(taskInfo, taskConfig, prefix, subTaskConfigs, registry, createConfigurableTasks);
+				var actual = ConfigurableRunner.createStreamTaskRunner(prefix, configs, registry, createConfigurableTasks);
 				actual.call(null, gulp, {}, null, done);
 				subTasks.forEach(function(task) {
 					expect(task.run.calledOn(task)).to.be.true;

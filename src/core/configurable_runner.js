@@ -36,24 +36,24 @@ function getStreamTaskRunnerCreator(registry, createConfigurableTasks) {
 	}
 }
 
-function createStreamTaskRunner(taskInfo, taskConfig, prefix, subTasks, registry, createConfigurableTasks) {
+function createStreamTaskRunner(prefix, configs, registry, createConfigurableTasks) {
 	// TODO: remove stream runner form parent's config.
 	var tasks = _createSubTasks();
-	return _createStreamTaskRunner(taskInfo.name, tasks);
+	return _createStreamTaskRunner(configs.taskInfo.name, tasks);
 
 	function _createSubTasks() {
 		var hidden;
 
-		if (registry.lookup(taskInfo.name)) {
+		if (registry.lookup(configs.taskInfo.name)) {
 			hidden = true;
 		} else {
-			hidden = !!taskInfo.visibility;
+			hidden = !!configs.taskInfo.visibility;
 		}
 		if (!hidden) {
-			prefix = prefix + taskInfo.name + ':';
+			prefix = prefix + configs.taskInfo.name + ':';
 		}
 
-		return createConfigurableTasks(prefix, subTasks, taskConfig);
+		return createConfigurableTasks(prefix, configs.subTaskConfigs, configs.taskConfig);
 	}
 
 	function _createStreamTaskRunner(name, tasks) {
@@ -67,7 +67,7 @@ function createStreamTaskRunner(taskInfo, taskConfig, prefix, subTasks, registry
 	function explicitRunner(name) {
 		var runner = registry.lookup(name);
 		if (runner) {
-			taskInfo.visibility = ConfigurableTask.CONSTANT.VISIBILITY.HIDDEN;
+			configs.taskInfo.visibility = ConfigurableTask.CONSTANT.VISIBILITY.HIDDEN;
 			return runner;
 		}
 	}
