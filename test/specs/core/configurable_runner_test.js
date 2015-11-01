@@ -12,8 +12,8 @@ var ConfigurableRunner = require(base + '/src/core/configurable_runner');
 var ConfigurationError = require(base + '/src/errors/configuration_error');
 
 var FakeGulp = require(base + '/test/fake_gulp');
-var gulp = new FakeGulp();
 var test = require(base + '/test/testcase_runner');
+var gulp = new FakeGulp();
 
 function done(err) {
 }

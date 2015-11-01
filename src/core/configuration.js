@@ -130,10 +130,10 @@ function realize(original, additional, defaults) {
 var src = normalize.bind(null, SCHEMA_DEFAULTS.properties.src);
 var dest = normalize.bind(null, SCHEMA_DEFAULTS.properties.dest);
 
-function sort(taskConfig, parentConfig, schema) {
-	var taskSettings, inheritedConfig, subTasks, value;
+function sort(taskInfo, taskConfig, parentConfig, schema) {
+	var inheritedConfig, subTaskConfigs, value;
 
-	taskSettings = _.pick(taskConfig, TASK_PROPERTIES);
+	taskInfo = _.defaultsDeep(taskInfo, _.pick(taskConfig, TASK_PROPERTIES));
 	taskConfig = _.omit(taskConfig, TASK_PROPERTIES);
 
 	inheritedConfig = {};
@@ -165,13 +165,13 @@ function sort(taskConfig, parentConfig, schema) {
 
 	inheritedConfig = _.defaultsDeep(inheritedConfig, taskConfig, parentConfig);
 	inheritedConfig = normalize(schema, inheritedConfig) || {};
-	subTasks = inheritedConfig.others || {};
+	subTaskConfigs = inheritedConfig.others || {};
 	delete inheritedConfig.others;
 
 	return {
-		taskSettings: taskSettings,
+		taskInfo: taskInfo,
 		taskConfig: inheritedConfig,
-		subTasks: subTasks
+		subTaskConfigs: subTaskConfigs
 	};
 }
 

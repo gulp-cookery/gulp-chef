@@ -27,11 +27,11 @@ function loadRegistry() {
 	return new ConfigurableRunnerRegistry(tasks);
 }
 
-function createConfigurableTasks(prefix, subTasks, parentConfig) {
+function createConfigurableTasks(prefix, subTaskConfigs, parentConfig) {
     var tasks = [];
 
-    _.keys(subTasks).forEach(function(name) {
-        var task = createConfigurableTask(prefix, name, subTasks[name], parentConfig);
+    _.keys(subTaskConfigs).forEach(function(name) {
+        var task = createConfigurableTask(prefix, name, subTaskConfigs[name], parentConfig);
         if (task) {
             tasks.push(task);
         }
@@ -56,35 +56,32 @@ function createConfigurableTask(prefix, name, taskConfig, parentConfig) {
 	consumes = getTaskConsumes(taskInfo.name);
 
 	if (schema) {
-		configs = Configuration.sort(taskConfig, parentConfig, schema);
+		configs = Configuration.sort(taskInfo, taskConfig, parentConfig, schema);
 	} else {
 		configs = Configuration.sort_deprecated(taskConfig, parentConfig, consumes);
 	}
-	runner = createConfigurableRunner(prefix, taskInfo, configs);
+	runner = createConfigurableRunner(prefix, configs);
 	task = ConfigurableTask.createConfigurableTask(taskInfo, configs.taskConfig, runner);
 
-	// TODO: call parallel for depends and then remove it from taskConfig.
 	if (!task.visibility) {
-		// TODO: warning about name collision.
-		// TODO: what about the exec order of task's depends and depends' depends?
-		// TODO: what about hidden task's depends?
-		gulp.task(prefix + task.displayName, taskConfig.depends || [], task);
+		// TODO: call parallel for depends and then remove it from taskConfig.
+		registerGulpTask(prefix, task, taskConfig.depends);
 	}
 	return task;
 }
 
-function createConfigurableRunner(prefix, taskInfo, configs) {
+function createConfigurableRunner(prefix, configs) {
 	return recipeRunner() || streamRunner() || taskRunner() || defaultRunner();
 
 	/**
 	 * if there is a matching recipe, use it and ignore any sub-configs.
 	 */
 	function recipeRunner() {
-		if (isRecipeTask(taskInfo.name)) {
-			if (hasSubTasks(configs.subTasks)) {
+		if (isRecipeTask(configs.taskInfo.name)) {
+			if (hasSubTasks(configs.subTaskConfigs)) {
 				// TODO: warn about ignoring sub-configs.
 			}
-			return stuff.recipes.lookup(taskInfo.name);
+			return stuff.recipes.lookup(configs.taskInfo.name);
 		}
 
 		function isRecipeTask(name) {
@@ -96,8 +93,8 @@ function createConfigurableRunner(prefix, taskInfo, configs) {
 	 * if there is configurations not being consumed, then treat them as sub-tasks.
 	 */
 	function streamRunner() {
-		if (isStreamTask(taskInfo.name, configs.subTasks)) {
-			return ConfigurableRunner.createStreamTaskRunner(taskInfo, configs.taskConfig, prefix, configs.subTasks, stuff.streams, createConfigurableTasks);
+		if (isStreamTask(configs.taskInfo.name, configs.subTaskConfigs)) {
+			return ConfigurableRunner.createStreamTaskRunner(configs.taskInfo, configs.taskConfig, prefix, configs.subTaskConfigs, stuff.streams, createConfigurableTasks);
 		}
 
 		function isStreamTask(name, subTaskConfigs) {
@@ -106,8 +103,7 @@ function createConfigurableRunner(prefix, taskInfo, configs) {
 	}
 
 	function taskRunner() {
-		var task = configs.taskSettings.task;
-		delete configs.taskSettings.task;
+		var task = configs.taskInfo.task;
 		return inlineRunner() || referenceRunner() || parallelRunner();
 
 		function inlineRunner() {
@@ -152,8 +148,15 @@ function getTaskConsumes(name) {
     return consumes;
 }
 
-function hasSubTasks(subTasks) {
-    return _.size(subTasks) > 0;
+function hasSubTasks(subTaskConfigs) {
+    return _.size(subTaskConfigs) > 0;
+}
+
+// TODO: warning about name collision.
+// TODO: what about the exec order of task's depends and depends' depends?
+// TODO: what about hidden task's depends?
+function registerGulpTask(prefix, task, depends) {
+	gulp.task(prefix + (task.displayName || task.name), depends || [], task);
 }
 
 function createHelpGulpTask(gulp) {
@@ -163,7 +166,7 @@ function createHelpGulpTask(gulp) {
 module.exports = function (useGulp, taskConfigs) {
 	gulp = useGulp;
 
-	var configs = Configuration.sort(taskConfigs, {}, {});
-	createConfigurableTasks('', configs.subTasks, configs.taskConfig);
+	var configs = Configuration.sort({}, taskConfigs, {}, {});
+	createConfigurableTasks('', configs.subTaskConfigs, configs.taskConfig);
 	createHelpGulpTask(useGulp);
 };

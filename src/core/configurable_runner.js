@@ -32,7 +32,7 @@ var ConfigurableTask = require('./configurable_task');
 var ConfigurationError = require('../errors/configuration_error');
 
 function getStreamTaskRunnerCreator(registry, createConfigurableTasks) {
-	return function create(name, tasks) {
+	return function create(taskInfo, tasks) {
 	}
 }
 
