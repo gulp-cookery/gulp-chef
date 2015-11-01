@@ -163,7 +163,7 @@ function registerGulpTask(prefix, task, depends) {
 }
 
 function createHelpGulpTask(gulp) {
-	gulp.task('help', require('./task_helper')(gulp));
+	gulp.task('help', require('./task_helper'));
 }
 
 module.exports = function (useGulp, taskConfigs) {
