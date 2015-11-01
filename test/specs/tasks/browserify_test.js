@@ -13,8 +13,8 @@ var gulp = require('gulp');
 var base = process.cwd();
 
 var browserify = require(base + '/src/tasks/browserify');
-var ConfigurationError = require(base + '/src/errors/configuration_error');
-var IllegalTaskError = require(base + '/src/errors/illegal_task_error');
+var ConfigurationError = require(base + '/src/core/configuration_error');
+var ConfigurableTaskError = require(base + '/src/core/configurable_task_error');
 
 var testCases = {
 	'Accepts multiple bundles': {

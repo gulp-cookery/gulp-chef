@@ -7,9 +7,8 @@ var expect = Chai.expect;
 var _ = require('lodash');
 var base = process.cwd();
 
-var ConfigurableRunnerRegistry = require(base + '/src/core/configurable_runner_registry');
 var ConfigurableRunner = require(base + '/src/core/configurable_runner');
-var ConfigurationError = require(base + '/src/errors/configuration_error');
+var ConfigurationError = require(base + '/src/core/configuration_error');
 
 var FakeGulp = require(base + '/test/fake_gulp');
 var test = require(base + '/test/testcase_runner');

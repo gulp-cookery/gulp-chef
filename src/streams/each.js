@@ -11,7 +11,7 @@ function each(gulp, config, stream, tasks) {
 	var mergeStream = require('merge-stream');
 	var merge = require('./merge');
 
-	var ConfigurationError = require('../errors/configuration_error');
+	var ConfigurationError = require('../core/configuration_error');
 
 	if (config.values.length === 0) {
 		throw new ConfigurationError('each', 'configuration property "values" is required');

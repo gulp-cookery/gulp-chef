@@ -7,7 +7,7 @@ var expect = Chai.expect;
 var base = process.cwd();
 
 var Configuration = require(base + '/src/core/configuration');
-var ConfigurationError = require(base + '/src/errors/configuration_error');
+var ConfigurationError = require(base + '/src/core/configuration_error');
 
 var test = require(base + '/test/testcase_runner');
 var _ = require('lodash');

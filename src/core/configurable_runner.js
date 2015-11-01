@@ -30,7 +30,7 @@ var parallel = require('../flows/parallel');
 var merge = require('../streams/merge');
 
 var ConfigurableTask = require('./configurable_task');
-var ConfigurationError = require('../errors/configuration_error');
+var ConfigurationError = require('./configuration_error');
 
 function createStreamTaskRunner(prefix, configs, streamTaskRunner, createConfigurableTasks) {
 	// TODO: remove stream runner form parent's config.

@@ -21,8 +21,8 @@ var base = process.cwd();
 var fixtures = base + '/test/_fixtures';
 
 var eachdir = require(base + '/src/streams/eachdir');
-var ConfigurationError = require(base + '/src/errors/configuration_error');
-var IllegalTaskError = require(base + '/src/errors/illegal_task_error');
+var ConfigurationError = require(base + '/src/core/configuration_error');
+var ConfigurableTaskError = require(base + '/src/core/configurable_task_error');
 
 var dirs = {
 	'app': {
@@ -186,7 +186,7 @@ describe('Stream Processor', function() {
 			});
 			expect(function() {
 				eachdir(gulp, config, null, [task]);
-			}).to.throw(IllegalTaskError);
+			}).to.throw(ConfigurableTaskError);
 		});
 
 		it('should return a stream', function() {

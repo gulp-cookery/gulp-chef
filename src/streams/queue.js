@@ -10,10 +10,10 @@ function queue(gulp, config, stream, tasks) {
 	// lazy loading required modules.
 	var StreamQueue = require('streamqueue');
 
-	var IllegalTaskError = require('../errors/illegal_task_error.js');
+	var ConfigurableTaskError = require('../core/configurable_task_error.js');
 
 	if (tasks.length === 0) {
-		throw new IllegalTaskError('queue', 'no sub task specified');
+		throw new ConfigurableTaskError('queue', 'no sub task specified');
 	}
 
 	if (tasks.length === 1) {
@@ -29,7 +29,7 @@ function queue(gulp, config, stream, tasks) {
 	function runTask(task) {
 		var stream = task.run(gulp, config, stream, done);
 		if (!isStream(stream)) {
-			throw new IllegalTaskError('queue', 'sub task must return a stream');
+			throw new ConfigurableTaskError('queue', 'sub task must return a stream');
 		}
 		return stream;
 

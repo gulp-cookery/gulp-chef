@@ -10,7 +10,7 @@ function concat(gulp, config, stream, tasks) {
 	var queue = require('./queue');
 	var gulpConcat = require('gulp-concat');
 
-	var ConfigurationError = require('../errors/configuration_error');
+	var ConfigurationError = require('../core/configuration_error');
 
 	if (!config.file) {
 		throw new ConfigurationError('concat', 'configuration property "file" is required')

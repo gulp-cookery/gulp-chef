@@ -19,7 +19,7 @@ function eachdir(gulp, config, stream, tasks) {
 	var path = require('path');
 	var each = require('./each');
 
-	var ConfigurationError = require('../errors/configuration_error.js');
+	var ConfigurationError = require('../core/configuration_error.js');
 
 	var cwd, folders, inject, values, src;
 

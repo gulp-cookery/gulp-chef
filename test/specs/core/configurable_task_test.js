@@ -8,7 +8,7 @@ var _ = require('lodash');
 var base = process.cwd();
 
 var ConfigurableTask = require(base + '/src/core/configurable_task');
-var ConfigurationError = require(base + '/src/errors/configuration_error');
+var ConfigurationError = require(base + '/src/core/configuration_error');
 
 var FakeGulp = require(base + '/test/fake_gulp');
 var test = require(base + '/test/testcase_runner');

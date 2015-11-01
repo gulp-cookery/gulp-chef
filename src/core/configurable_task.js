@@ -2,7 +2,7 @@
 var _ = require('lodash');
 
 var Configuration = require('./configuration');
-var ConfigurationError = require('../errors/configuration_error');
+var ConfigurationError = require('./configuration_error');
 
 var REGEX_RUNTIME_OPTIONS = /^([.#]?)([_\w][-_\s\w]*)([!?]?)$/;
 
