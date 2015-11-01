@@ -1,30 +1,13 @@
 'use stricts';
 var gulp;
 
-var flatten = require('gulp-flatten');
-var merge = require('merge-stream');
-var path = require('path');
 var _ = require('lodash');
 
-var safeRequireDir = require('./util/safe_require_dir');
-
-var ConfigurableRunnerRegistry = require('./core/configurable_runner_registry');
 var ConfigurableRunner = require('./core/configurable_runner');
 var ConfigurableTask = require('./core/configurable_task');
 var Configuration = require('./core/configuration');
 
-var cwd = process.cwd();
-
-var stuff = {
-    flows: loadRegistry(path.join(cwd, 'gulp/flows'), './flows'),
-    streams: loadRegistry(path.join(cwd, 'gulp/streams'), './streams'),
-    recipes: loadRegistry(path.join(cwd, 'gulp'), path.join(cwd, 'gulp/tasks'), './tasks')
-};
-
-function loadRegistry() {
-	var tasks = safeRequireDir.apply(null, arguments);
-	return new ConfigurableRunnerRegistry(tasks);
-}
+var stuff = require('./stuff');
 
 function createConfigurableTasks(prefix, subTaskConfigs, parentConfig) {
     var tasks = [];
@@ -133,12 +116,8 @@ function createConfigurableRunner(prefix, configs) {
 }
 
 function getTaskSchema(name) {
-    var schema;
     var configurableTask = stuff.streams.lookup(name) || stuff.recipes.lookup(name);
-    if (configurableTask) {
-        schema = configurableTask.schema;
-    }
-    return schema;
+    return configurableTask && configurableTask.schema;
 }
 
 function getTaskConsumes(name) {
