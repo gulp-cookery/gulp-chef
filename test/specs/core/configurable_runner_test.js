@@ -12,6 +12,7 @@ var ConfigurableRunner = require(base + '/src/core/configurable_runner');
 var ConfigurationError = require(base + '/src/errors/configuration_error');
 
 var FakeGulp = require(base + '/test/fake_gulp');
+var gulp = new FakeGulp();
 var test = require(base + '/test/testcase_runner');
 
 function done(err) {
@@ -33,7 +34,6 @@ function createSpyConfigurableTask(gulp, name, configurableRunner) {
 describe('Core', function () {
 	describe('ConfigurableRunner', function () {
 		describe('createStreamTaskRunner()', function () {
-			var gulp = new FakeGulp();
 			var taskInfo = {
 				name: 'stream-task'
 			};
@@ -76,10 +76,9 @@ describe('Core', function () {
 			});
 		});
 		describe('createReferenceTaskRunner()', function () {
-			var gulp, gulpTask, configurableTask;
+			var gulpTask, configurableTask;
 
 			beforeEach(function () {
-				gulp = new FakeGulp();
 				gulpTask = createSpyGulpTask(gulp, 'spy');
 				configurableTask = createSpyConfigurableTask(gulp, 'configurable');
 			});
@@ -106,11 +105,9 @@ describe('Core', function () {
 			});
 		});
 		describe('createParallelTaskRunner()', function () {
-			var gulp, spy, configurable, run, tasks;
+			var spy, configurable, run, tasks;
 
 			beforeEach(function () {
-				gulp = new FakeGulp();
-
 				spy = Sinon.spy();
 				spy.displayName = 'spy';
 				gulp.task(spy);
