@@ -93,8 +93,11 @@ function createConfigurableRunner(prefix, configs) {
 	 * if there is configurations not being consumed, then treat them as sub-tasks.
 	 */
 	function streamRunner() {
+		var runner;
+
 		if (isStreamTask(configs.taskInfo.name, configs.subTaskConfigs)) {
-			return ConfigurableRunner.createStreamTaskRunner(configs.taskInfo, configs.taskConfig, prefix, configs.subTaskConfigs, stuff.streams, createConfigurableTasks);
+			runner = stuff.streams.lookup(configs.taskInfo.name);
+			return ConfigurableRunner.createStreamTaskRunner(prefix, configs, runner, createConfigurableTasks);
 		}
 
 		function isStreamTask(name, subTaskConfigs) {

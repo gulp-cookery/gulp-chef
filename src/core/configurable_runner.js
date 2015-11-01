@@ -27,24 +27,20 @@
 'use strict';
 
 var parallel = require('../flows/parallel');
+var merge = require('../streams/merge');
 
 var ConfigurableTask = require('./configurable_task');
 var ConfigurationError = require('../errors/configuration_error');
 
-function getStreamTaskRunnerCreator(registry, createConfigurableTasks) {
-	return function create(taskInfo, tasks) {
-	}
-}
-
-function createStreamTaskRunner(prefix, configs, registry, createConfigurableTasks) {
+function createStreamTaskRunner(prefix, configs, streamTaskRunner, createConfigurableTasks) {
 	// TODO: remove stream runner form parent's config.
 	var tasks = _createSubTasks();
-	return _createStreamTaskRunner(configs.taskInfo.name, tasks);
+	return _createStreamTaskRunner(tasks);
 
 	function _createSubTasks() {
 		var hidden;
 
-		if (registry.lookup(configs.taskInfo.name)) {
+		if (streamTaskRunner) {
 			hidden = true;
 		} else {
 			hidden = !!configs.taskInfo.visibility;
@@ -56,24 +52,23 @@ function createStreamTaskRunner(prefix, configs, registry, createConfigurableTas
 		return createConfigurableTasks(prefix, configs.subTaskConfigs, configs.taskConfig);
 	}
 
-	function _createStreamTaskRunner(name, tasks) {
-		var runner = explicitRunner(name) || implicitRunner(name);
+	function _createStreamTaskRunner(tasks) {
+		var runner = explicitRunner() || implicitRunner();
 		// NOTE: important! watch the difference of signature between recipe runner and stream runner.
 		return function(gulp, config, stream /*, done*/ ) {
 			return runner(gulp, config, stream, tasks);
 		};
 	}
 
-	function explicitRunner(name) {
-		var runner = registry.lookup(name);
-		if (runner) {
+	function explicitRunner() {
+		if (streamTaskRunner) {
 			configs.taskInfo.visibility = ConfigurableTask.CONSTANT.VISIBILITY.HIDDEN;
-			return runner;
+			return streamTaskRunner;
 		}
 	}
 
 	function implicitRunner() {
-		return registry.lookup('merge');
+		return merge;
 	}
 }
 
@@ -87,7 +82,7 @@ function createReferenceTaskRunner(taskName) {
 			if (task.run) {
 				return task.run(gulp, config, stream, done);
 			}
-			// support for tasks registered directlly via gulp.task().
+			// support for tasks registered directly via gulp.task().
 			return task.call(gulp, done);
 		};
 	}

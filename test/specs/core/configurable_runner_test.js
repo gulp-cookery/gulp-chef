@@ -53,10 +53,6 @@ describe('Core', function () {
 					task.run(gulp, config, stream, done);
 				});
 			};
-			var registry = new ConfigurableRunnerRegistry({
-				'stream-task': Sinon.spy(streamRunner),
-				'merge': Sinon.spy(streamRunner)
-			});
 			var subTasks;
 			var createConfigurableTasks = Sinon.spy(function (prefix, subTaskConfigs, parentConfig) {
 				return subTasks = _.map(subTaskConfigs, function(config, name) {
@@ -65,11 +61,11 @@ describe('Core', function () {
 			});
 
 			it('should create a stream runner', function () {
-				var actual = ConfigurableRunner.createStreamTaskRunner(prefix, configs, registry, createConfigurableTasks);
+				var actual = ConfigurableRunner.createStreamTaskRunner(prefix, configs, streamRunner, createConfigurableTasks);
 				expect(actual).to.be.a('function');
 			});
 			it('should invoke sub-tasks at runtime', function () {
-				var actual = ConfigurableRunner.createStreamTaskRunner(prefix, configs, registry, createConfigurableTasks);
+				var actual = ConfigurableRunner.createStreamTaskRunner(prefix, configs, streamRunner, createConfigurableTasks);
 				actual.call(null, gulp, {}, null, done);
 				subTasks.forEach(function(task) {
 					expect(task.run.calledOn(task)).to.be.true;
