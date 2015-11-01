@@ -6,11 +6,9 @@ var _ = require('lodash');
 var INTERPOLATE = /{{([\s\S]+?)}}/g;
 var TASK_PROPERTIES = [
 	// task
-	'depends', 'task',
+	'depends', 'description', 'task',
 	// runtime
-	'name', 'hidden', 'runtime',
-	// dest
-	'flatten'
+	'name', 'hidden', 'runtime'
 ];
 var SCHEMA_DEFAULTS = {
 	"properties": {

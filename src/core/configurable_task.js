@@ -47,11 +47,11 @@ function createConfigurableTask(taskInfo, taskConfig, configurableRunner) {
 		return run(this, taskConfig, null, done);
 	};
 	configurableTask.displayName = taskInfo.name;
-	configurableTask.description = taskConfig.description || configurableRunner.description;
-	configurableTask.config = taskConfig;
+	configurableTask.description = taskInfo.description || configurableRunner.description;
 	configurableTask.visibility = taskInfo.visibility;
 	configurableTask.runtime = taskInfo.runtime;
 	configurableTask.run = run;
+	configurableTask.config = taskConfig;
 	return configurableTask;
 }
 
