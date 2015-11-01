@@ -184,6 +184,8 @@ function sort_deprecated(taskConfig, parentConfig, consumes) {
 
 	inheritedConfig = {};
 
+	consumes = TASK_PROPERTIES.concat(consumes);
+
 	if (taskConfig.src) {
 		value = src(taskConfig.src);
 		if (parentConfig.src) {

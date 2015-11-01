@@ -12,7 +12,6 @@ var ConfigurableRunnerRegistry = require('./core/configurable_runner_registry');
 var ConfigurableRunner = require('./core/configurable_runner');
 var ConfigurableTask = require('./core/configurable_task');
 var Configuration = require('./core/configuration');
-var defaults = require('./defaults');
 
 var cwd = process.cwd();
 
@@ -143,12 +142,8 @@ function getTaskSchema(name) {
 }
 
 function getTaskConsumes(name) {
-    var consumes = defaults.consumes;
     var configurableTask = stuff.streams.lookup(name) || stuff.recipes.lookup(name);
-    if (configurableTask) {
-        consumes = consumes.concat(configurableTask.consumes);
-    }
-    return consumes;
+    return configurableTask && configurableTask.consumes;
 }
 
 function hasSubTasks(subTaskConfigs) {
@@ -163,7 +158,7 @@ function registerGulpTask(prefix, task, depends) {
 }
 
 function createHelpGulpTask(gulp) {
-	gulp.task('help', require('./task_helper'));
+	gulp.task('help', require('./help'));
 }
 
 module.exports = function (useGulp, taskConfigs) {

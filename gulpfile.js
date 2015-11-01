@@ -1,7 +1,7 @@
 var gulp = require('gulp');
 
 //var createGulpTasks = require('gulp-config-task-runner');
-var createGulpTasks = require('./src');
+var createGulpTasks = require('.');
 
 var config = {
 	src: 'src',

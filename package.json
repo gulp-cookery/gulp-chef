@@ -2,7 +2,7 @@
   "name": "configurable-gulp-recipes",
   "version": "0.1.0",
   "description": "Gulp recipes ready to use and configurable.",
-  "main": "src/index.js",
+  "main": "index.js",
   "scripts": {
     "test": "gulp test",
     "debug": "node ./node_modules/gulp/bin/gulp.js build"
