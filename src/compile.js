@@ -42,7 +42,7 @@ function createConfigurableTask(prefix, name, taskConfig, parentConfig) {
 	} else {
 		configs = Configuration.sort_deprecated(taskConfig, parentConfig, consumes);
 	}
-	runner = createConfigurableRunner(prefix, configs);
+	runner = recipeRunner(configs) || streamRunner(configs, prefix) || taskRunner(configs) || defaultRunner();
 	task = ConfigurableTask.createConfigurableTask(taskInfo, configs.taskConfig, runner);
 
 	if (!task.visibility) {
@@ -52,67 +52,63 @@ function createConfigurableTask(prefix, name, taskConfig, parentConfig) {
 	return task;
 }
 
-function createConfigurableRunner(prefix, configs) {
-	return recipeRunner() || streamRunner() || taskRunner() || defaultRunner();
-
-	/**
-	 * if there is a matching recipe, use it and ignore any sub-configs.
-	 */
-	function recipeRunner() {
-		if (isRecipeTask(configs.taskInfo.name)) {
-			if (hasSubTasks(configs.subTaskConfigs)) {
-				// TODO: warn about ignoring sub-configs.
-			}
-			return stuff.recipes.lookup(configs.taskInfo.name);
+/**
+ * if there is a matching recipe, use it and ignore any sub-configs.
+ */
+function recipeRunner(configs) {
+	if (isRecipeTask(configs.taskInfo.name)) {
+		if (hasSubTasks(configs.subTaskConfigs)) {
+			// TODO: warn about ignoring sub-configs.
 		}
+		return stuff.recipes.lookup(configs.taskInfo.name);
+	}
 
-		function isRecipeTask(name) {
-			return !!stuff.recipes.lookup(name);
+	function isRecipeTask(name) {
+		return !!stuff.recipes.lookup(name);
+	}
+}
+
+/**
+ * if there is configurations not being consumed, then treat them as sub-tasks.
+ */
+function streamRunner(configs, prefix) {
+	var runner;
+
+	if (isStreamTask(configs.taskInfo.name, configs.subTaskConfigs)) {
+		runner = stuff.streams.lookup(configs.taskInfo.name);
+		return ConfigurableRunner.createStreamTaskRunner(prefix, configs, runner, createConfigurableTasks);
+	}
+
+	function isStreamTask(name, subTaskConfigs) {
+		return !!stuff.streams.lookup(name) || hasSubTasks(subTaskConfigs);
+	}
+}
+
+function taskRunner(configs) {
+	var task = configs.taskInfo.task;
+	return inlineRunner() || referenceRunner() || parallelRunner();
+
+	function inlineRunner() {
+		if (typeof task === 'function') {
+			return task;
 		}
 	}
 
-	/**
-	 * if there is configurations not being consumed, then treat them as sub-tasks.
-	 */
-	function streamRunner() {
-		var runner;
-
-		if (isStreamTask(configs.taskInfo.name, configs.subTaskConfigs)) {
-			runner = stuff.streams.lookup(configs.taskInfo.name);
-			return ConfigurableRunner.createStreamTaskRunner(prefix, configs, runner, createConfigurableTasks);
-		}
-
-		function isStreamTask(name, subTaskConfigs) {
-			return !!stuff.streams.lookup(name) || hasSubTasks(subTaskConfigs);
+	function referenceRunner() {
+		if (typeof task === 'string') {
+			return ConfigurableRunner.createReferenceTaskRunner(task);
 		}
 	}
 
-	function taskRunner() {
-		var task = configs.taskInfo.task;
-		return inlineRunner() || referenceRunner() || parallelRunner();
-
-		function inlineRunner() {
-			if (typeof task === 'function') {
-				return task;
-			}
-		}
-
-		function referenceRunner() {
-			if (typeof task === 'string') {
-				return ConfigurableRunner.createReferenceTaskRunner(task);
-			}
-		}
-
-		function parallelRunner() {
-			if (Array.isArray(task)) {
-				return ConfigurableRunner.createParallelTaskRunner(task);
-			}
+	function parallelRunner() {
+		if (Array.isArray(task)) {
+			return ConfigurableRunner.createParallelTaskRunner(task);
 		}
 	}
+}
 
-	function defaultRunner() {
-		return stuff.recipes.lookup('copy');
-	}
+function defaultRunner() {
+	return stuff.recipes.lookup('copy');
 }
 
 function getTaskSchema(name) {

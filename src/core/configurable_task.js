@@ -39,6 +39,7 @@ function createConfigurableTask(taskInfo, taskConfig, configurableRunner) {
 	// invoked from stream processor
 	var run = function(gulp, injectConfig, stream, done) {
 		// inject and realize runtime configuration.
+		// TODO: let json-normalizer add defaults.
 		var config = Configuration.realize(taskConfig, injectConfig, configurableRunner.defaults);
 		return configurableRunner(gulp, config, stream, done);
 	};
