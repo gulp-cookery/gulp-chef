@@ -72,21 +72,22 @@ describe('Core', function () {
 				});
 			});
 		});
-		describe('createReferenceTaskRunner()', function () {
-			var gulpTask, configurableTask;
+		describe('#reference()', function () {
+			var factory, gulpTask, configurableTask;
 
 			beforeEach(function () {
+				factory = new ConfigurableRunnerFactory({});
 				gulpTask = createSpyGulpTask(gulp, 'spy');
 				configurableTask = createSpyConfigurableTask(gulp, 'configurable');
 			});
 
 			it('should throw at runtime if the referring task not found', function() {
-				var actual = ConfigurableRunnerFactory.createReferenceTaskRunner('not-exist');
+				var actual = factory.reference('not-exist');
 				expect(function () { actual.call(gulp, gulp, {}, null, done); }).to.throw(ConfigurationError);
 			});
 
 			it('should wrap a normal gulp task', function() {
-				var actual = ConfigurableRunnerFactory.createReferenceTaskRunner('spy');
+				var actual = factory.reference('spy');
 				expect(actual).to.be.a('function');
 				actual.call(null, gulp, {}, null, done);
 				expect(gulpTask.calledOn(gulp)).to.be.true;
@@ -94,7 +95,7 @@ describe('Core', function () {
 			});
 
 			it("should call target's run() at runtime if already a ConfigurableTask", function() {
-				var actual = ConfigurableRunnerFactory.createReferenceTaskRunner('configurable');
+				var actual = factory.reference('configurable');
 				expect(actual).to.be.a('function');
 				actual.call(null, gulp, {}, null, done);
 				expect(configurableTask.run.calledOn(configurableTask)).to.be.true;

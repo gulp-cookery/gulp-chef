@@ -37,7 +37,19 @@ function ConfigurableTaskRunnerFactory(stuff) {
 }
 
 ConfigurableTaskRunnerFactory.prototype.reference = function (taskName) {
-
+	if (typeof taskName === 'string') {
+		return function (gulp, config, stream, done) {
+			var task = gulp.task(taskName);
+			if (!task) {
+				throw new ConfigurationError(__filename, 'referring task not found: ' + taskName);
+			}
+			if (task.run) {
+				return task.run(gulp, config, stream, done);
+			}
+			// support for tasks registered directly via gulp.task().
+			return task.call(gulp, done);
+		};
+	}
 };
 
 function createStreamTaskRunner(prefix, configs, streamTaskRunner, createConfigurableTasks) {
@@ -80,22 +92,6 @@ function createStreamTaskRunner(prefix, configs, streamTaskRunner, createConfigu
 	}
 }
 
-function createReferenceTaskRunner(taskName) {
-	if (typeof taskName === 'string') {
-		return function (gulp, config, stream, done) {
-			var task = gulp.task(taskName);
-			if (!task) {
-				throw new ConfigurationError(__filename, 'referring task not found: ' + taskName);
-			}
-			if (task.run) {
-				return task.run(gulp, config, stream, done);
-			}
-			// support for tasks registered directly via gulp.task().
-			return task.call(gulp, done);
-		};
-	}
-}
-
 function createParallelTaskRunner(tasks) {
 	if (Array.isArray(tasks)) {
 		return function(gulp, config, stream, done) {
@@ -113,7 +109,6 @@ function createWrapperTaskRunner(task) {
 }
 
 ConfigurableTaskRunnerFactory.createStreamTaskRunner = createStreamTaskRunner;
-ConfigurableTaskRunnerFactory.createReferenceTaskRunner = createReferenceTaskRunner;
 ConfigurableTaskRunnerFactory.createParallelTaskRunner = createParallelTaskRunner;
 ConfigurableTaskRunnerFactory.createWrapperTaskRunner = createWrapperTaskRunner;
 
