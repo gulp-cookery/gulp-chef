@@ -7,7 +7,7 @@ var expect = Chai.expect;
 var _ = require('lodash');
 var base = process.cwd();
 
-var ConfigurableRunner = require(base + '/src/core/configurable_runner');
+var ConfigurableRunnerFactory = require(base + '/src/core/configurable_runner_factory');
 var ConfigurationError = require(base + '/src/core/configuration_error');
 
 var FakeGulp = require(base + '/test/fake_gulp');
@@ -31,7 +31,7 @@ function createSpyConfigurableTask(gulp, name, configurableRunner) {
 }
 
 describe('Core', function () {
-	describe('ConfigurableRunner', function () {
+	describe('ConfigurableRunnerFactory', function () {
 		describe('createStreamTaskRunner()', function () {
 			var prefix = '';
 			var configs = {
@@ -60,11 +60,11 @@ describe('Core', function () {
 			});
 
 			it('should create a stream runner', function () {
-				var actual = ConfigurableRunner.createStreamTaskRunner(prefix, configs, streamRunner, createConfigurableTasks);
+				var actual = ConfigurableRunnerFactory.createStreamTaskRunner(prefix, configs, streamRunner, createConfigurableTasks);
 				expect(actual).to.be.a('function');
 			});
 			it('should invoke sub-tasks at runtime', function () {
-				var actual = ConfigurableRunner.createStreamTaskRunner(prefix, configs, streamRunner, createConfigurableTasks);
+				var actual = ConfigurableRunnerFactory.createStreamTaskRunner(prefix, configs, streamRunner, createConfigurableTasks);
 				actual.call(null, gulp, {}, null, done);
 				subTasks.forEach(function(task) {
 					expect(task.run.calledOn(task)).to.be.true;
@@ -81,12 +81,12 @@ describe('Core', function () {
 			});
 
 			it('should throw at runtime if the referring task not found', function() {
-				var actual = ConfigurableRunner.createReferenceTaskRunner('not-exist');
+				var actual = ConfigurableRunnerFactory.createReferenceTaskRunner('not-exist');
 				expect(function () { actual.call(gulp, gulp, {}, null, done); }).to.throw(ConfigurationError);
 			});
 
 			it('should wrap a normal gulp task', function() {
-				var actual = ConfigurableRunner.createReferenceTaskRunner('spy');
+				var actual = ConfigurableRunnerFactory.createReferenceTaskRunner('spy');
 				expect(actual).to.be.a('function');
 				actual.call(null, gulp, {}, null, done);
 				expect(gulpTask.calledOn(gulp)).to.be.true;
@@ -94,7 +94,7 @@ describe('Core', function () {
 			});
 
 			it("should call target's run() at runtime if already a ConfigurableTask", function() {
-				var actual = ConfigurableRunner.createReferenceTaskRunner('configurable');
+				var actual = ConfigurableRunnerFactory.createReferenceTaskRunner('configurable');
 				expect(actual).to.be.a('function');
 				actual.call(null, gulp, {}, null, done);
 				expect(configurableTask.run.calledOn(configurableTask)).to.be.true;
@@ -129,12 +129,12 @@ describe('Core', function () {
 			});
 
 			it('should create a function', function() {
-				var actual = ConfigurableRunner.createParallelTaskRunner(tasks);
+				var actual = ConfigurableRunnerFactory.createParallelTaskRunner(tasks);
 				expect(actual).to.be.a('function');
 			});
 
 			it('should each tasks eventually be called when call the generated function', function() {
-				var actual = ConfigurableRunner.createParallelTaskRunner(tasks);
+				var actual = ConfigurableRunnerFactory.createParallelTaskRunner(tasks);
 				actual.call(gulp, gulp, {}, null, done);
 				expect(tasks[0].run.called).to.be.true;
 				expect(tasks[1].run.called).to.be.true;

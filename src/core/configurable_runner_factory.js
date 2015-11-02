@@ -32,6 +32,14 @@ var merge = require('../streams/merge');
 var ConfigurableTask = require('./configurable_task');
 var ConfigurationError = require('./configuration_error');
 
+function ConfigurableTaskRunnerFactory(stuff) {
+	this.stuff = stuff;
+}
+
+ConfigurableTaskRunnerFactory.prototype.reference = function (taskName) {
+
+};
+
 function createStreamTaskRunner(prefix, configs, streamTaskRunner, createConfigurableTasks) {
 	// TODO: remove stream runner form parent's config.
 	var tasks = _createSubTasks();
@@ -104,9 +112,9 @@ function createWrapperTaskRunner(task) {
 	}
 }
 
-module.exports = {
-	createStreamTaskRunner: createStreamTaskRunner,
-	createReferenceTaskRunner: createReferenceTaskRunner,
-	createParallelTaskRunner: createParallelTaskRunner,
-	createWrapperTaskRunner: createWrapperTaskRunner
-};
+ConfigurableTaskRunnerFactory.createStreamTaskRunner = createStreamTaskRunner;
+ConfigurableTaskRunnerFactory.createReferenceTaskRunner = createReferenceTaskRunner;
+ConfigurableTaskRunnerFactory.createParallelTaskRunner = createParallelTaskRunner;
+ConfigurableTaskRunnerFactory.createWrapperTaskRunner = createWrapperTaskRunner;
+
+module.exports = ConfigurableTaskRunnerFactory;

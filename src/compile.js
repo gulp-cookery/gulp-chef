@@ -3,7 +3,7 @@ var gulp;
 
 var _ = require('lodash');
 
-var ConfigurableRunner = require('./core/configurable_runner');
+var ConfigurableRunnerFactory = require('./core/configurable_runner_factory');
 var ConfigurableTask = require('./core/configurable_task');
 var Configuration = require('./core/configuration');
 
@@ -76,7 +76,7 @@ function streamRunner(configs, prefix) {
 
 	if (isStreamTask(configs.taskInfo.name, configs.subTaskConfigs)) {
 		runner = stuff.streams.lookup(configs.taskInfo.name);
-		return ConfigurableRunner.createStreamTaskRunner(prefix, configs, runner, createConfigurableTasks);
+		return ConfigurableRunnerFactory.createStreamTaskRunner(prefix, configs, runner, createConfigurableTasks);
 	}
 
 	function isStreamTask(name, subTaskConfigs) {
@@ -96,13 +96,13 @@ function taskRunner(configs) {
 
 	function referenceRunner() {
 		if (typeof task === 'string') {
-			return ConfigurableRunner.createReferenceTaskRunner(task);
+			return ConfigurableRunnerFactory.createReferenceTaskRunner(task);
 		}
 	}
 
 	function parallelRunner() {
 		if (Array.isArray(task)) {
-			return ConfigurableRunner.createParallelTaskRunner(task);
+			return ConfigurableRunnerFactory.createParallelTaskRunner(task);
 		}
 	}
 }
