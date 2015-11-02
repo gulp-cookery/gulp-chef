@@ -52,6 +52,14 @@ ConfigurableTaskRunnerFactory.prototype.reference = function (taskName) {
 	}
 };
 
+ConfigurableTaskRunnerFactory.prototype.parallel = function (tasks) {
+	if (Array.isArray(tasks)) {
+		return function(gulp, config, stream, done) {
+			return parallel(gulp, config, stream, tasks);
+		};
+	}
+}
+
 function createStreamTaskRunner(prefix, configs, streamTaskRunner, createConfigurableTasks) {
 	// TODO: remove stream runner form parent's config.
 	var tasks = _createSubTasks();
@@ -92,14 +100,6 @@ function createStreamTaskRunner(prefix, configs, streamTaskRunner, createConfigu
 	}
 }
 
-function createParallelTaskRunner(tasks) {
-	if (Array.isArray(tasks)) {
-		return function(gulp, config, stream, done) {
-			return parallel(gulp, config, stream, tasks);
-		};
-	}
-}
-
 function createWrapperTaskRunner(task) {
 	if (typeof task === 'function') {
 		return function(gulp, config, stream, done) {
@@ -109,7 +109,6 @@ function createWrapperTaskRunner(task) {
 }
 
 ConfigurableTaskRunnerFactory.createStreamTaskRunner = createStreamTaskRunner;
-ConfigurableTaskRunnerFactory.createParallelTaskRunner = createParallelTaskRunner;
 ConfigurableTaskRunnerFactory.createWrapperTaskRunner = createWrapperTaskRunner;
 
 module.exports = ConfigurableTaskRunnerFactory;

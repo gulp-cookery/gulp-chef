@@ -102,10 +102,11 @@ describe('Core', function () {
 				expect(configurableTask.run.calledWithExactly(gulp, {}, null, done)).to.be.true;
 			});
 		});
-		describe('createParallelTaskRunner()', function () {
-			var spy, configurable, run, tasks;
+		describe('#parallel()', function () {
+			var factory, spy, configurable, run, tasks;
 
 			beforeEach(function () {
+				factory = new ConfigurableRunnerFactory({});
 				spy = Sinon.spy();
 				spy.displayName = 'spy';
 				gulp.task(spy);
@@ -130,12 +131,12 @@ describe('Core', function () {
 			});
 
 			it('should create a function', function() {
-				var actual = ConfigurableRunnerFactory.createParallelTaskRunner(tasks);
+				var actual = factory.parallel(tasks);
 				expect(actual).to.be.a('function');
 			});
 
 			it('should each tasks eventually be called when call the generated function', function() {
-				var actual = ConfigurableRunnerFactory.createParallelTaskRunner(tasks);
+				var actual = factory.parallel(tasks);
 				actual.call(gulp, gulp, {}, null, done);
 				expect(tasks[0].run.called).to.be.true;
 				expect(tasks[1].run.called).to.be.true;
