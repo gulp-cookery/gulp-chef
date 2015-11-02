@@ -13,59 +13,86 @@ var ConfigurationError = require(base + '/src/core/configuration_error');
 
 var FakeGulp = require(base + '/test/fake_gulp');
 var test = require(base + '/test/testcase_runner');
-var gulp = new FakeGulp();
 
 function done(err) {
 }
 
-function createSpyGulpTask(gulp, name, gulpTask) {
+function createSpyGulpTask(name, gulpTask) {
 	var task = Sinon.spy(gulpTask);
 	task.displayName = name;
-	gulp.task(task);
 	return task;
 }
 
-function createSpyConfigurableTask(gulp, name, configurableRunner) {
-	var task = createSpyGulpTask(gulp, name);
-	task.run = Sinon.spy(configurableRunner);
+function createSpyConfigurableTask(name, configurableRunner, taskConfig) {
+	var run, task;
+	configurableRunner = configurableRunner || Sinon.spy();
+	taskConfig = taskConfig || {};
+	run = Sinon.spy(function (gulp, config, stream, done) {
+		config = _.defaultsDeep([], taskConfig, config);
+		configurableRunner(gulp, config, stream, done);
+	});
+	task = createSpyGulpTask(name, function (done) {
+		run(this, taskConfig, null, done);
+	});
+	task.run = run;
 	return task;
+}
+
+function createFakeStuff() {
+	return {
+		stream: new ConfigurableRunnerRegistry({
+			merge: fakeStreamRunner,
+			'stream-task': fakeStreamRunner
+		})
+	};
+
+	function fakeStreamRunner(gulp, config, stream, tasks) {
+		tasks.forEach(function (task) {
+			task.run(gulp, config, stream, done);
+		});
+	}
 }
 
 describe('Core', function () {
 	describe('ConfigurableRunnerFactory', function () {
-		describe('#stream()', function () {
-			var streamRunner = function (gulp, config, stream, tasks) {
-				tasks.forEach(function (task) {
-					task.run(gulp, config, stream, done);
-				});
-			};
-			var stuff = {
-				stream: new ConfigurableRunnerRegistry({
-					merge: streamRunner,
-					'stream-task': streamRunner
-				})
-			};
-			var factory = new ConfigurableRunnerFactory(stuff);
-			var prefix = '';
-			var configs = {
-				taskInfo: {
-					name: 'stream-task'
+		var gulpTask, configurableTask, configurableTaskConfig, configurableTaskRefConfig, gulp, factory;
+
+		var stuff = createFakeStuff();
+		var configs = {
+			taskInfo: {
+				name: 'stream-task'
+			},
+			taskConfig: {
+			},
+			subTaskConfigs: {
+				task1: {
 				},
-				taskConfig: {
-				},
-				subTaskConfigs: {
-					task1: {
-					},
-					task2: {
-					}
+				task2: {
 				}
-			};
-			var subTasks;
-			var createConfigurableTasks = Sinon.spy(function (prefix, subTaskConfigs, parentConfig) {
-				return subTasks = _.map(subTaskConfigs, function(config, name) {
-					return createSpyConfigurableTask(gulp, name);
-				});;
-			});
+			}
+		};
+		var subTasks;
+		var createConfigurableTasks = Sinon.spy(function (prefix, subTaskConfigs, parentConfig) {
+			return subTasks = _.map(subTaskConfigs, function(config, name) {
+				return createSpyConfigurableTask(name);
+			});;
+		});
+
+		beforeEach(function () {
+			factory = new ConfigurableRunnerFactory(stuff);
+			gulp = new FakeGulp();
+			gulpTask = createSpyGulpTask('gulp-task');
+			configurableTaskConfig = { keyword: 'configurable-task' };
+			configurableTask = createSpyConfigurableTask('configurable-task', Sinon.spy(), configurableTaskConfig);
+			gulp.task(gulpTask);
+			gulp.task(configurableTask);
+			gulp.task(createSpyGulpTask('gulp-task-by-ref'));
+			configurableTaskRefConfig = { keyword: 'configurable-task-by-ref' };
+			gulp.task(createSpyConfigurableTask('configurable-task-by-ref', Sinon.spy(), configurableTaskRefConfig));
+		});
+
+		describe('#stream()', function () {
+			var prefix = '';
 
 			it('should create a stream runner', function () {
 				var actual = factory.stream(prefix, configs, createConfigurableTasks);
@@ -81,61 +108,38 @@ describe('Core', function () {
 			});
 		});
 		describe('#reference()', function () {
-			var factory, gulpTask, configurableTask;
-
-			beforeEach(function () {
-				factory = new ConfigurableRunnerFactory({});
-				gulpTask = createSpyGulpTask(gulp, 'spy');
-				configurableTask = createSpyConfigurableTask(gulp, 'configurable');
-			});
-
 			it('should throw at runtime if the referring task not found', function() {
 				var actual = factory.reference('not-exist');
 				expect(function () { actual.call(gulp, gulp, {}, null, done); }).to.throw(ConfigurationError);
 			});
 
 			it('should wrap a normal gulp task', function() {
-				var actual = factory.reference('spy');
+				var actual = factory.reference(gulpTask.displayName);
 				expect(actual).to.be.a('function');
-				actual.call(null, gulp, {}, null, done);
+				actual(gulp, {}, null, done);
 				expect(gulpTask.calledOn(gulp)).to.be.true;
 				expect(gulpTask.calledWithExactly(done)).to.be.true;
 			});
 
 			it("should call target's run() at runtime if already a ConfigurableTask", function() {
-				var actual = factory.reference('configurable');
+				var actual = factory.reference(configurableTask.displayName);
 				expect(actual).to.be.a('function');
-				actual.call(null, gulp, {}, null, done);
+				actual(gulp, {}, null, done);
 				expect(configurableTask.run.calledOn(configurableTask)).to.be.true;
 				expect(configurableTask.run.calledWithExactly(gulp, {}, null, done)).to.be.true;
 			});
 		});
 		describe('#parallel()', function () {
-			var factory, spy, configurable, run, tasks;
+			var tasks;
 
 			beforeEach(function () {
-				factory = new ConfigurableRunnerFactory({});
-				spy = Sinon.spy();
-				spy.displayName = 'spy';
-				gulp.task(spy);
-
-				run = Sinon.spy();
-				configurable = Sinon.spy();
-				configurable.displayName = 'configurable';
-				gulp.task(configurable);
-				configurable.run = run;
-
 				tasks = [
-					fn(),
-					fn(),
-					fn()
+					'gulp-task-by-ref',			// reference to registered gulp task
+					'configurable-task-by-ref',	// reference to registered gulp task runner
+					gulpTask,					// registered gulp task
+					configurableTask,			// registered gulp task runner
+					Sinon.spy()					// stand-alone gulp task runner (not registered to gulp)
 				];
-
-				function fn(f) {
-					var task = function () {};
-					task.run = Sinon.spy(f);
-					return task;
-				}
 			});
 
 			it('should create a function', function() {
@@ -145,10 +149,12 @@ describe('Core', function () {
 
 			it('should each tasks eventually be called when call the generated function', function() {
 				var actual = factory.parallel(tasks);
-				actual.call(gulp, gulp, {}, null, done);
-				expect(tasks[0].run.called).to.be.true;
-				expect(tasks[1].run.called).to.be.true;
-				expect(tasks[2].run.called).to.be.true;
+				actual(gulp, {}, null, done);
+				expect(gulp.task('gulp-task-by-ref').called).to.be.true;
+				expect(gulp.task('configurable-task-by-ref').run.called).to.be.true;
+				expect(gulpTask.called).to.be.true;
+				expect(configurableTask.run.called).to.be.true;
+				expect(configurableTask.run.calledWith(gulp, {}, null)).to.be.true;
 			});
 		});
 	});

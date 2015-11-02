@@ -31,6 +31,14 @@ var parallel = require('../flows/parallel');
 var ConfigurableTask = require('./configurable_task');
 var ConfigurationError = require('./configuration_error');
 
+/**
+ * A ConfigurableTaskRunnerFactory creates runner function of the following signature:
+ * ```
+ * function (gulp, config, stream, done)
+ * ```
+ * @param stuff
+ * @constructor
+ */
 function ConfigurableTaskRunnerFactory(stuff) {
 	this.stuff = stuff;
 }
@@ -82,10 +90,13 @@ ConfigurableTaskRunnerFactory.prototype.reference = function (taskName) {
 	if (typeof taskName === 'string') {
 		return function (gulp, config, stream, done) {
 			var task = gulp.task(taskName);
+			if (taskName === 'configurable-task') {
+				debugger;
+			}
 			if (!task) {
 				throw new ConfigurationError(__filename, 'referring task not found: ' + taskName);
 			}
-			if (task.run) {
+			if (typeof task.run === 'function') {
 				return task.run(gulp, config, stream, done);
 			}
 			// support for tasks registered directly via gulp.task().
@@ -95,11 +106,40 @@ ConfigurableTaskRunnerFactory.prototype.reference = function (taskName) {
 };
 
 ConfigurableTaskRunnerFactory.prototype.parallel = function (tasks) {
+	var self = this;
+
 	if (Array.isArray(tasks)) {
-		return function(gulp, config, stream, done) {
-			return parallel(gulp, config, stream, tasks);
+
+		tasks = tasks.map(function(task) {
+			if (typeof task === 'string') {
+				return self.reference(task);
+			} else if (typeof task === 'function') {
+				if (typeof task.run === 'function') {
+					return task.run;
+				}
+				return self.wrapper(task);
+			}
+			return function () {};
+		});
+
+		return function(gulp, config, stream/*, done*/) {
+			// TODO: replace fake implementation
+			for (var i = 0; i < tasks.length; ++i) {
+				tasks[i](gulp, config, stream, done);
+			}
+
+			function done() {
+			}
 		};
 	}
 }
+
+ConfigurableTaskRunnerFactory.prototype.wrapper = function (task) {
+	if (typeof task === 'function') {
+		return function(gulp, config, stream, done) {
+			return task.call(gulp, done);
+		};
+	}
+};
 
 module.exports = ConfigurableTaskRunnerFactory;

@@ -1,7 +1,7 @@
 'use strict';
 
-function FakeGulp() {
-	this.taskRegistry = {};
+function FakeGulp(tasks) {
+	this.taskRegistry = tasks || {};
 }
 
 FakeGulp.prototype.task = function(name, runner) {
