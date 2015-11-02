@@ -7,6 +7,7 @@ var expect = Chai.expect;
 var _ = require('lodash');
 var base = process.cwd();
 
+var ConfigurableRunnerRegistry = require(base + '/src/core/configurable_runner_registry');
 var ConfigurableRunnerFactory = require(base + '/src/core/configurable_runner_factory');
 var ConfigurationError = require(base + '/src/core/configuration_error');
 
@@ -32,7 +33,19 @@ function createSpyConfigurableTask(gulp, name, configurableRunner) {
 
 describe('Core', function () {
 	describe('ConfigurableRunnerFactory', function () {
-		describe('createStreamTaskRunner()', function () {
+		describe('#stream()', function () {
+			var streamRunner = function (gulp, config, stream, tasks) {
+				tasks.forEach(function (task) {
+					task.run(gulp, config, stream, done);
+				});
+			};
+			var stuff = {
+				stream: new ConfigurableRunnerRegistry({
+					merge: streamRunner,
+					'stream-task': streamRunner
+				})
+			};
+			var factory = new ConfigurableRunnerFactory(stuff);
 			var prefix = '';
 			var configs = {
 				taskInfo: {
@@ -47,11 +60,6 @@ describe('Core', function () {
 					}
 				}
 			};
-			var streamRunner = function (gulp, config, stream, tasks) {
-				tasks.forEach(function (task) {
-					task.run(gulp, config, stream, done);
-				});
-			};
 			var subTasks;
 			var createConfigurableTasks = Sinon.spy(function (prefix, subTaskConfigs, parentConfig) {
 				return subTasks = _.map(subTaskConfigs, function(config, name) {
@@ -60,11 +68,11 @@ describe('Core', function () {
 			});
 
 			it('should create a stream runner', function () {
-				var actual = ConfigurableRunnerFactory.createStreamTaskRunner(prefix, configs, streamRunner, createConfigurableTasks);
+				var actual = factory.stream(prefix, configs, createConfigurableTasks);
 				expect(actual).to.be.a('function');
 			});
 			it('should invoke sub-tasks at runtime', function () {
-				var actual = ConfigurableRunnerFactory.createStreamTaskRunner(prefix, configs, streamRunner, createConfigurableTasks);
+				var actual = factory.stream(prefix, configs, createConfigurableTasks);
 				actual.call(null, gulp, {}, null, done);
 				subTasks.forEach(function(task) {
 					expect(task.run.calledOn(task)).to.be.true;

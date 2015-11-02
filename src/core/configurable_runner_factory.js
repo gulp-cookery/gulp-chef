@@ -27,7 +27,6 @@
 'use strict';
 
 var parallel = require('../flows/parallel');
-var merge = require('../streams/merge');
 
 var ConfigurableTask = require('./configurable_task');
 var ConfigurationError = require('./configuration_error');
@@ -35,6 +34,49 @@ var ConfigurationError = require('./configuration_error');
 function ConfigurableTaskRunnerFactory(stuff) {
 	this.stuff = stuff;
 }
+
+ConfigurableTaskRunnerFactory.prototype.stream = function (prefix, configs, createConfigurableTasks) {
+	var stuff = this.stuff;
+
+	// TODO: remove stream runner form parent's config.
+	var tasks = _createSubTasks();
+	return _createStreamTaskRunner(tasks);
+
+	function _createSubTasks() {
+		var hidden;
+
+		if (stuff.stream.lookup(configs.taskInfo.name)) {
+			hidden = true;
+		} else {
+			hidden = !!configs.taskInfo.visibility;
+		}
+		if (!hidden) {
+			prefix = prefix + configs.taskInfo.name + ':';
+		}
+
+		return createConfigurableTasks(prefix, configs.subTaskConfigs, configs.taskConfig);
+	}
+
+	function _createStreamTaskRunner(tasks) {
+		var runner = explicitRunner() || implicitRunner();
+		// NOTE: important! watch the difference of signature between recipe runner and stream runner.
+		return function(gulp, config, stream /*, done*/ ) {
+			return runner(gulp, config, stream, tasks);
+		};
+	}
+
+	function explicitRunner() {
+		var runner = stuff.stream.lookup(configs.taskInfo.name);
+		if (runner) {
+			configs.taskInfo.visibility = ConfigurableTask.CONSTANT.VISIBILITY.HIDDEN;
+			return runner;
+		}
+	}
+
+	function implicitRunner() {
+		return stuff.stream.lookup('merge');
+	}
+};
 
 ConfigurableTaskRunnerFactory.prototype.reference = function (taskName) {
 	if (typeof taskName === 'string') {
@@ -59,56 +101,5 @@ ConfigurableTaskRunnerFactory.prototype.parallel = function (tasks) {
 		};
 	}
 }
-
-function createStreamTaskRunner(prefix, configs, streamTaskRunner, createConfigurableTasks) {
-	// TODO: remove stream runner form parent's config.
-	var tasks = _createSubTasks();
-	return _createStreamTaskRunner(tasks);
-
-	function _createSubTasks() {
-		var hidden;
-
-		if (streamTaskRunner) {
-			hidden = true;
-		} else {
-			hidden = !!configs.taskInfo.visibility;
-		}
-		if (!hidden) {
-			prefix = prefix + configs.taskInfo.name + ':';
-		}
-
-		return createConfigurableTasks(prefix, configs.subTaskConfigs, configs.taskConfig);
-	}
-
-	function _createStreamTaskRunner(tasks) {
-		var runner = explicitRunner() || implicitRunner();
-		// NOTE: important! watch the difference of signature between recipe runner and stream runner.
-		return function(gulp, config, stream /*, done*/ ) {
-			return runner(gulp, config, stream, tasks);
-		};
-	}
-
-	function explicitRunner() {
-		if (streamTaskRunner) {
-			configs.taskInfo.visibility = ConfigurableTask.CONSTANT.VISIBILITY.HIDDEN;
-			return streamTaskRunner;
-		}
-	}
-
-	function implicitRunner() {
-		return merge;
-	}
-}
-
-function createWrapperTaskRunner(task) {
-	if (typeof task === 'function') {
-		return function(gulp, config, stream, done) {
-			return task.call(gulp, done);
-		}
-	}
-}
-
-ConfigurableTaskRunnerFactory.createStreamTaskRunner = createStreamTaskRunner;
-ConfigurableTaskRunnerFactory.createWrapperTaskRunner = createWrapperTaskRunner;
 
 module.exports = ConfigurableTaskRunnerFactory;
