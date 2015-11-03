@@ -90,9 +90,6 @@ ConfigurableTaskRunnerFactory.prototype.reference = function (taskName) {
 	if (typeof taskName === 'string') {
 		return function (gulp, config, stream, done) {
 			var task = gulp.task(taskName);
-			if (taskName === 'configurable-task') {
-				debugger;
-			}
 			if (!task) {
 				throw new ConfigurationError(__filename, 'referring task not found: ' + taskName);
 			}
