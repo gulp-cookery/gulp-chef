@@ -40,7 +40,10 @@ function createSpyConfigurableTask(name, configurableRunner, taskConfig) {
 
 function createFakeStuff() {
 	return {
-		stream: new ConfigurableRunnerRegistry({
+		recipes: new ConfigurableRunnerRegistry({
+			'recipe-task': Sinon.spy()
+		}),
+		streams: new ConfigurableRunnerRegistry({
 			merge: fakeStreamRunner,
 			'stream-task': fakeStreamRunner
 		})
@@ -91,6 +94,27 @@ describe('Core', function () {
 			gulp.task(createSpyConfigurableTask('configurable-task-by-ref', Sinon.spy(), configurableTaskRefConfig));
 		});
 
+		describe('#recipe()', function () {
+			var name = 'recipe-task';
+			var configs = {
+				taskInfo: {
+					name: name
+				},
+				taskConfig: {
+					id: 'recipe-config'
+				}
+			};
+			it('should create a recipe runner', function () {
+				var actual = factory.recipe(name, configs);
+				expect(actual).to.be.a('function');
+			});
+			it('should refer to correct recipe', function () {
+				var actual = factory.recipe(name, configs);
+				actual(gulp, configs.taskConfig, null, done);
+				expect(stuff.recipes.lookup(name).called).to.be.true;
+				expect(stuff.recipes.lookup(name).calledWithExactly(gulp, configs.taskConfig, null, done)).to.be.true;
+			});
+		});
 		describe('#stream()', function () {
 			var prefix = '';
 
@@ -100,7 +124,7 @@ describe('Core', function () {
 			});
 			it('should invoke sub-tasks at runtime', function () {
 				var actual = factory.stream(prefix, configs, createConfigurableTasks);
-				actual.call(null, gulp, {}, null, done);
+				actual(gulp, {}, null, done);
 				subTasks.forEach(function(task) {
 					expect(task.run.calledOn(task)).to.be.true;
 					expect(task.run.calledWithExactly(gulp, {}, null, done)).to.be.true;

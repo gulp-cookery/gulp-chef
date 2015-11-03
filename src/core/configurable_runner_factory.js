@@ -26,10 +26,18 @@
  */
 'use strict';
 
+var _ = require('lodash');
+
 var parallel = require('../flows/parallel');
 
 var ConfigurableTask = require('./configurable_task');
 var ConfigurationError = require('./configuration_error');
+
+
+function hasSubTasks(subTaskConfigs) {
+	return _.size(subTaskConfigs) > 0;
+}
+
 
 /**
  * A ConfigurableTaskRunnerFactory creates runner function of the following signature:
@@ -43,6 +51,25 @@ function ConfigurableTaskRunnerFactory(stuff) {
 	this.stuff = stuff;
 }
 
+/**
+ * if there is a matching recipe, use it and ignore any sub-configs.
+ */
+ConfigurableTaskRunnerFactory.prototype.recipe = function (name, configs) {
+	var self = this;
+
+	if (isRecipeTask(name)) {
+		if (hasSubTasks(configs.subTaskConfigs)) {
+			// TODO: warn about ignoring sub-configs.
+		}
+		return this.stuff.recipes.lookup(name);
+	}
+
+	function isRecipeTask(name) {
+		return !!self.stuff.recipes.lookup(name);
+	}
+}
+
+
 ConfigurableTaskRunnerFactory.prototype.stream = function (prefix, configs, createConfigurableTasks) {
 	var stuff = this.stuff;
 
@@ -53,7 +80,7 @@ ConfigurableTaskRunnerFactory.prototype.stream = function (prefix, configs, crea
 	function _createSubTasks() {
 		var hidden;
 
-		if (stuff.stream.lookup(configs.taskInfo.name)) {
+		if (stuff.streams.lookup(configs.taskInfo.name)) {
 			hidden = true;
 		} else {
 			hidden = !!configs.taskInfo.visibility;
@@ -74,7 +101,7 @@ ConfigurableTaskRunnerFactory.prototype.stream = function (prefix, configs, crea
 	}
 
 	function explicitRunner() {
-		var runner = stuff.stream.lookup(configs.taskInfo.name);
+		var runner = stuff.streams.lookup(configs.taskInfo.name);
 		if (runner) {
 			configs.taskInfo.visibility = ConfigurableTask.CONSTANT.VISIBILITY.HIDDEN;
 			return runner;
@@ -82,7 +109,7 @@ ConfigurableTaskRunnerFactory.prototype.stream = function (prefix, configs, crea
 	}
 
 	function implicitRunner() {
-		return stuff.stream.lookup('merge');
+		return stuff.streams.lookup('merge');
 	}
 };
 
