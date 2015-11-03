@@ -46,7 +46,7 @@ module.exports = function (gulp, taskConfigs) {
 		} else {
 			configs = Configuration.sort_deprecated(taskConfig, parentConfig, consumes);
 		}
-		runner = factory.recipe(taskInfo.name, configs) || streamRunner(configs, prefix) || taskRunner(configs) || defaultRunner();
+		runner = factory.recipe(taskInfo.name, configs) || factory.stream(prefix, configs, createConfigurableTasks) || taskRunner(configs) || defaultRunner();
 		task = ConfigurableTask.createConfigurableTask(taskInfo, configs.taskConfig, runner);
 
 		if (!task.visibility) {
@@ -54,19 +54,6 @@ module.exports = function (gulp, taskConfigs) {
 			registerGulpTask(prefix, task, taskConfig.depends);
 		}
 		return task;
-	}
-
-	/**
-	 * if there is configurations not being consumed, then treat them as sub-tasks.
-	 */
-	function streamRunner(configs, prefix) {
-		if (isStreamTask(configs.taskInfo.name, configs.subTaskConfigs)) {
-			return factory.stream(prefix, configs, createConfigurableTasks);
-		}
-
-		function isStreamTask(name, subTaskConfigs) {
-			return !!stuff.streams.lookup(name) || hasSubTasks(subTaskConfigs);
-		}
 	}
 
 	function taskRunner(configs) {
@@ -104,10 +91,6 @@ module.exports = function (gulp, taskConfigs) {
 	function getTaskConsumes(name) {
 		var configurableTask = stuff.streams.lookup(name) || stuff.recipes.lookup(name);
 		return configurableTask && configurableTask.consumes;
-	}
-
-	function hasSubTasks(subTaskConfigs) {
-		return _.size(subTaskConfigs) > 0;
 	}
 
 	// TODO: warning about name collision.

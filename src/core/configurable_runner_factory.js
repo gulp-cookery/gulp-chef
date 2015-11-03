@@ -69,13 +69,21 @@ ConfigurableTaskRunnerFactory.prototype.recipe = function (name, configs) {
 	}
 }
 
-
+/**
+ * if there is configurations not being consumed, then treat them as sub-tasks.
+ */
 ConfigurableTaskRunnerFactory.prototype.stream = function (prefix, configs, createConfigurableTasks) {
-	var stuff = this.stuff;
+	var tasks, stuff = this.stuff;
 
 	// TODO: remove stream runner form parent's config.
-	var tasks = _createSubTasks();
-	return _createStreamTaskRunner(tasks);
+	if (isStreamTask(configs.taskInfo.name, configs.subTaskConfigs)) {
+		tasks = _createSubTasks();
+		return _createStreamTaskRunner(tasks);
+	}
+
+	function isStreamTask(name, subTaskConfigs) {
+		return !!stuff.streams.lookup(name) || hasSubTasks(subTaskConfigs);
+	}
 
 	function _createSubTasks() {
 		var hidden;
