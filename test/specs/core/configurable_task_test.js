@@ -79,7 +79,7 @@ describe('Core', function () {
 			test(ConfigurableTask.getTaskRuntimeInfo, testCases);
 		});
 		describe('createConfigurableTask()', function () {
-			var gulp, taskInfo, taskConfig, stream, done, configurableRunner, actual;
+			var gulp, taskInfo, taskConfig, stream, configurableRunner, actual;
 
 			gulp = new FakeGulp();
 
@@ -97,8 +97,6 @@ describe('Core', function () {
 				name: 'fake stream'
 			};
 
-			done = function() {};
-
 			beforeEach(function() {
 				configurableRunner = Sinon.spy();
 				actual = ConfigurableTask.createConfigurableTask(taskInfo, taskConfig, configurableRunner);
@@ -111,13 +109,28 @@ describe('Core', function () {
 				expect(actual.visibility).to.equal(taskInfo.visibility);
 				expect(actual.runtime).to.equal(taskInfo.runtime);
 			});
-			it('should wrap configurableRunner in run() method', function () {
+			it('should invoke configurableRunner() in configurableTask() method (as a gulp task)', function () {
+				actual.call(gulp, done);
+				expect(configurableRunner.calledWith(gulp, taskConfig, null, done)).to.be.true;
+			});
+			it('should invoke configurableRunner() in run() method (as a configurable task)', function () {
 				actual.run(gulp, taskConfig, stream, done);
 				expect(configurableRunner.calledWith(gulp, taskConfig, stream, done)).to.be.true;
 			});
-			it('should wrap configurableRunner in ConfigurableTask main method', function () {
-				actual.call(gulp, done);
-				expect(configurableRunner.calledWith(gulp, taskConfig, null, done)).to.be.true;
+			it('should be able to inject value and resolve config at runtime (as a configurable task)', function () {
+				var taskConfig = {
+					template: 'inject-value: {{inject-value}}'
+				};
+				var injectConfig = {
+					'inject-value': 'resolved-value'
+				}
+				var expectedConfig = {
+					template: 'inject-value: resolved-value',
+					'inject-value': 'resolved-value'
+				}
+				actual = ConfigurableTask.createConfigurableTask(taskInfo, taskConfig, configurableRunner);
+				actual.run(gulp, injectConfig, stream, done);
+				expect(configurableRunner.calledWith(gulp, expectedConfig, stream, done)).to.be.true;
 			});
 		});
 	});
