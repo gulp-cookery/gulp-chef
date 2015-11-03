@@ -135,10 +135,10 @@ describe('Core', function () {
 			beforeEach(function () {
 				tasks = [
 					'gulp-task-by-ref',			// reference to registered gulp task
-					'configurable-task-by-ref',	// reference to registered gulp task runner
+					'configurable-task-by-ref',	// reference to registered configurable task runner
 					gulpTask,					// registered gulp task
-					configurableTask,			// registered gulp task runner
-					Sinon.spy()					// stand-alone gulp task runner (not registered to gulp)
+					configurableTask,			// registered configurable task runner
+					Sinon.spy()					// stand-alone gulp task (not registered to gulp)
 				];
 			});
 
