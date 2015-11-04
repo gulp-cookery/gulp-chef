@@ -34,6 +34,14 @@ function getTaskRuntimeInfo(name) {
 	};
 }
 
+function isVisible(task) {
+	return task.visibility === CONSTANT.VISIBILITY.NORMAL;
+}
+
+function isDisabled(task) {
+	return task.visibility === CONSTANT.VISIBILITY.DISABLED;
+}
+
 // TODO: make sure config is inherited at config time and injectable at runtime.
 function create(prefix, taskInfo, taskConfig, configurableRunner) {
 	// invoked from stream processor
@@ -59,5 +67,7 @@ function create(prefix, taskInfo, taskConfig, configurableRunner) {
 module.exports = {
 	CONSTANT: CONSTANT,
 	getTaskRuntimeInfo: getTaskRuntimeInfo,
+	isVisible: isVisible,
+	isDisabled: isDisabled,
 	create: create
 };

@@ -3,8 +3,8 @@ var ConfigurableTaskRunnerFactory = require('./core/configurable_runner_factory'
 var ConfigurableTask = require('./core/configurable_task');
 var Configuration = require('./core/configuration');
 
-function configure(gulp, taskConfigs) {
-	createConfigurableTasks(taskConfigs, registerGulpTask);
+function configure(gulp, configs) {
+	createConfigurableTasks(configs, registerGulpTask);
 	createHelpGulpTask(registerGulpTask);
 
 	// TODO: warning about name collision.
@@ -15,10 +15,10 @@ function configure(gulp, taskConfigs) {
 	}
 }
 
-function createConfigurableTasks(taskConfigs, registerGulpTask) {
+function createConfigurableTasks(rawConfigs, registerGulpTask) {
 	var stuff = require('./stuff');
 	var runnerFactory = new ConfigurableTaskRunnerFactory(stuff);
-	var configs = Configuration.sort({}, taskConfigs, {}, {});
+	var configs = Configuration.sort({}, rawConfigs, {}, {});
 	createSubConfigurableTasks('', configs.subTaskConfigs, configs.taskConfig);
 
 	function createSubConfigurableTasks(prefix, subTaskConfigs, parentConfig) {
@@ -33,16 +33,16 @@ function createConfigurableTasks(taskConfigs, registerGulpTask) {
 		return tasks;
 	}
 
-	function createConfigurableTask(prefix, name, taskConfig, parentConfig) {
+	function createConfigurableTask(prefix, name, rawConfig, parentConfig) {
 		var schema, consumes, configs, taskInfo, runner, task;
 
 		taskInfo = ConfigurableTask.getTaskRuntimeInfo(name);
 
-		if (taskConfig.debug) {
+		if (rawConfig.debug) {
 			debugger;
 		}
 
-		if (taskInfo.visibility === ConfigurableTask.CONSTANT.VISIBILITY.DISABLED) {
+		if (ConfigurableTask.isDisabled(taskInfo)) {
 			return null;
 		}
 
@@ -50,16 +50,16 @@ function createConfigurableTasks(taskConfigs, registerGulpTask) {
 		consumes = getTaskConsumes(taskInfo.name);
 
 		if (schema) {
-			configs = Configuration.sort(taskInfo, taskConfig, parentConfig, schema);
+			configs = Configuration.sort(taskInfo, rawConfig, parentConfig, schema);
 		} else {
-			configs = Configuration.sort_deprecated(taskConfig, parentConfig, consumes);
+			configs = Configuration.sort_deprecated(rawConfig, parentConfig, consumes);
 		}
 		runner = runnerFactory.create(prefix, configs, createSubConfigurableTasks);
 		task = ConfigurableTask.create(prefix, taskInfo, configs.taskConfig, runner);
 
-		if (!task.visibility) {
+		if (ConfigurableTask.isVisible(task)) {
 			// TODO: call parallel for depends and then remove it from taskConfig.
-			registerGulpTask(task, taskConfig.depends);
+			registerGulpTask(task, configs.taskInfo.depends);
 		}
 		return task;
 	}

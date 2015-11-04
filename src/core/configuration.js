@@ -129,47 +129,47 @@ function realize(original, additional, defaults) {
 var src = normalize.bind(null, SCHEMA_DEFAULTS.properties.src);
 var dest = normalize.bind(null, SCHEMA_DEFAULTS.properties.dest);
 
-function sort(taskInfo, taskConfig, parentConfig, schema) {
-	var inheritedConfig, subTaskConfigs, value;
+function sort(taskInfo, rawConfig, parentConfig, schema) {
+	var inheritedConfig, taskConfig, subTaskConfigs, value;
 
-	taskInfo = _.defaultsDeep(taskInfo, _.pick(taskConfig, TASK_PROPERTIES));
-	taskConfig = _.omit(taskConfig, TASK_PROPERTIES);
+	taskInfo = _.defaultsDeep(taskInfo, _.pick(rawConfig, TASK_PROPERTIES));
+	rawConfig = _.omit(rawConfig, TASK_PROPERTIES);
 
-	inheritedConfig = {};
+	taskConfig = {};
 
 	if (parentConfig.src && !Array.isArray(parentConfig.src.globs)) {
 		throw TypeError('parentConfig.src not normalized');
 	}
-	if (taskConfig.src) {
-		value = src(taskConfig.src);
+	if (rawConfig.src) {
+		value = src(rawConfig.src);
 		if (parentConfig.src) {
 			value.globs = globsJoin(parentConfig.src.globs, value.globs);
 		}
-		inheritedConfig.src = value;
+		taskConfig.src = value;
 	}
 
 	if (parentConfig.dest && typeof parentConfig.dest.path !== 'string') {
 		throw TypeError('parentConfig.dest not normalized');
 	}
-	if (taskConfig.dest) {
-		value = dest(taskConfig.dest);
+	if (rawConfig.dest) {
+		value = dest(rawConfig.dest);
 		if (parentConfig.dest) {
 			// force dest since it may not already exists (dest must be a folder).
 			value.path = globsJoin(parentConfig.dest.path, value.path, true);
 		}
-		inheritedConfig.dest = value;
+		taskConfig.dest = value;
 	}
 
 	schema = _.defaultsDeep(schema, SCHEMA_DEFAULTS);
 
-	inheritedConfig = _.defaultsDeep(inheritedConfig, taskConfig, parentConfig);
-	inheritedConfig = normalize(schema, inheritedConfig) || {};
-	subTaskConfigs = inheritedConfig.others || {};
-	delete inheritedConfig.others;
+	inheritedConfig = _.defaultsDeep(taskConfig, rawConfig, parentConfig);
+	taskConfig = normalize(schema, inheritedConfig) || {};
+	subTaskConfigs = taskConfig.others || {};
+	delete taskConfig.others;
 
 	return {
 		taskInfo: taskInfo,
-		taskConfig: inheritedConfig,
+		taskConfig: taskConfig,
 		subTaskConfigs: subTaskConfigs
 	};
 }
