@@ -51,6 +51,46 @@ function ConfigurableTaskRunnerFactory(stuff) {
 	this.stuff = stuff;
 }
 
+ConfigurableTaskRunnerFactory.prototype.create = function (configs, prefix, createConfigurableTasks) {
+	var self = this;
+	return recipeRunner() || streamRunner() || taskRunner() || defaultRunner();
+
+	function recipeRunner() {
+		return self.recipe(configs.taskInfo.name, configs);
+	}
+
+	function streamRunner() {
+		return self.stream(prefix, configs, createConfigurableTasks);
+	}
+
+	function taskRunner() {
+		var task = configs.taskInfo.task;
+		return inlineRunner() || referenceRunner() || parallelRunner();
+
+		function inlineRunner() {
+			if (typeof task === 'function') {
+				return task;
+			}
+		}
+
+		function referenceRunner() {
+			if (typeof task === 'string') {
+				return self.reference(task);
+			}
+		}
+
+		function parallelRunner() {
+			if (Array.isArray(task)) {
+				return self.parallel(task);
+			}
+		}
+	}
+
+	function defaultRunner() {
+		return self.stuff.recipes.lookup('copy');
+	}
+};
+
 /**
  * if there is a matching recipe, use it and ignore any sub-configs.
  */

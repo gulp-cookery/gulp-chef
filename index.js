@@ -1,1 +1,1 @@
-module.exports = require('./src/compile')
+module.exports = require('./src/configure');

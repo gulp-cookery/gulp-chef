@@ -1,14 +1,13 @@
 'use stricts';
 var _ = require('lodash');
 
-var ConfigurableRunnerFactory = require('./core/configurable_runner_factory');
+var ConfigurableTaskRunnerFactory = require('./core/configurable_runner_factory');
 var ConfigurableTask = require('./core/configurable_task');
 var Configuration = require('./core/configuration');
 
-module.exports = function (gulp, taskConfigs) {
+function configure(gulp, taskConfigs) {
 	var stuff = require('./stuff');
-	var factory = new ConfigurableRunnerFactory(stuff);
-
+	var runnerFactory = new ConfigurableTaskRunnerFactory(stuff);
 	var configs = Configuration.sort({}, taskConfigs, {}, {});
 	createConfigurableTasks('', configs.subTaskConfigs, configs.taskConfig);
 	createHelpGulpTask(gulp);
@@ -46,7 +45,7 @@ module.exports = function (gulp, taskConfigs) {
 		} else {
 			configs = Configuration.sort_deprecated(taskConfig, parentConfig, consumes);
 		}
-		runner = factory.recipe(taskInfo.name, configs) || factory.stream(prefix, configs, createConfigurableTasks) || taskRunner(configs) || defaultRunner();
+		runner = runnerFactory.create(configs, prefix, createConfigurableTasks);
 		task = ConfigurableTask.createConfigurableTask(taskInfo, configs.taskConfig, runner);
 
 		if (!task.visibility) {
@@ -54,33 +53,6 @@ module.exports = function (gulp, taskConfigs) {
 			registerGulpTask(prefix, task, taskConfig.depends);
 		}
 		return task;
-	}
-
-	function taskRunner(configs) {
-		var task = configs.taskInfo.task;
-		return inlineRunner() || referenceRunner() || parallelRunner();
-
-		function inlineRunner() {
-			if (typeof task === 'function') {
-				return task;
-			}
-		}
-
-		function referenceRunner() {
-			if (typeof task === 'string') {
-				return factory.reference(task);
-			}
-		}
-
-		function parallelRunner() {
-			if (Array.isArray(task)) {
-				return factory.parallel(task);
-			}
-		}
-	}
-
-	function defaultRunner() {
-		return stuff.recipes.lookup('copy');
 	}
 
 	function getTaskSchema(name) {
@@ -103,4 +75,6 @@ module.exports = function (gulp, taskConfigs) {
 	function createHelpGulpTask(gulp) {
 		gulp.task('help', require('./help'));
 	}
-};
+}
+
+module.exports = configure;
