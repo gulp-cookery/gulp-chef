@@ -4,11 +4,18 @@ var ConfigurableTask = require('./core/configurable_task');
 var Configuration = require('./core/configuration');
 
 function configure(gulp, taskConfigs) {
-	createConfigurableTasks(gulp, taskConfigs);
-	createHelpGulpTask(gulp);
+	createConfigurableTasks(taskConfigs, registerGulpTask);
+	createHelpGulpTask(registerGulpTask);
+
+	// TODO: warning about name collision.
+	// TODO: what about the exec order of task's depends and depends' depends?
+	// TODO: what about hidden task's depends?
+	function registerGulpTask(task, depends) {
+		gulp.task(task.displayName || task.name, depends || [], task);
+	}
 }
 
-function createConfigurableTasks(gulp, taskConfigs) {
+function createConfigurableTasks(taskConfigs, registerGulpTask) {
 	var stuff = require('./stuff');
 	var runnerFactory = new ConfigurableTaskRunnerFactory(stuff);
 	var configs = Configuration.sort({}, taskConfigs, {}, {});
@@ -52,7 +59,7 @@ function createConfigurableTasks(gulp, taskConfigs) {
 
 		if (!task.visibility) {
 			// TODO: call parallel for depends and then remove it from taskConfig.
-			registerGulpTask(prefix, task, taskConfig.depends);
+			registerGulpTask(task, taskConfig.depends);
 		}
 		return task;
 	}
@@ -66,17 +73,10 @@ function createConfigurableTasks(gulp, taskConfigs) {
 		var configurableTask = stuff.streams.lookup(name) || stuff.recipes.lookup(name);
 		return configurableTask && configurableTask.consumes;
 	}
-
-	// TODO: warning about name collision.
-	// TODO: what about the exec order of task's depends and depends' depends?
-	// TODO: what about hidden task's depends?
-	function registerGulpTask(prefix, task, depends) {
-		gulp.task(prefix + (task.displayName || task.name), depends || [], task);
-	}
 }
 
-function createHelpGulpTask(gulp) {
-	gulp.task('help', require('./help'));
+function createHelpGulpTask(registerGulpTask) {
+	registerGulpTask(require('./help'));
 }
 
 module.exports = configure;
