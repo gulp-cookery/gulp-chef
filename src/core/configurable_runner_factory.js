@@ -51,7 +51,7 @@ function ConfigurableTaskRunnerFactory(stuff) {
 	this.stuff = stuff;
 }
 
-ConfigurableTaskRunnerFactory.prototype.create = function (configs, prefix, createConfigurableTasks) {
+ConfigurableTaskRunnerFactory.prototype.create = function (prefix, configs, createConfigurableTasks) {
 	var self = this;
 	return recipeRunner() || streamRunner() || taskRunner() || defaultRunner();
 

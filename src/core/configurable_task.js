@@ -35,7 +35,7 @@ function getTaskRuntimeInfo(name) {
 }
 
 // TODO: make sure config is inherited at config time and injectable at runtime.
-function createConfigurableTask(taskInfo, taskConfig, configurableRunner) {
+function createConfigurableTask(prefix, taskInfo, taskConfig, configurableRunner) {
 	// invoked from stream processor
 	var run = function(gulp, injectConfig, stream, done) {
 		// inject and realize runtime configuration.
@@ -47,7 +47,7 @@ function createConfigurableTask(taskInfo, taskConfig, configurableRunner) {
 	var configurableTask = function(done) {
 		return run(this, taskConfig, null, done);
 	};
-	configurableTask.displayName = taskInfo.name;
+	configurableTask.displayName = prefix + taskInfo.name;
 	configurableTask.description = taskInfo.description || configurableRunner.description;
 	configurableTask.visibility = taskInfo.visibility;
 	configurableTask.runtime = taskInfo.runtime;

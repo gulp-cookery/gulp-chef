@@ -99,7 +99,7 @@ describe('Core', function () {
 
 			beforeEach(function() {
 				configurableRunner = Sinon.spy();
-				actual = ConfigurableTask.createConfigurableTask(taskInfo, taskConfig, configurableRunner);
+				actual = ConfigurableTask.createConfigurableTask('', taskInfo, taskConfig, configurableRunner);
 			})
 
 			it('should return a ConfigurableTask (a function with run() method)', function () {
@@ -108,6 +108,11 @@ describe('Core', function () {
 				expect(actual.displayName).to.equal(taskInfo.name);
 				expect(actual.visibility).to.equal(taskInfo.visibility);
 				expect(actual.runtime).to.equal(taskInfo.runtime);
+			});
+			it('should return a ConfigurableTask with the given prefix name', function () {
+				var prefix = 'dev:';
+				actual = ConfigurableTask.createConfigurableTask(prefix, taskInfo, taskConfig, configurableRunner);
+				expect(actual.displayName).to.equal(prefix + taskInfo.name);
 			});
 			it('should invoke configurableRunner() in configurableTask() method (as a gulp task)', function () {
 				actual.call(gulp, done);
@@ -128,7 +133,7 @@ describe('Core', function () {
 					template: 'inject-value: resolved-value',
 					'inject-value': 'resolved-value'
 				}
-				actual = ConfigurableTask.createConfigurableTask(taskInfo, taskConfig, configurableRunner);
+				actual = ConfigurableTask.createConfigurableTask('', taskInfo, taskConfig, configurableRunner);
 				actual.run(gulp, injectConfig, stream, done);
 				expect(configurableRunner.calledWith(gulp, expectedConfig, stream, done)).to.be.true;
 			});

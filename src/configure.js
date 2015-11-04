@@ -1,21 +1,23 @@
-'use stricts';
-var _ = require('lodash');
-
+'use strict';
 var ConfigurableTaskRunnerFactory = require('./core/configurable_runner_factory');
 var ConfigurableTask = require('./core/configurable_task');
 var Configuration = require('./core/configuration');
 
 function configure(gulp, taskConfigs) {
+	createConfigurableTasks(gulp, taskConfigs);
+	createHelpGulpTask(gulp);
+}
+
+function createConfigurableTasks(gulp, taskConfigs) {
 	var stuff = require('./stuff');
 	var runnerFactory = new ConfigurableTaskRunnerFactory(stuff);
 	var configs = Configuration.sort({}, taskConfigs, {}, {});
-	createConfigurableTasks('', configs.subTaskConfigs, configs.taskConfig);
-	createHelpGulpTask(gulp);
+	createSubConfigurableTasks('', configs.subTaskConfigs, configs.taskConfig);
 
-	function createConfigurableTasks(prefix, subTaskConfigs, parentConfig) {
+	function createSubConfigurableTasks(prefix, subTaskConfigs, parentConfig) {
 		var tasks = [];
 
-		_.keys(subTaskConfigs).forEach(function(name) {
+		Object.keys(subTaskConfigs).forEach(function (name) {
 			var task = createConfigurableTask(prefix, name, subTaskConfigs[name], parentConfig);
 			if (task) {
 				tasks.push(task);
@@ -45,8 +47,8 @@ function configure(gulp, taskConfigs) {
 		} else {
 			configs = Configuration.sort_deprecated(taskConfig, parentConfig, consumes);
 		}
-		runner = runnerFactory.create(configs, prefix, createConfigurableTasks);
-		task = ConfigurableTask.createConfigurableTask(taskInfo, configs.taskConfig, runner);
+		runner = runnerFactory.create(prefix, configs, createSubConfigurableTasks);
+		task = ConfigurableTask.createConfigurableTask(prefix, taskInfo, configs.taskConfig, runner);
 
 		if (!task.visibility) {
 			// TODO: call parallel for depends and then remove it from taskConfig.
@@ -71,10 +73,10 @@ function configure(gulp, taskConfigs) {
 	function registerGulpTask(prefix, task, depends) {
 		gulp.task(prefix + (task.displayName || task.name), depends || [], task);
 	}
+}
 
-	function createHelpGulpTask(gulp) {
-		gulp.task('help', require('./help'));
-	}
+function createHelpGulpTask(gulp) {
+	gulp.task('help', require('./help'));
 }
 
 module.exports = configure;

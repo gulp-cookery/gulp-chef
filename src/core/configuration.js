@@ -1,3 +1,4 @@
+'use strict';
 var log = require('gulp-util').log;
 var globsJoin = require('../util/glob_util').join;
 var normalize = require('json-normalizer').sync;
