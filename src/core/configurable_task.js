@@ -35,7 +35,7 @@ function getTaskRuntimeInfo(name) {
 }
 
 // TODO: make sure config is inherited at config time and injectable at runtime.
-function createConfigurableTask(prefix, taskInfo, taskConfig, configurableRunner) {
+function create(prefix, taskInfo, taskConfig, configurableRunner) {
 	// invoked from stream processor
 	var run = function(gulp, injectConfig, stream, done) {
 		// inject and realize runtime configuration.
@@ -59,5 +59,5 @@ function createConfigurableTask(prefix, taskInfo, taskConfig, configurableRunner
 module.exports = {
 	CONSTANT: CONSTANT,
 	getTaskRuntimeInfo: getTaskRuntimeInfo,
-	createConfigurableTask: createConfigurableTask
+	create: create
 };

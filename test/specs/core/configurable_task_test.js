@@ -78,7 +78,7 @@ describe('Core', function () {
 			}];
 			test(ConfigurableTask.getTaskRuntimeInfo, testCases);
 		});
-		describe('createConfigurableTask()', function () {
+		describe('create()', function () {
 			var gulp, taskInfo, taskConfig, stream, configurableRunner, actual;
 
 			gulp = new FakeGulp();
@@ -99,7 +99,7 @@ describe('Core', function () {
 
 			beforeEach(function() {
 				configurableRunner = Sinon.spy();
-				actual = ConfigurableTask.createConfigurableTask('', taskInfo, taskConfig, configurableRunner);
+				actual = ConfigurableTask.create('', taskInfo, taskConfig, configurableRunner);
 			})
 
 			it('should return a ConfigurableTask (a function with run() method)', function () {
@@ -111,7 +111,7 @@ describe('Core', function () {
 			});
 			it('should return a ConfigurableTask with the given prefix name', function () {
 				var prefix = 'dev:';
-				actual = ConfigurableTask.createConfigurableTask(prefix, taskInfo, taskConfig, configurableRunner);
+				actual = ConfigurableTask.create(prefix, taskInfo, taskConfig, configurableRunner);
 				expect(actual.displayName).to.equal(prefix + taskInfo.name);
 			});
 			it('should invoke configurableRunner() in configurableTask() method (as a gulp task)', function () {
@@ -133,7 +133,7 @@ describe('Core', function () {
 					template: 'inject-value: resolved-value',
 					'inject-value': 'resolved-value'
 				}
-				actual = ConfigurableTask.createConfigurableTask('', taskInfo, taskConfig, configurableRunner);
+				actual = ConfigurableTask.create('', taskInfo, taskConfig, configurableRunner);
 				actual.run(gulp, injectConfig, stream, done);
 				expect(configurableRunner.calledWith(gulp, expectedConfig, stream, done)).to.be.true;
 			});

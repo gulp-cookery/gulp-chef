@@ -48,7 +48,7 @@ function createConfigurableTasks(gulp, taskConfigs) {
 			configs = Configuration.sort_deprecated(taskConfig, parentConfig, consumes);
 		}
 		runner = runnerFactory.create(prefix, configs, createSubConfigurableTasks);
-		task = ConfigurableTask.createConfigurableTask(prefix, taskInfo, configs.taskConfig, runner);
+		task = ConfigurableTask.create(prefix, taskInfo, configs.taskConfig, runner);
 
 		if (!task.visibility) {
 			// TODO: call parallel for depends and then remove it from taskConfig.
