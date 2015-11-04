@@ -30,7 +30,7 @@ var _ = require('lodash');
 
 var parallel = require('../flows/parallel');
 
-var ConfigurableTask = require('./configurable_task');
+var ConfigurableTask = require('./configurable_task_factory');
 var ConfigurationError = require('./configuration_error');
 
 

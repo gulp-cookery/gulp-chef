@@ -1,6 +1,6 @@
 'use strict';
 var ConfigurableTaskRunnerFactory = require('./core/configurable_runner_factory');
-var ConfigurableTask = require('./core/configurable_task');
+var ConfigurableTask = require('./core/configurable_task_factory');
 var Configuration = require('./core/configuration');
 
 function configure(gulp, configs) {

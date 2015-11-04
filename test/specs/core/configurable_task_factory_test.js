@@ -7,7 +7,7 @@ var expect = Chai.expect;
 var _ = require('lodash');
 var base = process.cwd();
 
-var ConfigurableTask = require(base + '/src/core/configurable_task');
+var ConfigurableTaskFactory = require(base + '/src/core/configurable_task_factory');
 var ConfigurationError = require(base + '/src/core/configuration_error');
 
 var FakeGulp = require(base + '/test/fake_gulp');
@@ -17,7 +17,7 @@ function done(err) {
 }
 
 describe('Core', function () {
-	describe('ConfigurableTask', function () {
+	describe('ConfigurableTaskFactory', function () {
 		describe('getTaskRuntimeInfo()', function () {
 			var testCases = [{
 				title: 'should accept normal task name',
@@ -76,7 +76,7 @@ describe('Core', function () {
 				value: '?build',
 				error: ConfigurationError
 			}];
-			test(ConfigurableTask.getTaskRuntimeInfo, testCases);
+			test(ConfigurableTaskFactory.getTaskRuntimeInfo, testCases);
 		});
 		describe('create()', function () {
 			var gulp, taskInfo, taskConfig, stream, configurableRunner, actual;
@@ -85,8 +85,8 @@ describe('Core', function () {
 
 			taskInfo = {
 				name: 'configurable-task',
-				visibility: ConfigurableTask.CONSTANT.VISIBILITY.NORMAL,
-				runtime: ConfigurableTask.CONSTANT.RUNTIME.ALL
+				visibility: ConfigurableTaskFactory.CONSTANT.VISIBILITY.NORMAL,
+				runtime: ConfigurableTaskFactory.CONSTANT.RUNTIME.ALL
 			};
 
 			taskConfig = {
@@ -99,7 +99,7 @@ describe('Core', function () {
 
 			beforeEach(function() {
 				configurableRunner = Sinon.spy();
-				actual = ConfigurableTask.create('', taskInfo, taskConfig, configurableRunner);
+				actual = ConfigurableTaskFactory.create('', taskInfo, taskConfig, configurableRunner);
 			})
 
 			it('should return a ConfigurableTask (a function with run() method)', function () {
@@ -111,7 +111,7 @@ describe('Core', function () {
 			});
 			it('should return a ConfigurableTask with the given prefix name', function () {
 				var prefix = 'dev:';
-				actual = ConfigurableTask.create(prefix, taskInfo, taskConfig, configurableRunner);
+				actual = ConfigurableTaskFactory.create(prefix, taskInfo, taskConfig, configurableRunner);
 				expect(actual.displayName).to.equal(prefix + taskInfo.name);
 			});
 			it('should invoke configurableRunner() in configurableTask() method (as a gulp task)', function () {
@@ -133,7 +133,7 @@ describe('Core', function () {
 					template: 'inject-value: resolved-value',
 					'inject-value': 'resolved-value'
 				}
-				actual = ConfigurableTask.create('', taskInfo, taskConfig, configurableRunner);
+				actual = ConfigurableTaskFactory.create('', taskInfo, taskConfig, configurableRunner);
 				actual.run(gulp, injectConfig, stream, done);
 				expect(configurableRunner.calledWith(gulp, expectedConfig, stream, done)).to.be.true;
 			});
