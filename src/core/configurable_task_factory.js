@@ -11,7 +11,7 @@ function ConfigurableTaskFactory(stuff, runnerFactory, gulpTaskRegistry) {
 }
 
 ConfigurableTaskFactory.prototype.one = function(prefix, name, rawConfig, parentConfig) {
-	var stuff, schema, consumes, configs, taskInfo, runner, task;
+	var stuff, schema, configs, taskInfo, runner, task;
 
 	stuff = this.stuff;
 
@@ -22,35 +22,26 @@ ConfigurableTaskFactory.prototype.one = function(prefix, name, rawConfig, parent
 	}
 
 	schema = getTaskSchema(taskInfo.name);
-	consumes = getTaskConsumes(taskInfo.name);
-
-	if (schema) {
-		configs = Configuration.sort(taskInfo, rawConfig, parentConfig, schema);
-	} else {
-		configs = Configuration.sort_deprecated(rawConfig, parentConfig, consumes);
-	}
+	configs = Configuration.sort(taskInfo, rawConfig, parentConfig, schema);
 
 	if (Configuration.isDisabled(configs.taskInfo)) {
 		return null;
 	}
 
 	runner = this.runnerFactory.create(prefix, configs, this.multiple.bind(this));
+	if (! runner) {
+		throw new ConfigurationError(__filename, "Can't infer to a proper recipe task: " + taskInfo.name);
+	}
 	task = this.create(prefix, taskInfo, configs.taskConfig, runner);
 	if (Configuration.isVisible(task)) {
 		// TODO: call parallel for depends and then remove it from taskConfig.
-		if (this.gulpTaskRegistry) {
-			this.gulpTaskRegistry.register(task, configs.taskInfo.depends);
-		}
+		this.gulpTaskRegistry.register(task, configs.taskInfo.depends);
 	}
+	return task;
 
 	function getTaskSchema(name) {
 		var configurableTask = stuff.streams.lookup(name) || stuff.recipes.lookup(name);
-		return configurableTask && configurableTask.schema;
-	}
-
-	function getTaskConsumes(name) {
-		var configurableTask = stuff.streams.lookup(name) || stuff.recipes.lookup(name);
-		return configurableTask && configurableTask.consumes;
+		return configurableTask && configurableTask.schema || {};
 	}
 };
 

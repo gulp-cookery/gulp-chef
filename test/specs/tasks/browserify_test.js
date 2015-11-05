@@ -45,7 +45,7 @@ describe('task processor', function() {
 		//	});
 		//});
 
-		//var stream = gulp.src('not-exist');
+		//var stream = gulp.src('non-existent');
 		//expect(stream).to.be.an.instanceof(Stream);
 		//expect(stream).to.have.property('on');
 	});

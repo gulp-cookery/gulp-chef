@@ -87,7 +87,9 @@ ConfigurableTaskRunnerFactory.prototype.create = function (prefix, configs, crea
 	}
 
 	function defaultRunner() {
-		return self.stuff.recipes.lookup('copy');
+		if (configs.taskConfig.src && configs.taskConfig.dest) {
+			return self.stuff.recipes.lookup('copy');
+		}
 	}
 };
 

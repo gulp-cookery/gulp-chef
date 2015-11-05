@@ -116,7 +116,7 @@ describe('Core', function () {
 		});
 		describe('#reference()', function () {
 			it('should throw at runtime if the referring task not found', function() {
-				var actual = factory.reference('not-exist');
+				var actual = factory.reference('non-existent');
 				expect(function () { actual.call(gulp, gulp, {}, null, done); }).to.throw(ConfigurationError);
 			});
 

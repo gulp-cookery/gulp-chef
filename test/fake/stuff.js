@@ -8,6 +8,7 @@ var ConfigurableTaskRunnerRegistry = require(base + '/src/core/configurable_runn
 module.exports = function () {
 	return {
 		recipes: new ConfigurableTaskRunnerRegistry({
+			copy: Sinon.spy(),
 			'recipe-task': Sinon.spy()
 		}),
 		streams: new ConfigurableTaskRunnerRegistry({

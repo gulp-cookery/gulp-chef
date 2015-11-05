@@ -17,11 +17,14 @@ var FakeGulp = require(base + '/test/fake/gulp');
 
 describe('Core', function () {
 	describe('ConfigurableTaskFactory', function () {
-		var gulp, factory
+		var gulp, factory;
 
 		beforeEach(function() {
 			var stuff = createFakeStuff();
-			factory = new ConfigurableTaskFactory(stuff, new ConfigurableTaskRunnerFactory(stuff));
+			var registry = {
+				register: function() {}
+			};
+			factory = new ConfigurableTaskFactory(stuff, new ConfigurableTaskRunnerFactory(stuff), registry);
 			gulp = new FakeGulp();
 		})
 
@@ -89,8 +92,27 @@ describe('Core', function () {
 			});
 		});
 		describe('#one()', function () {
-			it('should ...', function () {
-
+			it('should resolve a recipe task', function () {
+				var actual = factory.one('', 'recipe-task', {}, {});
+				expect(actual).to.be.a('function');
+			});
+			it('should resolve a stream task', function () {
+				var actual = factory.one('', 'stream-task', {}, {});
+				expect(actual).to.be.a('function');
+			});
+			it('should resolve a non-existent task with sub-task configs to a merge stream task', function () {
+				var actual = factory.one('', 'non-existent-stream-task-with-sub-task-configs', {
+					'recipe-task': {},
+					'stream-task': {},
+					'non-existent-but-with-src-and-dest-defined': {
+						src: 'src',
+						dest: 'dist'
+					}
+				}, {});
+				expect(actual).to.be.a('function');
+			});
+			it('should throw if can not resolve to a task', function () {
+				expect(function () { factory.one('', 'non-existent', {}, {}) }).to.throw(ConfigurationError);
 			});
 		});
 		describe('#multiple()', function () {

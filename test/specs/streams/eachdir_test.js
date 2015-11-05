@@ -84,8 +84,8 @@ var testCases = {
 		path: 'app/index.html',
 		result: []
 	},
-	'not-exist': {
-		path: 'not-exist',
+	'non-existent': {
+		path: 'non-existent',
 		result: []
 	}
 };
@@ -115,7 +115,7 @@ describe('Stream Processor', function() {
 		afterEach(function() {});
 
 		it('should gulp.src() always return a stream (prerequisite)', function() {
-			var stream = gulp.src('not-exist');
+			var stream = gulp.src('non-existent');
 			expect(stream).to.be.an.instanceof(Stream);
 			expect(stream).to.have.property('on');
 		});
@@ -149,7 +149,7 @@ describe('Stream Processor', function() {
 		it('should throw if no sub folder found', function() {
 			var configs = {
 				notExist: {
-					src: testCases['not-exist'].path
+					src: testCases['non-existent'].path
 				},
 				file: {
 					src: testCases.file.path
