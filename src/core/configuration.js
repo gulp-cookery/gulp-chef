@@ -4,6 +4,8 @@ var globsJoin = require('../util/glob_util').join;
 var normalize = require('json-normalizer').sync;
 var _ = require('lodash');
 
+var ConfigurationError = require('./configuration_error');
+
 var INTERPOLATE = /{{([\s\S]+?)}}/g;
 var TASK_PROPERTIES = [
 	// task
@@ -67,6 +69,27 @@ var SCHEMA_DEFAULTS = {
 	"gathering": "others"
 };
 
+var REGEX_RUNTIME_OPTIONS = /^([.#]?)([_\w][-_\s\w]*)([!?]?)$/;
+
+var CONSTANT = {
+	VISIBILITY: {
+		/** hidden configurable task can't be run from cli, but still functional */
+		HIDDEN: '.',
+		/** disabled configurable task is not processed and not functional, including all it's descendants */
+		DISABLED: '#',
+		/** normal configurable task can be run from cli */
+		NORMAL: ''
+	},
+	RUNTIME: {
+		/** configurable task can only run in production mode */
+		PRODUCTION: '!',
+		/** configurable task can only run in development mode */
+		DEVELOPMENT: '?',
+		/** configurable task can run in both production and development mode */
+		ALL: ''
+	}
+};
+
 // TODO: remove temp hack for _.defaultsDeep() when bug fix public available:
 // defaultsDeep() try to mix string characters into array
 // https://github.com/lodash/lodash/issues/1560
@@ -89,6 +112,30 @@ function defaultsDeep(object) {
 		})
 	}
 }
+
+function getTaskRuntimeInfo(name) {
+	var match;
+
+	name = _.trim(name);
+	match = REGEX_RUNTIME_OPTIONS.exec(name);
+	if (!match) {
+		throw new ConfigurationError(__filename, 'invalid task name: ' + name);
+	}
+	return {
+		name: match[2] || name,
+		visibility: match[1] || '',
+		runtime: match[3] || ''
+	};
+}
+
+function isVisible(task) {
+	return task.visibility === CONSTANT.VISIBILITY.NORMAL;
+}
+
+function isDisabled(task) {
+	return task.visibility === CONSTANT.VISIBILITY.DISABLED;
+}
+
 
 function realize(original, additional, defaults) {
 
@@ -212,6 +259,10 @@ function sort_deprecated(taskConfig, parentConfig, consumes) {
 }
 
 module.exports = {
+	CONSTANT: CONSTANT,
+	getTaskRuntimeInfo: getTaskRuntimeInfo,
+	isVisible: isVisible,
+	isDisabled: isDisabled,
 	dest: dest,
 	normalize: normalize,
 	realize: realize,

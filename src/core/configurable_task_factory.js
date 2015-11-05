@@ -4,27 +4,6 @@ var _ = require('lodash');
 var Configuration = require('./configuration');
 var ConfigurationError = require('./configuration_error');
 
-var REGEX_RUNTIME_OPTIONS = /^([.#]?)([_\w][-_\s\w]*)([!?]?)$/;
-
-var CONSTANT = {
-	VISIBILITY: {
-		/** hidden configurable task can't be run from cli, but still functional */
-		HIDDEN: '.',
-		/** disabled configurable task is not processed and not functional, including all it's descendants */
-		DISABLED: '#',
-		/** normal configurable task can be run from cli */
-		NORMAL: ''
-	},
-	RUNTIME: {
-		/** configurable task can only run in production mode */
-		PRODUCTION: '!',
-		/** configurable task can only run in development mode */
-		DEVELOPMENT: '?',
-		/** configurable task can run in both production and development mode */
-		ALL: ''
-	}
-};
-
 function ConfigurableTaskFactory(stuff, runnerFactory, gulpTaskRegistry) {
 	this.stuff = stuff;
 	this.runnerFactory = runnerFactory;
@@ -32,19 +11,14 @@ function ConfigurableTaskFactory(stuff, runnerFactory, gulpTaskRegistry) {
 }
 
 ConfigurableTaskFactory.prototype.one = function(prefix, name, rawConfig, parentConfig) {
-	var stuff, runnerFactory, schema, consumes, configs, taskInfo, runner, task;
+	var stuff, schema, consumes, configs, taskInfo, runner, task;
 
 	stuff = this.stuff;
-	runnerFactory = this.runnerFactory;
 
-	taskInfo = ConfigurableTaskFactory.getTaskRuntimeInfo(name);
+	taskInfo = Configuration.getTaskRuntimeInfo(name);
 
 	if (rawConfig.debug) {
 		debugger;
-	}
-
-	if (ConfigurableTaskFactory.isDisabled(taskInfo)) {
-		return null;
 	}
 
 	schema = getTaskSchema(taskInfo.name);
@@ -55,9 +29,14 @@ ConfigurableTaskFactory.prototype.one = function(prefix, name, rawConfig, parent
 	} else {
 		configs = Configuration.sort_deprecated(rawConfig, parentConfig, consumes);
 	}
-	runner = runnerFactory.create(prefix, configs, this.multiple.bind(this));
+
+	if (Configuration.isDisabled(configs.taskInfo)) {
+		return null;
+	}
+
+	runner = this.runnerFactory.create(prefix, configs, this.multiple.bind(this));
 	task = this.create(prefix, taskInfo, configs.taskConfig, runner);
-	if (ConfigurableTaskFactory.isVisible(task)) {
+	if (Configuration.isVisible(task)) {
 		// TODO: call parallel for depends and then remove it from taskConfig.
 		if (this.gulpTaskRegistry) {
 			this.gulpTaskRegistry.register(task, configs.taskInfo.depends);
@@ -110,33 +89,5 @@ ConfigurableTaskFactory.prototype.create = function(prefix, taskInfo, taskConfig
 	configurableTask.config = taskConfig;
 	return configurableTask;
 };
-
-function getTaskRuntimeInfo(name) {
-	var match;
-
-	name = _.trim(name);
-	match = REGEX_RUNTIME_OPTIONS.exec(name);
-	if (!match) {
-		throw new ConfigurationError(__filename, 'invalid task name: ' + name);
-	}
-	return {
-		name: match[2] || name,
-		visibility: match[1] || '',
-		runtime: match[3] || ''
-	};
-}
-
-function isVisible(task) {
-	return task.visibility === CONSTANT.VISIBILITY.NORMAL;
-}
-
-function isDisabled(task) {
-	return task.visibility === CONSTANT.VISIBILITY.DISABLED;
-}
-
-ConfigurableTaskFactory.CONSTANT = CONSTANT;
-ConfigurableTaskFactory.getTaskRuntimeInfo = getTaskRuntimeInfo;
-ConfigurableTaskFactory.isVisible = isVisible;
-ConfigurableTaskFactory.isDisabled = isDisabled;
 
 module.exports = ConfigurableTaskFactory;

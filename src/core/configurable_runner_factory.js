@@ -30,7 +30,7 @@ var _ = require('lodash');
 
 var parallel = require('../flows/parallel');
 
-var ConfigurableTask = require('./configurable_task_factory');
+var Configuration = require('./configuration');
 var ConfigurationError = require('./configuration_error');
 
 
@@ -151,7 +151,7 @@ ConfigurableTaskRunnerFactory.prototype.stream = function (prefix, configs, crea
 	function explicitRunner() {
 		var runner = stuff.streams.lookup(configs.taskInfo.name);
 		if (runner) {
-			configs.taskInfo.visibility = ConfigurableTask.CONSTANT.VISIBILITY.HIDDEN;
+			configs.taskInfo.visibility = Configuration.CONSTANT.VISIBILITY.HIDDEN;
 			return runner;
 		}
 	}
