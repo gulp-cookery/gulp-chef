@@ -1,6 +1,6 @@
 'use strict';
 var ConfigurableTaskRunnerFactory = require('./core/configurable_runner_factory');
-var ConfigurableTask = require('./core/configurable_task_factory');
+var ConfigurableTaskFactory = require('./core/configurable_task_factory');
 var Configuration = require('./core/configuration');
 
 function configure(gulp, configs) {
@@ -18,6 +18,7 @@ function configure(gulp, configs) {
 function createConfigurableTasks(rawConfigs, registerGulpTask) {
 	var stuff = require('./stuff');
 	var runnerFactory = new ConfigurableTaskRunnerFactory(stuff);
+	var taskFactory = new ConfigurableTaskFactory(stuff, runnerFactory);
 	var configs = Configuration.sort({}, rawConfigs, {}, {});
 	createSubConfigurableTasks('', configs.subTaskConfigs, configs.taskConfig);
 
@@ -36,13 +37,13 @@ function createConfigurableTasks(rawConfigs, registerGulpTask) {
 	function createConfigurableTask(prefix, name, rawConfig, parentConfig) {
 		var schema, consumes, configs, taskInfo, runner, task;
 
-		taskInfo = ConfigurableTask.getTaskRuntimeInfo(name);
+		taskInfo = ConfigurableTaskFactory.getTaskRuntimeInfo(name);
 
 		if (rawConfig.debug) {
 			debugger;
 		}
 
-		if (ConfigurableTask.isDisabled(taskInfo)) {
+		if (ConfigurableTaskFactory.isDisabled(taskInfo)) {
 			return null;
 		}
 
@@ -55,9 +56,9 @@ function createConfigurableTasks(rawConfigs, registerGulpTask) {
 			configs = Configuration.sort_deprecated(rawConfig, parentConfig, consumes);
 		}
 		runner = runnerFactory.create(prefix, configs, createSubConfigurableTasks);
-		task = ConfigurableTask.create(prefix, taskInfo, configs.taskConfig, runner);
+		task = taskFactory.create(prefix, taskInfo, configs.taskConfig, runner);
 
-		if (ConfigurableTask.isVisible(task)) {
+		if (ConfigurableTaskFactory.isVisible(task)) {
 			// TODO: call parallel for depends and then remove it from taskConfig.
 			registerGulpTask(task, configs.taskInfo.depends);
 		}

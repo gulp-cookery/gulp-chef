@@ -87,6 +87,5 @@ ConfigurableTaskFactory.CONSTANT = CONSTANT;
 ConfigurableTaskFactory.getTaskRuntimeInfo = getTaskRuntimeInfo;
 ConfigurableTaskFactory.isVisible = isVisible;
 ConfigurableTaskFactory.isDisabled = isDisabled;
-ConfigurableTaskFactory.create = ConfigurableTaskFactory.prototype.create;
 
 module.exports = ConfigurableTaskFactory;
