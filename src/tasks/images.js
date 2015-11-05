@@ -1,3 +1,4 @@
+'use strict';
 var defaults = {
 	options: {
 		optimizationLevel: 3,
@@ -20,9 +21,9 @@ var defaults = {
  */
 function imagesTask(gulp, config, stream, done) {
 	// lazy loading required modules.
-	var flatten = require('gulp-flatten');
-	var imagemin = require('gulp-imagemin');
-	var newer = require('gulp-newer');
+	var flatten = require('gulp-flatten'),
+		imagemin = require('gulp-imagemin'),
+		newer = require('gulp-newer');
 
 	if (!stream) {
 		stream = gulp.src(config.src.globs, config.src.options);
@@ -44,12 +45,14 @@ function imagesTask(gulp, config, stream, done) {
 
 function imagesTaskV2(gulp, config, stream, done) {
 	// lazy loading required modules.
-	var contents = require('file-contents');
-	var flatten = require('gulp-flatten');
-	var imagemin = require('gulp-imagemin');
-	var newer = require('gulp-newer');
-	var path = require('path');
-	var _ = require('lodash');
+	var contents = require('file-contents'),
+		flatten = require('gulp-flatten'),
+		imagemin = require('gulp-imagemin'),
+		newer = require('gulp-newer'),
+		path = require('path'),
+		_ = require('lodash');
+
+	var newerOptions;
 
 	// we don't want waste time to read unchanged files.
 	if (!stream) {
@@ -59,7 +62,7 @@ function imagesTaskV2(gulp, config, stream, done) {
 	}
 
 	// so, must first filter newer files.
-	var newerOptions = {
+	newerOptions = {
 		dest: config.dest
 	};
 	if (config.flatten) {

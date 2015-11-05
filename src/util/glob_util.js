@@ -1,7 +1,7 @@
-var FileSystem = require('fs');
-var Path = require('path');
-var globby = require('globby');
-var _ = require('lodash');
+var FileSystem = require('fs'),
+	Path = require('path'),
+	globby = require('globby'),
+	_ = require('lodash');
 
 // glob support in src:
 function folders(globs, options) {

@@ -1,20 +1,20 @@
 'use strict';
 
-var Sinon = require('sinon');
-var Chai = require('chai');
-var Promised = require("chai-as-promised");
-var expect = Chai.expect;
+var Sinon = require('sinon'),
+	Chai = require('chai'),
+	Promised = require("chai-as-promised"),
+	expect = Chai.expect;
+
 Chai.use(Promised);
 
 var _ = require('lodash');
 
 var gulp = require('gulp');
-
 var base = process.cwd();
 
-var browserify = require(base + '/src/tasks/browserify');
-var ConfigurationError = require(base + '/src/core/configuration_error');
-var ConfigurableTaskError = require(base + '/src/core/configurable_task_error');
+var browserify = require(base + '/src/tasks/browserify'),
+	ConfigurationError = require(base + '/src/core/configuration_error'),
+	ConfigurableTaskError = require(base + '/src/core/configurable_task_error');
 
 var testCases = {
 	'Accepts multiple bundles': {

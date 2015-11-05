@@ -1,3 +1,5 @@
+'use strict';
+
 function pipe(gulp, config, stream, tasks) {
 	var ConfigurableTaskError = require('../core/configurable_task_error.js');
 

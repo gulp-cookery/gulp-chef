@@ -1,19 +1,19 @@
 'use strict';
-var log = require('gulp-util').log;
-var globsJoin = require('../util/glob_util').join;
-var normalize = require('json-normalizer').sync;
-var _ = require('lodash');
+var log = require('gulp-util').log,
+	globsJoin = require('../util/glob_util').join,
+	normalize = require('json-normalizer').sync,
+	_ = require('lodash');
 
 var ConfigurationError = require('./configuration_error');
 
-var INTERPOLATE = /{{([\s\S]+?)}}/g;
-var TASK_PROPERTIES = [
-	// task
-	'depends', 'description', 'task',
-	// runtime
-	'name', 'visibility', 'runtime'
-];
-var SCHEMA_DEFAULTS = {
+var INTERPOLATE = /{{([\s\S]+?)}}/g,
+	TASK_PROPERTIES = [
+		// task
+		'depends', 'description', 'task',
+		// runtime
+		'name', 'visibility', 'runtime'
+	],
+	SCHEMA_DEFAULTS = {
 	"properties": {
 		"src": {
 			"properties": {
@@ -145,9 +145,7 @@ function isDisabled(task) {
 
 
 function realize(original, additional, defaults) {
-
 	var values = _.defaultsDeep({}, original, additional, defaults);
-
 	return realizeAll({}, values);
 
 	function realizeAll(target, source) {
@@ -180,8 +178,8 @@ function realize(original, additional, defaults) {
 	}
 }
 
-var src = normalize.bind(null, SCHEMA_DEFAULTS.properties.src);
-var dest = normalize.bind(null, SCHEMA_DEFAULTS.properties.dest);
+var src = normalize.bind(null, SCHEMA_DEFAULTS.properties.src),
+	dest = normalize.bind(null, SCHEMA_DEFAULTS.properties.dest);
 
 function sort(taskInfo, rawConfig, parentConfig, schema) {
 	var inheritedConfig, taskConfig, subTaskConfigs, value;

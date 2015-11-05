@@ -1,3 +1,5 @@
+'use strict';
+
 var defaults = {
 	source: 'package.json',
 	// target: ['bower.json', 'app/manifest.json'],
@@ -23,10 +25,10 @@ var message = {
  */
 function bumpTask(gulp, config, stream, done) {
 	// lazy loading required modules.
-	var _ = require('lodash');
-	var bump = require('gulp-bump');
-	var configSync = require('gulp-config-sync');
-	var prompt = require('gulp-prompt').prompt;
+	var _ = require('lodash'),
+		bump = require('gulp-bump'),
+		configSync = require('gulp-config-sync'),
+		prompt = require('gulp-prompt').prompt;
 
 	var options = _.defaultsDeep({}, config.options, defaults.options);
 

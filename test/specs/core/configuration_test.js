@@ -1,16 +1,17 @@
 'use strict';
 
-var Sinon = require('sinon');
-var Chai = require('chai');
-var expect = Chai.expect;
+var Sinon = require('sinon'),
+	Chai = require('chai'),
+	expect = Chai.expect;
+
+var _ = require('lodash');
 
 var base = process.cwd();
 
-var Configuration = require(base + '/src/core/configuration');
-var ConfigurationError = require(base + '/src/core/configuration_error');
+var Configuration = require(base + '/src/core/configuration'),
+	ConfigurationError = require(base + '/src/core/configuration_error');
 
 var test = require(base + '/test/testcase_runner');
-var _ = require('lodash');
 
 describe('Core', function () {
 	describe('Configuration', function () {
@@ -484,47 +485,47 @@ describe('Core', function () {
 		});
 		describe('.realize()', function () {
 			it('should call resolver function', function () {
-				var resolved = 'resolver called';
-				var values = {
-					runtime: Sinon.spy(function() {
-						return resolved;
-					})
-				};
-				var expected = {
-					runtime: resolved
-				}
+				var resolved = 'resolver called',
+					values = {
+						runtime: Sinon.spy(function() {
+							return resolved;
+						})
+					},
+					expected = {
+						runtime: resolved
+					};
 				expect(Configuration.realize(values)).to.deep.equal(expected);
 				expect(values.runtime.calledWith(values)).to.be.true;
 			});
 			it('should render template using given values', function () {
 				var rootResolver = function () {
-					return 'value from rootResolver()'
-				};
-				var nestResolver = function () {
-					return 'value from nestedResolver()'
-				};
-				var template = "Hello {{plainValue}}! {{nested.plainValue}}, {{resolver}} and {{nested.resolver}}.";
-				var realized = "Hello World! Inner World, value from rootResolver() and value from nestedResolver().";
-				var values = {
-					message: template,
-					nested: {
+						return 'value from rootResolver()'
+					},
+					nestResolver = function () {
+						return 'value from nestedResolver()'
+					},
+					template = "Hello {{plainValue}}! {{nested.plainValue}}, {{resolver}} and {{nested.resolver}}.",
+					realized = "Hello World! Inner World, value from rootResolver() and value from nestedResolver().",
+					values = {
 						message: template,
-						resolver: nestResolver,
-						plainValue: "Inner World"
+						nested: {
+							message: template,
+							resolver: nestResolver,
+							plainValue: "Inner World"
+						},
+						resolver: rootResolver,
+						plainValue: "World"
 					},
-					resolver: rootResolver,
-					plainValue: "World"
-				};
-				var expected = {
-					message: realized,
-					nested: {
+					expected = {
 						message: realized,
-						resolver: nestResolver(),
-						plainValue: "Inner World"
-					},
-					resolver: rootResolver(),
-					plainValue: "World"
-				}
+						nested: {
+							message: realized,
+							resolver: nestResolver(),
+							plainValue: "Inner World"
+						},
+						resolver: rootResolver(),
+						plainValue: "World"
+					};
 				var actual = Configuration.realize(values);
 				expect(actual).to.deep.equal(expected);
 			});

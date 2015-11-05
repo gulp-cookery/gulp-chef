@@ -1,3 +1,5 @@
+'use strict';
+
 /*jshint node: true */
 /*global process*/
 
@@ -8,9 +10,8 @@
  */
 function queue(gulp, config, stream, tasks) {
 	// lazy loading required modules.
-	var StreamQueue = require('streamqueue');
-
-	var ConfigurableTaskError = require('../core/configurable_task_error.js');
+	var StreamQueue = require('streamqueue'),
+		ConfigurableTaskError = require('../core/configurable_task_error.js');
 
 	if (tasks.length === 0) {
 		throw new ConfigurableTaskError('queue', 'no sub task specified');
@@ -20,10 +21,10 @@ function queue(gulp, config, stream, tasks) {
 		return runTask(tasks[0]);
 	}
 
-	var streams = tasks.map(runTask);
-	var streamQueue = new StreamQueue({
-		objectMode: true
-	});
+	var streams = tasks.map(runTask),
+		streamQueue = new StreamQueue({
+			objectMode: true
+		});
 	return streamQueue.done.apply(streamQueue, streams);
 
 	function runTask(task) {

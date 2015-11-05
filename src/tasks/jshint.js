@@ -1,3 +1,4 @@
+'use strict';
 var defaults = {
 	options: {
 		jshintrc: '.jshintrc',
@@ -26,8 +27,8 @@ var defaults = {
 function jshintTask(gulp, config, stream, done) {
 
 	// lazy loading required modules.
-	var jshint = require('gulp-jshint');
-	var _ = require('lodash');
+	var jshint = require('gulp-jshint'),
+		_ = require('lodash');
 
 	if (!stream) {
 		stream = gulp.src(config.src.globs, config.src.options);

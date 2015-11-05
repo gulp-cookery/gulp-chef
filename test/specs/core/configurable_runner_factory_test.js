@@ -1,17 +1,18 @@
 'use strict';
 
-var Sinon = require('sinon');
-var Chai = require('chai');
-var expect = Chai.expect;
+var Sinon = require('sinon'),
+	Chai = require('chai'),
+	expect = Chai.expect;
 
 var _ = require('lodash');
+
 var base = process.cwd();
 
-var ConfigurableTaskRunnerFactory = require(base + '/src/core/configurable_runner_factory');
-var ConfigurationError = require(base + '/src/core/configuration_error');
+var ConfigurableTaskRunnerFactory = require(base + '/src/core/configurable_runner_factory'),
+	ConfigurationError = require(base + '/src/core/configuration_error');
 
-var FakeGulp = require(base + '/test/fake/gulp');
-var test = require(base + '/test/testcase_runner');
+var FakeGulp = require(base + '/test/fake/gulp'),
+	test = require(base + '/test/testcase_runner');
 
 function done(err) {
 }
@@ -43,26 +44,26 @@ describe('Core', function () {
 	describe('ConfigurableTaskRunnerFactory', function () {
 		var gulpTask, configurableTask, configurableTaskConfig, configurableTaskRefConfig, gulp, factory;
 
-		var stuff = createFakeStuff();
-		var configs = {
-			taskInfo: {
-				name: 'stream-task'
-			},
-			taskConfig: {
-			},
-			subTaskConfigs: {
-				task1: {
+		var stuff = createFakeStuff(),
+			configs = {
+				taskInfo: {
+					name: 'stream-task'
 				},
-				task2: {
+				taskConfig: {
+				},
+				subTaskConfigs: {
+					task1: {
+					},
+					task2: {
+					}
 				}
-			}
-		};
-		var subTasks;
-		var createConfigurableTasks = Sinon.spy(function (prefix, subTaskConfigs, parentConfig) {
-			return subTasks = _.map(subTaskConfigs, function(config, name) {
-				return createSpyConfigurableTask(name);
-			});;
-		});
+			},
+			subTasks,
+			createConfigurableTasks = Sinon.spy(function (prefix, subTaskConfigs, parentConfig) {
+				return subTasks = _.map(subTaskConfigs, function(config, name) {
+					return createSpyConfigurableTask(name);
+				});;
+			});
 
 		beforeEach(function () {
 			factory = new ConfigurableTaskRunnerFactory(stuff);
@@ -78,15 +79,15 @@ describe('Core', function () {
 		});
 
 		describe('#recipe()', function () {
-			var name = 'recipe-task';
-			var configs = {
-				taskInfo: {
-					name: name
-				},
-				taskConfig: {
-					id: 'recipe-config'
-				}
-			};
+			var name = 'recipe-task',
+				configs = {
+					taskInfo: {
+						name: name
+					},
+					taskConfig: {
+						id: 'recipe-config'
+					}
+				};
 			it('should create a recipe runner', function () {
 				var actual = factory.recipe(name, configs);
 				expect(actual).to.be.a('function');

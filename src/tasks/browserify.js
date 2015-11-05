@@ -1,4 +1,8 @@
-/* browserify task
+'use strict';
+
+/**
+
+browserify task
 ---------------
 Bundle JavaScript things with Browserify!
 
@@ -142,19 +146,19 @@ https://medium.com/@sogko/gulp-browserify-the-gulp-y-way-bb359b3f9623
  */
 function browserifyTask(gulp, config, stream) {
 	// lazy loading required modules.
-	var browserify = require('browserify');
-	var browserSync = require('browser-sync');
-	var buffer = require('vinyl-buffer');
-	var globby = require('globby');
-	var Globs = require('../util/glob_util');
-	var log = require('gulp-util').log;
-	var merge = require('merge-stream');
-	var notify = require('gulp-notify');
-	var sourcemaps = require('gulp-sourcemaps');
-	var uglify = require('gulp-uglify');
-	var vinylify = require('vinyl-source-stream');
-	var watchify = require('watchify');
-	var _ = require('lodash');
+	var browserify = require('browserify'),
+		browserSync = require('browser-sync'),
+		buffer = require('vinyl-buffer'),
+		globby = require('globby'),
+		Globs = require('../util/glob_util'),
+		log = require('gulp-util').log,
+		merge = require('merge-stream'),
+		notify = require('gulp-notify'),
+		sourcemaps = require('gulp-sourcemaps'),
+		uglify = require('gulp-uglify'),
+		vinylify = require('vinyl-source-stream'),
+		watchify = require('watchify'),
+		_ = require('lodash');
 
 	var bundles = config.bundles || config.bundle;
 	if (_.isArray(bundles)) {
@@ -262,13 +266,13 @@ function browserifyTask(gulp, config, stream) {
 			src = src && src.globs || '';
 
 			entries = bundleOptions.entries.reduce(function(result, entry) {
-				var files = Globs.join(src, entry.file || entry);
-				ret = files.reduce(function(ret, file) {
-					if (Globs.isGlob(file)) {
-						return ret.concat(globby.sync(file));
-					}
-					return ret.concat(file);
-				}, []);
+				var files = Globs.join(src, entry.file || entry),
+					ret = files.reduce(function(ret, file) {
+						if (Globs.isGlob(file)) {
+							return ret.concat(globby.sync(file));
+						}
+						return ret.concat(file);
+					}, []);
 				return result.concat(ret);
 			}, []);
 

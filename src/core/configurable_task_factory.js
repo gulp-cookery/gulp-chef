@@ -1,8 +1,8 @@
 'use strict';
 var _ = require('lodash');
 
-var Configuration = require('./configuration');
-var ConfigurationError = require('./configuration_error');
+var Configuration = require('./configuration'),
+	ConfigurationError = require('./configuration_error');
 
 function ConfigurableTaskFactory(stuff, runnerFactory, gulpTaskRegistry) {
 	this.stuff = stuff;

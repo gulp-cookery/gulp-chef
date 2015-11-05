@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  *
  * Normal GulpTask:
@@ -24,15 +26,13 @@
  * configurableTask.schema
  *
  */
-'use strict';
 
 var _ = require('lodash');
 
+var Configuration = require('./configuration'),
+	ConfigurationError = require('./configuration_error');
+
 var parallel = require('../flows/parallel');
-
-var Configuration = require('./configuration');
-var ConfigurationError = require('./configuration_error');
-
 
 function hasSubTasks(subTaskConfigs) {
 	return _.size(subTaskConfigs) > 0;

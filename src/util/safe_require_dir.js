@@ -1,12 +1,15 @@
-var path = require('path');
-var requireDir = require('require-dir');
-var _ = require('lodash');
+'use strict';
+
+var path = require('path'),
+	requireDir = require('require-dir'),
+	_ = require('lodash');
 
 function safeRequireDir() {
-	var parent = module.parent;
-	var parentFile = parent.filename;
-	var parentDir = path.dirname(parentFile);
-	var dirs, modules;
+	var parent = module.parent,
+		parentFile = parent.filename,
+		parentDir = path.dirname(parentFile),
+		dirs,
+		modules;
 
 	dirs = Array.prototype.slice.call(arguments, 0);
 	modules = dirs.map(function(dir) {

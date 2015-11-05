@@ -1,5 +1,7 @@
-var inherits = require('util').inherits;
-var Readable = require('stream').Readable;
+'use strict';
+
+var inherits = require('util').inherits,
+	Readable = require('stream').Readable;
 
 function EmptyStream() {
 	Readable.call(this);
@@ -16,10 +18,10 @@ function empty() {
 }
 
 function chain(pipe) {
-	var through = require('through2');
-	var duplexer = require('duplexer');
-	var writer = through.obj();
-	var chained = pipe(writer);
+	var through = require('through2'),
+		duplexer = require('duplexer'),
+		writer = through.obj(),
+		chained = pipe(writer);
 	return duplexer({
 		objectMode: true
 	}, writer, chained);

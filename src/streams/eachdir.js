@@ -1,3 +1,5 @@
+'use strict';
+
 /*jshint node: true */
 /*global process*/
 /**
@@ -14,10 +16,10 @@
  */
 function eachdir(gulp, config, stream, tasks) {
 	// lazy loading required modules.
-	var _ = require('lodash');
-	var fs = require('fs');
-	var path = require('path');
-	var each = require('./each');
+	var _ = require('lodash'),
+		fs = require('fs'),
+		path = require('path'),
+		each = require('./each');
 
 	var ConfigurationError = require('../core/configuration_error.js');
 

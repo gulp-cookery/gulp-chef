@@ -4,7 +4,7 @@ function FakeGulp(tasks) {
 	this.taskRegistry = tasks || {};
 }
 
-FakeGulp.prototype.task = function(name, runner) {
+FakeGulp.prototype.task = function (name, runner) {
 	if (typeof name === 'function') {
 		runner = name;
 		name = runner.displayName || runner.name;

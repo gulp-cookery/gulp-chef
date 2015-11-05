@@ -2,13 +2,14 @@
 
 // TODO: resolve too many dependencies problem. (optionalDependencies?)
 
-var Chai = require('chai');
-var expect = Chai.expect;
+var Chai = require('chai'),
+	expect = Chai.expect;
+
+var _ = require('lodash');
 
 var base = process.cwd();
 
 var test = require(base + '/test/testcase_runner');
-var _ = require('lodash');
 
 var ConfigurableTaskRunnerRegistry = require(base + '/src/core/configurable_runner_registry');
 
@@ -24,10 +25,10 @@ describe('Core', function () {
 			});
 		});
 		describe('#lookup()', function () {
-			var actual = new ConfigurableTaskRunnerRegistry({
-				task: function() {}
-			});
 			it('should return a function if found, otherwise, undefined', function () {
+				var actual = new ConfigurableTaskRunnerRegistry({
+					task: function() {}
+				});
 				expect(actual.lookup('task')).to.be.a('function');
 				expect(actual.lookup('none')).to.be.an('undefined');
 			});

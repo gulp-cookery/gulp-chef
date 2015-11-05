@@ -1,3 +1,4 @@
+'use strict';
 var defaults = {
 	options: {
 		preserveComments: 'some'
@@ -5,8 +6,8 @@ var defaults = {
 };
 
 function uglifyTask(gulp, config, stream) {
-	var rename = require('gulp-rename');
-	var uglify = require('gulp-uglify');
+	var rename = require('gulp-rename'),
+		uglify = require('gulp-uglify');
 
 	if (!stream) {
 		stream = gulp.src(config.src.globs, config.src.options);

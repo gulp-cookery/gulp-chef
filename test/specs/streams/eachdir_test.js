@@ -2,27 +2,28 @@
 /*jshint expr: true*/
 'use strict';
 
-var Sinon = require('sinon');
-var Chai = require('chai');
-var Promised = require("chai-as-promised");
-var expect = Chai.expect;
+var Sinon = require('sinon'),
+	Chai = require('chai'),
+	Promised = require("chai-as-promised"),
+	expect = Chai.expect;
+
 Chai.use(Promised);
 
-var Stream = require('stream');
-var Readable = require('stream').Readable;
-var Transform = require('stream').Transform;
-var through = require('through2');
-var fs = require('fs');
-var _ = require('lodash');
+var Stream = require('stream'),
+	Readable = require('stream').Readable,
+	Transform = require('stream').Transform,
+	through = require('through2'),
+	fs = require('fs'),
+	_ = require('lodash');
 
 var gulp = require('gulp');
 
-var base = process.cwd();
-var fixtures = base + '/test/_fixtures';
+var base = process.cwd(),
+	fixtures = base + '/test/_fixtures';
 
-var eachdir = require(base + '/src/streams/eachdir');
-var ConfigurationError = require(base + '/src/core/configuration_error');
-var ConfigurableTaskError = require(base + '/src/core/configurable_task_error');
+var eachdir = require(base + '/src/streams/eachdir'),
+	ConfigurationError = require(base + '/src/core/configuration_error'),
+	ConfigurableTaskError = require(base + '/src/core/configurable_task_error');
 
 var dirs = {
 	'app': {
@@ -163,27 +164,27 @@ describe('Stream Processor', function() {
 		});
 
 		it('should invoke the given task for each folder', function() {
-			var testCase = testCases.modules;
-			var config = {
-				src: testCase.path
-			};
-			var visits = [];
-			var task = prepareTask(function(gulp, config, stream, done) {
-				visits.push(config.dir);
-				return through.obj();
-			});
+			var testCase = testCases.modules,
+				config = {
+					src: testCase.path
+				},
+				visits = [],
+				task = prepareTask(function(gulp, config, stream, done) {
+					visits.push(config.dir);
+					return through.obj();
+				});
 			eachdir(gulp, config, null, [task]);
 			expect(visits).to.deep.equal(testCase.result);
 		});
 
 		it('should throw if the given task does not return a stream', function() {
-			var testCase = testCases.modules;
-			var config = {
-				src: testCase.path
-			};
-			var task = prepareTask(function(gulp, config, stream, done) {
-				return true;
-			});
+			var testCase = testCases.modules,
+				config = {
+					src: testCase.path
+				},
+				task = prepareTask(function(gulp, config, stream, done) {
+					return true;
+				});
 			expect(function() {
 				eachdir(gulp, config, null, [task]);
 			}).to.throw(ConfigurableTaskError);
@@ -191,11 +192,11 @@ describe('Stream Processor', function() {
 
 		it('should return a stream', function() {
 			var config = {
-				src: testCases.views.path
-			};
-			var task = prepareTask(function(gulp, config, stream, done) {
-				return through.obj();
-			});
+					src: testCases.views.path
+				},
+				task = prepareTask(function(gulp, config, stream, done) {
+					return through.obj();
+				});
 			expect(eachdir(gulp, config, null, [task])).to.be.an.instanceof(Stream);
 		});
 	});

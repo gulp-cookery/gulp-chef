@@ -1,7 +1,7 @@
 'use strict';
-var Sinon = require('sinon');
-var _ = require('lodash');
-var base = process.cwd();
+var Sinon = require('sinon'),
+	_ = require('lodash'),
+	base = process.cwd();
 
 var ConfigurableTaskRunnerRegistry = require(base + '/src/core/configurable_runner_registry');
 

@@ -1,3 +1,5 @@
+'use strict';
+
 var defaults = {
 	sourcemap: 'external', // inline, external, false
 	options: {
@@ -17,7 +19,7 @@ var defaults = {
  *
  * clean-css
  * https://github.com/jakubpawlowicz/clean-css
- * 
+ *
  * gulp-autoprefixer
  * https://github.com/sindresorhus/gulp-autoprefixer
  *
@@ -38,16 +40,16 @@ var defaults = {
  */
 function cssTask(gulp, config, stream, done) {
 	// lazy loading required modules.
-	var autoprefixer = require('gulp-autoprefixer');
-	var flatten = require('gulp-flatten');
-	var minify = require('gulp-minify-css');
-	var newer = require('gulp-newer');
-	var rename = require('gulp-rename');
-	var sourcemaps = require('gulp-sourcemaps');
-	var _ = require('lodash');
+	var autoprefixer = require('gulp-autoprefixer'),
+		flatten = require('gulp-flatten'),
+		minify = require('gulp-minify-css'),
+		newer = require('gulp-newer'),
+		rename = require('gulp-rename'),
+		sourcemaps = require('gulp-sourcemaps'),
+		_ = require('lodash');
 
-	var options = _.defaultsDeep({}, config.options, defaults.options);
-	var sourcemap = !config.debug && (config.sourcemap || config.sourcemaps);
+	var options = _.defaultsDeep({}, config.options, defaults.options),
+		sourcemap = !config.debug && (config.sourcemap || config.sourcemaps);
 
 	if (!stream) {
 		stream = gulp.src(config.src.globs, config.src.options);

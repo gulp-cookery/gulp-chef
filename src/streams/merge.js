@@ -1,3 +1,5 @@
+'use strict';
+
 /*jshint node: true */
 /*global process*/
 
@@ -8,9 +10,8 @@
  */
 function merge(gulp, config, stream, tasks) {
 	// lazy loading required modules.
-	var _merge = require('merge-stream');
-
-	var ConfigurableTaskError = require('../core/configurable_task_error.js');
+	var _merge = require('merge-stream'),
+		ConfigurableTaskError = require('../core/configurable_task_error.js');
 
 	if (tasks.length === 0) {
 		throw new ConfigurableTaskError('merge', 'no sub task specified');

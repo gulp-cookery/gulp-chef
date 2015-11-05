@@ -1,7 +1,7 @@
 'use strict';
-var ConfigurableTaskRunnerFactory = require('./core/configurable_runner_factory');
-var ConfigurableTaskFactory = require('./core/configurable_task_factory');
-var Configuration = require('./core/configuration');
+var ConfigurableTaskRunnerFactory = require('./core/configurable_runner_factory'),
+	ConfigurableTaskFactory = require('./core/configurable_task_factory'),
+	Configuration = require('./core/configuration');
 
 function configure(gulp, configs) {
 	createConfigurableTasks(configs, registerGulpTask);
@@ -16,13 +16,13 @@ function configure(gulp, configs) {
 }
 
 function createConfigurableTasks(rawConfigs, registerGulpTask) {
-	var stuff = require('./stuff');
-	var registry = {
-		register: registerGulpTask
-	};
-	var runnerFactory = new ConfigurableTaskRunnerFactory(stuff);
-	var taskFactory = new ConfigurableTaskFactory(stuff, runnerFactory, registry);
-	var configs = Configuration.sort({}, rawConfigs, {}, {});
+	var stuff = require('./stuff'),
+		registry = {
+			register: registerGulpTask
+		},
+		runnerFactory = new ConfigurableTaskRunnerFactory(stuff),
+		taskFactory = new ConfigurableTaskFactory(stuff, runnerFactory, registry),
+		configs = Configuration.sort({}, rawConfigs, {}, {});
 	taskFactory.multiple('', configs.subTaskConfigs, configs.taskConfig);
 }
 

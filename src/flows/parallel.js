@@ -1,6 +1,6 @@
 function bachParallel() {
-	var bach = require('bach');
-	var gulp = require('gulp');
+	var bach = require('bach'),
+		gulp = require('gulp');
 
 	var _parallel = gulp.parallel ? gulp.parallel.bind(gulp) : bach.parallel.bind(bach);
 

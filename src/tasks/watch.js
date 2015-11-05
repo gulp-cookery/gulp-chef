@@ -1,3 +1,4 @@
+'use strict';
 /**
  * 基本想法：
  *   watch 只要指定相依的 task 即可。

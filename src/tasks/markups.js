@@ -1,3 +1,4 @@
+'use strict';
 var defaults = {
 	options: {
 		collapseWhitespace: true,
@@ -26,9 +27,9 @@ var defaults = {
 function markupsTask(gulp, config, stream, done) {
 
 	// lazy loading required modules.
-	var flatten = require('gulp-flatten');
-	var htmlmin = require('gulp-htmlmin');
-	var newer = require('gulp-newer');
+	var flatten = require('gulp-flatten'),
+		htmlmin = require('gulp-htmlmin'),
+		newer = require('gulp-newer');
 
 	if (!stream) {
 		stream = gulp.src(config.src.globs, config.src.options);

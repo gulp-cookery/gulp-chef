@@ -1,3 +1,5 @@
+'use strict';
+
 function copyTask(gulp, config, stream, done) {
 	var flatten = require('gulp-flatten');
 

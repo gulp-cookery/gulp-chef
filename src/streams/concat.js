@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @param gulp the gulp instance running this task
  * @param config configuration for the task
@@ -7,8 +9,8 @@
  */
 function concat(gulp, config, stream, tasks) {
 	// lazy loading required modules.
-	var queue = require('./queue');
-	var gulpConcat = require('gulp-concat');
+	var queue = require('./queue'),
+		gulpConcat = require('gulp-concat');
 
 	var ConfigurationError = require('../core/configuration_error');
 

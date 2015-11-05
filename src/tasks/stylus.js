@@ -1,3 +1,4 @@
+'use strict';
 var defaults = {
 	sourcemap: 'external', // inline, external, false
 	options: {
@@ -25,16 +26,16 @@ var defaults = {
  */
 function stylusTask(gulp, config, stream, done) {
 	// lazy loading required modules.
-	var stylus = require('gulp-stylus');
-	var flatten = require('gulp-flatten');
-	var newer = require('gulp-newer');
-	var sourcemaps = require('gulp-sourcemaps');
-	var _ = require('lodash');
+	var stylus = require('gulp-stylus'),
+		flatten = require('gulp-flatten'),
+		newer = require('gulp-newer'),
+		sourcemaps = require('gulp-sourcemaps'),
+		_ = require('lodash');
 
 	var options = _.defaults({}, config.options, defaults.options, {
-		compress: !config.debug
-	});
-	var sourcemap = !config.debug && (config.sourcemap || config.sourcemaps);
+			compress: !config.debug
+		}),
+		sourcemap = !config.debug && (config.sourcemap || config.sourcemaps);
 
 	if (!stream) {
 		stream = gulp.src(config.src.globs, config.src.options);

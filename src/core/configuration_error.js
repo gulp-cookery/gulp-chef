@@ -1,3 +1,5 @@
+'use strict';
+
 // Custom Error Types
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error#Custom_Error_Types
 //
@@ -9,8 +11,8 @@
 //
 // Issue 228909: custom Errors are reported as "Uncaught [object Object]"
 // https://code.google.com/p/chromium/issues/detail?id=228909
-var inherits = require('util').inherits;
-var PluginError = require('gulp-util').PluginError;
+var inherits = require('util').inherits,
+	PluginError = require('gulp-util').PluginError;
 
 function ConfigurationError(plugin, message, options) {
 	PluginError.call(this, plugin, message, options);

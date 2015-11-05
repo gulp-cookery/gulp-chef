@@ -1,3 +1,5 @@
+'use strict';
+
 /*jshint node: true */
 /*global process*/
 
@@ -8,8 +10,8 @@
  */
 function each(gulp, config, stream, tasks) {
 	// lazy loading required modules.
-	var mergeStream = require('merge-stream');
-	var merge = require('./merge');
+	var mergeStream = require('merge-stream'),
+		merge = require('./merge');
 
 	var ConfigurationError = require('../core/configuration_error');
 
