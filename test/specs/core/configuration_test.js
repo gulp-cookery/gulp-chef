@@ -19,40 +19,33 @@ describe('Core', function () {
 				title: 'should accept normal task name',
 				value: 'build',
 				expected: {
-					name: 'build',
-					visibility: '',
-					runtime: ''
+					name: 'build'
 				}
 			}, {
 				title: 'should accept task name with space, underscore, dash',
 				value: '_build the-project',
 				expected: {
-					name: '_build the-project',
-					visibility: '',
-					runtime: ''
+					name: '_build the-project'
 				}
 			}, {
 				title: 'should accept . prefix and mark task hidden',
 				value: '.build',
 				expected: {
 					name: 'build',
-					visibility: '.',
-					runtime: ''
+					visibility: '.'
 				}
 			}, {
 				title: 'should accept # prefix and mark task undefined',
 				value: '#build',
 				expected: {
 					name: 'build',
-					visibility: '#',
-					runtime: ''
+					visibility: '#'
 				}
 			}, {
 				title: 'should accept ! postfix and mark task available in production mode only',
 				value: 'build!',
 				expected: {
 					name: 'build',
-					visibility: '',
 					runtime: '!'
 				}
 			}, {
@@ -60,7 +53,6 @@ describe('Core', function () {
 				value: 'build?',
 				expected: {
 					name: 'build',
-					visibility: '',
 					runtime: '?'
 				}
 			}, {
@@ -251,6 +243,25 @@ describe('Core', function () {
 						}
 					},
 					subTaskConfigs: {}
+				});
+			});
+			it('should be able to specify runtime info in config', function () {
+				var actual = Configuration.sort({
+					name: 'define-runtime-info'
+				}, {
+					visibility: '.',
+					runtime: '!'
+				}, {}, {});
+				expect(actual).to.deep.equal({
+					taskInfo: {
+						name: 'define-runtime-info',
+						visibility: '.',
+						runtime: '!'
+					},
+					taskConfig: {
+					},
+					subTaskConfigs: {
+					}
 				});
 			});
 			it('should put unknown properties to subTaskConfigs', function () {

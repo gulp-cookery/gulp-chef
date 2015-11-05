@@ -11,7 +11,7 @@ var TASK_PROPERTIES = [
 	// task
 	'depends', 'description', 'task',
 	// runtime
-	'name', 'hidden', 'runtime'
+	'name', 'visibility', 'runtime'
 ];
 var SCHEMA_DEFAULTS = {
 	"properties": {
@@ -114,22 +114,29 @@ function defaultsDeep(object) {
 }
 
 function getTaskRuntimeInfo(name) {
-	var match;
+	var match, taskInfo;
 
 	name = _.trim(name);
 	match = REGEX_RUNTIME_OPTIONS.exec(name);
 	if (!match) {
 		throw new ConfigurationError(__filename, 'invalid task name: ' + name);
 	}
-	return {
-		name: match[2] || name,
-		visibility: match[1] || '',
-		runtime: match[3] || ''
+
+	taskInfo = {
+		name: match[2] || name
 	};
+	if (match[1]) {
+		taskInfo.visibility = match[1];
+	}
+	if (match[3]) {
+		taskInfo.runtime = match[3];
+	}
+
+	return taskInfo;
 }
 
 function isVisible(task) {
-	return task.visibility === CONSTANT.VISIBILITY.NORMAL;
+	return task.visibility === CONSTANT.VISIBILITY.NORMAL || (!task.visibility);
 }
 
 function isDisabled(task) {
