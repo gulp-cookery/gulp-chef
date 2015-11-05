@@ -8,13 +8,19 @@ var REGEX_RUNTIME_OPTIONS = /^([.#]?)([_\w][-_\s\w]*)([!?]?)$/;
 
 var CONSTANT = {
 	VISIBILITY: {
+		/** hidden configurable task can't be run from cli, but still functional */
 		HIDDEN: '.',
+		/** disabled configurable task is not processed and not functional, including all it's descendants */
 		DISABLED: '#',
+		/** normal configurable task can be run from cli */
 		NORMAL: ''
 	},
 	RUNTIME: {
+		/** configurable task can only run in production mode */
 		PRODUCTION: '!',
+		/** configurable task can only run in development mode */
 		DEVELOPMENT: '?',
+		/** configurable task can run in both production and development mode */
 		ALL: ''
 	}
 };
