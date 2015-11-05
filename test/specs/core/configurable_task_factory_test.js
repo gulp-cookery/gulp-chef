@@ -116,8 +116,16 @@ describe('Core', function () {
 			});
 		});
 		describe('#multiple()', function () {
-			it('should ...', function () {
-
+			it('should process each config defined in subTaskConfigs', function () {
+				Sinon.spy(factory, 'one');
+				var actual = factory.multiple('', {
+					'recipe-task': {},
+					'stream-task': {}
+				}, {});
+				expect(factory.one.calledTwice).to.be.true;
+				expect(actual).to.be.an('array');
+				expect(actual.length).to.be.equal(2);
+				factory.one.restore();
 			});
 		});
 	});
