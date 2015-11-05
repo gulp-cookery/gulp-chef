@@ -10,7 +10,8 @@ var base = process.cwd();
 var ConfigurableTaskFactory = require(base + '/src/core/configurable_task_factory');
 var ConfigurationError = require(base + '/src/core/configuration_error');
 
-var FakeGulp = require(base + '/test/fake_gulp');
+var createFakeStuff = require(base + '/test/fake/stuff');
+var FakeGulp = require(base + '/test/fake/gulp');
 var test = require(base + '/test/testcase_runner');
 
 function done(err) {

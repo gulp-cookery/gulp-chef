@@ -7,11 +7,10 @@ var expect = Chai.expect;
 var _ = require('lodash');
 var base = process.cwd();
 
-var ConfigurableRunnerRegistry = require(base + '/src/core/configurable_runner_registry');
-var ConfigurableRunnerFactory = require(base + '/src/core/configurable_runner_factory');
+var ConfigurableTaskRunnerFactory = require(base + '/src/core/configurable_runner_factory');
 var ConfigurationError = require(base + '/src/core/configuration_error');
 
-var FakeGulp = require(base + '/test/fake_gulp');
+var FakeGulp = require(base + '/test/fake/gulp');
 var test = require(base + '/test/testcase_runner');
 
 function done(err) {
@@ -38,23 +37,7 @@ function createSpyConfigurableTask(name, configurableRunner, taskConfig) {
 	return task;
 }
 
-function createFakeStuff() {
-	return {
-		recipes: new ConfigurableRunnerRegistry({
-			'recipe-task': Sinon.spy()
-		}),
-		streams: new ConfigurableRunnerRegistry({
-			merge: fakeStreamRunner,
-			'stream-task': fakeStreamRunner
-		})
-	};
-
-	function fakeStreamRunner(gulp, config, stream, tasks) {
-		tasks.forEach(function (task) {
-			task.run(gulp, config, stream, done);
-		});
-	}
-}
+var createFakeStuff = require(base + '/test/fake/stuff');
 
 describe('Core', function () {
 	describe('ConfigurableRunnerFactory', function () {
@@ -82,7 +65,7 @@ describe('Core', function () {
 		});
 
 		beforeEach(function () {
-			factory = new ConfigurableRunnerFactory(stuff);
+			factory = new ConfigurableTaskRunnerFactory(stuff);
 			gulp = new FakeGulp();
 			gulpTask = createSpyGulpTask('gulp-task');
 			configurableTaskConfig = { keyword: 'configurable-task' };
@@ -127,7 +110,7 @@ describe('Core', function () {
 				actual(gulp, {}, null, done);
 				subTasks.forEach(function(task) {
 					expect(task.run.calledOn(task)).to.be.true;
-					expect(task.run.calledWithExactly(gulp, {}, null, done)).to.be.true;
+					expect(task.run.calledWith(gulp, {}, null)).to.be.true;
 				});
 			});
 		});

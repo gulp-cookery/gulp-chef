@@ -20,7 +20,8 @@ var CONSTANT = {
 };
 
 function ConfigurableTaskFactory(stuff, runnerFactory) {
-
+	this.stuff = stuff;
+	this.runnerFactory = runnerFactory;
 }
 
 ConfigurableTaskFactory.prototype.one = function(prefix, name, rawConfig, parentConfigs) {
@@ -52,7 +53,6 @@ ConfigurableTaskFactory.prototype.create = function(prefix, taskInfo, taskConfig
 	configurableTask.config = taskConfig;
 	return configurableTask;
 };
-
 
 function getTaskRuntimeInfo(name) {
 	var match;
