@@ -10,21 +10,21 @@ var base = process.cwd();
 var test = require(base + '/test/testcase_runner');
 var _ = require('lodash');
 
-var ConfigurableRunnerRegistry = require(base + '/src/core/configurable_runner_registry');
+var ConfigurableTaskRunnerRegistry = require(base + '/src/core/configurable_runner_registry');
 
 describe('Core', function () {
-	describe('ConfigurableTaskRegistry', function () {
+	describe('ConfigurableTaskRunnerRegistry', function () {
 		describe('constructor()', function () {
 			it('should take a hash object of tasks', function () {
-				var actual = new ConfigurableRunnerRegistry({
+				var actual = new ConfigurableTaskRunnerRegistry({
 					task: function() {}
 				});
-				expect(actual).to.be.instanceof(ConfigurableRunnerRegistry);
+				expect(actual).to.be.instanceof(ConfigurableTaskRunnerRegistry);
 				expect(actual.size()).to.equal(1);
 			});
 		});
-		describe('lookup()', function () {
-			var actual = new ConfigurableRunnerRegistry({
+		describe('#lookup()', function () {
+			var actual = new ConfigurableTaskRunnerRegistry({
 				task: function() {}
 			});
 			it('should return a function if found, otherwise, undefined', function () {

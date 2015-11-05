@@ -14,7 +14,7 @@ var _ = require('lodash');
 
 describe('Core', function () {
 	describe('Configuration', function () {
-		describe('src()', function () {
+		describe('.src()', function () {
 			it('should accept path string', function () {
 				var actual = Configuration.src('src');
 				expect(actual).to.deep.equal({
@@ -60,7 +60,7 @@ describe('Core', function () {
 				});
 			});
 		});
-		describe('dest()', function () {
+		describe('.dest()', function () {
 			it('should accept path string', function () {
 				var actual = Configuration.dest('dist');
 				expect(actual).to.deep.equal({
@@ -102,7 +102,7 @@ describe('Core', function () {
 				});
 			});
 		});
-		describe('sort()', function () {
+		describe('.sort()', function () {
 			it('_.defaultsDeep should not merge string characters into array', function() {
 				expect(_.defaultsDeep({ src: ['src'] }, { src: 'src' })).to.deep.equal({
 					src: ['src']
@@ -411,7 +411,7 @@ describe('Core', function () {
 				});
 			});
 		});
-		describe('realize()', function () {
+		describe('.realize()', function () {
 			it('should call resolver function', function () {
 				var resolved = 'resolver called';
 				var values = {

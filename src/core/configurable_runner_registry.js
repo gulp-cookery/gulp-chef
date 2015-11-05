@@ -2,16 +2,16 @@
 
 var _ = require('lodash');
 
-function ConfigurableRunnerRegistry(tasks) {
+function ConfigurableTaskRunnerRegistry(tasks) {
 	this.tasks = tasks;
 }
 
-ConfigurableRunnerRegistry.prototype.size = function () {
+ConfigurableTaskRunnerRegistry.prototype.size = function () {
 	return _.size(this.tasks);
 };
 
-ConfigurableRunnerRegistry.prototype.lookup = function(name) {
+ConfigurableTaskRunnerRegistry.prototype.lookup = function(name) {
 	return this.tasks[name];
 };
 
-module.exports = ConfigurableRunnerRegistry;
+module.exports = ConfigurableTaskRunnerRegistry;

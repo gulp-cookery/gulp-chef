@@ -40,7 +40,7 @@ function createSpyConfigurableTask(name, configurableRunner, taskConfig) {
 var createFakeStuff = require(base + '/test/fake/stuff');
 
 describe('Core', function () {
-	describe('ConfigurableRunnerFactory', function () {
+	describe('ConfigurableTaskRunnerFactory', function () {
 		var gulpTask, configurableTask, configurableTaskConfig, configurableTaskRefConfig, gulp, factory;
 
 		var stuff = createFakeStuff();
