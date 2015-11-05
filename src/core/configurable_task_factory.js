@@ -25,17 +25,68 @@ var CONSTANT = {
 	}
 };
 
-function ConfigurableTaskFactory(stuff, runnerFactory) {
+function ConfigurableTaskFactory(stuff, runnerFactory, gulpTaskRegistry) {
 	this.stuff = stuff;
 	this.runnerFactory = runnerFactory;
+	this.gulpTaskRegistry = gulpTaskRegistry;
 }
 
-ConfigurableTaskFactory.prototype.one = function(prefix, name, rawConfig, parentConfigs) {
+ConfigurableTaskFactory.prototype.one = function(prefix, name, rawConfig, parentConfig) {
+	var stuff, runnerFactory, schema, consumes, configs, taskInfo, runner, task;
 
+	stuff = this.stuff;
+	runnerFactory = this.runnerFactory;
+
+	taskInfo = ConfigurableTaskFactory.getTaskRuntimeInfo(name);
+
+	if (rawConfig.debug) {
+		debugger;
+	}
+
+	if (ConfigurableTaskFactory.isDisabled(taskInfo)) {
+		return null;
+	}
+
+	schema = getTaskSchema(taskInfo.name);
+	consumes = getTaskConsumes(taskInfo.name);
+
+	if (schema) {
+		configs = Configuration.sort(taskInfo, rawConfig, parentConfig, schema);
+	} else {
+		configs = Configuration.sort_deprecated(rawConfig, parentConfig, consumes);
+	}
+	runner = runnerFactory.create(prefix, configs, this.multiple.bind(this));
+	task = this.create(prefix, taskInfo, configs.taskConfig, runner);
+	if (ConfigurableTaskFactory.isVisible(task)) {
+		// TODO: call parallel for depends and then remove it from taskConfig.
+		if (this.gulpTaskRegistry) {
+			this.gulpTaskRegistry.register(task, configs.taskInfo.depends);
+		}
+	}
+
+	function getTaskSchema(name) {
+		var configurableTask = stuff.streams.lookup(name) || stuff.recipes.lookup(name);
+		return configurableTask && configurableTask.schema;
+	}
+
+	function getTaskConsumes(name) {
+		var configurableTask = stuff.streams.lookup(name) || stuff.recipes.lookup(name);
+		return configurableTask && configurableTask.consumes;
+	}
 };
 
-ConfigurableTaskFactory.prototype.multiple = function(prefix, subTaskConfigs, parentConfigs) {
+ConfigurableTaskFactory.prototype.multiple = function(prefix, subTaskConfigs, parentConfig) {
+	var self, tasks = [];
 
+	self = this;
+
+	Object.keys(subTaskConfigs).forEach(function (name) {
+		var task = self.one(prefix, name, subTaskConfigs[name], parentConfig);
+		if (task) {
+			tasks.push(task);
+		}
+	});
+	return tasks;
 };
 
 // TODO: make sure config is inherited at config time and injectable at runtime.

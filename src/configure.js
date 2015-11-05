@@ -17,63 +17,13 @@ function configure(gulp, configs) {
 
 function createConfigurableTasks(rawConfigs, registerGulpTask) {
 	var stuff = require('./stuff');
+	var registry = {
+		register: registerGulpTask
+	};
 	var runnerFactory = new ConfigurableTaskRunnerFactory(stuff);
-	var taskFactory = new ConfigurableTaskFactory(stuff, runnerFactory);
+	var taskFactory = new ConfigurableTaskFactory(stuff, runnerFactory, registry);
 	var configs = Configuration.sort({}, rawConfigs, {}, {});
-	createSubConfigurableTasks('', configs.subTaskConfigs, configs.taskConfig);
-
-	function createSubConfigurableTasks(prefix, subTaskConfigs, parentConfig) {
-		var tasks = [];
-
-		Object.keys(subTaskConfigs).forEach(function (name) {
-			var task = createConfigurableTask(prefix, name, subTaskConfigs[name], parentConfig);
-			if (task) {
-				tasks.push(task);
-			}
-		});
-		return tasks;
-	}
-
-	function createConfigurableTask(prefix, name, rawConfig, parentConfig) {
-		var schema, consumes, configs, taskInfo, runner, task;
-
-		taskInfo = ConfigurableTaskFactory.getTaskRuntimeInfo(name);
-
-		if (rawConfig.debug) {
-			debugger;
-		}
-
-		if (ConfigurableTaskFactory.isDisabled(taskInfo)) {
-			return null;
-		}
-
-		schema = getTaskSchema(taskInfo.name);
-		consumes = getTaskConsumes(taskInfo.name);
-
-		if (schema) {
-			configs = Configuration.sort(taskInfo, rawConfig, parentConfig, schema);
-		} else {
-			configs = Configuration.sort_deprecated(rawConfig, parentConfig, consumes);
-		}
-		runner = runnerFactory.create(prefix, configs, createSubConfigurableTasks);
-		task = taskFactory.create(prefix, taskInfo, configs.taskConfig, runner);
-
-		if (ConfigurableTaskFactory.isVisible(task)) {
-			// TODO: call parallel for depends and then remove it from taskConfig.
-			registerGulpTask(task, configs.taskInfo.depends);
-		}
-		return task;
-	}
-
-	function getTaskSchema(name) {
-		var configurableTask = stuff.streams.lookup(name) || stuff.recipes.lookup(name);
-		return configurableTask && configurableTask.schema;
-	}
-
-	function getTaskConsumes(name) {
-		var configurableTask = stuff.streams.lookup(name) || stuff.recipes.lookup(name);
-		return configurableTask && configurableTask.consumes;
-	}
+	taskFactory.multiple('', configs.subTaskConfigs, configs.taskConfig);
 }
 
 function createHelpGulpTask(registerGulpTask) {
