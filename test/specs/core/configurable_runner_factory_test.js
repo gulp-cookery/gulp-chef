@@ -14,9 +14,6 @@ var ConfigurableTaskRunnerFactory = require(base + '/src/core/configurable_runne
 var FakeGulp = require(base + '/test/fake/gulp'),
 	test = require(base + '/test/testcase_runner');
 
-function done(err) {
-}
-
 function createSpyGulpTask(name, gulpTask) {
 	var task = Sinon.spy(gulpTask);
 	task.displayName = name;
@@ -64,6 +61,9 @@ describe('Core', function () {
 					return createSpyConfigurableTask(name);
 				});;
 			});
+
+		function done(err) {
+		}
 
 		beforeEach(function () {
 			factory = new ConfigurableTaskRunnerFactory(stuff);

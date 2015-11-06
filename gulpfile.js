@@ -1,3 +1,5 @@
+'use strict';
+
 var gulp = require('gulp');
 
 //var createGulpTasks = require('gulp-config-task-runner');
@@ -453,6 +455,12 @@ var taskConfigs = {
 
 createGulpTasks(gulp, taskConfigs, config);
 
+gulp.task('xhelp', function help(done) {
+	debugger;
+	console.log(this);
+	done();
+});
+
 gulp.task('test', function() {
 	var mocha = require('gulp-mocha');
 	return gulp.src(['test/specs/**/*_test.js'], {
@@ -463,3 +471,5 @@ gulp.task('test', function() {
 			timeout: Infinity
 		}));
 });
+
+

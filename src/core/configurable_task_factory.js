@@ -4,7 +4,9 @@ var _ = require('lodash');
 var Configuration = require('./configuration'),
 	ConfigurationError = require('./configuration_error');
 
-function ConfigurableTaskFactory(stuff, runnerFactory, gulpTaskRegistry) {
+// NOTE: gulp 4.0 task are called on undefined context. So we need gulp reference here.
+function ConfigurableTaskFactory(gulp, stuff, runnerFactory, gulpTaskRegistry) {
+	this.gulp = gulp;
 	this.stuff = stuff;
 	this.runnerFactory = runnerFactory;
 	this.gulpTaskRegistry = gulpTaskRegistry;
@@ -61,6 +63,7 @@ ConfigurableTaskFactory.prototype.multiple = function(prefix, subTaskConfigs, pa
 
 // TODO: make sure config is inherited at config time and injectable at runtime.
 ConfigurableTaskFactory.prototype.create = function(prefix, taskInfo, taskConfig, configurableRunner) {
+	var gulp = this.gulp;
 	// invoked from stream processor
 	var run = function(gulp, injectConfig, stream, done) {
 		// inject and realize runtime configuration.
@@ -70,9 +73,9 @@ ConfigurableTaskFactory.prototype.create = function(prefix, taskInfo, taskConfig
 	};
 	// invoked from gulp
 	var configurableTask = function(done) {
-		return run(this, taskConfig, null, done);
+		return run(gulp, taskConfig, null, done);
 	};
-	configurableTask.displayName = prefix + taskInfo.name;
+	configurableTask.displayName = prefix + (taskInfo.name || configurableRunner.displayName || configurableRunner.name);
 	configurableTask.description = taskInfo.description || configurableRunner.description;
 	configurableTask.visibility = taskInfo.visibility;
 	configurableTask.runtime = taskInfo.runtime;

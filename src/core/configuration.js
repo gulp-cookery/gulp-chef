@@ -36,6 +36,9 @@ var INTERPOLATE = /{{([\s\S]+?)}}/g,
 						},
 						"read": {
 							"description": "Setting this to false will return file.contents as null and not read the file at all."
+						},
+						"since": {
+							"description": ""
 						}
 					}
 				},
@@ -57,6 +60,12 @@ var INTERPOLATE = /{{([\s\S]+?)}}/g,
 						},
 						"mode": {
 							"description": "Octal permission string specifying mode for any folders that need to be created for output folder."
+						},
+						"dirMode": {
+							"description": ""
+						},
+						"overwrite": {
+							"description": ""
 						}
 					}
 				},
