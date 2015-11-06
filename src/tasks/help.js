@@ -11,7 +11,7 @@ module.exports = function help(gulp, config, stream, done) {
 	Object.keys(tasks).sort().forEach(function(name) {
 		var task = tasks[name];
 		log(name);
-		// NOTE: in gulp 3.X task are stored in task.fn, and it's description in task.fn.description.
+		// NOTE: in gulp 3.X task are stored in task.fn, and we store description in fn.
 		log(' ', task.description || task.fn && task.fn.description || '(no description)');
 		log('');
 	});
