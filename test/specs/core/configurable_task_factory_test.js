@@ -27,7 +27,7 @@ describe('Core', function () {
 				};
 			gulp = new FakeGulp();
 			factory = new ConfigurableTaskFactory(gulp, stuff, new ConfigurableTaskRunnerFactory(stuff), registry);
-		})
+		});
 
 		describe('#create()', function () {
 			var taskInfo, taskConfig, stream, configurableRunner;
@@ -51,7 +51,7 @@ describe('Core', function () {
 
 			beforeEach(function() {
 				configurableRunner = Sinon.spy();
-			})
+			});
 
 			it('should return a ConfigurableTask (a function with run() method)', function () {
 				var actual = factory.create('', taskInfo, taskConfig, configurableRunner);

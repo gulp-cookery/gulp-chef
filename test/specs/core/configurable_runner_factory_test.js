@@ -56,10 +56,10 @@ describe('Core', function () {
 				}
 			},
 			subTasks,
-			createConfigurableTasks = Sinon.spy(function (prefix, subTaskConfigs, parentConfig) {
+			createConfigurableTasks = Sinon.spy(function (prefix, subTaskConfigs) {
 				return subTasks = _.map(subTaskConfigs, function(config, name) {
 					return createSpyConfigurableTask(name);
-				});;
+				});
 			});
 
 		function done(err) {
