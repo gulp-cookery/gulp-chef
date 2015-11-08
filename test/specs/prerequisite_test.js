@@ -32,7 +32,7 @@ describe('Prerequisite', function () {
 	if (isGulp4()) {
 		describe('Gulp 4.X', function () {
 			describe('.src()', function () {
-				it('should throws if target not exist', function () {
+				it('should throw if target not exist', function () {
 					if (isGulp4()) {
 						expect(function () {
 							gulp.src('non-existent');
