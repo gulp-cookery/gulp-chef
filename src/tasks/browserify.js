@@ -151,6 +151,7 @@ function browserifyTask(gulp, config, stream) {
 		buffer = require('vinyl-buffer'),
 		globby = require('globby'),
 		Globs = require('../util/glob_util'),
+		Configuration = require('../core/configuration'),
 		log = require('gulp-util').log,
 		merge = require('merge-stream'),
 		notify = require('gulp-notify'),
@@ -258,14 +259,14 @@ function browserifyTask(gulp, config, stream) {
 				}));
 		}
 
-		function realizeOptions(bundleConfig, config) {
+		function realizeOptions(bundleConfig, commonConfig) {
 			var src, entries, options;
 
-			src = resolveSrc(bundleConfig, config);
+			src = resolveSrc(bundleConfig, commonConfig);
 			entries = resolveEntries(src, bundleConfig.entries);
 			options = _.defaults({
 				entries: entries
-			}, bundleConfig, config);
+			}, bundleConfig, commonConfig);
 
 			// add sourcemap option
 			if (options.sourcemap) {
@@ -278,16 +279,7 @@ function browserifyTask(gulp, config, stream) {
 		}
 
 		function resolveSrc(bundleConfig, commonConfig) {
-			var src;
-
-			if (bundleConfig.src) {
-				src = Configuration.src(bundleConfig.src);
-				if (commonConfig.src) {
-					src.globs = Globs.join(commonConfig.src.globs, src.globs);
-				}
-			} else {
-				src = commonConfig.src;
-			}
+			var src = Configuration.resolveSrc(bundleConfig, commonConfig);
 			return src && src.globs || '';
 		}
 

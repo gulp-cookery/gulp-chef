@@ -211,6 +211,35 @@ function realize(original, additional, defaults) {
 var src = normalize.bind(null, SCHEMA_DEFAULTS.properties.src),
 	dest = normalize.bind(null, SCHEMA_DEFAULTS.properties.dest);
 
+function resolveSrc(child, parent) {
+	var value;
+
+	if (child.src) {
+		value = src(child.src);
+		if (parent.src && !(value.options && value.options.override)) {
+			value.globs = globsJoin(parent.src.globs, value.globs);
+		}
+		return value;
+	} else {
+		return parent.src;
+	}
+}
+
+function resolveDest(child, parent) {
+	var value;
+
+	if (child.dest) {
+		value = dest(child.dest);
+		if (parent.dest && !(value.options && value.options.override)) {
+			// force dest since it may not already exists (dest must be a folder).
+			value.path = globsJoin(parent.dest.path, value.path, true);
+		}
+		return value;
+	} else {
+		return parent.dest;
+	}
+}
+
 function sort(taskInfo, rawConfig, parentConfig, schema) {
 	var inheritedConfig, taskConfig, subTaskConfigs, value;
 
@@ -222,23 +251,18 @@ function sort(taskInfo, rawConfig, parentConfig, schema) {
 	if (parentConfig.src && !Array.isArray(parentConfig.src.globs)) {
 		throw TypeError('parentConfig.src not normalized');
 	}
-	if (rawConfig.src) {
-		value = src(rawConfig.src);
-		if (parentConfig.src) {
-			value.globs = globsJoin(parentConfig.src.globs, value.globs);
-		}
+
+	value = resolveSrc(rawConfig, parentConfig);
+	if (value) {
 		taskConfig.src = value;
 	}
 
 	if (parentConfig.dest && typeof parentConfig.dest.path !== 'string') {
 		throw TypeError('parentConfig.dest not normalized');
 	}
-	if (rawConfig.dest) {
-		value = dest(rawConfig.dest);
-		if (parentConfig.dest) {
-			// force dest since it may not already exists (dest must be a folder).
-			value.path = globsJoin(parentConfig.dest.path, value.path, true);
-		}
+
+	value = resolveDest(rawConfig, parentConfig);
+	if (value) {
 		taskConfig.dest = value;
 	}
 
@@ -303,6 +327,8 @@ module.exports = {
 	dest: dest,
 	normalize: normalize,
 	realize: realize,
+	resolveSrc: resolveSrc,
+	resolveDest: resolveDest,
 	sort_deprecated: sort_deprecated,
 	sort: sort,
 	src: src
