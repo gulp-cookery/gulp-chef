@@ -1,5 +1,6 @@
 'use strict';
 
+// TODO: use ESLint
 /*jshint node: true */
 /*global process*/
 /**
@@ -16,8 +17,7 @@
  */
 function eachdir(gulp, config, stream, tasks) {
 	// lazy loading required modules.
-	var _ = require('lodash'),
-		fs = require('fs'),
+	var fs = require('fs'),
 		path = require('path'),
 		each = require('./each');
 
@@ -62,8 +62,17 @@ function eachdir(gulp, config, stream, tasks) {
 	}
 }
 
+eachdir.displayName = 'eachdir';
 eachdir.description = 'Performs actions on each sub folder of the specified folder';
-eachdir.consumes = ['src'];
-eachdir.produces = ['dir', 'path'];
+eachdir.expose = ['dir', 'path'];
+eachdir.schema = {
+	"properties": {
+		"src": {
+			"description": ""
+		}
+	},
+	"required": ["src"]
+};
+
 
 module.exports = eachdir;

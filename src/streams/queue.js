@@ -42,6 +42,13 @@ function queue(gulp, config, stream, tasks) {
 	}
 }
 
+queue.displayName = 'queue';
 queue.description = 'Pipe queued streams progressively';
+queue.expose = [];
+queue.schema = {
+	"properties": {
+	}
+};
+
 
 module.exports = queue;

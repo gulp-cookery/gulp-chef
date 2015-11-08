@@ -17,6 +17,13 @@ function pipe(gulp, config, stream, tasks) {
 	function done() {}
 }
 
+pipe.displayName = 'pipe';
 pipe.description = '';
+pipe.expose = [];
+pipe.schema = {
+	"properties": {
+	}
+};
+
 
 module.exports = pipe;

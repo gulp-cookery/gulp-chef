@@ -31,7 +31,16 @@ function each(gulp, config, stream, tasks) {
 	}
 }
 
+each.displayName = 'each';
 each.description = '';
-each.consumes = ['values'];
+each.expose = [];
+each.schema = {
+	"properties": {
+		"values": {
+			"description": ""
+		}
+	},
+	"required": ["values"]
+};
 
 module.exports = each;

@@ -36,8 +36,22 @@ function concat(gulp, config, stream, tasks) {
 		.pipe(gulp.dest(config.dest.path, config.dest.options));
 }
 
-
+concat.displayName = 'concat';
 concat.description = 'Concatenates files';
-concat.consumes = ['dest', 'file', 'src'];
+concat.schema = {
+	"properties": {
+		"src": {
+			"description": ""
+		},
+		"dest": {
+			"description": ""
+		},
+		"file": {
+			"description": "",
+			"type": "string"
+		}
+	},
+	"required": ["dest", "file"]
+};
 
 module.exports = concat;
