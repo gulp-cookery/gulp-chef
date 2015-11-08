@@ -6,7 +6,7 @@ var ConfigurableTaskRunnerFactory = require('./core/configurable_runner_factory'
 	helpRunner = stuff.recipes.lookup('help');
 
 // TODO: consider exporting recipes using [Undertaker](https://github.com/gulpjs/undertaker#custom-registries) registry.
-function configure(gulp, rawConfigs) {
+function configure(gulp, rawConfigs, options) {
 	var registry = {
 			register: registerGulpTask
 		},
@@ -14,6 +14,7 @@ function configure(gulp, rawConfigs) {
 		taskFactory = new ConfigurableTaskFactory(gulp, stuff, runnerFactory, registry),
 		configs = Configuration.sort({}, rawConfigs, {}, {});
 
+	Configuration.setOptions(options);
 	taskFactory.multiple('', configs.subTaskConfigs, configs.taskConfig);
 	registerGulpTask(taskFactory.create('', {}, {}, helpRunner));
 

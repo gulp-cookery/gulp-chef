@@ -119,7 +119,7 @@ ConfigurableTaskRunnerFactory.prototype.recipe = function (name, configs) {
 ConfigurableTaskRunnerFactory.prototype.stream = function (prefix, configs, createConfigurableTasks) {
 	var tasks, stuff = this.stuff;
 
-	// TODO: remove stream runner form parent's config.
+	// TODO: remove stream runner from parent's config.
 	if (isStreamTask(configs.taskInfo.name, configs.subTaskConfigs)) {
 		tasks = _createSubTasks();
 		return _createStreamTaskRunner(tasks);
@@ -130,10 +130,11 @@ ConfigurableTaskRunnerFactory.prototype.stream = function (prefix, configs, crea
 	}
 
 	function _createSubTasks() {
-		var hidden;
+		var hidden, options;
 
 		if (stuff.streams.lookup(configs.taskInfo.name)) {
-			hidden = true;
+			options = Configuration.getOptions();
+			hidden = !options.exposeStockStreamTasks;
 		} else {
 			hidden = !!configs.taskInfo.visibility;
 		}

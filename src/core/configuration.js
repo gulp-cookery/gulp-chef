@@ -131,6 +131,18 @@ function defaultsDeep(object) {
 	}
 }
 
+var _options;
+
+function getOptions() {
+	return _options;
+}
+
+function setOptions(options) {
+	_options = _.defaultsDeep(options || {}, {
+		exposeStockStreamTasks: false
+	});
+}
+
 function getTaskRuntimeInfo(name) {
 	var match, taskInfo;
 
@@ -283,6 +295,8 @@ function sort_deprecated(taskConfig, parentConfig, consumes) {
 
 module.exports = {
 	CONSTANT: CONSTANT,
+	getOptions: getOptions,
+	setOptions: setOptions,
 	getTaskRuntimeInfo: getTaskRuntimeInfo,
 	isVisible: isVisible,
 	isDisabled: isDisabled,
