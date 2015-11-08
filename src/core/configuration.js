@@ -131,16 +131,18 @@ function defaultsDeep(object) {
 	}
 }
 
-var _options;
+var _defaultOptions = {
+	exposeStockStreamTasks: false
+};
+
+var _options = _defaultOptions;
 
 function getOptions() {
 	return _options;
 }
 
 function setOptions(options) {
-	_options = _.defaultsDeep(options || {}, {
-		exposeStockStreamTasks: false
-	});
+	_options = _.defaults(options || {}, _defaultOptions);
 }
 
 function getTaskRuntimeInfo(name) {
