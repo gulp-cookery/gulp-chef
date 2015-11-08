@@ -156,11 +156,6 @@ describe('Core', function () {
 			});
 		});
 		describe('.sort()', function () {
-			it('_.defaultsDeep should not merge string characters into array', function() {
-				expect(_.defaultsDeep({ src: ['src'] }, { src: 'src' })).to.deep.equal({
-					src: ['src']
-				});
-			});
 			it('should accept empty config', function () {
 				var actual = Configuration.sort({}, {}, {}, {});
 				expect(actual).to.deep.equal({
