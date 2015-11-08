@@ -167,11 +167,11 @@ function browserifyTask(gulp, config, stream) {
 	}
 	return browserifyThis(bundles);
 
-	function browserifyThis(bundleOptions) {
+	function browserifyThis(bundleConfig) {
 
-		var options = realizeOptions(bundleOptions, config.options, config);
+		var options = realizeOptions(bundleConfig, config);
 
-		if (config.debug) {
+		if (options.debug) {
 			// Add watchify args
 			_.defaults(options, watchify.args);
 			// A watchify require/external bug that prevents proper recompiling,
@@ -195,7 +195,7 @@ function browserifyTask(gulp, config, stream) {
 			_browserify.transform(transform);
 		}
 
-		if (config.debug) {
+		if (options.debug) {
 			// Wrap with watchify and rebundle on changes
 			_browserify = watchify(_browserify);
 			// Rebundle on update
@@ -258,29 +258,14 @@ function browserifyTask(gulp, config, stream) {
 				}));
 		}
 
-		function realizeOptions(bundleOptions, commonOptions, config) {
+		function realizeOptions(bundleConfig, config) {
 			var src, entries, options;
 
-			options = {};
-			src = config.src || options.src;
-			src = src && src.globs || '';
-
-			entries = bundleOptions.entries.reduce(function(result, entry) {
-				var files = Globs.join(src, entry.file || entry),
-					ret = files.reduce(function(ret, file) {
-						if (Globs.isGlob(file)) {
-							return ret.concat(globby.sync(file));
-						}
-						return ret.concat(file);
-					}, []);
-				return result.concat(ret);
-			}, []);
-
-			_.defaults(options, {
+			src = resolveSrc(bundleConfig, config);
+			entries = resolveEntries(src, bundleConfig.entries);
+			options = _.defaults({
 				entries: entries
-			}, bundleOptions, commonOptions);
-
-			options.sourcemap = options.sourcemap || config.sourcemap;
+			}, bundleConfig, config);
 
 			// add sourcemap option
 			if (options.sourcemap) {
@@ -290,6 +275,49 @@ function browserifyTask(gulp, config, stream) {
 			}
 
 			return options;
+		}
+
+		function resolveSrc(bundleConfig, commonConfig) {
+			var src;
+
+			if (bundleConfig.src) {
+				src = Configuration.src(bundleConfig.src);
+				if (commonConfig.src) {
+					src.globs = Globs.join(commonConfig.src.globs, src.globs);
+				}
+			} else {
+				src = commonConfig.src;
+			}
+			return src && src.globs || '';
+		}
+
+		function resolveEntries(src, entries) {
+			entries = _flatten(entries);
+			entries = _join(entries);
+			entries = _resolve(entries);
+			return entries;
+
+			// flatten entry property.
+			function _flatten(entries) {
+				return entries.map(function(entry) {
+					return entry.file || entry;
+				});
+			}
+
+			// join paths.
+			function _join(entries) {
+				return Globs.join(src, entries);
+			}
+
+			// resolve globs to files.
+			function _resolve(entries) {
+				return entries.reduce(function(result, entry) {
+					if (Globs.isGlob(entry)) {
+						return result.concat(globby.sync(entry));
+					}
+					return result.concat(entry);
+				}, []);
+			}
 		}
 
 		function handleErrors() {
@@ -306,8 +334,8 @@ function browserifyTask(gulp, config, stream) {
 	}
 }
 
+browserifyTask.displayName = 'browserify';
 browserifyTask.description = 'Bundle JavaScript things with Browserify.';
-browserifyTask.consumes = ['bundle', 'bundles', 'dest', 'options', 'sourcemap', 'sourcemaps', 'src'];
 browserifyTask.schema = {
 	"definitions": {
 		"options": {
