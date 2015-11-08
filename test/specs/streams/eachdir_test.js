@@ -115,10 +115,26 @@ describe('Stream Processor', function() {
 
 		afterEach(function() {});
 
-		it('should gulp.src() always return a stream (prerequisite)', function() {
-			var stream = gulp.src('non-existent');
-			expect(stream).to.be.an.instanceof(Stream);
-			expect(stream).to.have.property('on');
+		it('should gulp.src() always return a stream in 3.X (prerequisite)', function() {
+			if (isGulp3()) {
+				var stream = gulp.src('non-existent');
+				expect(stream).to.be.an.instanceof(Stream);
+				expect(stream).to.have.property('on');
+			}
+
+			function isGulp3() {
+				return !!gulp.run;
+			}
+		});
+
+		it('should gulp.src() throws if src not exist in 4.X (prerequisite)', function() {
+			if (isGulp4()) {
+				expect(function () { gulp.src('non-existent'); }).to.throw;
+			}
+
+			function isGulp4() {
+				return !!gulp.registry;
+			}
 		});
 
 		it('should throw if config.src is not a valid string', function() {
