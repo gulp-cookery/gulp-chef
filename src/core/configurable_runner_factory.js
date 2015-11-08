@@ -27,7 +27,8 @@
  *
  */
 
-var _ = require('lodash');
+var _ = require('lodash'),
+	log = require('gulp-util').log;
 
 var Configuration = require('./configuration'),
 	ConfigurationError = require('./configuration_error');
@@ -101,7 +102,8 @@ ConfigurableTaskRunnerFactory.prototype.recipe = function (name, configs) {
 
 	if (isRecipeTask(name)) {
 		if (hasSubTasks(configs.subTaskConfigs)) {
-			// TODO: warn about ignoring sub-configs.
+			// warn about ignoring sub-configs.
+			log('Warning: sub-configs ignored for recipe task: ' + name + ', sub-configs: ' + Object.keys(configs.subTaskConfigs));
 		}
 		return this.stuff.recipes.lookup(name);
 	}

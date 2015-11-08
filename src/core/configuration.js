@@ -39,6 +39,9 @@ var INTERPOLATE = /{{([\s\S]+?)}}/g,
 						},
 						"since": {
 							"description": ""
+						},
+						"override": {
+							"description": "Override parent's src settings."
 						}
 					}
 				},
@@ -66,6 +69,12 @@ var INTERPOLATE = /{{([\s\S]+?)}}/g,
 						},
 						"overwrite": {
 							"description": ""
+						},
+						"flatten": {
+							"description": "Remove or replace relative path for files."
+						},
+						"override": {
+							"description": "Override parent's dest settings."
 						}
 					}
 				},

@@ -17,9 +17,9 @@ function configure(gulp, rawConfigs) {
 	taskFactory.multiple('', configs.subTaskConfigs, configs.taskConfig);
 	registerGulpTask(taskFactory.create('', {}, {}, helpRunner));
 
-	// TODO: warning about name collision.
-	// TODO: what about the exec order of task's depends and depends' depends?
-	// TODO: what about hidden task's depends?
+	// TODO: warning about name collision. [DONE]: done prefixing task name
+	// TODO: what about the exec order of task's depends and depends' depends? [DONE]: no more depends in Gulp 4.0.
+	// TODO: what about hidden task's depends? [DONE]: no more depends in Gulp 4.0.
 	function registerGulpTask(task) {
 		var name = task.displayName || task.name;
 		gulp.task(name, task);
