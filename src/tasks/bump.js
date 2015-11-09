@@ -1,15 +1,5 @@
 'use strict';
 
-var defaults = {
-	source: 'package.json',
-	// target: ['bower.json', 'app/manifest.json'],
-	// 注意：這裡若不指定 base 的話，manifest.json 會輸出到 . 而非 app 目錄。
-	base: '.',
-	options: {
-		fields: ['version']
-	}
-};
-
 var message = {
 	type: 'list',
 	name: 'bump',
@@ -52,8 +42,42 @@ function bumpTask(gulp, config, stream, done) {
 	});
 }
 
+bumpTask.displayName = 'bump';
 bumpTask.description = '';
-bumpTask.consumes = ['base', 'options', 'source', 'target'];
-bumpTask.defaults = defaults;
+bumpTask.schema = {
+	"properties": {
+		"base": {
+			"description": "",
+			// 注意：這裡若不指定 base 的話，manifest.json 會輸出到 . 而非 app 目錄。
+			"default": "."
+		},
+		"source": {
+			"description": "",
+			"default": "package.json"
+		},
+		"target": {
+			"description": "",
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+			//, "default": ['bower.json', 'app/manifest.json']
+		},
+		"options": {
+			"description": "",
+			"properties": {
+				"fields": {
+					"description": "",
+					"type": "array",
+					"items": {
+						"type": "string"
+					},
+					"default": ["version"]
+				}
+			}
+		}
+	},
+	"required": ["dest", "file"]
+};
 
 module.exports = bumpTask;
