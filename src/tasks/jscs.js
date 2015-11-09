@@ -1,10 +1,4 @@
 'use strict';
-var defaults = {
-	options: {
-		esnext: true,
-		reporter: 'console'
-	}
-};
 
 /**
  * Ingredients:
@@ -19,8 +13,30 @@ function jscsTask(gulp, config, stream, done) {
 		.pipe(jscs(config.options));
 }
 
+jscsTask.displayName = 'jscs';
 jscsTask.description = '';
-jscsTask.consumes = ['options', 'src'];
-jscsTask.defaults = defaults;
+jscsTask.schema = {
+	"properties": {
+		"src": {
+			"description": ""
+		},
+		"options": {
+			"description": "",
+			"properties": {
+				"esnext": {
+					"description": "",
+					"type": "boolean",
+					"default": true
+				},
+				"reporter": {
+					"description": "",
+					"type": "string",
+					"default": "console"
+				}
+			}
+		}
+	},
+	"required": ["src"]
+};
 
 module.exports = jscsTask;
