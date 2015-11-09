@@ -1,19 +1,5 @@
 'use strict';
 
-var defaults = {
-	sourcemap: 'external', // inline, external, false
-	options: {
-		autoprefixer: {
-			browsers: ['> 1%', 'last 2 versions', 'Firefox ESR', 'Opera 12.1', 'safari 5', 'ie 9', 'ios 6', 'android 4'],
-			cascade: true,
-			remove: true
-		},
-		minify: {
-			//processImport: true
-		}
-	}
-};
-
 /**
  * Ingredients:
  *
@@ -87,8 +73,61 @@ function cssTask(gulp, config, stream, done) {
 		.pipe(gulp.dest(config.dest.path, config.dest.options));
 }
 
+cssTask.displayName = 'css';
 cssTask.description = '';
 cssTask.consumes = ['dest', 'flatten', 'options', 'sourcemap', 'sourcemaps', 'src', "min.css"];
 cssTask.defaults = defaults;
+cssTask.schema = {
+	"properties": {
+		"src": {
+			"description": ""
+		},
+		"dest": {
+			"description": ""
+		},
+		"sourcemap": {
+			"description": "generate sourcemap file or not?",
+			"enum": [
+				"inline", "external", false
+			],
+			"alias": ["sourcemaps"],
+			"default": false
+		},
+		"options": {
+			"description": "",
+			"properties": {
+				"autoprefixer": {
+					"properties": {
+						browsers: {
+							"description": "",
+							"type": "array",
+							"default": ['> 1%', 'last 2 versions', 'Firefox ESR', 'Opera 12.1', 'safari 5', 'ie 9', 'ios 6', 'android 4']
+						},
+						cascade: {
+							"description": "",
+							"type": "boolean",
+							"default": true
+						},
+						remove: {
+							"description": "",
+							"type": "boolean",
+							"default": true
+						}
+					}
+				},
+				"minify": {
+					"properties": {
+						processImport: {
+							"description": "",
+							"type": "boolean",
+							"default": true
+						}
+					}
+				}
+			}
+		}
+	},
+	"required": ["src", "dest"]
+};
 
 module.exports = cssTask;
