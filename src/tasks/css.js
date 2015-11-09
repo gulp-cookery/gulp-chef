@@ -73,17 +73,21 @@ function cssTask(gulp, config, stream, done) {
 		.pipe(gulp.dest(config.dest.path, config.dest.options));
 }
 
-cssTask.displayName = 'css';
-cssTask.description = '';
 cssTask.consumes = ['dest', 'flatten', 'options', 'sourcemap', 'sourcemaps', 'src', "min.css"];
-cssTask.defaults = defaults;
 cssTask.schema = {
+	"title": 'css',
+	"description": "",
 	"properties": {
 		"src": {
 			"description": ""
 		},
 		"dest": {
 			"description": ""
+		},
+		"flatten": {
+			"description": "",
+			"type": "boolean",
+			"default": false
 		},
 		"sourcemap": {
 			"description": "generate sourcemap file or not?",
@@ -92,6 +96,11 @@ cssTask.schema = {
 			],
 			"alias": ["sourcemaps"],
 			"default": false
+		},
+		"min.css": {
+			"description": "",
+			"type": "boolean",
+			"default": true
 		},
 		"options": {
 			"description": "",

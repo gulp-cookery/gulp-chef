@@ -31,10 +31,10 @@ function each(gulp, config, stream, tasks) {
 	}
 }
 
-each.displayName = 'each';
-each.description = '';
 each.expose = [];
 each.schema = {
+	"title": "each",
+	"description": "",
 	"properties": {
 		"values": {
 			"description": ""

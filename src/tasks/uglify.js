@@ -23,9 +23,9 @@ function uglifyTask(gulp, config, stream) {
 	return stream;
 }
 
-uglifyTask.displayName = 'uglify';
-uglifyTask.description = '';
 uglifyTask.schema = {
+	"title": "uglify",
+	"description": "",
 	"properties": {
 		"src": {
 			"description": ""

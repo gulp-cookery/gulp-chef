@@ -38,10 +38,10 @@ function merge(gulp, config, stream, tasks) {
 	}
 }
 
-merge.displayName = 'merge';
-merge.description = '';
 merge.expose = [];
 merge.schema = {
+	"title": "merge",
+	"description": "",
 	"properties": {
 	}
 };

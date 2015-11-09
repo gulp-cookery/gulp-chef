@@ -55,9 +55,9 @@ function stylusTask(gulp, config, stream, done) {
 		.pipe(gulp.dest(config.dest.path, config.dest.options));
 }
 
-stylusTask.displayName = 'stylus';
-stylusTask.description = '';
 stylusTask.schema = {
+	"title": "stylus",
+	"description": "",
 	"properties": {
 		"src": {
 			"description": ""

@@ -298,7 +298,7 @@ describe('Core', function () {
 					}
 				});
 			});
-			it.only('should extract title and description from schema if available', function () {
+			it('should extract title and description from schema if available', function () {
 				var schema = {
 					"title": "schema-extractor",
 					"description": "extract title and description from schema if available"

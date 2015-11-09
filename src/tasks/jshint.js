@@ -34,9 +34,9 @@ function jshintTask(gulp, config, stream, done) {
 	return stream;
 }
 
-jshintTask.displayName = 'jshint';
-jshintTask.description = '';
 jshintTask.schema = {
+	"title": "jshint",
+	"description": "",
 	"properties": {
 		"src": {
 			"description": ""

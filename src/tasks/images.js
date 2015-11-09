@@ -89,10 +89,9 @@ function imagesTaskV2(gulp, config, stream, done) {
 		.pipe(gulp.dest(config.dest.path, config.dest.options));
 }
 
-imagesTaskV2.displayName = 'images';
-imagesTaskV2.description = 'Optimize images.';
-imagesTaskV2.consumes = ['dest', 'flatten', 'options', 'src'];
 imagesTaskV2.schema = {
+	"title": "images",
+	"description": "",
 	"properties": {
 		"src": {
 			"description": ""

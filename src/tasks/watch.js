@@ -38,9 +38,9 @@ function watchTask(gulp, config, stream, done) {
 	gulp.watch(globs, depends);
 }
 
-watchTask.displayName = 'watch';
-watchTask.descriptions = '';
 watchTask.schema = {
+	"title": "watch",
+	"description": "",
 	"properties": {
 		"src": {
 			"description": ""

@@ -42,9 +42,9 @@ function markupsTask(gulp, config, stream, done) {
 	return stream.pipe(gulp.dest(config.dest.path, config.dest.options));
 }
 
-markupsTask.displayName = 'markups';
-markupsTask.description = '';
 markupsTask.schema = {
+	"title": "markups",
+	"description": "",
 	"properties": {
 		"src": {
 			"description": ""

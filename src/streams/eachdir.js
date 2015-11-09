@@ -62,10 +62,10 @@ function eachdir(gulp, config, stream, tasks) {
 	}
 }
 
-eachdir.displayName = 'eachdir';
-eachdir.description = 'Performs actions on each sub folder of the specified folder';
 eachdir.expose = ['dir', 'path'];
 eachdir.schema = {
+	"title": "eachdir",
+	"description": "Performs actions on each sub folder of the specified folder",
 	"properties": {
 		"src": {
 			"description": ""

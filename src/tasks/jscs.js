@@ -13,9 +13,9 @@ function jscsTask(gulp, config, stream, done) {
 		.pipe(jscs(config.options));
 }
 
-jscsTask.displayName = 'jscs';
-jscsTask.description = '';
 jscsTask.schema = {
+	"title": "jscs",
+	"description": "",
 	"properties": {
 		"src": {
 			"description": ""

@@ -13,10 +13,9 @@ function copyTask(gulp, config, stream, done) {
 	return stream.pipe(gulp.dest(config.dest.path, config.dest.options));
 }
 
-copyTask.displayName = 'copy';
-copyTask.description = '';
-copyTask.consumes = ['dest', 'flatten', 'src'];
 copyTask.schema = {
+	name: "copy",
+	"description": "",
 	"properties": {
 		"src": {
 			"description": ""
