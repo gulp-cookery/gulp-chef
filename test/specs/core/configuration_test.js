@@ -298,6 +298,20 @@ describe('Core', function () {
 					}
 				});
 			});
+			it.only('should extract title and description from schema if available', function () {
+				var schema = {
+					"title": "schema-extractor",
+					"description": "extract title and description from schema if available"
+				};
+				expect(Configuration.sort({}, {}, {}, schema)).to.deep.equal({
+					taskInfo: {
+						"name": "schema-extractor",
+						"description": "extract title and description from schema if available"
+					},
+					taskConfig: {},
+					subTaskConfigs: {}
+				});
+			});
 			it('should normalize config using the given schema', function () {
 				var schema = {
 					"definitions": {

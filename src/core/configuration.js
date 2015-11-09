@@ -242,10 +242,28 @@ function resolveDest(child, parent) {
 	}
 }
 
+function propertyMapper(target, source, mappings) {
+	Object.keys(mappings).forEach(function(sourceProperty) {
+		var targetProperty;
+		if (source.hasOwnProperty(sourceProperty)) {
+			targetProperty = mappings[sourceProperty];
+			if (!target.hasOwnProperty(targetProperty)) {
+				target[targetProperty] = source[sourceProperty];
+			}
+		}
+	});
+	return target;
+}
+
+/**
+ * If both parentConfig and taskConfig specified src property
+ * then try to join paths.
+ */
 function sort(taskInfo, rawConfig, parentConfig, schema) {
 	var inheritedConfig, taskConfig, subTaskConfigs, value;
 
-	taskInfo = _.defaultsDeep(taskInfo, _.pick(rawConfig, TASK_PROPERTIES));
+	value = propertyMapper({}, schema, { title: 'name', description: 'description' });
+	taskInfo = _.defaultsDeep(taskInfo, _.pick(rawConfig, TASK_PROPERTIES), value);
 	rawConfig = _.omit(rawConfig, TASK_PROPERTIES);
 
 	taskConfig = {};
@@ -282,43 +300,6 @@ function sort(taskInfo, rawConfig, parentConfig, schema) {
 	};
 }
 
-/**
- * If both parentConfig and taskConfig specified src property
- * then try to join paths.
- */
-function sort_deprecated(taskConfig, parentConfig, consumes) {
-	var inheritedConfig, subTaskConfigs, value;
-
-	inheritedConfig = {};
-
-	consumes = TASK_PROPERTIES.concat(consumes);
-
-	if (taskConfig.src) {
-		value = src(taskConfig.src);
-		if (parentConfig.src) {
-			value.globs = globsJoin(parentConfig.src.globs, value.globs);
-		}
-		inheritedConfig.src = value;
-	}
-	if (parentConfig.dest && taskConfig.dest) {
-		// force dest since it may not already exists (asumes dest always be a folder).
-		value = dest(taskConfig.dest);
-		if (parentConfig.dest) {
-			value.path = globsJoin(parentConfig.dest.path, value.path);
-		}
-		inheritedConfig.dest = value;
-	}
-
-	inheritedConfig = _.defaultsDeep(inheritedConfig, taskConfig, parentConfig);
-	inheritedConfig = _.pick(inheritedConfig, consumes);
-	subTaskConfigs = _.omit(taskConfig, consumes);
-
-	return {
-		taskConfig: inheritedConfig,
-		subTaskConfigs: subTaskConfigs
-	};
-}
-
 module.exports = {
 	CONSTANT: CONSTANT,
 	getOptions: getOptions,
@@ -331,7 +312,6 @@ module.exports = {
 	realize: realize,
 	resolveSrc: resolveSrc,
 	resolveDest: resolveDest,
-	sort_deprecated: sort_deprecated,
 	sort: sort,
 	src: src
 };
