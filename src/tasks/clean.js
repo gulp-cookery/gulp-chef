@@ -1,9 +1,5 @@
 'use strict';
 
-var defaults = {
-	src: 'dist'
-};
-
 /**
  * Ingredients:
  *
@@ -16,8 +12,18 @@ function cleanTask(gulp, config, stream, done) {
 	done();
 }
 
+cleanTask.displayName = 'clean';
 cleanTask.description = '';
-cleanTask.consumes = ['dest', 'src'];
-cleanTask.defaults = defaults;
+cleanTask.schema = {
+	"properties": {
+		"src": {
+			"description": ""
+		},
+		"dest": {
+			"description": ""
+		}
+	},
+	"required": []
+};
 
 module.exports = cleanTask;
