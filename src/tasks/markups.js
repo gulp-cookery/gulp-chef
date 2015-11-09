@@ -1,10 +1,4 @@
 'use strict';
-var defaults = {
-	options: {
-		collapseWhitespace: true,
-		collapseBooleanAttributes: true
-	}
-};
 
 /**
  *
@@ -48,8 +42,38 @@ function markupsTask(gulp, config, stream, done) {
 	return stream.pipe(gulp.dest(config.dest.path, config.dest.options));
 }
 
+markupsTask.displayName = 'markups';
 markupsTask.description = '';
-markupsTask.consumes = ['dest', 'flatten', 'options', 'src'];
-markupsTask.defaults = defaults;
+markupsTask.schema = {
+	"properties": {
+		"src": {
+			"description": ""
+		},
+		"dest": {
+			"description": ""
+		},
+		"flatten": {
+			"description": "",
+			"type": "boolean",
+			"default": false
+		},
+		"options": {
+			"description": "",
+			"properties": {
+				"collapseWhitespace": {
+					"description": "",
+					"type": "boolean",
+					"default": true
+				},
+				"collapseBooleanAttributes": {
+					"description": "",
+					"type": "boolean",
+					"default": true
+				}
+			}
+		}
+	},
+	"required": ["src", "dest"]
+};
 
 module.exports = markupsTask;
