@@ -89,8 +89,44 @@ function imagesTaskV2(gulp, config, stream, done) {
 		.pipe(gulp.dest(config.dest.path, config.dest.options));
 }
 
-imagesTask.description = 'Optimize images.';
-imagesTask.consumes = ['dest', 'flatten', 'options', 'src'];
-imagesTask.defaults = defaults;
+imagesTaskV2.displayName = 'images';
+imagesTaskV2.description = 'Optimize images.';
+imagesTaskV2.consumes = ['dest', 'flatten', 'options', 'src'];
+imagesTaskV2.schema = {
+	"properties": {
+		"src": {
+			"description": ""
+		},
+		"dest": {
+			"description": ""
+		},
+		"flatten": {
+			"description": "",
+			"type": "boolean",
+			"default": false
+		},
+		"options": {
+			"description": "",
+			"properties": {
+				"optimizationLevel": {
+					"description": "",
+					"type": "integer",
+					"default": 3
+				},
+				"progressive": {
+					"description": "",
+					"type": "boolean",
+					"default": true
+				},
+				"interlaced": {
+					"description": "",
+					"type": "boolean",
+					"default": true
+				}
+			}
+		}
+	},
+	"required": ["src", "dest"]
+};
 
 module.exports = imagesTaskV2;
