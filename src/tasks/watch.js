@@ -1,4 +1,5 @@
 'use strict';
+
 /**
  * 基本想法：
  *   watch 只要指定相依的 task 即可。
@@ -37,7 +38,20 @@ function watchTask(gulp, config, stream, done) {
 	gulp.watch(globs, depends);
 }
 
+watchTask.displayName = 'watch';
 watchTask.descriptions = '';
-watchTask.consumes = [];
+watchTask.schema = {
+	"properties": {
+		"src": {
+			"description": ""
+		},
+		"options": {
+			"description": "",
+			"properties": {
+			}
+		}
+	},
+	"required": ["src"]
+};
 
 module.export = watchTask;
