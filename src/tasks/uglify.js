@@ -1,9 +1,4 @@
 'use strict';
-var defaults = {
-	options: {
-		preserveComments: 'some'
-	}
-};
 
 function uglifyTask(gulp, config, stream) {
 	var rename = require('gulp-rename'),
@@ -28,9 +23,32 @@ function uglifyTask(gulp, config, stream) {
 	return stream;
 }
 
-
+uglifyTask.displayName = 'uglify';
 uglifyTask.description = '';
-uglifyTask.consumes = ['dest', 'file', 'options', 'src'];
-uglifyTask.defaults = defaults;
+uglifyTask.schema = {
+	"properties": {
+		"src": {
+			"description": ""
+		},
+		"dest": {
+			"description": ""
+		},
+		"file": {
+			"description": "",
+			"type": "string"
+		},
+		"options": {
+			"description": "",
+			"properties": {
+				"preserveComments": {
+					"description": "",
+					"type": "string",
+					"default": "some"
+				}
+			}
+		}
+	},
+	"required": ["src", "dest", "file"]
+};
 
 module.exports = uglifyTask;
