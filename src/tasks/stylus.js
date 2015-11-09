@@ -1,12 +1,4 @@
 'use strict';
-var defaults = {
-	sourcemap: 'external', // inline, external, false
-	options: {
-		'include css': true,
-		'resolve url': true,
-		'urlfunc': 'url'
-	}
-};
 
 /**
  * Ingredients:
@@ -63,8 +55,51 @@ function stylusTask(gulp, config, stream, done) {
 		.pipe(gulp.dest(config.dest.path, config.dest.options));
 }
 
+stylusTask.displayName = 'stylus';
 stylusTask.description = '';
-stylusTask.consumes = ['dest', 'flatten', 'options', 'sourcemap', 'sourcemaps', 'src'];
-stylusTask.defaults = defaults;
+stylusTask.schema = {
+	"properties": {
+		"src": {
+			"description": ""
+		},
+		"dest": {
+			"description": ""
+		},
+		"flatten": {
+			"description": "",
+			"type": "boolean",
+			"default": false
+		},
+		"sourcemap": {
+			"description": "generate sourcemap file or not?",
+			"enum": [
+				"inline", "external", false
+			],
+			"alias": ["sourcemaps"],
+			"default": false
+		},
+		"options": {
+			"description": "",
+			"properties": {
+				"include css": {
+					"description": "",
+					"type": "boolean",
+					"default": true
+				},
+				"resolve url": {
+					"description": "",
+					"type": "boolean",
+					"default": true
+				},
+				"urlfunc": {
+					"description": "",
+					"type": "string",
+					"default": "url"
+				}
+			}
+		}
+	},
+	"required": ["src", "dest"]
+};
 
 module.exports = stylusTask;
