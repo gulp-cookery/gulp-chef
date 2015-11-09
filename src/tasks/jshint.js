@@ -1,19 +1,4 @@
 'use strict';
-var defaults = {
-	options: {
-		jshintrc: '.jshintrc',
-		// reporter: [
-		//     'jshint-stylish',
-		//     'fail'
-		// ]
-		reporter: {
-			'default': {
-				verbose: true
-			}
-			// 'jshint-stylish': {}
-		}
-	}
-};
 
 /**
  * Ingredients:
@@ -49,8 +34,38 @@ function jshintTask(gulp, config, stream, done) {
 	return stream;
 }
 
+jshintTask.displayName = 'jshint';
 jshintTask.description = '';
-jshintTask.consumes = ['options', 'src'];
-jshintTask.defaults = defaults;
+jshintTask.schema = {
+	"properties": {
+		"src": {
+			"description": ""
+		},
+		"options": {
+			"description": "",
+			"properties": {
+				"jshintrc": {
+					"description": "",
+					"type": "string",
+					"default": ".jshintrc"
+				},
+				reporter: {
+					"type": ["object", "array"],
+					"default": {
+						"default": {
+							verbose: true
+						}
+					},
+					"samples": [{
+						"jshint-stylish": {},
+					}, [
+						"default", "jshint-stylish", "fail"
+					]]
+				}
+			}
+		}
+	},
+	"required": ["src"]
+};
 
 module.exports = jshintTask;
