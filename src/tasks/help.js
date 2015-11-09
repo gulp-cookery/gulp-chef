@@ -18,3 +18,6 @@ module.exports = function help(gulp, config, stream, done) {
 	done();
 };
 
+help.displayName = 'help';
+help.description = '';
+help.schema = {};
