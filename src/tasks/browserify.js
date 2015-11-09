@@ -335,41 +335,65 @@ browserifyTask.schema = {
 				"extensions": {
 					"description": "",
 					"type": "array",
+					"items": {
+						"type": "string"
+					},
 					"alias": ["extension"]
 				},
 				"require": {
 					"description": "",
 					"type": "array",
+					"items": {
+						"type": "string"
+					},
 					"alias": ["requires"]
 				},
 				"external": {
 					"description": "",
 					"type": "array",
+					"items": {
+						"type": "string"
+					},
 					"alias": ["externals"]
 				},
 				"plugin": {
 					"description": "",
 					"type": "array",
+					"items": {
+						"type": "string"
+					},
 					"alias": ["plugins"]
 				},
 				"transform": {
 					"description": "",
 					"type": "array",
+					"items": {
+						"type": "string"
+					},
 					"alias": ["transforms"]
 				},
 				"exclude": {
 					"description": "",
 					"type": "array",
+					"items": {
+						"type": "string"
+					},
 					"alias": ["excludes"]
 				},
 				"ignore": {
 					"description": "",
 					"type": "array",
+					"items": {
+						"type": "string"
+					},
 					"alias": ["ignores"]
 				},
 				"shim": {
 					"description": "which library to shim?",
 					"type": "array",
+					"items": {
+						"type": "string"
+					},
 					"alias": ["shims", "browserify-shim", "browserify-shims"]
 				},
 				"sourcemap": {
@@ -393,6 +417,9 @@ browserifyTask.schema = {
 			"description": "",
 			"alias": ["bundle"],
 			"type": "array",
+			"items": {
+				"type": "object"
+			},
 			"extends": [
 				{ "$ref": "#/definitions/io" },
 				{ "$ref": "#/definitions/options" }
@@ -404,8 +431,11 @@ browserifyTask.schema = {
 				},
 				"entries": {
 					"description": "",
-					"alias": ["entry"],
-					"type": "array"
+					"type": "array",
+					"items": {
+						"type": "string"
+					},
+					"alias": ["entry"]
 				},
 				"options": {
 					"extends": { "$ref": "#/definitions/options" }
