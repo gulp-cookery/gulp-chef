@@ -29,4 +29,11 @@ function parallel(gulp, config, stream, tasks) {
 	}
 }
 
+parallel.schema = {
+	"title": "parallel",
+	"description": "",
+	"Properties": {
+	}
+};
+
 module.exports = parallel;

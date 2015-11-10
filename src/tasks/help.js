@@ -1,7 +1,7 @@
 "use strict";
 var log = require('gulp-util').log;
 
-module.exports = function help(gulp, config, stream, done) {
+function help(gulp, config, stream, done) {
 	var tasks;
 
 	// NOTE:
@@ -20,5 +20,9 @@ module.exports = function help(gulp, config, stream, done) {
 
 help.schema = {
 	"title": "help",
-	"description": ""
+	"description": "",
+	"Properties": {
+	}
 };
+
+module.exports = help;
