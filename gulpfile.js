@@ -412,24 +412,26 @@ var taskConfigs = {
 	         }
 	     }
 	 },
-	 //foreach: {
-		// each: {
-		//	 values: [{
-		//		 dir: 'directives'
-		//	 }, {
-		//		 dir: 'services'
-		//	 }, {
-		//		 dir: 'views'
-		//	 }],
-		//	 process: {
-		//		 task: function(config) {
-		//			 var EmptyStream = require('./src/util/empty_stream');
-		//			 console.log(config.dir);
-		//			 return new EmptyStream();
-		//		 }
-		//     }
-	 //    }
-	 //},
+	 foreach: {
+		 each: {
+			 // 注意：有時候 normalizer 會遇到無窮迴圈的情況，似乎是在陣列的時候，
+			 // 因為 index (當然)並未定義在 schema 中，所以一直成為 others 部份。
+			 values: [{
+				 dir: 'directives'
+			 }, {
+				 dir: 'services'
+			 }, {
+				 dir: 'views'
+			 }],
+			 process: {
+				 task: function(gulp, config, stream, done) {
+					 var emptyStream = require('./src/util/stream_util').empty();
+					 console.log(config.dir);
+					 return emptyStream;
+				 }
+		     }
+	     }
+	 },
 	 manifest: {
 	 },
 	 locales: {
