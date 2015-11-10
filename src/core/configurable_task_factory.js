@@ -1,5 +1,6 @@
 'use strict';
-var _ = require('lodash');
+var _ = require('lodash'),
+	log = require('gulp-util').log;
 
 var Configuration = require('./configuration'),
 	ConfigurationError = require('./configuration_error');
@@ -32,7 +33,8 @@ ConfigurableTaskFactory.prototype.one = function(prefix, name, rawConfig, parent
 
 	runner = this.runnerFactory.create(prefix, configs, this.multiple.bind(this));
 	if (! runner) {
-		throw new ConfigurationError(__filename, "Can't infer to a proper recipe task: " + taskInfo.name);
+		log("Warning: can't infer to a proper recipe task: " + taskInfo.name + ': task will do nothing.');
+		runner = function(gulp, config, stream, done) { done(); };
 	}
 	task = this.create(prefix, taskInfo, configs.taskConfig, runner);
 	if (Configuration.isVisible(task)) {
