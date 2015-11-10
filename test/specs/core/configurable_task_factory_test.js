@@ -112,8 +112,9 @@ describe('Core', function () {
 				}, {});
 				expect(actual).to.be.a('function');
 			});
-			it('should throw if can not resolve to a task', function () {
-				expect(function () { factory.one('', 'non-existent', {}, {}) }).to.throw(ConfigurationError);
+			it('should not throw even can not resolve to a task', function () {
+				var actual = factory.one('', 'non-existent', {}, {});
+				expect(actual).to.be.a('function');
 			});
 		});
 		describe('#multiple()', function () {
