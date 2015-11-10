@@ -75,7 +75,7 @@ function cssTask(gulp, config, stream, done) {
 
 cssTask.consumes = ['dest', 'flatten', 'options', 'sourcemap', 'sourcemaps', 'src', "min.css"];
 cssTask.schema = {
-	"title": 'css',
+	"title": "css",
 	"description": "",
 	"properties": {
 		"src": {

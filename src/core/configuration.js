@@ -262,6 +262,8 @@ function propertyMapper(target, source, mappings) {
 function sort(taskInfo, rawConfig, parentConfig, schema) {
 	var inheritedConfig, taskConfig, subTaskConfigs, value;
 
+	console.log('---------------- sort: ' + (taskInfo.name || schema.title));
+
 	value = propertyMapper({}, schema, { title: 'name', description: 'description' });
 	taskInfo = _.defaultsDeep(taskInfo, _.pick(rawConfig, TASK_PROPERTIES), value);
 	rawConfig = _.omit(rawConfig, TASK_PROPERTIES);

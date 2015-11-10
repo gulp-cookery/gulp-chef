@@ -326,9 +326,9 @@ function browserifyTask(gulp, config, stream) {
 	}
 }
 
-browserifyTask.displayName = 'browserify';
-browserifyTask.description = 'Bundle JavaScript things with Browserify.';
 browserifyTask.schema = {
+	"title": "browserify",
+	"description": "Bundle JavaScript things with Browserify.",
 	"definitions": {
 		"options": {
 			"properties": {

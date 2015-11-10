@@ -12,9 +12,9 @@ function cleanTask(gulp, config, stream, done) {
 	done();
 }
 
-cleanTask.displayName = 'clean';
-cleanTask.description = '';
 cleanTask.schema = {
+	"title": "clean",
+	"description": "",
 	"properties": {
 		"src": {
 			"description": ""

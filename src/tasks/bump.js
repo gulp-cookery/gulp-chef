@@ -42,9 +42,9 @@ function bumpTask(gulp, config, stream, done) {
 	});
 }
 
-bumpTask.displayName = 'bump';
-bumpTask.description = '';
 bumpTask.schema = {
+	"title": "bump",
+	"description": "",
 	"properties": {
 		"base": {
 			"description": "",

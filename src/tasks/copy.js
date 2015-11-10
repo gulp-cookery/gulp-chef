@@ -14,7 +14,7 @@ function copyTask(gulp, config, stream, done) {
 }
 
 copyTask.schema = {
-	name: "copy",
+	"title": "copy",
 	"description": "",
 	"properties": {
 		"src": {
