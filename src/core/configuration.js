@@ -290,8 +290,9 @@ function sort(taskInfo, rawConfig, parentConfig, schema) {
 
 	inheritedConfig = _.defaultsDeep(taskConfig, rawConfig, parentConfig);
 	taskConfig = normalize(schema, inheritedConfig) || {};
-	subTaskConfigs = taskConfig.others || {};
+	//subTaskConfigs = taskConfig.others || {};
 	delete taskConfig.others;
+	subTaskConfigs = _.omit(rawConfig, Object.keys(taskConfig));
 
 	return {
 		taskInfo: taskInfo,
