@@ -16,7 +16,11 @@ function safeRequireDir() {
 		dir = path.resolve(parentDir, dir || '.');
 		try {
 			return requireDir(dir);
-		} catch (ex) {}
+		} catch (ex) {
+			if (ex.code !== "ENOENT") {
+				throw ex;
+			}
+		}
 		return {};
 	});
 	return _.defaults.apply(null, modules);
