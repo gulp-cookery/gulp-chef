@@ -37,7 +37,8 @@ each.schema = {
 	"description": "",
 	"properties": {
 		"values": {
-			"description": ""
+			"description": "",
+			"type": "array"
 		}
 	},
 	"required": ["values"]
