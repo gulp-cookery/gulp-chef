@@ -87,7 +87,7 @@ var INTERPOLATE = /{{([\s\S]+?)}}/g,
 	"gathering": "others"
 };
 
-var REGEX_RUNTIME_OPTIONS = /^([.#]?)([_\w][-_\s\w]*)([!?]?)$/;
+var REGEX_RUNTIME_OPTIONS = /^([.#]?)([_\w][-_:\s\w]*)([!?]?)$/;
 
 var CONSTANT = {
 	VISIBILITY: {
@@ -261,8 +261,6 @@ function propertyMapper(target, source, mappings) {
  */
 function sort(taskInfo, rawConfig, parentConfig, schema) {
 	var inheritedConfig, taskConfig, subTaskConfigs, value;
-
-	console.log('---------------- sort: ' + (taskInfo.name || schema.title));
 
 	value = propertyMapper({}, schema, { title: 'name', description: 'description' });
 	taskInfo = _.defaultsDeep(taskInfo, _.pick(rawConfig, TASK_PROPERTIES), value);
