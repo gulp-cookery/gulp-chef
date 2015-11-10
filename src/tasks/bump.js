@@ -77,7 +77,7 @@ bumpTask.schema = {
 			}
 		}
 	},
-	"required": ["dest", "file"]
+	"required": ["target"]
 };
 
 module.exports = bumpTask;
