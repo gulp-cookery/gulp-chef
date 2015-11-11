@@ -1,4 +1,5 @@
-'use strict';
+"use strict";
+
 var log = require('gulp-util').log,
 	globsJoin = require('../util/glob_util').join,
 	normalize = require('json-normalizer').sync,
@@ -269,7 +270,7 @@ function sort(taskInfo, rawConfig, parentConfig, schema) {
 	taskConfig = {};
 
 	if (parentConfig.src && !Array.isArray(parentConfig.src.globs)) {
-		throw TypeError('parentConfig.src not normalized');
+		throw new TypeError('parentConfig.src not normalized');
 	}
 
 	value = resolveSrc(rawConfig, parentConfig);
@@ -278,7 +279,7 @@ function sort(taskInfo, rawConfig, parentConfig, schema) {
 	}
 
 	if (parentConfig.dest && typeof parentConfig.dest.path !== 'string') {
-		throw TypeError('parentConfig.dest not normalized');
+		throw new TypeError('parentConfig.dest not normalized');
 	}
 
 	value = resolveDest(rawConfig, parentConfig);

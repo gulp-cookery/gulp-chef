@@ -6,7 +6,7 @@ function pipe(gulp, config, stream, tasks) {
 	var i, n;
 
 	if (tasks.length === 0) {
-		throw ConfigurableTaskError('pipe', 'no sub tasks');
+		throw new ConfigurableTaskError('pipe', 'no sub tasks');
 	}
 
 	for (i = 0, n = tasks.length; i < n; ++i) {
