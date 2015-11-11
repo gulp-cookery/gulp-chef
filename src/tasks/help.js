@@ -1,6 +1,14 @@
 "use strict";
 var log = require('gulp-util').log;
 
+/**
+ * Recipe:
+ * print available tasks
+ *
+ * Ingredients:
+ * gulp
+ *
+ */
 function help(gulp, config, stream, done) {
 	var tasks;
 

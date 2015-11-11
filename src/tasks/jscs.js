@@ -1,8 +1,11 @@
 'use strict';
 
 /**
- * Ingredients:
+ * Recipe:
+ * jscs
  *
+ * Ingredients:
+ * jscs
  *
  */
 function jscsTask(gulp, config, stream, done) {

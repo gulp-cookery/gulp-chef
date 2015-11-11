@@ -4,6 +4,12 @@
 /*global process*/
 
 /**
+ * Recipe:
+ * 	Serial Join (from gulp.js cheatsheet p.2)
+ *
+ * Ingredients:
+ * 	streamqueue
+
  * @config 針對本 task 的 configuration。
  * @tasks 傳入的子 tasks 為 configurableTask，是尚未綁定 config 的 task 形式。
  *

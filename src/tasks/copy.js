@@ -1,5 +1,20 @@
 'use strict';
 
+/**
+ * Recipe:
+ * copy files
+ *
+ * Ingredients:
+ * gulp-flatten
+ * gulp.src()
+ * gulp.dest()
+ *
+ * @param gulp
+ * @param config
+ * @param stream
+ * @param done
+ * @returns stream
+ */
 function copyTask(gulp, config, stream, done) {
 	var flatten = require('gulp-flatten');
 

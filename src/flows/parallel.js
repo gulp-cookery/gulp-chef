@@ -1,3 +1,5 @@
+"use strict";
+
 function bachParallel() {
 	var bach = require('bach'),
 		gulp = require('gulp');
@@ -19,13 +21,26 @@ function bachParallel() {
 	return parallel;
 }
 
+/**
+ * Recipe:
+ * parallel
+ *
+ * Ingredients:
+ * gulp.parallel()
+ *
+ *
+ * @param gulp
+ * @param config
+ * @param stream
+ * @param tasks
+ */
 // TODO: replace fake implementation
-function parallel(gulp, config, stream, tasks) {
+function parallel(gulp, config, stream, tasks, done) {
 	for (var i = 0; i < tasks.length; ++i) {
-		tasks[i].run(gulp, config, stream, done);
+		tasks[i].run(gulp, config, stream, _done);
 	}
 
-	function done() {
+	function _done() {
 	}
 }
 

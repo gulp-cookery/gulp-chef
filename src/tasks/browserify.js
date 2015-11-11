@@ -35,6 +35,41 @@ https://medium.com/@sogko/gulp-browserify-the-gulp-y-way-bb359b3f9623
 */
 
 /**
+ * Recipe
+ * ______
+ *
+ * browserify
+ *
+ * Ingredients
+ * ___________
+ *
+ * browser-sync
+ * https://github.com/BrowserSync/browser-sync
+ *
+ * node-browserify
+ * https://github.com/substack/node-browserify
+ *
+ * globby
+ * https://github.com/sindresorhus/globby
+ *
+ * gulp-sourcemaps
+ * https://github.com/floridoo/gulp-sourcemaps
+ *
+ * gulp-uglify
+ * https://github.com/terinjokes/gulp-uglify
+ *
+ * vinyl-source-stream
+ * https://github.com/hughsk/vinyl-source-stream
+ *
+ * vinyl-buffer
+ * https://github.com/hughsk/vinyl-buffer
+ *
+ * watchify
+ * https://github.com/substack/watchify
+ *
+ * Samples
+ * -------
+ *
  * config: {
  *   // NOTE: options will be injected to each bundles. Put common configuration here.
  *   options: {
@@ -69,7 +104,9 @@ https://medium.com/@sogko/gulp-browserify-the-gulp-y-way-bb359b3f9623
  *   }]
  * }
  *
- * NOTE:
+ * Notes
+ * -----
+ *
  *   Browserify constructor supports the following options:
  *
  *   entries: string|[string]
@@ -99,7 +136,8 @@ https://medium.com/@sogko/gulp-browserify-the-gulp-y-way-bb359b3f9623
  *   plugin: [string|{}|[]]
  *      basedir: string
  *
- * Reference:
+ * References
+ * ----------
  *
  * node-browserify/index.js
  * https://github.com/substack/node-browserify/blob/master/index.js
@@ -116,32 +154,6 @@ https://medium.com/@sogko/gulp-browserify-the-gulp-y-way-bb359b3f9623
  * issues: browser field in package.json no longer works #1250
  * https://github.com/substack/node-browserify/issues/1250
  * https://github.com/substack/node-browserify/issues/1250#issuecomment-99970224
- *
- * Ingredients:
- *
- * browser-sync
- * https://github.com/BrowserSync/browser-sync
- *
- * node-browserify
- * https://github.com/substack/node-browserify
- *
- * globby
- * https://github.com/sindresorhus/globby
- *
- * gulp-sourcemaps
- * https://github.com/floridoo/gulp-sourcemaps
- *
- * gulp-uglify
- * https://github.com/terinjokes/gulp-uglify
- *
- * vinyl-source-stream
- * https://github.com/hughsk/vinyl-source-stream
- *
- * vinyl-buffer
- * https://github.com/hughsk/vinyl-buffer
- *
- * watchify
- * https://github.com/substack/watchify
  *
  */
 function browserifyTask(gulp, config, stream) {

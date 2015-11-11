@@ -1,28 +1,32 @@
 'use strict';
 
 /**
+ * Recipe:
+ * 	css
+ *
  * Ingredients:
  *
- * clean-css
- * https://github.com/jakubpawlowicz/clean-css
+ * 	clean-css
+ * 	https://github.com/jakubpawlowicz/clean-css
  *
- * gulp-autoprefixer
- * https://github.com/sindresorhus/gulp-autoprefixer
+ * 	gulp-autoprefixer
+ * 	https://github.com/sindresorhus/gulp-autoprefixer
  *
- * gulp-flatten
- * https://github.com/armed/gulp-flatten
+ * 	gulp-flatten
+ * 	https://github.com/armed/gulp-flatten
  *
- * gulp-minify-css
- * https://github.com/murphydanger/gulp-minify-css
+ * 	gulp-minify-css
+ * 	https://github.com/murphydanger/gulp-minify-css
  *
- * gulp-newer
- * https://github.com/tschaub/gulp-newer
+ * 	gulp-newer
+ * 	https://github.com/tschaub/gulp-newer
  *
- * gulp-rename
- * https://github.com/hparra/gulp-rename
+ * 	gulp-rename
+ * 	https://github.com/hparra/gulp-rename
  *
- * gulp-sourcemaps
- * https://github.com/floridoo/gulp-sourcemaps
+ * 	gulp-sourcemaps
+ * 	https://github.com/floridoo/gulp-sourcemaps
+ *
  */
 function cssTask(gulp, config, stream, done) {
 	// lazy loading required modules.

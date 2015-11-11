@@ -9,8 +9,13 @@ var message = {
 };
 
 /**
+ * Recipe:
+ * bump version
  *
  * Ingredients:
+ * gulp-bump
+ * gulp-config-sync
+ * gulp-prompt
  *
  */
 function bumpTask(gulp, config, stream, done) {

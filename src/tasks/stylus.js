@@ -1,6 +1,9 @@
 'use strict';
 
 /**
+ * Recipe:
+ * stylus
+ *
  * Ingredients:
  *
  * gulp-stylus

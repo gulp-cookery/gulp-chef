@@ -9,7 +9,11 @@
  *   然後自動由相依的 task 找出需要監控的對應檔案，
  *   並在檔案變動時，自動執行相關的 task。
  *
+ * Recipe:
+ * watch
+ *
  * Ingredients:
+ * gulp.watch()
  *
  */
 function watchTask(gulp, config, stream, done) {

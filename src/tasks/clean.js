@@ -1,7 +1,11 @@
 'use strict';
 
 /**
+ * Recipe:
+ * clean build output
+ *
  * Ingredients:
+ * del
  *
  */
 function cleanTask(gulp, config, stream, done) {

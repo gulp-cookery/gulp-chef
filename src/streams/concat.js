@@ -1,6 +1,13 @@
 'use strict';
 
 /**
+ * Recipe:
+ * 	Serial Join (from gulp.js cheatsheet p.2)
+ *
+ * Ingredients:
+ * 	streamqueue
+ * 	gulp-concat
+ *
  * @param gulp the gulp instance running this task
  * @param config configuration for the task
  * @param stream up-stream, if not null, the task must handle source from the stream

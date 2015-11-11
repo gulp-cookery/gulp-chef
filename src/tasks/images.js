@@ -7,18 +7,6 @@ var defaults = {
 	}
 };
 
-/**
- * Ingredients:
- *
- * gulp-flatten
- * https://github.com/armed/gulp-flatten
- *
- * gulp-imagemin
- * https://github.com/sindresorhus/gulp-imagemin
- *
- * gulp-newer
- * https://github.com/tschaub/gulp-newer
- */
 function imagesTask(gulp, config, stream, done) {
 	// lazy loading required modules.
 	var flatten = require('gulp-flatten'),
@@ -43,6 +31,22 @@ function imagesTask(gulp, config, stream, done) {
 		.pipe(gulp.dest(config.dest.path, config.dest.options));
 }
 
+/**
+ * Recipe:
+ * images
+ *
+ * Ingredients:
+ *
+ * gulp-flatten
+ * https://github.com/armed/gulp-flatten
+ *
+ * gulp-imagemin
+ * https://github.com/sindresorhus/gulp-imagemin
+ *
+ * gulp-newer
+ * https://github.com/tschaub/gulp-newer
+ *
+ */
 function imagesTaskV2(gulp, config, stream, done) {
 	// lazy loading required modules.
 	var contents = require('file-contents'),

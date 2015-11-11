@@ -1,6 +1,9 @@
 'use strict';
 
 /**
+ * Recipe:
+ * jshint
+ *
  * Ingredients:
  *
  * jshint

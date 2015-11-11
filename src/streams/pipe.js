@@ -1,5 +1,16 @@
 'use strict';
 
+/**
+ * Recipe:
+ * 	Stream Pipe
+ *
+ * Ingredients:
+ * 	stream.pipe()
+ *
+ * @config 針對本 task 的 configuration。
+ * @tasks 傳入的子 tasks 為 configurableTask，是尚未綁定 config 的 task 形式。
+ *
+ */
 function pipe(gulp, config, stream, tasks) {
 	var ConfigurableTaskError = require('../core/configurable_task_error.js');
 

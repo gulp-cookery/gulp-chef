@@ -4,13 +4,17 @@
 /*jshint node: true */
 /*global process*/
 /**
- * References:
+ * Recipe:
+ * 	Serial Join (from gulp.js cheatsheet p.2)
  *
- * Generating a file per folder
- * https://github.com/gulpjs/gulp/blob/master/docs/recipes/running-task-steps-per-folder.md
- */
-
-/**
+ * Ingredients:
+ * 	streamqueue
+ * 	gulp-concat
+ *
+ * References:
+ * 	Generating a file per folder
+ * 	https://github.com/gulpjs/gulp/blob/master/docs/recipes/running-task-steps-per-folder.md
+ *
  * @config 針對本 task 的 configuration。
  * @tasks 傳入的子 tasks 為 configurableTask，是尚未綁定 config 的 task 形式。
  *

@@ -1,5 +1,18 @@
 'use strict';
 
+/**
+ * Recipe:
+ * uglify
+ *
+ * Ingredients:
+ * gulp-rename
+ * gulp-uglify
+ *
+ * @param gulp
+ * @param config
+ * @param stream
+ * @returns {*}
+ */
 function uglifyTask(gulp, config, stream) {
 	var rename = require('gulp-rename'),
 		uglify = require('gulp-uglify');
