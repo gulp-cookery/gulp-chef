@@ -211,8 +211,15 @@ function realize(original, additional, defaults) {
 	}
 }
 
-var src = normalize.bind(null, SCHEMA_DEFAULTS.properties.src),
-	dest = normalize.bind(null, SCHEMA_DEFAULTS.properties.dest);
+function src(values) {
+	var result = normalize(SCHEMA_DEFAULTS.properties.src, values);
+	return result.values;
+}
+
+function dest(values) {
+	var result = normalize(SCHEMA_DEFAULTS.properties.dest, values);
+	return result.values;
+}
 
 function resolveSrc(child, parent) {
 	var value;
@@ -290,7 +297,8 @@ function sort(taskInfo, rawConfig, parentConfig, schema) {
 	schema = _.defaultsDeep(schema, SCHEMA_DEFAULTS);
 
 	inheritedConfig = _.defaultsDeep(taskConfig, rawConfig, parentConfig);
-	taskConfig = normalize(schema, inheritedConfig) || {};
+	value = normalize(schema, inheritedConfig, { ignoreUnknownProperties: true });
+	taskConfig = value.values || {};
 	// TODO: json-normalizer: allow ignore unknown properties.
 	delete taskConfig.others;
 	subTaskConfigs = _.omit(rawConfig, Object.keys(taskConfig));
