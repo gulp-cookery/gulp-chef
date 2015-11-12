@@ -19,11 +19,9 @@ function each(gulp, config, stream, tasks) {
 	var mergeStream = require('merge-stream'),
 		merge = require('./merge');
 
-	var ConfigurationError = require('../core/configuration_error');
+	var verify = require('../core/configuration_verifier');
 
-	if (config.values.length === 0) {
-		throw new ConfigurationError('each', 'configuration property "values" is required');
-	}
+	verify(each.schema, config);
 
 	if (config.values.length === 1) {
 		return processValue(config.values[0]);
@@ -44,7 +42,8 @@ each.schema = {
 	"properties": {
 		"values": {
 			"description": "",
-			"type": "array"
+			"type": "array",
+			"minItems": 1
 		}
 	},
 	"required": ["values"]

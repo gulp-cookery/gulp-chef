@@ -25,27 +25,24 @@ function eachdir(gulp, config, stream, tasks) {
 		path = require('path'),
 		each = require('./each');
 
-	var ConfigurationError = require('../core/configuration_error.js');
+	var ConfigurationError = require('../core/configuration_error.js'),
+		verify = require('../core/configuration_verifier');
 
-	var cwd, folders, inject, values, src;
+	var cwd, folders, inject, values, dir;
 
-	if (config.src) {
-		src = config.src.globs || config.src;
-	}
-	if (typeof src !== 'string') {
-		throw new ConfigurationError('eachdir', 'required configuration "src" not found');
-	}
+	verify(eachdir.schema, config);
 
+	dir = config.dir;
 	cwd = process.cwd();
-	folders = getFolders(src);
+	folders = getFolders(dir);
 	if (folders.length === 0) {
-		throw new ConfigurationError('eachdir', 'no sub folders found in ' + src);
+		throw new ConfigurationError('eachdir', 'no sub folders found in ' + dir);
 	}
 
 	values = folders.map(function(folder) {
 		return {
 			dir: folder,
-			path: path.join(cwd, src, folder)
+			path: path.join(cwd, dir, folder)
 		};
 	});
 
@@ -71,11 +68,11 @@ eachdir.schema = {
 	"title": "eachdir",
 	"description": "Performs actions on each sub folder of the specified folder",
 	"properties": {
-		"src": {
+		"dir": {
 			"description": ""
 		}
 	},
-	"required": ["src"]
+	"required": ["dir"]
 };
 
 

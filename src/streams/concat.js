@@ -19,15 +19,10 @@ function concat(gulp, config, stream, tasks) {
 	var queue = require('./queue'),
 		gulpConcat = require('gulp-concat');
 
-	var ConfigurationError = require('../core/configuration_error');
+	var ConfigurationError = require('../core/configuration_error'),
+		verify = require('../core/configuration_verifier');
 
-	if (!config.file) {
-		throw new ConfigurationError('concat', 'configuration property "file" is required')
-	}
-
-	if (!config.dest) {
-		throw new ConfigurationError('concat', 'configuration property "dest" is required')
-	}
+	verify(concat.schema, config);
 
 	if (tasks.length !== 0) {
 		stream = queue(gulp, config, stream, tasks);

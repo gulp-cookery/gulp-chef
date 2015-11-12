@@ -115,45 +115,23 @@ describe('Stream Processor', function() {
 
 		afterEach(function() {});
 
-		it('should gulp.src() always return a stream in 3.X (prerequisite)', function() {
-			if (isGulp3()) {
-				var stream = gulp.src('non-existent');
-				expect(stream).to.be.an.instanceof(Stream);
-				expect(stream).to.have.property('on');
-			}
-
-			function isGulp3() {
-				return !!gulp.run;
-			}
-		});
-
-		it('should gulp.src() throws if src not exist in 4.X (prerequisite)', function() {
-			if (isGulp4()) {
-				expect(function () { gulp.src('non-existent'); }).to.throw;
-			}
-
-			function isGulp4() {
-				return !!gulp.registry;
-			}
-		});
-
 		it('should throw if config.src is not a valid string', function() {
 			var configs = {
 				empty: {},
 				emptyString: {
-					src: ''
+					dir: ''
 				},
 				number: {
-					src: 1024
+					dir: 1024
 				},
 				array: {
-					src: ['app/views']
+					dir: ['app/views']
 				},
 				arrayEmptyString: {
-					src: ['']
+					dir: ['']
 				},
 				emptyArray: {
-					src: []
+					dir: []
 				},
 			};
 			_.forOwn(configs, function(config) {
@@ -166,10 +144,10 @@ describe('Stream Processor', function() {
 		it('should throw if no sub folder found', function() {
 			var configs = {
 				notExist: {
-					src: testCases['non-existent'].path
+					dir: testCases['non-existent'].path
 				},
 				file: {
-					src: testCases.file.path
+					dir: testCases.file.path
 				}
 			};
 			_.forOwn(configs, function(config) {
@@ -182,7 +160,7 @@ describe('Stream Processor', function() {
 		it('should invoke the given task for each folder', function() {
 			var testCase = testCases.modules,
 				config = {
-					src: testCase.path
+					dir: testCase.path
 				},
 				visits = [],
 				task = prepareTask(function(gulp, config, stream, done) {
@@ -196,7 +174,7 @@ describe('Stream Processor', function() {
 		it('should throw if the given task does not return a stream', function() {
 			var testCase = testCases.modules,
 				config = {
-					src: testCase.path
+					dir: testCase.path
 				},
 				task = prepareTask(function(gulp, config, stream, done) {
 					return true;
@@ -208,7 +186,7 @@ describe('Stream Processor', function() {
 
 		it('should return a stream', function() {
 			var config = {
-					src: testCases.views.path
+					dir: testCases.views.path
 				},
 				task = prepareTask(function(gulp, config, stream, done) {
 					return through.obj();
