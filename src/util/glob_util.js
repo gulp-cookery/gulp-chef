@@ -1,5 +1,6 @@
 var FileSystem = require('fs'),
 	Path = require('path'),
+	glob = require('glob'),
 	globby = require('globby'),
 	_ = require('lodash');
 
@@ -53,12 +54,6 @@ function join(paths, globs, force) {
 	}
 }
 
-var regexGlobPattern = /[!^{}|*?+@]/;
-
-function isGlob(pattern) {
-	return regexGlobPattern.test(pattern);
-}
-
 exports.folders = folders;
 exports.join = join;
-exports.isGlob = isGlob;
+exports.isGlob = glob.hasMagic;
