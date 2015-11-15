@@ -47,7 +47,7 @@ function parallel(gulp, config, stream, tasks, done) {
 parallel.schema = {
 	"title": "parallel",
 	"description": "",
-	"Properties": {
+	"properties": {
 	}
 };
 

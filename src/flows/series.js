@@ -7,7 +7,7 @@ function series(gulp, config, stream, tasks, done) {
 series.schema = {
 	"title": "series",
 	"description": "",
-	"Properties": {
+	"properties": {
 	}
 };
 
