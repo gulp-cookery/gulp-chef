@@ -17,6 +17,7 @@
   "author": "Amobiz",
   "license": "MIT",
   "dependencies": {
+    "async": "^1.5.0",
     "bach": "^0.4.1",
     "browser-sync": "^2.7.13",
     "browserify": "^11.0.1",
