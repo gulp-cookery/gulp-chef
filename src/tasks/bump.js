@@ -28,23 +28,25 @@ var messages = {
  * Note:
  * gulp-bump 可以一次修改多個 .json 檔案，針對每個檔案讀取其 version 資訊，然後各自修改其版本號碼。
  * 所以可能造成設定不同步的狀況，並不遵循 single source of truth 原則。
+ *
+ * Reference:
+ * [gulp-bump - Bump npm versions with Gulp (gulpjs.com)](https://www.npmjs.com/package/gulp-bump/)
  */
 function bumpTask(gulp, config, stream, done) {
 	// lazy loading required modules.
-	var _ = require('lodash'),
+	var semver = require('semver'),
 		bump = require('gulp-bump'),
-		prompt = require('gulp-prompt').prompt,
-		semver = require('semver');
+		prompt = require('gulp-prompt').prompt;
 
 	var cwd,
 		pkg,
 		newVersion;
 
 	cwd = process.cwd();
-	pkg = require(cwd + '/package.json', 'utf8');
+	pkg = require(cwd + '/package.json');
+	stream = stream || gulp.src(config.src.globs);
 
 	if (config.options.interactive) {
-		// prompt value is in res.bump
 		prompt(messages.version, function(res1) {
 			prompt(messages.release, function(res2) {
 				newVersion = semver.inc(pkg.version, res1.type, res2.release === 'release' ? '' : res2.release);
@@ -58,7 +60,7 @@ function bumpTask(gulp, config, stream, done) {
 	}
 
 	function bumpTo(newVersion) {
-		return gulp.src(config.src.globs)
+		return stream
 			.pipe(bump({ version: newVersion }))
 			.pipe(gulp.dest(config.dest.path));
 	}
@@ -66,7 +68,7 @@ function bumpTask(gulp, config, stream, done) {
 
 bumpTask.schema = {
 	"title": "bump",
-	"description": "",
+	"description": "Bump semver versions.",
 	"properties": {
 		"base": {
 			"description": "",
