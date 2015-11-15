@@ -5,6 +5,7 @@ var ConfigurableTaskRunnerFactory = require('./core/configurable_runner_factory'
 	stuff = require('./stuff'),
 	helpRunner = stuff.recipes.lookup('help');
 
+// TODO: resolve too many dependencies problem. (optionalDependencies?). [THOUGHT]: check out bumpTask's bumpTask.requires comments.
 // TODO: consider exporting recipes using [Undertaker](https://github.com/gulpjs/undertaker#custom-registries) registry.
 function configure(gulp, rawConfigs, options) {
 	var registry = {

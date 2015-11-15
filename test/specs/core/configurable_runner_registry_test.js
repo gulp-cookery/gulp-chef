@@ -1,7 +1,5 @@
 'use strict';
 
-// TODO: resolve too many dependencies problem. (optionalDependencies?)
-
 var Chai = require('chai'),
 	expect = Chai.expect;
 

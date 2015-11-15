@@ -66,6 +66,13 @@ function bumpTask(gulp, config, stream, done) {
 	}
 }
 
+// TODO: let configure() check task.requires first, and see if the deps installed. Add deps to host project's package.json's devDependencies section when necessary. And prompt user to run `npm update`.
+bumpTask.requires = {
+	"semver": "",
+	"gulp-bump": "",
+	"gulp-prompt": ""
+};
+
 bumpTask.schema = {
 	"title": "bump",
 	"description": "Bump semver versions.",
