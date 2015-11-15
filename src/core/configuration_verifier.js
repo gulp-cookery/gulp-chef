@@ -2,6 +2,8 @@
 
 var ConfigurationError = require('./configuration_error');
 
+
+
 function verify(schema, config) {
 	schema.required.forEach(function(name) {
 		var property;
