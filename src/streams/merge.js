@@ -10,6 +10,9 @@
  * Ingredients:
  * 	merge-stream
  *
+ * Note:
+ *  Some kind of stream version of gulp.parallel().
+ *
  * @config 針對本 task 的 configuration。
  * @tasks 傳入的子 tasks 為 configurableTask，是尚未綁定 config 的 task 形式。
  *
@@ -27,6 +30,7 @@ function merge(gulp, config, stream, tasks) {
 		return runTask(tasks[0]);
 	}
 
+	// TODO: call async.parallel()
 	return _merge(tasks.map(runTask));
 
 	function runTask(task) {

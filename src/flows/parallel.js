@@ -28,6 +28,8 @@ function bachParallel() {
  * Ingredients:
  * gulp.parallel()
  *
+ * Note:
+ *  Some kind of non-stream version of merge() stream recipe.
  *
  * @param gulp
  * @param config

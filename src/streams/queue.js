@@ -9,7 +9,10 @@
  *
  * Ingredients:
  * 	streamqueue
-
+ *
+ * Note:
+ *  Some kind of stream version of gulp.series().
+ *
  * @config 針對本 task 的 configuration。
  * @tasks 傳入的子 tasks 為 configurableTask，是尚未綁定 config 的 task 形式。
  *
@@ -27,6 +30,7 @@ function queue(gulp, config, stream, tasks) {
 		return runTask(tasks[0]);
 	}
 
+	// TODO: call async.series()
 	var streams = tasks.map(runTask),
 		streamQueue = new StreamQueue({
 			objectMode: true
