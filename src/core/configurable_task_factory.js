@@ -64,6 +64,7 @@ ConfigurableTaskFactory.prototype.multiple = function(prefix, subTaskConfigs, pa
 };
 
 // TODO: make sure config is inherited at config time and injectable at runtime.
+// TODO: consider using [medikoo/es6-weak-map](https://github.com/medikoo/es6-weak-map) to store metadata?
 ConfigurableTaskFactory.prototype.create = function(prefix, taskInfo, taskConfig, configurableRunner) {
 	var gulp = this.gulp;
 	// invoked from stream processor
