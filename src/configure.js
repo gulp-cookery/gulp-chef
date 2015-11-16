@@ -2,30 +2,23 @@
 var ConfigurableTaskRunnerFactory = require('./core/configurable_runner_factory'),
 	ConfigurableTaskFactory = require('./core/configurable_task_factory'),
 	Configuration = require('./core/configuration'),
+	Registry = require('./core/registry'),
 	stuff = require('./stuff'),
 	helpRunner = stuff.recipes.lookup('help');
 
 // TODO: resolve too many dependencies problem. (optionalDependencies?). [THOUGHT]: check out bumpTask's bumpTask.requires comments.
-// TODO: export recipes using [Undertaker](https://github.com/gulpjs/undertaker#custom-registries) registry, so we need pass gulp no more.
-function configure(gulp, rawConfigs, options) {
-	var registry = {
-			register: registerGulpTask
-		},
+function configure(rawConfigs, options) {
+	var registry = new Registry(),
 		runnerFactory = new ConfigurableTaskRunnerFactory(stuff),
-		taskFactory = new ConfigurableTaskFactory(gulp, stuff, runnerFactory, registry),
+		taskFactory = new ConfigurableTaskFactory(stuff, runnerFactory, registry),
 		configs = Configuration.sort({}, rawConfigs, {}, {});
 
 	Configuration.setOptions(options);
 	taskFactory.multiple('', configs.subTaskConfigs, configs.taskConfig);
-	registerGulpTask(taskFactory.create('', {}, {}, helpRunner));
+	registry.set('help', taskFactory.create('', {}, {}, helpRunner));
 
-	// TODO: warning about name collision. [DONE]: done prefixing task name
-	// TODO: what about the exec order of task's depends and depends' depends? [DONE]: no more depends in Gulp 4.0.
-	// TODO: what about hidden task's depends? [DONE]: no more depends in Gulp 4.0.
-	function registerGulpTask(task) {
-		var name = task.displayName || task.name;
-		gulp.task(name, task);
-	}
+	// export recipes registry
+	return registry;
 }
 
 module.exports = configure;

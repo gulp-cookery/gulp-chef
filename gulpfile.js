@@ -538,7 +538,8 @@ var taskConfigs = {
 	 }
 };
 
-createGulpTasks(gulp, taskConfigs, config);
+var recipes = createGulpTasks(taskConfigs, config);
+gulp.registry(recipes);
 
 gulp.task('test', function() {
 	var mocha = require('gulp-mocha');

@@ -5,12 +5,10 @@ var _ = require('lodash'),
 var Configuration = require('./configuration'),
 	ConfigurationError = require('./configuration_error');
 
-// NOTE: gulp 4.0 task are called on undefined context. So we need gulp reference here.
-function ConfigurableTaskFactory(gulp, stuff, runnerFactory, gulpTaskRegistry) {
-	this.gulp = gulp;
+function ConfigurableTaskFactory(stuff, runnerFactory, registry) {
 	this.stuff = stuff;
 	this.runnerFactory = runnerFactory;
-	this.gulpTaskRegistry = gulpTaskRegistry;
+	this.registry = registry;
 }
 
 ConfigurableTaskFactory.prototype.one = function(prefix, name, rawConfig, parentConfig) {
@@ -38,8 +36,7 @@ ConfigurableTaskFactory.prototype.one = function(prefix, name, rawConfig, parent
 	}
 	task = this.create(prefix, taskInfo, configs.taskConfig, runner);
 	if (Configuration.isVisible(task)) {
-		// TODO: call parallel for depends and then remove it from taskConfig.
-		this.gulpTaskRegistry.register(task, configs.taskInfo.depends);
+		this.registry.set(task.displayName, task);
 	}
 	return task;
 
@@ -65,7 +62,7 @@ ConfigurableTaskFactory.prototype.multiple = function(prefix, subTaskConfigs, pa
 
 // TODO: consider using [medikoo/es6-weak-map](https://github.com/medikoo/es6-weak-map) to store metadata?
 ConfigurableTaskFactory.prototype.create = function(prefix, taskInfo, taskConfig, configurableRunner) {
-	var gulp = this.gulp;
+	var registry = this.registry;
 	// make sure config is inherited at config time and injected, realized at runtime.
 	// invoked from stream processor
 	var run = function(gulp, injectConfig, stream, done) {
@@ -76,7 +73,8 @@ ConfigurableTaskFactory.prototype.create = function(prefix, taskInfo, taskConfig
 	};
 	// invoked from gulp
 	var configurableTask = function(done) {
-		return run(gulp, taskConfig, null, done);
+		// NOTE: gulp 4.0 task are called on undefined context. So we need gulp reference from registry here.
+		return run(registry.gulp, taskConfig, null, done);
 	};
 	configurableTask.displayName = prefix + (taskInfo.name || configurableRunner.displayName || configurableRunner.name || '<anonymous>');
 	configurableTask.description = taskInfo.description || configurableRunner.description;

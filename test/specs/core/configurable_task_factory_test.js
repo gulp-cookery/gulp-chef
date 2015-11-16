@@ -11,7 +11,8 @@ var base = process.cwd();
 var ConfigurableTaskRunnerFactory = require(base + '/src/core/configurable_runner_factory'),
 	ConfigurableTaskFactory = require(base + '/src/core/configurable_task_factory'),
 	Configuration = require(base + '/src/core/configuration'),
-	ConfigurationError = require(base + '/src/core/configuration_error');
+	ConfigurationError = require(base + '/src/core/configuration_error'),
+	Registry = require(base + '/src/core/registry');
 
 var createFakeStuff = require(base + '/test/fake/stuff'),
 	FakeGulp = require(base + '/test/fake/gulp');
@@ -22,11 +23,10 @@ describe('Core', function () {
 
 		beforeEach(function() {
 			var stuff = createFakeStuff(),
-				registry = {
-					register: function() {}
-				};
+				registry = new Registry();
 			gulp = new FakeGulp();
-			factory = new ConfigurableTaskFactory(gulp, stuff, new ConfigurableTaskRunnerFactory(stuff), registry);
+			gulp.registry(registry);
+			factory = new ConfigurableTaskFactory(stuff, new ConfigurableTaskRunnerFactory(stuff), registry);
 		});
 
 		describe('#create()', function () {
