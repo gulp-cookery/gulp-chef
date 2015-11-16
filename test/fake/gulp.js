@@ -15,4 +15,12 @@ FakeGulp.prototype.task = function (name, runner) {
 	return this.taskRegistry[name];
 };
 
+FakeGulp.prototype.registry = function (registry) {
+	if (!registry) {
+		return this._registry;
+	}
+	this._registry = registry;
+	registry.init(this);
+};
+
 module.exports = FakeGulp;
