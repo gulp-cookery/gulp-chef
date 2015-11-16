@@ -68,7 +68,7 @@ describe('Core', function () {
 			});
 			it('should invoke configurableRunner() when act as a gulp task', function () {
 				var actual = factory.create('', taskInfo, taskConfig, configurableRunner);
-				actual.call(gulp, done);
+				actual(done);
 				expect(configurableRunner.calledWith(gulp, taskConfig, null, done)).to.be.true;
 			});
 			it('should invoke configurableRunner() in run() method whe act as a configurable task', function () {
