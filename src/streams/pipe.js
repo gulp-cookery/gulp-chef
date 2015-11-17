@@ -17,11 +17,15 @@ function pipe(gulp, config, stream, tasks) {
 	var i, n;
 
 	if (tasks.length === 0) {
-		throw new ConfigurableTaskError('pipe', 'no sub tasks');
+		throw new ConfigurableTaskError('pipe', 'no sub task specified');
 	}
 
 	for (i = 0, n = tasks.length; i < n; ++i) {
 		stream = tasks[i].run(gulp, config, stream, done);
+		if (!stream) {
+			// TODO: Do not throw errors inside a stream. According to the [Guidelines](https://github.com/gulpjs/gulp/blob/4.0/docs/writing-a-plugin/guidelines.md)
+			throw new ConfigurableTaskError('pipe', 'recipes in pipe stream-processor must return a stream');
+		}
 	}
 	return stream;
 

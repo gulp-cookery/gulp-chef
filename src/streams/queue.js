@@ -22,6 +22,10 @@ function queue(gulp, config, stream, tasks) {
 	var StreamQueue = require('streamqueue'),
 		ConfigurableTaskError = require('../core/configurable_task_error.js');
 
+	if (stream) {
+		throw new ConfigurableTaskError('queue', 'queue stream-processor do not accept up-stream');
+	}
+
 	if (tasks.length === 0) {
 		throw new ConfigurableTaskError('queue', 'no sub task specified');
 	}
@@ -53,6 +57,11 @@ function queue(gulp, config, stream, tasks) {
 }
 
 queue.expose = [];
+
+queue.requires = {
+	"streamqueue": ""
+};
+
 queue.schema = {
 	"title": "queue",
 	"description": "Pipe queued streams progressively",

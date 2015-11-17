@@ -22,6 +22,10 @@ function merge(gulp, config, stream, tasks) {
 	var _merge = require('merge-stream'),
 		ConfigurableTaskError = require('../core/configurable_task_error.js');
 
+	if (stream) {
+		throw new ConfigurableTaskError('merge', 'merge stream-processor do not accept up-stream');
+	}
+
 	if (tasks.length === 0) {
 		throw new ConfigurableTaskError('merge', 'no sub task specified');
 	}
@@ -49,6 +53,11 @@ function merge(gulp, config, stream, tasks) {
 }
 
 merge.expose = [];
+
+merge.requires = {
+	"merge-stream": ""
+};
+
 merge.schema = {
 	"title": "merge",
 	"description": "",
