@@ -25,13 +25,13 @@ function eachdir(gulp, config, stream, tasks) {
 		path = require('path'),
 		each = require('./each');
 
-	var ConfigurationTaskError = require('../core/configurable_task_error.js'),
+	var ConfigurationError = require('../core/configuration_error.js'),
 		verify = require('../core/configuration_verifier');
 
 	var cwd, folders, inject, values, dir;
 
 	if (stream) {
-		throw new ConfigurationTaskError('eachdir', 'eachdir stream-processor do not accept up-stream');
+		throw new ConfigurationError('eachdir', 'eachdir stream-processor do not accept up-stream');
 	}
 	verify(eachdir.schema, config);
 
@@ -39,7 +39,7 @@ function eachdir(gulp, config, stream, tasks) {
 	cwd = process.cwd();
 	folders = getFolders(dir);
 	if (folders.length === 0) {
-		throw new ConfigurationTaskError('eachdir', 'no sub folders found in ' + dir);
+		throw new ConfigurationError('eachdir', 'no sub folders found in ' + dir);
 	}
 
 	values = folders.map(function(folder) {

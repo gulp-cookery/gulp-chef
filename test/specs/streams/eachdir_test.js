@@ -115,7 +115,7 @@ describe('Stream Processor', function() {
 
 		afterEach(function() {});
 
-		it('should throw if config.src is not a valid string', function() {
+		it('should throw if config.dir is not a valid string', function() {
 			var configs = {
 				empty: {},
 				emptyString: {
