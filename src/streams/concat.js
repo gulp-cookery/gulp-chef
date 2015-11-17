@@ -27,8 +27,9 @@ function concat(gulp, config, stream, tasks) {
 	if (tasks.length !== 0) {
 		stream = queue(gulp, config, stream, tasks);
 	} else {
-		if (!config.src) {
-			throw new ConfigurationError('concat', 'configuration property "src" is required')
+		if (!stream && !config.src) {
+			// TODO: Do not throw errors inside a stream. According to the [Guidelines](https://github.com/gulpjs/gulp/blob/4.0/docs/writing-a-plugin/guidelines.md)
+			throw new ConfigurationError('concat', 'configuration property "src" is required, otherwise an up-stream must be provided')
 		}
 		stream = stream || gulp.src(config.src.globs, config.src.options);
 	}
