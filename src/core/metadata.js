@@ -16,6 +16,7 @@ function set(target, label, nodes) {
 	meta = _metadata.get(target);
 	if (!meta) {
 		name = target.displayName || target.name || '<anonymous>';
+		nodes = nodes || [];
 		meta = {
 			name: name,
 			tree: {
@@ -24,6 +25,9 @@ function set(target, label, nodes) {
 				nodes: nodes
 			}
 		};
+		if (nodes.length) {
+			meta.branch = true;
+		}
 		_metadata.set(target, meta);
 	}
 	return meta.tree;
