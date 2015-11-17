@@ -11,8 +11,20 @@
  * @param done
  */
 function series(gulp, config, stream, tasks, done) {
-	done();
+	var async = require('async'),
+		asyncDone = require('async-done');
+
+	async.eachSeries(tasks, function (task, done) {
+		asyncDone(function (done) {
+			return task.run(gulp, config, stream, done);
+		}, done);
+	}, done);
 }
+
+series.requires = {
+	"async": "",
+	"async-done": ""
+};
 
 series.schema = {
 	"title": "series",

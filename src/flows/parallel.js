@@ -1,26 +1,5 @@
 "use strict";
 
-function bachParallel() {
-	var bach = require('bach'),
-		gulp = require('gulp');
-
-	var _parallel = gulp.parallel ? gulp.parallel.bind(gulp) : bach.parallel.bind(bach);
-
-	function parallel(gulp, config, stream, tasks) {
-		var parallelTasks = tasks.map(function (task) {
-			if (typeof task === 'function') {
-				return task;
-			} else if (typeof task === 'string') {
-				return gulp.task(task);
-			}
-		});
-		var fn = _parallel.apply(null, parallelTasks);
-		return fn();
-	}
-
-	return parallel;
-}
-
 /**
  * Recipe:
  * parallel
@@ -36,15 +15,21 @@ function bachParallel() {
  * @param stream
  * @param tasks
  */
-// TODO: replace fake implementation
 function parallel(gulp, config, stream, tasks, done) {
-	for (var i = 0; i < tasks.length; ++i) {
-		tasks[i].run(gulp, config, stream, _done);
-	}
+	var async = require('async'),
+		asyncDone = require('async-done');
 
-	function _done() {
-	}
+	async.each(tasks, function (task, done) {
+		asyncDone(function (done) {
+			return task.run(gulp, config, stream, done);
+		}, done);
+	}, done);
 }
+
+parallel.requires = {
+	"async": "",
+	"async-done": ""
+};
 
 parallel.schema = {
 	"title": "parallel",
