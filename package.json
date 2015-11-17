@@ -66,6 +66,7 @@
     "async-done": "^1.2.0",
     "chai": "^3.2.0",
     "chai-as-promised": "^5.1.0",
+    "es6-weak-map": "^2.0.1",
     "gulp": "gulpjs/gulp#4.0",
     "link-directories": "^2.0.0",
     "mock-fs": "^3.0.0",
