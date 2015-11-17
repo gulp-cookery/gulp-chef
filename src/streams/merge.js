@@ -30,7 +30,6 @@ function merge(gulp, config, stream, tasks) {
 		return runTask(tasks[0]);
 	}
 
-	// TODO: call async.parallel()
 	return _merge(tasks.map(runTask));
 
 	function runTask(task) {

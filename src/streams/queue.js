@@ -30,7 +30,6 @@ function queue(gulp, config, stream, tasks) {
 		return runTask(tasks[0]);
 	}
 
-	// TODO: call async.series()
 	var streams = tasks.map(runTask),
 		streamQueue = new StreamQueue({
 			objectMode: true
