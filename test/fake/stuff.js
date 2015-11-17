@@ -7,6 +7,10 @@ var ConfigurableTaskRunnerRegistry = require(base + '/src/core/configurable_runn
 
 module.exports = function () {
 	return {
+		flows: new ConfigurableTaskRunnerRegistry({
+			parallel: Sinon.spy(),
+			series: Sinon.spy()
+		}),
 		recipes: new ConfigurableTaskRunnerRegistry({
 			copy: Sinon.spy(),
 			'recipe-task': Sinon.spy()
