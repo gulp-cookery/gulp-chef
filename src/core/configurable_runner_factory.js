@@ -113,12 +113,16 @@ ConfigurableTaskRunnerFactory.prototype.recipe = function (name, configs) {
 	}
 }
 
+ConfigurableTaskRunnerFactory.prototype.flow = function (prefix, configs, createConfigurableTasks) {
+};
+
 /**
  * if there is configurations not being consumed, then treat them as sub-tasks.
  */
 ConfigurableTaskRunnerFactory.prototype.stream = function (prefix, configs, createConfigurableTasks) {
 	var tasks, stuff = this.stuff;
 
+	// TODO: add metadata tree to make gulp.tree() happy.
 	// TODO: remove stream runner from parent's config.
 	if (isStreamTask(configs.taskInfo.name, configs.subTaskConfigs)) {
 		tasks = _createSubTasks();
