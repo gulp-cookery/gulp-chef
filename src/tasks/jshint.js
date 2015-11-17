@@ -37,6 +37,11 @@ function jshintTask(gulp, config, stream, done) {
 	return stream;
 }
 
+jshintTask.requires = {
+	"gulp-jshint": "",
+	"lodash": ""
+};
+
 jshintTask.schema = {
 	"title": "jshint",
 	"description": "",

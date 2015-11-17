@@ -338,6 +338,21 @@ function browserifyTask(gulp, config, stream) {
 	}
 }
 
+browserifyTask.requires = {
+	"browserify": "",
+	"browser-sync": "",
+	"vinyl-buffer": "",
+	"globby": "",
+	"gulp-util": "",
+	"merge-stream": "",
+	"gulp-notify": "",
+	"gulp-sourcemaps": "",
+	"gulp-uglify": "",
+	"vinyl-source-stream": "",
+	"watchify": "",
+	"lodash": ""
+};
+
 browserifyTask.schema = {
 	"title": "browserify",
 	"description": "Bundle JavaScript things with Browserify.",

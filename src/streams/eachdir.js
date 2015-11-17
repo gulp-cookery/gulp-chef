@@ -64,6 +64,11 @@ function eachdir(gulp, config, stream, tasks) {
 }
 
 eachdir.expose = ['dir', 'path'];
+
+eachdir.requires = {
+	"merge-stream": ""
+};
+
 eachdir.schema = {
 	"title": "eachdir",
 	"description": "Performs actions on each sub folder of the specified folder",

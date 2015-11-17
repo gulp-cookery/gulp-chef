@@ -42,6 +42,10 @@ function watchTask(gulp, config, stream, done) {
 	gulp.watch(globs, depends);
 }
 
+watchTask.requires = {
+	"lodash": ""
+};
+
 watchTask.schema = {
 	"title": "watch",
 	"description": "",
