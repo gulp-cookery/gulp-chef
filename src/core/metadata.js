@@ -19,7 +19,11 @@ function set(target, label, nodes) {
 	var name, meta;
 
 	meta = _metadata.get(target);
-	if (!meta) {
+	if (meta) {
+		if (nodes && nodes.length) {
+			meta.tree.nodes = meta.tree.nodes.concat(nodes);
+		}
+	} else {
 		name = target.displayName || target.name || '<anonymous>';
 		nodes = nodes || [];
 		meta = {

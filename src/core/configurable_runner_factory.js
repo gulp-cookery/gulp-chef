@@ -155,7 +155,6 @@ ConfigurableTaskRunnerFactory.prototype.stream = function (prefix, configs, crea
 	var tasks, stuff = this.stuff;
 
 	// TODO: add metadata tree to make gulp.tree() happy.
-	// TODO: remove stream runner from parent's config.
 	if (isStreamTask(configs.taskInfo.name, configs.subTaskConfigs)) {
 		tasks = _createSubTasks();
 		return _createStreamTaskRunner(tasks);

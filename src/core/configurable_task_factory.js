@@ -95,7 +95,8 @@ ConfigurableTaskFactory.prototype.create = function(prefix, taskInfo, taskConfig
 		// NOTE: gulp 4.0 task are called on undefined context. So we need gulp reference from registry here.
 		return run(registry.gulp, taskConfig, null, done);
 	};
-	configurableTask.displayName = prefix + (taskInfo.name || configurableRunner.displayName || configurableRunner.name || '<anonymous>');
+	var name = (taskInfo.name || configurableRunner.displayName || configurableRunner.name || '<anonymous>');
+	configurableTask.displayName = prefix + name;
 	configurableTask.description = taskInfo.description || configurableRunner.description || '';
 	configurableTask.visibility = taskInfo.visibility;
 	configurableTask.runtime = taskInfo.runtime;
@@ -105,7 +106,7 @@ ConfigurableTaskFactory.prototype.create = function(prefix, taskInfo, taskConfig
 		this.registry.set(configurableTask.displayName, configurableTask);
 		metadata.set(configurableTask, configurableTask.displayName);
 	} else {
-		metadata.set(configurableTask, '<' + configurableTask.displayName + '>');
+		metadata.set(configurableTask, '<' + name + '>');
 	}
 	return configurableTask;
 };
