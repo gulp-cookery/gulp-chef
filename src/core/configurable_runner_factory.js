@@ -154,7 +154,6 @@ ConfigurableTaskRunnerFactory.prototype.flow = function (prefix, configs, create
 ConfigurableTaskRunnerFactory.prototype.stream = function (prefix, configs, createConfigurableTasks) {
 	var tasks, stuff = this.stuff;
 
-	// TODO: add metadata tree to make gulp.tree() happy.
 	if (isStreamTask(configs.taskInfo.name, configs.subTaskConfigs)) {
 		tasks = _createSubTasks();
 		return _createStreamTaskRunner(tasks);

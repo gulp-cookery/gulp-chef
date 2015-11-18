@@ -79,7 +79,6 @@ ConfigurableTaskFactory.prototype.multiple = function(prefix, subTaskConfigs, pa
 	return tasks;
 };
 
-// TODO: consider using [medikoo/es6-weak-map](https://github.com/medikoo/es6-weak-map) to store metadata?
 ConfigurableTaskFactory.prototype.create = function(prefix, taskInfo, taskConfig, configurableRunner) {
 	var registry = this.registry;
 	// make sure config is inherited at config time and injected, realized at runtime.
