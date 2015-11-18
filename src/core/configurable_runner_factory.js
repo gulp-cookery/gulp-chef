@@ -54,10 +54,14 @@ function ConfigurableTaskRunnerFactory(stuff) {
 
 ConfigurableTaskRunnerFactory.prototype.create = function (prefix, configs, createConfigurableTasks) {
 	var self = this;
-	return recipeRunner() || streamRunner() || taskRunner() || defaultRunner();
+	return recipeRunner() || flowRunner() || streamRunner() || taskRunner() || defaultRunner();
 
 	function recipeRunner() {
 		return self.recipe(configs.taskInfo.name, configs);
+	}
+
+	function flowRunner() {
+		return self.flow(prefix, configs, createConfigurableTasks);
 	}
 
 	function streamRunner() {
@@ -114,6 +118,34 @@ ConfigurableTaskRunnerFactory.prototype.recipe = function (name, configs) {
 }
 
 ConfigurableTaskRunnerFactory.prototype.flow = function (prefix, configs, createConfigurableTasks) {
+	var tasks, self = this, stuff = this.stuff;
+
+	if (isFlowTask(configs.taskInfo.name)) {
+		if (! hasSubTasks(configs.subTaskConfigs)) {
+			throw new ConfigurationError('configure', 'a flow processor without sub-tasks is useless');
+		}
+		tasks = _createSubTasks();
+		return stuff.flows.lookup(name);
+	}
+
+	function isFlowTask(name) {
+		return !!stuff.flows.lookup(name);
+	}
+
+	function _createSubTasks() {
+	}
+
+	function explicitRunner() {
+		var runner = stuff.flows.lookup(configs.taskInfo.name);
+		if (runner) {
+			configs.taskInfo.visibility = Configuration.CONSTANT.VISIBILITY.HIDDEN;
+			return runner;
+		}
+	}
+
+	function implicitRunner() {
+		return stuff.flows.lookup('parallel');
+	}
 };
 
 /**
