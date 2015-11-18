@@ -25,7 +25,8 @@ describe('Core', function () {
 			var stuff = createFakeStuff(),
 				registry = new Registry();
 			gulp = new FakeGulp();
-			factory = new ConfigurableTaskFactory(gulp, stuff, new ConfigurableTaskRunnerFactory(stuff), registry);
+			gulp.registry(registry);
+			factory = new ConfigurableTaskFactory(stuff, new ConfigurableTaskRunnerFactory(stuff), registry);
 		});
 
 		describe('#create()', function () {

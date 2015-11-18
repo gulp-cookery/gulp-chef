@@ -7,10 +7,10 @@ var ConfigurableTaskRunnerFactory = require('./core/configurable_runner_factory'
 	helpRunner = stuff.recipes.lookup('help');
 
 // TODO: resolve too many dependencies problem. (optionalDependencies?). [THOUGHT]: check out bumpTask's bumpTask.requires comments.
-function configure(gulp, rawConfigs, options) {
+function configure(rawConfigs, options) {
 	var registry = new Registry(),
 		runnerFactory = new ConfigurableTaskRunnerFactory(stuff),
-		taskFactory = new ConfigurableTaskFactory(gulp, stuff, runnerFactory, registry),
+		taskFactory = new ConfigurableTaskFactory(stuff, runnerFactory, registry),
 		configs = Configuration.sort({}, rawConfigs, {}, {});
 
 	Configuration.setOptions(options);

@@ -14,6 +14,7 @@ function Registry() {
 }
 
 Registry.prototype.init = function (gulp) {
+	this.gulp = gulp;
 };
 
 Registry.prototype.get = function (name) {
