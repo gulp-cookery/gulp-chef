@@ -242,8 +242,7 @@ var INTERPOLATE = /{{([\s\S]+?)}}/g,
 			"primary": 'path',
 			"gathering": 'options'
 		}
-	},
-	"gathering": "others"
+	}
 };
 
 var REGEX_RUNTIME_OPTIONS = /^([.#]?)([_\w][-_:\s\w]*)([!?]?)$/;
@@ -457,8 +456,6 @@ function sort(taskInfo, rawConfig, parentConfig, schema) {
 	inheritedConfig = _.defaultsDeep(taskConfig, rawConfig, parentConfig);
 	value = normalize(schema, inheritedConfig, { ignoreUnknownProperties: true });
 	taskConfig = value.values || {};
-	// TODO: json-normalizer: allow ignore unknown properties.
-	delete taskConfig.others;
 	subTaskConfigs = _.omit(rawConfig, Object.keys(taskConfig));
 
 	return {
