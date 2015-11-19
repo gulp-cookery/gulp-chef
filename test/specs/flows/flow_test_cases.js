@@ -44,34 +44,36 @@ var cases = {
 	}
 };
 
-Object.keys(cases).forEach(function (name) {
-	cases[name].fn = createFakeTask(cases[name].fn);
-});
-
-function createFakeTask(runner) {
-	var task = function (done) {
-		return runner(gulp, null, null, done);
-	};
-	task.run = runner;
-	return task;
-}
-
 function prepare(keys) {
-	var tasks, expects, errors;
+	var tasks, expects, errors, bundle;
 
 	tasks = [];
 	expects = [];
 	errors = [];
 	keys.forEach(function (key) {
-		tasks.push(cases[key].fn);
+		tasks.push(createFakeTask(key, cases[key].fn));
 		expects.push(cases[key].expected);
 		errors.push(cases[key].error);
 	});
-	return {
+	bundle = {
 		tasks: tasks,
 		expects: expects,
-		errors: errors
+		errors: errors,
+		logs: []
 	};
+	return bundle;
+
+	function createFakeTask(name, runner) {
+		var run = function (gulp, config, stream, done) {
+			bundle.logs.push(name);
+			return runner(gulp, config, stream, done);
+		};
+		var task = function (done) {
+			return run(this, null, null, done);
+		};
+		task.run = run;
+		return task;
+	}
 }
 
 module.exports = prepare;
