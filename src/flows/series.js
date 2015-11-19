@@ -14,10 +14,10 @@ function series(gulp, config, stream, tasks, done) {
 	var async = require('async'),
 		asyncDone = require('async-done');
 
-	async.eachSeries(tasks, function (task, done) {
-		asyncDone(function (done) {
-			return task.run(gulp, config, stream, done);
-		}, done);
+	async.mapSeries(tasks, function (task, itemDone) {
+		asyncDone(function (taskDone) {
+			return task.run(gulp, config, stream, taskDone);
+		}, itemDone);
 	}, done);
 }
 
