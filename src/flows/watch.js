@@ -16,7 +16,7 @@
  * gulp.watch()
  *
  */
-function watchTask(gulp, config, stream, done) {
+function watchTask(gulp, config, stream, tasks, done) {
 	// lazy loading required modules.
 	var _ = require('lodash');
 

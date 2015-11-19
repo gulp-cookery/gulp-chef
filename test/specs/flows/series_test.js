@@ -1,20 +1,15 @@
-/*global describe, it, before, after, beforeEach, afterEach, process */
+/*global describe, it, process */
 /*jshint expr: true*/
 'use strict';
 
 var async = require('async');
 
-var Sinon = require('sinon'),
-	Chai = require('chai'),
-	Promised = require("chai-as-promised"),
+var Chai = require('chai'),
 	expect = Chai.expect;
-
-Chai.use(Promised);
 
 var base = process.cwd()
 var series = require(base + '/src/flows/series'),
-	cases = require('./flow_test_cases'),
-	ConfigurationError = require(base + '/src/core/configuration_error');
+	cases = require('./flow_test_cases');
 
 var FakeGulp = require(base + '/test/fake/gulp');
 var gulp = new FakeGulp();
