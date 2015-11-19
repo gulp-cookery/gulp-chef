@@ -121,7 +121,7 @@ ConfigurableTaskRunnerFactory.prototype.flow = function (prefix, configs, create
 	var tasks, self = this, stuff = this.stuff;
 
 	if (isFlowTask(configs.taskInfo.name)) {
-		if (!hasTaskToWatch() && ! hasSubTasks(configs.subTaskConfigs)) {
+		if (!hasTaskRefs() && ! hasSubTasks(configs.subTaskConfigs)) {
 			throw new ConfigurationError('configure', 'a flow processor without sub-tasks is useless');
 		}
 		tasks = _createSubTasks();
@@ -132,7 +132,7 @@ ConfigurableTaskRunnerFactory.prototype.flow = function (prefix, configs, create
 		return !!stuff.flows.lookup(name);
 	}
 
-	function hasTaskToWatch() {
+	function hasTaskRefs() {
 		return configs.taskInfo.task && configs.taskInfo.task.length;
 	}
 

@@ -3,7 +3,7 @@
 var _ = require('lodash'),
 	log = require('gulp-util').log,
 	normalize = require('json-normalizer').sync,
-	globsJoin = require('../helpers/glob_util').join;
+	globsJoin = require('../helpers/globs').join;
 
 var ConfigurationError = require('./configuration_error');
 
