@@ -31,6 +31,6 @@ function _uglify() {
 		.pipe(gulp.dest('dist'));
 }
 
-gulp.task('default', function() {
+gulp.task('default', function () {
 	return _uglify();
 });

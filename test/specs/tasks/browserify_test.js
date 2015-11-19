@@ -35,12 +35,12 @@ var testCases = {
 	}
 };
 
-describe('task processor', function() {
-	describe('browserify()', function() {
+describe('task processor', function () {
+	describe('browserify()', function () {
 		//var tasks;
         //
-		//_.forEach(testCases, function(testCase, title) {
-		//	it(title, function() {
+		//_.forEach(testCases, function (testCase, title) {
+		//	it(title, function () {
 		//		browserify(gulp, testCase.config, null);
 		//	});
 		//});

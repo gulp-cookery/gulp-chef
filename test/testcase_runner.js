@@ -9,15 +9,15 @@ Chai.use(Promised);
 
 function test(runner, testCases) {
     var tests = filter(only) || filter(skip) || testCases;
-    tests.forEach(function(testCase) {
-        it(testCase.title, function() {
+    tests.forEach(function (testCase) {
+        it(testCase.title, function () {
             if (testCase.debug) {
                 debugger;
             }
 
             var to = testCase.async ? 'eventually' : 'to';
             if (testCase.error) {
-                expect(function() { runner(testCase.value, testCase.options); })[to].throw(testCase.error);
+                expect(function () { runner(testCase.value, testCase.options); })[to].throw(testCase.error);
             } else {
                 expect(runner(testCase.value, testCase.options))[to].deep.equal(testCase.expected);
             }

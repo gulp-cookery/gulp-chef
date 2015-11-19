@@ -26,7 +26,7 @@ function jshintTask(gulp, config, stream, done) {
 	if (typeof config.options.reporter === 'string') {
 		stream = stream.pipe(jshint.reporter(config.options.reporter));
 	} else {
-		_.each(config.options.reporter, function(options, name) {
+		_.each(config.options.reporter, function (options, name) {
 			if (typeof name === 'number') {
 				name = options;
 				options = {};

@@ -303,7 +303,7 @@ function browserifyTask(gulp, config, stream) {
 
 			// flatten entry property.
 			function _flatten(entries) {
-				return entries.map(function(entry) {
+				return entries.map(function (entry) {
 					return entry.file || entry;
 				});
 			}
@@ -315,7 +315,7 @@ function browserifyTask(gulp, config, stream) {
 
 			// resolve globs to files.
 			function _resolve(entries) {
-				return entries.reduce(function(result, entry) {
+				return entries.reduce(function (result, entry) {
 					if (Globs.isGlob(entry)) {
 						return result.concat(globby.sync(entry));
 					}

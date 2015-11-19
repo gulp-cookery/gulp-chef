@@ -9,7 +9,7 @@ function EmptyStream() {
 
 inherits(EmptyStream, Readable);
 
-EmptyStream.prototype._read = function() {
+EmptyStream.prototype._read = function () {
 	this.emit('end');
 };
 

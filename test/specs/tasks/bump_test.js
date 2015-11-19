@@ -15,9 +15,9 @@ var bump = require(base + '/src/tasks/bump'),
 	ConfigurationError = require(base + '/src/core/configuration_error'),
 	ConfigurableTaskError = require(base + '/src/core/configurable_task_error');
 
-describe('task processor', function() {
-	describe('bump()', function() {
-		it('should ...', function() {
+describe('task processor', function () {
+	describe('bump()', function () {
+		it('should ...', function () {
 		});
 	});
 });

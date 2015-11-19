@@ -42,7 +42,7 @@ function eachdir(gulp, config, stream, tasks) {
 		throw new ConfigurationError('eachdir', 'no sub folders found in ' + dir);
 	}
 
-	values = folders.map(function(folder) {
+	values = folders.map(function (folder) {
 		return {
 			dir: folder,
 			path: path.join(cwd, dir, folder)
@@ -57,7 +57,7 @@ function eachdir(gulp, config, stream, tasks) {
 
 	function getFolders(dir) {
 		try {
-			return fs.readdirSync(dir).filter(function(file) {
+			return fs.readdirSync(dir).filter(function (file) {
 				return fs.statSync(path.join(dir, file)).isDirectory();
 			});
 		} catch (ex) {

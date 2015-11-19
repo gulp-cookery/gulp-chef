@@ -70,7 +70,7 @@ function imagesTaskV2(gulp, config, stream, done) {
 		dest: config.dest
 	};
 	if (config.flatten) {
-		newerOptions.map = function(relativePath) {
+		newerOptions.map = function (relativePath) {
 			console.log('relativePath=' + relativePath);
 			return path.basename(relativePath);
 		};

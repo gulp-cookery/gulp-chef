@@ -31,7 +31,7 @@ function watchTask(gulp, config, stream, done) {
 	}
 
 	// TODO: find all src recursively.
-	globs = depends.map(function(name) {
+	globs = depends.map(function (name) {
 		var task = gulp.task(name);
 		if (task) {
 			//task.config

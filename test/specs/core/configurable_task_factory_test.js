@@ -21,7 +21,7 @@ describe('Core', function () {
 	describe('ConfigurableTaskFactory', function () {
 		var gulp, factory;
 
-		beforeEach(function() {
+		beforeEach(function () {
 			var stuff = createFakeStuff(),
 				registry = new Registry();
 			gulp = new FakeGulp();
@@ -49,7 +49,7 @@ describe('Core', function () {
 			function done(err) {
 			}
 
-			beforeEach(function() {
+			beforeEach(function () {
 				configurableRunner = Sinon.spy();
 			});
 

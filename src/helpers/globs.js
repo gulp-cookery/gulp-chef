@@ -11,7 +11,7 @@ function folders(globs, options) {
 	options = options || {};
 	base = options.base || '';
 	return globby.sync(globs, options)
-		.filter(function(file) {
+		.filter(function (file) {
 			return FileSystem.statSync(Path.join(base, file)).isDirectory();
 		});
 }
@@ -27,7 +27,7 @@ function join(paths, globs, force) {
 		try {
 			if (force || FileSystem.statSync(path).isDirectory()) {
 				if (Array.isArray(globs)) {
-					return globs.map(function(glob) {
+					return globs.map(function (glob) {
 						return _join(path, glob);
 					});
 				}

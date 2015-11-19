@@ -273,13 +273,13 @@ _.defaultsDeep = defaultsDeep;
 
 function defaultsDeep(object) {
 	var sources = Array.prototype.splice.call(arguments, 1);
-	sources.forEach(function(source) {
+	sources.forEach(function (source) {
 		_defaults(object, source);
 	});
 	return object;
 
 	function _defaults(target, source) {
-		_.forIn(source, function(value, key) {
+		_.forIn(source, function (value, key) {
 			if (_.isPlainObject(target[key]) && _.isPlainObject(value)) {
 				_defaults(target[key], value);
 			} else if (! (key in target)) {
@@ -339,7 +339,7 @@ function realize(original, additional, defaults) {
 	return realizeAll({}, values);
 
 	function realizeAll(target, source) {
-		_.each(source, function(value, name) {
+		_.each(source, function (value, name) {
 			target[name] = realize(value);
 		});
 		return target;
@@ -347,7 +347,7 @@ function realize(original, additional, defaults) {
 
 	function realize(source) {
 		if (typeof source === 'string') {
-			return source.replace(INTERPOLATE, function(match, path) {
+			return source.replace(INTERPOLATE, function (match, path) {
 				var value = _.get(values, path) || path;
 				if (typeof value === 'function') {
 					value = value(values);
@@ -408,7 +408,7 @@ function resolveDest(child, parent) {
 }
 
 function propertyMapper(target, source, mappings) {
-	Object.keys(mappings).forEach(function(sourceProperty) {
+	Object.keys(mappings).forEach(function (sourceProperty) {
 		var targetProperty;
 		if (source.hasOwnProperty(sourceProperty)) {
 			targetProperty = mappings[sourceProperty];

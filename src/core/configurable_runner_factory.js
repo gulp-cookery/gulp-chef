@@ -18,7 +18,7 @@
  * ConfigurableTask Runner:
  * ConfigurableTask Runner is called with config, and be wrapped in ConfigurableTask.run().
  *
- * configurableTask.run = function(gulp, config, stream, done) {
+ * configurableTask.run = function (gulp, config, stream, done) {
  * }
  *
  * configurableTask.displayName
@@ -186,7 +186,7 @@ ConfigurableTaskRunnerFactory.prototype.stream = function (prefix, configs, crea
 	function _createStreamTaskRunner(tasks) {
 		var runner = explicitRunner() || implicitRunner();
 		// NOTE: important! watch the difference of signature between recipe runner and stream runner.
-		return function(gulp, config, stream /*, done*/ ) {
+		return function (gulp, config, stream /*, done*/ ) {
 			return runner(gulp, config, stream, tasks);
 		};
 	}
@@ -225,7 +225,7 @@ ConfigurableTaskRunnerFactory.prototype.parallel = function (tasks) {
 
 	if (Array.isArray(tasks)) {
 
-		tasks = tasks.map(function(task) {
+		tasks = tasks.map(function (task) {
 			if (typeof task === 'string') {
 				return self.reference(task);
 			} else if (typeof task === 'function') {
@@ -237,7 +237,7 @@ ConfigurableTaskRunnerFactory.prototype.parallel = function (tasks) {
 			return function () {};
 		});
 
-		return function(gulp, config, stream/*, done*/) {
+		return function (gulp, config, stream/*, done*/) {
 			// TODO: replace fake implementation
 			for (var i = 0; i < tasks.length; ++i) {
 				tasks[i](gulp, config, stream, done);
@@ -251,7 +251,7 @@ ConfigurableTaskRunnerFactory.prototype.parallel = function (tasks) {
 
 ConfigurableTaskRunnerFactory.prototype.wrapper = function (task) {
 	if (typeof task === 'function') {
-		return function(gulp, config, stream, done) {
+		return function (gulp, config, stream, done) {
 			return task.call(gulp, done);
 		};
 	}

@@ -57,7 +57,7 @@ describe('Core', function () {
 			},
 			subTasks,
 			createConfigurableTasks = Sinon.spy(function (prefix, subTaskConfigs) {
-				return subTasks = _.map(subTaskConfigs, function(config, name) {
+				return subTasks = _.map(subTaskConfigs, function (config, name) {
 					return createSpyConfigurableTask(name);
 				});
 			});
@@ -109,19 +109,19 @@ describe('Core', function () {
 			it('should invoke sub-tasks at runtime', function () {
 				var actual = factory.stream(prefix, configs, createConfigurableTasks);
 				actual(gulp, {}, null, done);
-				subTasks.forEach(function(task) {
+				subTasks.forEach(function (task) {
 					expect(task.run.calledOn(task)).to.be.true;
 					expect(task.run.calledWith(gulp, {}, null)).to.be.true;
 				});
 			});
 		});
 		describe('#reference()', function () {
-			it('should throw at runtime if the referring task not found', function() {
+			it('should throw at runtime if the referring task not found', function () {
 				var actual = factory.reference('non-existent');
 				expect(function () { actual.call(gulp, gulp, {}, null, done); }).to.throw(ConfigurationError);
 			});
 
-			it('should wrap a normal gulp task', function() {
+			it('should wrap a normal gulp task', function () {
 				var actual = factory.reference(gulpTask.displayName);
 				expect(actual).to.be.a('function');
 				actual(gulp, {}, null, done);
@@ -129,7 +129,7 @@ describe('Core', function () {
 				expect(gulpTask.calledWithExactly(done)).to.be.true;
 			});
 
-			it("should call target's run() at runtime if already a ConfigurableTask", function() {
+			it("should call target's run() at runtime if already a ConfigurableTask", function () {
 				var actual = factory.reference(configurableTask.displayName);
 				expect(actual).to.be.a('function');
 				actual(gulp, {}, null, done);
@@ -150,12 +150,12 @@ describe('Core', function () {
 				];
 			});
 
-			it('should create a function', function() {
+			it('should create a function', function () {
 				var actual = factory.parallel(tasks);
 				expect(actual).to.be.a('function');
 			});
 
-			it('should each tasks eventually be called when call the generated function', function() {
+			it('should each tasks eventually be called when call the generated function', function () {
 				var actual = factory.parallel(tasks);
 				actual(gulp, {}, null, done);
 				expect(gulp.task('gulp-task-by-ref').called).to.be.true;

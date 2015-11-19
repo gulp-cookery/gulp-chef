@@ -12,7 +12,7 @@ function safeRequireDir() {
 		modules;
 
 	dirs = Array.prototype.slice.call(arguments, 0);
-	modules = dirs.map(function(dir) {
+	modules = dirs.map(function (dir) {
 		dir = path.resolve(parentDir, dir || '.');
 		try {
 			return requireDir(dir);

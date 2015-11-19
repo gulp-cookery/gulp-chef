@@ -47,8 +47,8 @@ function bumpTask(gulp, config, stream, done) {
 	stream = stream || gulp.src(config.src.globs);
 
 	if (config.options.interactive) {
-		prompt(messages.version, function(res1) {
-			prompt(messages.release, function(res2) {
+		prompt(messages.version, function (res1) {
+			prompt(messages.release, function (res2) {
 				newVersion = semver.inc(pkg.version, res1.type, res2.release === 'release' ? '' : res2.release);
 				bumpTo(newVersion)
 					.on('end', done);

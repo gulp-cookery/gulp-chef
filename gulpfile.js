@@ -481,7 +481,7 @@ var taskConfigs = {
 				 "dir": "views"
 			 }],
 			 "process": {
-				 task: function(gulp, config, stream, done) {
+				 task: function (gulp, config, stream, done) {
 					 var emptyStream = require("./src/helpers/streams").empty();
 					 console.log(config.dir);
 					 return emptyStream;
@@ -505,7 +505,7 @@ var taskConfigs = {
 	 "deploy": {
 	 },
 	 "through": {
-	     task: function() {
+	     task: function () {
 	         var EmptyStream  = require("./src/helpers/empty_stream");
 	         return new EmptyStream();
 	     }
@@ -516,7 +516,7 @@ var taskConfigs = {
 	 },
 	 "build2": {
 	     "depends": ["clean"],
-	     "task": function() {
+	     "task": function () {
 	         gulp.start("scripts", "styles", "markups", "images");
 	     }
 	 },
@@ -524,7 +524,7 @@ var taskConfigs = {
 	     "task": ["scripts", "styles", "markups", "images"]
 	 },
 	 "test": {
-		 "task": function() {
+		 "task": function () {
 			 var mocha = require("gulp-mocha");
 			 return gulp.src(["test/specs/**/*_test.js"], { read: false })
 				 .pipe(mocha({
@@ -541,7 +541,7 @@ var taskConfigs = {
 var recipes = createGulpTasks(taskConfigs, config);
 gulp.registry(recipes);
 
-gulp.task('test', function() {
+gulp.task('test', function () {
 	var mocha = require('gulp-mocha');
 	return gulp.src(['test/specs/**/*_test.js'], {
 			read: false

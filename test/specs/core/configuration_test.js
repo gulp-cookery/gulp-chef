@@ -496,7 +496,7 @@ describe('Core', function () {
 			it('should call resolver function', function () {
 				var resolved = 'resolver called',
 					values = {
-						runtime: Sinon.spy(function() {
+						runtime: Sinon.spy(function () {
 							return resolved;
 						})
 					},

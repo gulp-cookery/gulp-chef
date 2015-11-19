@@ -43,9 +43,9 @@ describe('Prerequisite', function () {
 		});
 	}
 
-	describe('Lodash', function() {
-		describe('.defaultsDeep()', function() {
-			it('should not merge string characters into array', function() {
+	describe('Lodash', function () {
+		describe('.defaultsDeep()', function () {
+			it('should not merge string characters into array', function () {
 				expect(_.defaultsDeep({ src: ['src'] }, { src: 'src' })).to.deep.equal({
 					src: ['src']
 				});

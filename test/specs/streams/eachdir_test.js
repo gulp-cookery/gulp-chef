@@ -92,30 +92,30 @@ var testCases = {
 };
 
 function prepareTask(fn) {
-	var task = function(done) {};
-	task.run = Sinon.spy(fn || function(gulp, config, stream, done) {});
+	var task = function (done) {};
+	task.run = Sinon.spy(fn || function (gulp, config, stream, done) {});
 	return task;
 }
 
-describe('Stream Processor', function() {
-	describe('eachdir()', function() {
+describe('Stream Processor', function () {
+	describe('eachdir()', function () {
 		var tasks;
 
-		before(function() {
+		before(function () {
 			process.chdir(fixtures);
 		});
 
-		after(function() {
+		after(function () {
 			process.chdir(base);
 		});
 
-		beforeEach(function() {
+		beforeEach(function () {
 			tasks = [prepareTask(), prepareTask()];
 		});
 
-		afterEach(function() {});
+		afterEach(function () {});
 
-		it('should throw if config.dir is not a valid string', function() {
+		it('should throw if config.dir is not a valid string', function () {
 			var configs = {
 				empty: {},
 				emptyString: {
@@ -134,14 +134,14 @@ describe('Stream Processor', function() {
 					dir: []
 				},
 			};
-			_.forOwn(configs, function(config) {
-				expect(function() {
+			_.forOwn(configs, function (config) {
+				expect(function () {
 					eachdir(gulp, config, null, tasks);
 				}).to.throw(ConfigurationError);
 			});
 		});
 
-		it('should throw if no sub folder found', function() {
+		it('should throw if no sub folder found', function () {
 			var configs = {
 				notExist: {
 					dir: testCases['non-existent'].path
@@ -150,20 +150,20 @@ describe('Stream Processor', function() {
 					dir: testCases.file.path
 				}
 			};
-			_.forOwn(configs, function(config) {
-				expect(function() {
+			_.forOwn(configs, function (config) {
+				expect(function () {
 					eachdir(gulp, config, null, tasks);
 				}).to.throw(ConfigurationError);
 			});
 		});
 
-		it('should invoke the given task for each folder', function() {
+		it('should invoke the given task for each folder', function () {
 			var testCase = testCases.modules,
 				config = {
 					dir: testCase.path
 				},
 				visits = [],
-				task = prepareTask(function(gulp, config, stream, done) {
+				task = prepareTask(function (gulp, config, stream, done) {
 					visits.push(config.dir);
 					return through.obj();
 				});
@@ -171,24 +171,24 @@ describe('Stream Processor', function() {
 			expect(visits).to.deep.equal(testCase.result);
 		});
 
-		it('should throw if the given task does not return a stream', function() {
+		it('should throw if the given task does not return a stream', function () {
 			var testCase = testCases.modules,
 				config = {
 					dir: testCase.path
 				},
-				task = prepareTask(function(gulp, config, stream, done) {
+				task = prepareTask(function (gulp, config, stream, done) {
 					return true;
 				});
-			expect(function() {
+			expect(function () {
 				eachdir(gulp, config, null, [task]);
 			}).to.throw(ConfigurableTaskError);
 		});
 
-		it('should return a stream', function() {
+		it('should return a stream', function () {
 			var config = {
 					dir: testCases.views.path
 				},
-				task = prepareTask(function(gulp, config, stream, done) {
+				task = prepareTask(function (gulp, config, stream, done) {
 					return through.obj();
 				});
 			expect(eachdir(gulp, config, null, [task])).to.be.an.instanceof(Stream);
