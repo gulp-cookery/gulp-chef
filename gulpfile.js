@@ -61,30 +61,30 @@ var SampleConfigs = {
 			}
 		}
 	},
-	// flow tasks 的形式：
+	// flow tasks
 	"flows": {
-		"parallel:1": {
+		"parallel-in-object": {
 			"parallel": {
-				"ref-task-1": {},
-				"ref-task-2": {},
+				"task-1": {},
+				"task-2": {},
 				"inline": function (gulp, config, stream, done) {}
 			}
 		},
-		"parallel:2": {
+		"parallel-in-array": {
 			"parallel": ["ref-task-1", "ref-task-2", function (gulp, config, stream, done) {}]
 		},
-		"series:1": {
+		"series-in-object": {
 			// Note that while many implementations preserve the order of object properties, the ECMAScript Language Specification explicitly states that:
 			// The mechanics and order of enumerating the properties is not specified.
 			// So if you rely on the order in which your series of functions are executed, and want this to work on all platforms, consider using an array.
 			// https://github.com/caolan/async#seriestasks-callback
 			"series": {
-				"ref-task-1": {},
-				"ref-task-2": {},
+				"task-1": {},
+				"task-2": {},
 				"inline": function (gulp, config, stream, done) {}
 			}
 		},
-		"series:2": {
+		"series-in-array": {
 			"series": ["ref-task-1", "ref-task-2", function (gulp, config, stream, done) {}]
 		}
 	},
