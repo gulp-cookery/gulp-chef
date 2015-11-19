@@ -1,7 +1,7 @@
 'use strict';
 
 var path = require('path'),
-	safeRequireDir = require('./util/safe_require_dir'),
+	safeRequireDir = require('./helpers/safe_require_dir'),
 	ConfigurableTaskRunnerRegistry = require('./core/configurable_runner_registry');
 
 var cwd = process.cwd();

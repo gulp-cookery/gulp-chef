@@ -482,7 +482,7 @@ var taskConfigs = {
 			 }],
 			 "process": {
 				 task: function(gulp, config, stream, done) {
-					 var emptyStream = require("./src/util/stream_util").empty();
+					 var emptyStream = require("./src/helpers/stream_util").empty();
 					 console.log(config.dir);
 					 return emptyStream;
 				 }
@@ -506,7 +506,7 @@ var taskConfigs = {
 	 },
 	 "through": {
 	     task: function() {
-	         var EmptyStream  = require("./src/util/empty_stream");
+	         var EmptyStream  = require("./src/helpers/empty_stream");
 	         return new EmptyStream();
 	     }
 	 },

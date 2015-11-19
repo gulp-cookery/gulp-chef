@@ -1,9 +1,9 @@
 "use strict";
 
-var log = require('gulp-util').log,
-	globsJoin = require('../util/glob_util').join,
+var _ = require('lodash'),
+	log = require('gulp-util').log,
 	normalize = require('json-normalizer').sync,
-	_ = require('lodash');
+	globsJoin = require('../helpers/glob_util').join;
 
 var ConfigurationError = require('./configuration_error');
 

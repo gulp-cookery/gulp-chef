@@ -162,7 +162,7 @@ function browserifyTask(gulp, config, stream) {
 		browserSync = require('browser-sync'),
 		buffer = require('vinyl-buffer'),
 		globby = require('globby'),
-		Globs = require('../util/glob_util'),
+		Globs = require('../helpers/glob_util'),
 		Configuration = require('../core/configuration'),
 		log = require('gulp-util').log,
 		merge = require('merge-stream'),
