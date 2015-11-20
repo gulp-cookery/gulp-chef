@@ -67,11 +67,19 @@ var SampleConfigs = {
 			"parallel": {
 				"task-1": {},
 				"task-2": {},
+				"named-inline": {
+					"task": function (gulp, config, stream, done) {}
+				},
 				"inline": function (gulp, config, stream, done) {}
 			}
 		},
 		"parallel-in-array": {
-			"parallel": ["ref-task-1", "ref-task-2", function (gulp, config, stream, done) {}]
+			"parallel": [
+				"task-1",
+				"task-2",
+				{ "name": "named-inline", "task": function (gulp, config, stream, done) {} },
+				function (gulp, config, stream, done) {}
+			]
 		},
 		"series-in-object": {
 			// Note that while many implementations preserve the order of object properties, the ECMAScript Language Specification explicitly states that:
@@ -94,16 +102,12 @@ var SampleConfigs = {
 			}
 		},
 		"series-in-array": {
-			"series": ["ref-task-1", "ref-task-2", function (gulp, config, stream, done) {}]
-		},
-		"series-in-object-array": {
-			"series": [{
-				"task": "ref-task-1"
-			}, {
-				"task": "ref-task-2"
-			}, {
-				"task": function (gulp, config, stream, done) {}
-			}]
+			"series": [
+				{ "name": "task-1" },
+				"task-2",
+				{ "name": "named-inline", "task": function (gulp, config, stream, done) {} },
+				function (gulp, config, stream, done) {}
+			]
 		}
 	},
 	"streams": {
@@ -327,22 +331,21 @@ var SampleConfigs = {
 
 	},
 	"modules": {
-		"src": "modules",
+		"src": "src",
 		"dest": "lib",
 		"eachdir": {
-			"task": {
-				"scripts": {
+			"dir": "modules",
+			"scripts": {
 
-				},
-				"styles": {
+			},
+			"styles": {
 
-				},
-				"markups": {
+			},
+			"markups": {
 
-				},
-				"images": {
+			},
+			"images": {
 
-				}
 			}
 		}
 	},
