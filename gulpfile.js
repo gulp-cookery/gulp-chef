@@ -77,15 +77,35 @@ var SampleConfigs = {
 			// Note that while many implementations preserve the order of object properties, the ECMAScript Language Specification explicitly states that:
 			// The mechanics and order of enumerating the properties is not specified.
 			// So if you rely on the order in which your series of functions are executed, and want this to work on all platforms, consider using an array.
+			// Or, you can add an "order" property to sub-task.
 			// https://github.com/caolan/async#seriestasks-callback
 			"series": {
-				"task-1": {},
-				"task-2": {},
+				"task-1": {
+					"order": 0	// just used to sort
+				},
+				"task-2": {
+					"order": 1
+				},
+				"named-inline": {
+					"order": 2,
+					"task": function (gulp, config, stream, done) {}
+				},
 				"inline": function (gulp, config, stream, done) {}
 			}
 		},
 		"series-in-array": {
 			"series": ["ref-task-1", "ref-task-2", function (gulp, config, stream, done) {}]
+		},
+		// not recommended
+		"series-in-object-array": {
+			"series": [{
+				"ref-task-1": {}
+			}, {
+				"ref-task-2": {}
+			}, {
+				"inline": function (gulp, config, stream, done) {
+				}
+			}]
 		}
 	},
 	"streams": {
@@ -477,8 +497,6 @@ var taskConfigs = {
 	 },
 	 "foreach": {
 		 "each": {
-			 // 注意：有時候 normalizer 會遇到無窮迴圈的情況，似乎是在陣列的時候，
-			 // 因為 index (當然)並未定義在 schema 中，所以一直成為 others 部份。
 			 "values": [{
 				 "dir": "directives"
 			 }, {
@@ -487,7 +505,7 @@ var taskConfigs = {
 				 "dir": "views"
 			 }],
 			 "process": {
-				 task: function (gulp, config, stream, done) {
+				 "task": function (gulp, config, stream, done) {
 					 var emptyStream = require("./src/helpers/streams").empty();
 					 console.log(config.dir);
 					 return emptyStream;
@@ -511,7 +529,7 @@ var taskConfigs = {
 	 "deploy": {
 	 },
 	 "through": {
-	     task: function () {
+	     "task": function () {
 	         var EmptyStream  = require("./src/helpers/empty_stream");
 	         return new EmptyStream();
 	     }
