@@ -115,7 +115,7 @@ ConfigurableTaskRunnerFactory.prototype.recipe = function (name, configs) {
 	function isRecipeTask(name) {
 		return !!self.stuff.recipes.lookup(name);
 	}
-}
+};
 
 ConfigurableTaskRunnerFactory.prototype.flow = function (prefix, configs, createConfigurableTasks) {
 	var tasks, self = this, stuff = this.stuff;
@@ -247,7 +247,7 @@ ConfigurableTaskRunnerFactory.prototype.parallel = function (tasks) {
 			}
 		};
 	}
-}
+};
 
 ConfigurableTaskRunnerFactory.prototype.wrapper = function (task) {
 	if (typeof task === 'function') {
