@@ -96,15 +96,13 @@ var SampleConfigs = {
 		"series-in-array": {
 			"series": ["ref-task-1", "ref-task-2", function (gulp, config, stream, done) {}]
 		},
-		// not recommended
 		"series-in-object-array": {
 			"series": [{
-				"ref-task-1": {}
+				"task": "ref-task-1"
 			}, {
-				"ref-task-2": {}
+				"task": "ref-task-2"
 			}, {
-				"inline": function (gulp, config, stream, done) {
-				}
+				"task": function (gulp, config, stream, done) {}
 			}]
 		}
 	},
