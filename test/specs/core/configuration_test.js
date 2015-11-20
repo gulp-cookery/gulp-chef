@@ -186,7 +186,7 @@ describe('Core', function () {
 				var actual = Configuration.sort({}, {
 					src: 'src',
 					dest: 'dist',
-					blabla: 'blabla',
+					blabla: ['bla', 'bla'],
 					foo: false,
 					bar: { name: 'bar' }
 				}, {}, null);
@@ -199,12 +199,23 @@ describe('Core', function () {
 						dest: {
 							path: 'dist'
 						},
-						blabla: 'blabla',
+						blabla: ['bla', 'bla'],
 						foo: false,
 						bar: {
 							name: 'bar'
 						}
 					},
+					subTaskConfigs: {}
+				});
+			});
+			it.only('should honor schema.type, i.e. accept non-object (array)', function () {
+				var config = [true, 2, '4', function () {}, {}];
+				var actual = Configuration.sort({}, config, {}, {
+					type: 'array'
+				});
+				expect(actual).to.deep.equal({
+					taskInfo: {},
+					taskConfig: config,
 					subTaskConfigs: {}
 				});
 			});

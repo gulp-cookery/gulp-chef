@@ -24,7 +24,7 @@
     "glob": "^6.0.1",
     "globby": "^2.1.0",
     "gulp-util": "^3.0.6",
-    "json-normalizer": "^0.2.0",
+    "json-normalizer": "^0.2.1",
     "lodash": "^3.10.1",
     "require-dir": "^0.3.0"
   },

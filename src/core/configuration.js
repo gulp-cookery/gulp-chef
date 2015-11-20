@@ -436,40 +436,52 @@ function propertyMapper(target, source, mappings) {
 function sort(taskInfo, rawConfig, parentConfig, schema) {
 	var inheritedConfig, taskConfig, subTaskConfigs, value;
 
-	value = schema ? propertyMapper({}, schema, { title: 'name', description: 'description' }) : {};
-	taskInfo = _.defaultsDeep(taskInfo, _.pick(rawConfig, TASK_PROPERTIES), value);
-	rawConfig = _.omit(rawConfig, TASK_PROPERTIES);
-
-	taskConfig = {};
-
-	if (parentConfig.src && !Array.isArray(parentConfig.src.globs)) {
-		throw new TypeError('parentConfig.src not normalized');
+	if (_.isPlainObject(rawConfig)) {
+		taskInfo = _.defaultsDeep(taskInfo, _.pick(rawConfig, TASK_PROPERTIES));
+		rawConfig = _.omit(rawConfig, TASK_PROPERTIES);
 	}
-
-	value = resolveSrc(rawConfig, parentConfig);
-	if (value) {
-		taskConfig.src = value;
-	}
-
-	if (parentConfig.dest && typeof parentConfig.dest.path !== 'string') {
-		throw new TypeError('parentConfig.dest not normalized');
-	}
-
-	value = resolveDest(rawConfig, parentConfig);
-	if (value) {
-		taskConfig.dest = value;
-	}
-
 	if (schema && _.size(schema)) {
-		schema = _.defaultsDeep(schema, SCHEMA_COMMONS);
-	} else {
-		schema = _.defaultsDeep({}, SCHEMA_DEFAULTS);
+		taskInfo = propertyMapper(taskInfo, schema, {title: 'name', description: 'description'});
 	}
 
-	inheritedConfig = _.defaultsDeep(taskConfig, rawConfig, parentConfig);
+	if (_.isPlainObject(rawConfig)) {
+		taskConfig = {};
+
+		if (parentConfig.src && !Array.isArray(parentConfig.src.globs)) {
+			throw new TypeError('parentConfig.src not normalized');
+		}
+
+		value = resolveSrc(rawConfig, parentConfig);
+		if (value) {
+			taskConfig.src = value;
+		}
+
+		if (parentConfig.dest && typeof parentConfig.dest.path !== 'string') {
+			throw new TypeError('parentConfig.dest not normalized');
+		}
+
+		value = resolveDest(rawConfig, parentConfig);
+		if (value) {
+			taskConfig.dest = value;
+		}
+
+		if (schema && _.size(schema)) {
+			schema = _.defaultsDeep(schema, SCHEMA_COMMONS);
+		} else {
+			schema = _.defaultsDeep({}, SCHEMA_DEFAULTS);
+		}
+
+		inheritedConfig = _.defaultsDeep(taskConfig, rawConfig, parentConfig);
+	} else {
+		inheritedConfig = rawConfig;
+	}
 	value = normalize(schema, inheritedConfig, { ignoreUnknownProperties: true });
-	taskConfig = value.values || {};
-	subTaskConfigs = _.omit(rawConfig, Object.keys(taskConfig));
+	taskConfig = value.values;
+	if (_.isPlainObject(rawConfig)) {
+		subTaskConfigs = _.omit(rawConfig, Object.keys(taskConfig));
+	} else {
+		subTaskConfigs = {};
+	}
 
 	return {
 		taskInfo: taskInfo,
