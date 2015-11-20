@@ -29,7 +29,8 @@ series.requires = {
 series.schema = {
 	"title": "series",
 	"description": "Run the functions in the tasks array in series, each one running once the previous function has completed.",
-	"type": ["array", "object"]
+	"type": "object",
+	"properties": {}
 };
 
 module.exports = series;

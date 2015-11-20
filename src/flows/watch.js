@@ -49,17 +49,8 @@ watchTask.requires = {
 watchTask.schema = {
 	"title": "watch",
 	"description": "",
-	"properties": {
-		"src": {
-			"description": ""
-		},
-		"options": {
-			"description": "",
-			"properties": {
-			}
-		}
-	},
-	"required": ["src"]
+	"type": "object",
+	"properties": {}
 };
 
 module.export = watchTask;
