@@ -208,7 +208,7 @@ describe('Core', function () {
 					subTaskConfigs: {}
 				});
 			});
-			it.only('should honor schema.type, i.e. accept non-object (array)', function () {
+			it('should honor schema.type, i.e. accept non-object (array)', function () {
 				var config = [true, 2, '4', function () {}, {}];
 				var actual = Configuration.sort({}, config, {}, {
 					type: 'array'
@@ -217,6 +217,17 @@ describe('Core', function () {
 					taskInfo: {},
 					taskConfig: config,
 					subTaskConfigs: {}
+				});
+			});
+			it('should be able to gather non-object (array) to subTaskConfigs', function () {
+				var config = [true, 2, '4', function () {}, {}];
+				var actual = Configuration.sort({}, config, {}, {
+					properties: {}
+				});
+				expect(actual).to.deep.equal({
+					taskInfo: {},
+					taskConfig: {},
+					subTaskConfigs: config
 				});
 			});
 			it('should throw if parent config not normalized', function () {
