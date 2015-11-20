@@ -33,9 +33,8 @@ parallel.requires = {
 
 parallel.schema = {
 	"title": "parallel",
-	"description": "",
-	"properties": {
-	}
+	"description": "Run the tasks array of functions in parallel, without waiting until the previous function has completed.",
+	"type": ["array", "object"]
 };
 
 module.exports = parallel;
