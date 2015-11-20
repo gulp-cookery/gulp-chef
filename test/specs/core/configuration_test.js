@@ -184,12 +184,12 @@ describe('Core', function () {
 			});
 			it('should throw if parent config not normalized', function () {
 				expect(function () {
-					Configuration.sort({}, {
+					Configuration.sort({}, {}, {
 						src: 'src'
 					}, {});
 				}).to.throw(TypeError);
 				expect(function () {
-					Configuration.sort({}, {
+					Configuration.sort({}, {}, {
 						dest: 'dist'
 					}, {});
 				}).to.throw(TypeError);
