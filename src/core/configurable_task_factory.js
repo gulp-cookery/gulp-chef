@@ -65,6 +65,7 @@ ConfigurableTaskFactory.prototype.one = function (prefix, name, rawConfig, paren
 	}
 };
 
+// TODO: subTaskConfigs should be an array (to ensure order).
 ConfigurableTaskFactory.prototype.multiple = function (prefix, subTaskConfigs, parentConfig) {
 	var self, tasks = [];
 
