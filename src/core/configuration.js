@@ -378,12 +378,12 @@ function realize(original, additional, defaults) {
 }
 
 function src(values) {
-	var result = normalize(SCHEMA_COMMONS.properties.src, values);
+	var result = normalize(SCHEMA_SRC, values);
 	return result.values;
 }
 
 function dest(values) {
-	var result = normalize(SCHEMA_COMMONS.properties.dest, values);
+	var result = normalize(SCHEMA_DEST, values);
 	return result.values;
 }
 
