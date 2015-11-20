@@ -182,6 +182,32 @@ describe('Core', function () {
 					subTaskConfigs: {}
 				});
 			});
+			it('should accept all properties if schema not defined', function () {
+				var actual = Configuration.sort({}, {
+					src: 'src',
+					dest: 'dist',
+					blabla: 'blabla',
+					foo: false,
+					bar: { name: 'bar' }
+				}, {}, null);
+				expect(actual).to.deep.equal({
+					taskInfo: {},
+					taskConfig: {
+						src: {
+							globs: ['src']
+						},
+						dest: {
+							path: 'dist'
+						},
+						blabla: 'blabla',
+						foo: false,
+						bar: {
+							name: 'bar'
+						}
+					},
+					subTaskConfigs: {}
+				});
+			});
 			it('should throw if parent config not normalized', function () {
 				expect(function () {
 					Configuration.sort({}, {}, {
@@ -269,7 +295,8 @@ describe('Core', function () {
 					},
 					options: {
 						extensions: ['.js', '.ts', '.coffee']
-					}
+					},
+					unknownProperty: 'what?'
 				}, {
 					src: {
 						globs: ['src']
@@ -277,7 +304,17 @@ describe('Core', function () {
 					dest: {
 						path: 'dist'
 					}
-				}, {});
+				}, {
+					"properties": {
+						"bundles": {
+							"properties": {
+								"entries": {}
+							}
+						},
+						"options": {
+						}
+					}
+				});
 				expect(actual).to.deep.equal({
 					taskInfo: {},
 					taskConfig: {
@@ -286,15 +323,16 @@ describe('Core', function () {
 						},
 						dest: {
 							path: "dist/lib"
-						}
-					},
-					subTaskConfigs: {
+						},
 						bundles: {
 							entries: ['a', 'b', 'c']
 						},
 						options: {
 							extensions: ['.js', '.ts', '.coffee']
 						}
+					},
+					subTaskConfigs: {
+						unknownProperty: 'what?'
 					}
 				});
 			});
