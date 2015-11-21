@@ -67,12 +67,20 @@ ConfigurableTaskFactory.prototype.one = function (prefix, name, rawConfig, paren
 
 // TODO: subTaskConfigs can be an array (to ensure order) or object (order by "order" property).
 ConfigurableTaskFactory.prototype.multiple = function (prefix, subTaskConfigs, parentConfig) {
-	var self, tasks = [];
+	var self, tasks = [], nonames = 0, count = 0;
 
 	self = this;
 
 	if (Array.isArray(subTaskConfigs)) {
 		subTaskConfigs.forEach(function(taskConfig) {
+			if (typeof taskConfig.name !== 'string') {
+				++nonames;
+			}
+		});
+		subTaskConfigs.forEach(function(taskConfig) {
+			if (typeof taskConfig.name !== 'string') {
+				taskConfig.name = anonymous();
+			}
 			create(prefix, taskConfig, parentConfig);
 		});
 	} else {
@@ -82,6 +90,10 @@ ConfigurableTaskFactory.prototype.multiple = function (prefix, subTaskConfigs, p
 	}
 
 	return tasks;
+
+	function anonymous() {
+		return 'anonymous' + ((nonames > 1) ? ++count : '');
+	}
 
 	function create(prefix, taskConfig, parentConfig) {
 		var task = self.one(prefix, taskConfig.name, taskConfig, parentConfig);

@@ -118,7 +118,7 @@ describe('Core', function () {
 			});
 		});
 		describe('#multiple()', function () {
-			describe.only('when take subTaskConfigs as an array', function () {
+			describe('when take subTaskConfigs as an array', function () {
 				it('should returns an array', function () {
 					Sinon.spy(factory, 'one');
 					var actual = factory.multiple('', [{
@@ -130,6 +130,15 @@ describe('Core', function () {
 					expect(actual).to.be.an('array');
 					expect(actual.length).to.equal(2);
 					factory.one.restore();
+				});
+				it('should give tasks names if not provided', function () {
+					var actual = factory.multiple('', [{
+						name: 'task-1'
+					}, {
+						options: {}
+					}], {});
+					expect(actual[0].displayName).to.be.a('string');
+					expect(actual[1].displayName).to.be.a('string');
 				});
 			});
 			describe('when take subTaskConfigs as an object', function () {
