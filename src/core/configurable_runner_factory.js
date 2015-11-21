@@ -135,7 +135,7 @@ ConfigurableTaskRunnerFactory.prototype.flow = function (prefix, configs, create
 			throw new ConfigurationError('configure', 'a flow processor without sub-tasks is useless');
 		}
 		tasks = _createSubTasks();
-		return stuff.flows.lookup(configs.taskInfo.name);
+		return _createFlowTaskRunner(tasks);
 	}
 
 	function isFlowTask(name) {
@@ -147,6 +147,18 @@ ConfigurableTaskRunnerFactory.prototype.flow = function (prefix, configs, create
 	}
 
 	function _createSubTasks() {
+		if (shouldExpose(stuff.flows, configs.taskInfo)) {
+			prefix = prefix + configs.taskInfo.name + ':';
+		}
+		return createConfigurableTasks(prefix, configs.subTaskConfigs, configs.taskConfig);
+	}
+
+	function _createFlowTaskRunner(tasks) {
+		var runner = explicitRunner() || implicitRunner();
+		// NOTE: important! watch the difference of signature between recipe runner and stream runner.
+		return function (gulp, config, stream, done) {
+			return runner(gulp, config, stream, tasks, done);
+		};
 	}
 
 	function explicitRunner() {
@@ -187,8 +199,8 @@ ConfigurableTaskRunnerFactory.prototype.stream = function (prefix, configs, crea
 	function _createStreamTaskRunner(tasks) {
 		var runner = explicitRunner() || implicitRunner();
 		// NOTE: important! watch the difference of signature between recipe runner and stream runner.
-		return function (gulp, config, stream /*, done*/ ) {
-			return runner(gulp, config, stream, tasks);
+		return function (gulp, config, stream, done) {
+			return runner(gulp, config, stream, tasks, done);
 		};
 	}
 

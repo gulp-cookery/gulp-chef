@@ -11,8 +11,7 @@ var base = process.cwd();
 var ConfigurableTaskRunnerFactory = require(base + '/src/core/configurable_runner_factory'),
 	ConfigurationError = require(base + '/src/core/configuration_error');
 
-var FakeGulp = require(base + '/test/fake/gulp'),
-	test = require(base + '/test/testcase_runner');
+var FakeGulp = require(base + '/test/fake/gulp');
 
 function createSpyGulpTask(name, gulpTask) {
 	var task = Sinon.spy(gulpTask);
@@ -101,12 +100,28 @@ describe('Core', function () {
 		});
 		describe('#flow()', function () {
 			var prefix = '';
+			var configs = {
+				taskInfo: {
+					name: 'series'
+				},
+				taskConfig: {
+				},
+				subTaskConfigs: {
+					task1: {
+					},
+					task2: {
+					}
+				}
+			};
 
 			it('should create a flow runner', function () {
 				var actual = factory.flow(prefix, configs, createConfigurableTasks);
 				expect(actual).to.be.a('function');
 			});
 			it.skip('should be able to take sub-tasks as an array', function () {
+
+			});
+			it.skip('should be able to take sub-tasks as an object', function () {
 
 			});
 			it.skip('should be able to take sub-tasks in "task" property', function () {
