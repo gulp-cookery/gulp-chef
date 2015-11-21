@@ -121,34 +121,57 @@ describe('Core', function () {
 			describe('when take subTaskConfigs as an array', function () {
 				it('should returns an array', function () {
 					Sinon.spy(factory, 'one');
-					var actual = factory.multiple('', [{
-						name: 'task-1'
-					}, {
-						name: 'task-2'
-					}], {});
+					var configs = [
+						{ name: 'task-1' },
+						{ name: 'task-2' }
+					];
+					var actual = factory.multiple('', configs, {});
 					expect(factory.one.calledTwice).to.be.true;
 					expect(actual).to.be.an('array');
 					expect(actual.length).to.equal(2);
 					factory.one.restore();
 				});
 				it('should give tasks names if not provided', function () {
-					var actual = factory.multiple('', [{
-						name: 'task-1'
-					}, {
-						options: {}
-					}], {});
+					var configs = [
+						{ name: 'task-1' },
+						{ options: {} }
+					];
+					var actual = factory.multiple('', configs, {});
 					expect(actual[0].displayName).to.be.a('string');
 					expect(actual[1].displayName).to.be.a('string');
 				});
 			});
 			describe('when take subTaskConfigs as an object', function () {
 				it('should returns an array', function () {
+					Sinon.spy(factory, 'one');
+					var configs = {
+						'task-1': {},
+						'task-2': {}
+					};
+					var actual = factory.multiple('', configs, {});
+					expect(factory.one.calledTwice).to.be.true;
+					expect(actual).to.be.an('array');
+					expect(actual.length).to.equal(2);
+					factory.one.restore();
 				});
 				it('should sort tasks by "order" if provided', function () {
+					var configs = {
+						'task-1': { order: 2 },
+						'task-2': { order: 1 }
+					};
+					var actual = factory.multiple('', configs, {});
 					expect(actual[0].displayName).to.equal('task-2');
 					expect(actual[1].displayName).to.equal('task-1');
 				});
-				it('when sorting, throws if there is tasks without "order" property', function () {
+				it('should throw if not all tasks defined "order" property', function () {
+					var configs = {
+						'task-1': {},
+						'task-2': { order: 1 }
+					};
+					function call() {
+						factory.multiple('', configs, {})
+					}
+					expect(call).to.throw(ConfigurationError);
 				});
 			});
 			it('should process each config defined in subTaskConfigs', function () {

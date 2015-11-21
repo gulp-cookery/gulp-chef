@@ -66,34 +66,59 @@ ConfigurableTaskFactory.prototype.one = function (prefix, name, rawConfig, paren
 	}
 };
 
-// TODO: subTaskConfigs can be an array (to ensure order) or object (order by "order" property).
 ConfigurableTaskFactory.prototype.multiple = function (prefix, subTaskConfigs, parentConfig) {
-	var self, tasks = [], names;
+	var self;
 
 	self = this;
-	names = new UniqueNames();
+	return _array() || _object();
 
-	if (Array.isArray(subTaskConfigs)) {
-		subTaskConfigs.forEach(function(taskConfig) {
-			names.put(taskConfig.name);
-		});
-		subTaskConfigs.forEach(function(taskConfig) {
-			taskConfig.name = names.get(taskConfig.name);
-			create(prefix, taskConfig, parentConfig);
-		});
-	} else {
-		Object.keys(subTaskConfigs).forEach(function (name) {
-			create(prefix, subTaskConfigs[name], parentConfig);
-		});
+	function _array() {
+		var names;
+
+		if (Array.isArray(subTaskConfigs)) {
+			names = new UniqueNames();
+			subTaskConfigs.forEach(function(taskConfig) {
+				names.put(taskConfig.name);
+			});
+			return subTaskConfigs.reduce(function(tasks, taskConfig) {
+				taskConfig.name = names.get(taskConfig.name);
+				return create(tasks, prefix, taskConfig, parentConfig);
+			}, []);
+		}
 	}
 
-	return tasks;
+	function _object() {
+		var orders;
 
-	function create(prefix, taskConfig, parentConfig) {
+		if (_.isPlainObject(subTaskConfigs)) {
+			orders = 0;
+			subTaskConfigs = _.map(subTaskConfigs, function (taskConfig, name) {
+				taskConfig.name = taskConfig.name || name;
+				if ('order' in taskConfig) {
+					++orders;
+				}
+				return taskConfig;
+			});
+			if (orders !== 0) {
+				if (orders !== _.size(subTaskConfigs)) {
+					throw new ConfigurationError('ConfigurableTaskFactory', 'some sub-tasks defined "order" some don\'t, don\'t know how to sort');
+				}
+				subTaskConfigs = subTaskConfigs.sort(function (a, b) {
+					return a.order - b.order;
+				});
+			}
+			return subTaskConfigs.reduce(function (tasks, taskConfig) {
+				return create(tasks, prefix, taskConfig, parentConfig);
+			}, []);
+		}
+	}
+
+	function create(tasks, prefix, taskConfig, parentConfig) {
 		var task = self.one(prefix, taskConfig.name, taskConfig, parentConfig);
 		if (task) {
 			tasks.push(task);
 		}
+		return tasks;
 	}
 };
 
