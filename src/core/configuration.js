@@ -477,10 +477,14 @@ function sort(taskInfo, rawConfig, parentConfig, schema) {
 	}
 	value = normalize(schema, inheritedConfig, { ignoreUnknownProperties: true });
 	taskConfig = value.values;
-	if (_.isPlainObject(rawConfig) && _.isPlainObject(taskConfig)) {
-		subTaskConfigs = _.omit(rawConfig, Object.keys(taskConfig));
+	if (_.isPlainObject(taskConfig)) {
+		if (_.isPlainObject(rawConfig)) {
+			subTaskConfigs = _.omit(rawConfig, Object.keys(taskConfig));
+		} else {
+			subTaskConfigs = rawConfig;
+		}
 	} else {
-		subTaskConfigs = rawConfig;
+		subTaskConfigs = {};
 	}
 
 	return {
