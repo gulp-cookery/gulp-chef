@@ -118,6 +118,30 @@ describe('Core', function () {
 			});
 		});
 		describe('#multiple()', function () {
+			describe.only('when take subTaskConfigs as an array', function () {
+				it('should returns an array', function () {
+					Sinon.spy(factory, 'one');
+					var actual = factory.multiple('', [{
+						name: 'task-1'
+					}, {
+						name: 'task-2'
+					}], {});
+					expect(factory.one.calledTwice).to.be.true;
+					expect(actual).to.be.an('array');
+					expect(actual.length).to.equal(2);
+					factory.one.restore();
+				});
+			});
+			describe('when take subTaskConfigs as an object', function () {
+				it('should returns an array', function () {
+				});
+				it('should sort tasks by "order" if provided', function () {
+					expect(actual[0].displayName).to.equal('task-2');
+					expect(actual[1].displayName).to.equal('task-1');
+				});
+				it('when sorting, throws if there is tasks without "order" property', function () {
+				});
+			});
 			it('should process each config defined in subTaskConfigs', function () {
 				Sinon.spy(factory, 'one');
 				var actual = factory.multiple('', {
@@ -126,7 +150,7 @@ describe('Core', function () {
 				}, {});
 				expect(factory.one.calledTwice).to.be.true;
 				expect(actual).to.be.an('array');
-				expect(actual.length).to.be.equal(2);
+				expect(actual.length).to.equal(2);
 				factory.one.restore();
 			});
 		});

@@ -65,19 +65,30 @@ ConfigurableTaskFactory.prototype.one = function (prefix, name, rawConfig, paren
 	}
 };
 
-// TODO: subTaskConfigs should be an array (to ensure order).
+// TODO: subTaskConfigs can be an array (to ensure order) or object (order by "order" property).
 ConfigurableTaskFactory.prototype.multiple = function (prefix, subTaskConfigs, parentConfig) {
 	var self, tasks = [];
 
 	self = this;
 
-	Object.keys(subTaskConfigs).forEach(function (name) {
-		var task = self.one(prefix, name, subTaskConfigs[name], parentConfig);
+	if (Array.isArray(subTaskConfigs)) {
+		subTaskConfigs.forEach(function(taskConfig) {
+			create(prefix, taskConfig, parentConfig);
+		});
+	} else {
+		Object.keys(subTaskConfigs).forEach(function (name) {
+			create(prefix, subTaskConfigs[name], parentConfig);
+		});
+	}
+
+	return tasks;
+
+	function create(prefix, taskConfig, parentConfig) {
+		var task = self.one(prefix, taskConfig.name, taskConfig, parentConfig);
 		if (task) {
 			tasks.push(task);
 		}
-	});
-	return tasks;
+	}
 };
 
 ConfigurableTaskFactory.prototype.create = function (prefix, taskInfo, taskConfig, configurableRunner) {
