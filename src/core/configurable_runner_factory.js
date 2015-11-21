@@ -39,6 +39,16 @@ function hasSubTasks(subTaskConfigs) {
 	return _.size(subTaskConfigs) > 0;
 }
 
+function shouldExpose(stock, taskInfo) {
+	var options;
+
+	if (stock.lookup(taskInfo.name)) {
+		options = Configuration.getOptions();
+		return options.exposeStockStreamTasks;
+	} else {
+		return ('visibility' in taskInfo) && taskInfo.visibility === Configuration.CONSTANT.VISIBILITY.NORMAL;
+	}
+}
 
 /**
  * A ConfigurableTaskRunnerFactory creates runner function of the following signature:
@@ -168,18 +178,9 @@ ConfigurableTaskRunnerFactory.prototype.stream = function (prefix, configs, crea
 	}
 
 	function _createSubTasks() {
-		var hidden, options;
-
-		if (stuff.streams.lookup(configs.taskInfo.name)) {
-			options = Configuration.getOptions();
-			hidden = !options.exposeStockStreamTasks;
-		} else {
-			hidden = !!configs.taskInfo.visibility;
-		}
-		if (!hidden) {
+		if (shouldExpose(stuff.streams, configs.taskInfo)) {
 			prefix = prefix + configs.taskInfo.name + ':';
 		}
-
 		return createConfigurableTasks(prefix, configs.subTaskConfigs, configs.taskConfig);
 	}
 

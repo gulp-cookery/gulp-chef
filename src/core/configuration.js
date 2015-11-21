@@ -14,6 +14,10 @@ var INTERPOLATE = /{{([\s\S]+?)}}/g,
 		// runtime
 		'name', 'visibility', 'runtime'
 	],
+	TASK_SCHEMA_MAPPINGS = {
+		title: 'name',
+		description: 'description'
+	},
 	SCHEMA_SRC = {
 		"properties": {
 			"globs": {
@@ -416,17 +420,27 @@ function resolveDest(child, parent) {
 	}
 }
 
-function propertyMapper(target, source, mappings) {
+function imply(mappings, source, target, overwrite) {
 	Object.keys(mappings).forEach(function (sourceProperty) {
 		var targetProperty;
 		if (source.hasOwnProperty(sourceProperty)) {
 			targetProperty = mappings[sourceProperty];
-			if (!target.hasOwnProperty(targetProperty)) {
+			if (overwrite || !target.hasOwnProperty(targetProperty)) {
 				target[targetProperty] = source[sourceProperty];
 			}
 		}
 	});
-	return target;
+}
+
+function move(properties, source, target, overwrite) {
+	properties.forEach(function (name) {
+		if (source.hasOwnProperty(name)) {
+			if (overwrite || !target.hasOwnProperty(name)) {
+				target[name] = source[name];
+			}
+			delete source[name];
+		}
+	});
 }
 
 /**
@@ -437,11 +451,10 @@ function sort(taskInfo, rawConfig, parentConfig, schema) {
 	var inheritedConfig, taskConfig, subTaskConfigs, value;
 
 	if (_.isPlainObject(rawConfig)) {
-		taskInfo = _.defaultsDeep(taskInfo, _.pick(rawConfig, TASK_PROPERTIES));
-		rawConfig = _.omit(rawConfig, TASK_PROPERTIES);
+		move(TASK_PROPERTIES, rawConfig, taskInfo);
 	}
 	if (schema && _.size(schema)) {
-		taskInfo = propertyMapper(taskInfo, schema, {title: 'name', description: 'description'});
+		imply(TASK_SCHEMA_MAPPINGS, schema, taskInfo);
 	}
 
 	if (_.isPlainObject(rawConfig)) {
