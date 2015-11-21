@@ -4,6 +4,7 @@ var _ = require('lodash'),
 
 var Configuration = require('./configuration'),
 	ConfigurationError = require('./configuration_error'),
+	UniqueNames = require('../helpers/unique_names'),
 	metadata = require('./metadata');
 
 function ConfigurableTaskFactory(stuff, runnerFactory, registry) {
@@ -67,20 +68,17 @@ ConfigurableTaskFactory.prototype.one = function (prefix, name, rawConfig, paren
 
 // TODO: subTaskConfigs can be an array (to ensure order) or object (order by "order" property).
 ConfigurableTaskFactory.prototype.multiple = function (prefix, subTaskConfigs, parentConfig) {
-	var self, tasks = [], nonames = 0, count = 0;
+	var self, tasks = [], names;
 
 	self = this;
+	names = new UniqueNames();
 
 	if (Array.isArray(subTaskConfigs)) {
 		subTaskConfigs.forEach(function(taskConfig) {
-			if (typeof taskConfig.name !== 'string') {
-				++nonames;
-			}
+			names.put(taskConfig.name);
 		});
 		subTaskConfigs.forEach(function(taskConfig) {
-			if (typeof taskConfig.name !== 'string') {
-				taskConfig.name = anonymous();
-			}
+			taskConfig.name = names.get(taskConfig.name);
 			create(prefix, taskConfig, parentConfig);
 		});
 	} else {
@@ -90,10 +88,6 @@ ConfigurableTaskFactory.prototype.multiple = function (prefix, subTaskConfigs, p
 	}
 
 	return tasks;
-
-	function anonymous() {
-		return 'anonymous' + ((nonames > 1) ? ++count : '');
-	}
 
 	function create(prefix, taskConfig, parentConfig) {
 		var task = self.one(prefix, taskConfig.name, taskConfig, parentConfig);
