@@ -19,8 +19,8 @@ describe('Flow Processor', function () {
 		it('should run all type of tasks in sequence', function (done) {
 			var sequences = [
 				['done', 'async', 'promise', 'stream'],
-				['async', 'stream', 'promise', 'done'],
-				['promise', 'stream', 'async', 'done']
+				['async', 'stream', 'async', 'promise', 'stream', 'done'],
+				['promise', 'stream', 'async', 'done', 'stream', 'promise']
 			];
 			async.each(sequences, function(sequence, eachDone) {
 				var test = cases(sequence);
@@ -52,7 +52,7 @@ describe('Flow Processor', function () {
 				done();
 			});
 		});
-		it('should stop if any task throws', function (done) {
+		it('should stop if any task throw exception', function (done) {
 			var test = cases(['done', 'async', 'promise', 'stream', 'exception']);
 			series(gulp, null, null, test.tasks, function (err, actual) {
 				expect(err).to.be.an.instanceof(Error);

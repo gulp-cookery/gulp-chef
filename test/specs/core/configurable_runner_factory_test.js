@@ -127,14 +127,6 @@ describe('Core', function () {
 			it.skip('should be able to take sub-tasks in "task" property', function () {
 
 			});
-			it.skip('should invoke sub-tasks at runtime', function () {
-				var actual = factory.flow(prefix, configs, createConfigurableTasks);
-				actual(gulp, {}, null, done);
-				subTasks.forEach(function (task) {
-					expect(task.run.calledOn(task)).to.be.true;
-					expect(task.run.calledWith(gulp, {}, null)).to.be.true;
-				});
-			});
 		});
 		describe('#stream()', function () {
 			var prefix = '';
@@ -142,14 +134,6 @@ describe('Core', function () {
 			it('should create a stream runner', function () {
 				var actual = factory.stream(prefix, configs, createConfigurableTasks);
 				expect(actual).to.be.a('function');
-			});
-			it('should invoke sub-tasks at runtime', function () {
-				var actual = factory.stream(prefix, configs, createConfigurableTasks);
-				actual(gulp, {}, null, done);
-				subTasks.forEach(function (task) {
-					expect(task.run.calledOn(task)).to.be.true;
-					expect(task.run.calledWith(gulp, {}, null)).to.be.true;
-				});
 			});
 		});
 		describe('#reference()', function () {
