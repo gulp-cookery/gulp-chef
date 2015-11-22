@@ -7,8 +7,6 @@ var _ = require('lodash');
 
 var base = process.cwd();
 
-var test = require(base + '/test/testcase_runner');
-
 var ConfigurableTaskRunnerRegistry = require(base + '/src/core/configurable_runner_registry');
 
 describe('Core', function () {

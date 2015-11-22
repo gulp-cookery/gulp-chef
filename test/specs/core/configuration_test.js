@@ -65,7 +65,7 @@ describe('Core', function () {
 				value: '?build',
 				error: ConfigurationError
 			}];
-			test(Configuration.getTaskRuntimeInfo, testCases);
+			test(testCases, Configuration.getTaskRuntimeInfo);
 		});
 		describe('.src()', function () {
 			it('should accept path string', function () {

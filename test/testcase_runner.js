@@ -1,13 +1,12 @@
 'use strict';
 
-var Sinon = require('sinon'),
-	Chai = require('chai'),
+var Chai = require('chai'),
 	Promised = require("chai-as-promised"),
 	expect = Chai.expect;
 
 Chai.use(Promised);
 
-function test(runner, testCases) {
+function test(testCases, runner) {
     var tests = filter(only) || filter(skip) || testCases;
     tests.forEach(function (testCase) {
         it(testCase.title, function () {
