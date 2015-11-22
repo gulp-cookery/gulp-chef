@@ -17,51 +17,51 @@ describe('Core', function () {
 	describe('Configuration', function () {
 		describe('.getTaskRuntimeInfo()', function () {
 			var testCases = [{
-				title: 'should accept normal task name',
+				name: 'should accept normal task name',
 				value: 'build',
 				expected: {
 					name: 'build'
 				}
 			}, {
-				title: 'should accept task name with space, underscore, dash',
+				name: 'should accept task name with space, underscore, dash',
 				value: '_build the-project',
 				expected: {
 					name: '_build the-project'
 				}
 			}, {
-				title: 'should accept . prefix and mark task hidden',
+				name: 'should accept . prefix and mark task hidden',
 				value: '.build',
 				expected: {
 					name: 'build',
 					visibility: '.'
 				}
 			}, {
-				title: 'should accept # prefix and mark task undefined',
+				name: 'should accept # prefix and mark task undefined',
 				value: '#build',
 				expected: {
 					name: 'build',
 					visibility: '#'
 				}
 			}, {
-				title: 'should accept ! postfix and mark task available in production mode only',
+				name: 'should accept ! postfix and mark task available in production mode only',
 				value: 'build!',
 				expected: {
 					name: 'build',
 					runtime: '!'
 				}
 			}, {
-				title: 'should accept ? postfix and mark task available in development mode only',
+				name: 'should accept ? postfix and mark task available in development mode only',
 				value: 'build?',
 				expected: {
 					name: 'build',
 					runtime: '?'
 				}
 			}, {
-				title: 'should throw if invalid name',
+				name: 'should throw if invalid name',
 				value: 'build?!',
 				error: ConfigurationError
 			}, {
-				title: 'should throw if invalid name',
+				name: 'should throw if invalid name',
 				value: '?build',
 				error: ConfigurationError
 			}];

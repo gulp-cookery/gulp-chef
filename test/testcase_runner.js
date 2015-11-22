@@ -18,7 +18,6 @@ Chai.use(Promised);
  *       error: 'expected error',
  *       options: { description: 'options passed to runner for this case' },
  *       async: false,	// is this an async test? i.e. return promise?
- *       debug: true,	// pause on debugger?
  *       only: true,	// run this case only?
  *       skip: false	// skip this case?
  *   }, {
@@ -28,16 +27,23 @@ Chai.use(Promised);
  *    function runner(value, options) {
  *    	  return testTarget(value);
  *    }
+ * @param options
+ *
+ *
+ * Alternatives:
+ * run-mocha-cases
+ * https://www.npmjs.com/package/run-mocha-cases
+ *
  */
-function test(testCases, runner) {
-    var tests = filter(only) || filter(skip) || testCases;
-    tests.forEach(function (testCase) {
-        it(testCase.title, function () {
-            if (testCase.debug) {
-                debugger;
-            }
+function cases(testCases, runner, options) {
+    var prefix, tests;
 
-            var to = testCase.async ? 'eventually' : 'to';
+	tests = filter(only) || filter(skip) || testCases;
+	options = options || {};
+	prefix = options.prefix || '';
+    tests.forEach(function (testCase) {
+        it(prefix + testCase.name, function () {
+            var to = (testCase.async || options.async) ? 'eventually' : 'to';
             if (testCase.error) {
                 expect(function () { runner(testCase.value, testCase.options); })[to].throw(testCase.error);
             } else {
@@ -62,4 +68,4 @@ function test(testCases, runner) {
     }
 }
 
-module.exports = test;
+module.exports = cases;
