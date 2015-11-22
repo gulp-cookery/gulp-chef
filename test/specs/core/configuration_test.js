@@ -2,7 +2,8 @@
 
 var Sinon = require('sinon'),
 	Chai = require('chai'),
-	expect = Chai.expect;
+	expect = Chai.expect,
+	test = require('mocha-cases');
 
 var _ = require('lodash');
 
@@ -10,8 +11,6 @@ var base = process.cwd();
 
 var Configuration = require(base + '/src/core/configuration'),
 	ConfigurationError = require(base + '/src/core/configuration_error');
-
-var test = require(base + '/test/testcase_runner');
 
 describe('Core', function () {
 	describe('Configuration', function () {
