@@ -8,11 +8,11 @@ var _ = require('lodash'),
 var ConfigurationError = require('./configuration_error');
 
 var INTERPOLATE = /{{([\s\S]+?)}}/g,
-	TASK_PROPERTIES = [
+	TASK_METADATAS = [
 		// task
-		'description', 'order', 'task',
+		'name', 'description', 'order', 'task',
 		// runtime
-		'name', 'visibility', 'runtime'
+		'visibility', 'runtime'
 	],
 	TASK_SCHEMA_MAPPINGS = {
 		title: 'name',
@@ -451,7 +451,7 @@ function sort(taskInfo, rawConfig, parentConfig, schema) {
 	var inheritedConfig, taskConfig, subTaskConfigs, value;
 
 	if (_.isPlainObject(rawConfig)) {
-		move(TASK_PROPERTIES, rawConfig, taskInfo);
+		move(TASK_METADATAS, rawConfig, taskInfo);
 	}
 	if (schema && _.size(schema)) {
 		imply(TASK_SCHEMA_MAPPINGS, schema, taskInfo);
