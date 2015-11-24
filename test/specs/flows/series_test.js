@@ -23,7 +23,7 @@ describe('Flow Processor', function () {
 				['promise', 'stream', 'async', 'done', 'stream', 'promise']
 			];
 			async.each(sequences, function(sequence, eachDone) {
-				var test = cases(sequence);
+				var test = cases.prepare(sequence);
 				series(gulp, null, null, test.tasks, function (err, actual) {
 					expect(actual).to.deep.equal(test.expects);
 					expect(test.logs).to.deep.equal(sequence);
@@ -31,34 +31,8 @@ describe('Flow Processor', function () {
 				});
 			}, done);
 		});
-		it('should deal with errback', function (done) {
-			var test = cases(['errback']);
-			series(gulp, null, null, test.tasks, function (err, actual) {
-				expect(err).to.be.an.instanceof(Error);
-				done();
-			});
-		});
-		it('should deal with exception', function (done) {
-			var test = cases(['exception']);
-			series(gulp, null, null, test.tasks, function (err, actual) {
-				expect(err).to.be.an.instanceof(Error);
-				done();
-			});
-		});
-		it('should stop if any task errback', function (done) {
-			var test = cases(['done', 'async', 'promise', 'stream', 'errback']);
-			series(gulp, null, null, test.tasks, function (err, actual) {
-				expect(err).to.be.an.instanceof(Error);
-				done();
-			});
-		});
-		it('should stop if any task throw exception', function (done) {
-			var test = cases(['done', 'async', 'promise', 'stream', 'exception']);
-			series(gulp, null, null, test.tasks, function (err, actual) {
-				expect(err).to.be.an.instanceof(Error);
-				done();
-			});
-		});
+
+		cases.commons(gulp, series);
 	});
 });
 

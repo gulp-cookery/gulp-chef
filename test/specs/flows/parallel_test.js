@@ -15,40 +15,14 @@ var gulp = new FakeGulp();
 describe('Flow Processor', function () {
 	describe('parallel()', function () {
 		it('should run all type of tasks', function (done) {
-			var test = cases(['done', 'async', 'promise', 'stream']);
+			var test = cases.prepare(['done', 'async', 'promise', 'stream']);
 			parallel(gulp, null, null, test.tasks, function (err, actual) {
 				expect(actual).to.deep.equal(test.expects);
 				done();
 			});
 		});
-		it('should deal with errback', function (done) {
-			var test = cases(['errback']);
-			parallel(gulp, null, null, test.tasks, function (err, actual) {
-				expect(err).to.be.an.instanceof(Error);
-				done();
-			});
-		});
-		it('should deal with exception', function (done) {
-			var test = cases(['exception']);
-			parallel(gulp, null, null, test.tasks, function (err, actual) {
-				expect(err).to.be.an.instanceof(Error);
-				done();
-			});
-		});
-		it('should stop if any task errback', function (done) {
-			var test = cases(['done', 'async', 'promise', 'stream', 'errback']);
-			parallel(gulp, null, null, test.tasks, function (err, actual) {
-				expect(err).to.be.an.instanceof(Error);
-				done();
-			});
-		});
-		it('should stop if any task throws', function (done) {
-			var test = cases(['done', 'async', 'promise', 'stream', 'exception']);
-			parallel(gulp, null, null, test.tasks, function (err, actual) {
-				expect(err).to.be.an.instanceof(Error);
-				done();
-			});
-		});
+
+		cases.commons(gulp, parallel);
 	});
 });
 

@@ -1,8 +1,11 @@
 'use strict';
 
+var Chai = require('chai'),
+	expect = Chai.expect;
+
 var streamifier = require('streamifier');
 
-var cases = {
+var recipes = {
 	done: {
 		fn: function (gulp, config, stream, done) {
 			done(null, 1);
@@ -51,9 +54,9 @@ function prepare(keys) {
 	expects = [];
 	errors = [];
 	keys.forEach(function (key) {
-		tasks.push(createFakeTask(key, cases[key].fn));
-		expects.push(cases[key].expected);
-		errors.push(cases[key].error);
+		tasks.push(createFakeTask(key, recipes[key].fn));
+		expects.push(recipes[key].expected);
+		errors.push(recipes[key].error);
 	});
 	bundle = {
 		tasks: tasks,
@@ -76,4 +79,38 @@ function prepare(keys) {
 	}
 }
 
-module.exports = prepare;
+function commons(gulp, flow) {
+	describe('common flow error handling', function () {
+		it('should deal with errback', function (done) {
+			var test = prepare(['errback']);
+			flow(gulp, null, null, test.tasks, function (err) {
+				expect(err).to.be.an.instanceof(Error);
+				done();
+			});
+		});
+		it('should deal with exception', function (done) {
+			var test = prepare(['exception']);
+			flow(gulp, null, null, test.tasks, function (err) {
+				expect(err).to.be.an.instanceof(Error);
+				done();
+			});
+		});
+		it('should stop if any task errback', function (done) {
+			var test = prepare(['done', 'async', 'promise', 'stream', 'errback']);
+			flow(gulp, null, null, test.tasks, function (err) {
+				expect(err).to.be.an.instanceof(Error);
+				done();
+			});
+		});
+		it('should stop if any task throw exception', function (done) {
+			var test = prepare(['done', 'async', 'promise', 'stream', 'exception']);
+			flow(gulp, null, null, test.tasks, function (err) {
+				expect(err).to.be.an.instanceof(Error);
+				done();
+			});
+		});
+	});
+}
+
+exports.prepare = prepare;
+exports.commons = commons;
