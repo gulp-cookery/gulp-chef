@@ -36,6 +36,7 @@ function createSpyConfigurableTask(name, configurableRunner, taskConfig) {
 
 var createFakeStuff = require(base + '/test/fake/stuff');
 
+
 describe('Core', function () {
 	describe('ConfigurableTaskRunnerFactory', function () {
 		var gulp, factory, stuff, gulpTask, subTasks,
@@ -64,28 +65,7 @@ describe('Core', function () {
 			gulp.task(createSpyConfigurableTask('configurable-task-by-ref', Sinon.spy(), configurableTaskRefConfig));
 		});
 
-		describe('#recipe()', function () {
-			var name = 'recipe-task',
-				configs = {
-					taskInfo: {
-						name: name
-					},
-					taskConfig: {
-						id: 'recipe-config'
-					}
-				};
-			it('should create a recipe runner', function () {
-				var actual = factory.recipe(name, configs);
-				expect(actual).to.be.a('function');
-			});
-			it('should refer to correct recipe', function () {
-				var actual = factory.recipe(name, configs);
-				actual(gulp, configs.taskConfig, null, done);
-				expect(stuff.recipes.lookup(name).called).to.be.true;
-				expect(stuff.recipes.lookup(name).calledWithExactly(gulp, configs.taskConfig, null, done)).to.be.true;
-			});
-		});
-		describe('#flow()', function () {
+		function flexibleSubTaskTypes(method, recipes) {
 			describe('flexible sub-task types', function () {
 				var prefix = '';
 
@@ -107,8 +87,8 @@ describe('Core', function () {
 
 				function test(testCase) {
 					it(testCase.name, function () {
-						['series', 'parallel'].forEach(function (name) {
-							var actual = factory.flow(prefix, configs(name, testCase.subTaskConfigs, testCase.task), createConfigurableTasks);
+						recipes.forEach(function (name) {
+							var actual = factory[method](prefix, configs(name, testCase.subTaskConfigs, testCase.task), createConfigurableTasks);
 							expect(actual).to.be.a('function');
 						});
 					});
@@ -131,6 +111,31 @@ describe('Core', function () {
 					task: arrays
 				}].forEach(test);
 			});
+		}
+
+		describe('#recipe()', function () {
+			var name = 'recipe-task',
+				configs = {
+					taskInfo: {
+						name: name
+					},
+					taskConfig: {
+						id: 'recipe-config'
+					}
+				};
+			it('should create a recipe runner', function () {
+				var actual = factory.recipe(name, configs);
+				expect(actual).to.be.a('function');
+			});
+			it('should refer to correct recipe', function () {
+				var actual = factory.recipe(name, configs);
+				actual(gulp, configs.taskConfig, null, done);
+				expect(stuff.recipes.lookup(name).called).to.be.true;
+				expect(stuff.recipes.lookup(name).calledWithExactly(gulp, configs.taskConfig, null, done)).to.be.true;
+			});
+		});
+		describe('#flow()', function () {
+			flexibleSubTaskTypes('flow', ['series', 'parallel']);
 		});
 		describe('#stream()', function () {
 			var prefix = '',
@@ -150,6 +155,8 @@ describe('Core', function () {
 				var actual = factory.stream(prefix, configs, createConfigurableTasks);
 				expect(actual).to.be.a('function');
 			});
+
+			flexibleSubTaskTypes('stream', ['queue', 'merge']);
 		});
 		describe('#reference()', function () {
 			it('should throw at runtime if the referring task not found', function () {
