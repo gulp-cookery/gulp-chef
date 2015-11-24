@@ -86,7 +86,7 @@ describe('Core', function () {
 			});
 		});
 		describe('#flow()', function () {
-			describe('flexible sub-tasks type', function () {
+			describe('flexible sub-task types', function () {
 				var prefix = '';
 
 				function configs(name, subTaskConfigs, task) {
