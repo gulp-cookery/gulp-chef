@@ -53,7 +53,7 @@ describe('Core', function () {
 				configurableRunner = Sinon.spy();
 			});
 
-			it('should return a ConfigurableTask (a function with run() method)', function () {
+			it('should return a ConfigurableTask (i.e. a function with run() method)', function () {
 				var actual = factory.create('', taskInfo, taskConfig, configurableRunner);
 				expect(actual).to.be.a('function');
 				expect(actual.run).to.be.a('function');
@@ -93,15 +93,15 @@ describe('Core', function () {
 			});
 		});
 		describe('#one()', function () {
-			it('should resolve a recipe task', function () {
+			it('should resolve to a recipe task', function () {
 				var actual = factory.one('', 'recipe-task', {}, {});
 				expect(actual).to.be.a('function');
 			});
-			it('should resolve a stream task', function () {
+			it('should resolve to a stream task', function () {
 				var actual = factory.one('', 'stream-task', {}, {});
 				expect(actual).to.be.a('function');
 			});
-			it('should resolve a non-existent task with sub-task configs to a merge stream task', function () {
+			it('should resolve to a non-existent task with sub-task configs to a merge stream task', function () {
 				var actual = factory.one('', 'non-existent-stream-task-with-sub-task-configs', {
 					'recipe-task': {},
 					'stream-task': {},
@@ -120,70 +120,73 @@ describe('Core', function () {
 		describe('#multiple()', function () {
 			describe('when take subTaskConfigs as an array', function () {
 				it('should returns an array', function () {
-					Sinon.spy(factory, 'one');
-					var configs = [
+					var subTaskConfigs = [
 						{ name: 'task-1' },
 						{ name: 'task-2' }
 					];
-					var actual = factory.multiple('', configs, {});
-					expect(factory.one.calledTwice).to.be.true;
+					var actual = factory.multiple('', subTaskConfigs, {});
 					expect(actual).to.be.an('array');
 					expect(actual.length).to.equal(2);
+				});
+				it('should process each config defined in subTaskConfigs', function () {
+					Sinon.spy(factory, 'one');
+					var subTaskConfigs = [
+						{ name: 'task-1' },
+						{ name: 'task-2' }
+					];
+					factory.multiple('', subTaskConfigs, {});
+					expect(factory.one.calledTwice).to.be.true;
 					factory.one.restore();
 				});
 				it('should give tasks names if not provided', function () {
-					var configs = [
+					var subTaskConfigs = [
 						{ name: 'task-1' },
 						{ options: {} }
 					];
-					var actual = factory.multiple('', configs, {});
+					var actual = factory.multiple('', subTaskConfigs, {});
 					expect(actual[0].displayName).to.be.a('string');
 					expect(actual[1].displayName).to.be.a('string');
 				});
 			});
 			describe('when take subTaskConfigs as an object', function () {
 				it('should returns an array', function () {
-					Sinon.spy(factory, 'one');
-					var configs = {
+					var subTaskConfigs = {
 						'task-1': {},
 						'task-2': {}
 					};
-					var actual = factory.multiple('', configs, {});
-					expect(factory.one.calledTwice).to.be.true;
+					var actual = factory.multiple('', subTaskConfigs, {});
 					expect(actual).to.be.an('array');
 					expect(actual.length).to.equal(2);
+				});
+				it('should process each config defined in subTaskConfigs', function () {
+					Sinon.spy(factory, 'one');
+					var subTaskConfigs = {
+						'task-1': {},
+						'task-2': {}
+					};
+					factory.multiple('', subTaskConfigs, {});
+					expect(factory.one.calledTwice).to.be.true;
 					factory.one.restore();
 				});
 				it('should sort tasks by "order" if provided', function () {
-					var configs = {
+					var subTaskConfigs = {
 						'task-1': { order: 2 },
 						'task-2': { order: 1 }
 					};
-					var actual = factory.multiple('', configs, {});
+					var actual = factory.multiple('', subTaskConfigs, {});
 					expect(actual[0].displayName).to.equal('task-2');
 					expect(actual[1].displayName).to.equal('task-1');
 				});
 				it('should throw if not all tasks defined "order" property', function () {
-					var configs = {
+					var subTaskConfigs = {
 						'task-1': {},
 						'task-2': { order: 1 }
 					};
 					function call() {
-						factory.multiple('', configs, {})
+						factory.multiple('', subTaskConfigs, {})
 					}
 					expect(call).to.throw(ConfigurationError);
 				});
-			});
-			it('should process each config defined in subTaskConfigs', function () {
-				Sinon.spy(factory, 'one');
-				var actual = factory.multiple('', {
-					'recipe-task': {},
-					'stream-task': {}
-				}, {});
-				expect(factory.one.calledTwice).to.be.true;
-				expect(actual).to.be.an('array');
-				expect(actual.length).to.equal(2);
-				factory.one.restore();
 			});
 		});
 	});
