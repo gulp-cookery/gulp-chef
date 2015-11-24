@@ -38,33 +38,20 @@ var createFakeStuff = require(base + '/test/fake/stuff');
 
 describe('Core', function () {
 	describe('ConfigurableTaskRunnerFactory', function () {
-		var gulpTask, configurableTask, configurableTaskConfig, configurableTaskRefConfig, gulp, factory;
-
-		var stuff = createFakeStuff(),
-			configs = {
-				taskInfo: {
-					name: 'stream-task'
-				},
-				taskConfig: {
-				},
-				subTaskConfigs: {
-					task1: {
-					},
-					task2: {
-					}
-				}
-			},
-			subTasks,
-			createConfigurableTasks = Sinon.spy(function (prefix, subTaskConfigs) {
-				return subTasks = _.map(subTaskConfigs, function (config, name) {
-					return createSpyConfigurableTask(name);
-				});
-			});
+		var gulp, factory, stuff, gulpTask, subTasks,
+			configurableTask, configurableTaskConfig, configurableTaskRefConfig,
+			createConfigurableTasks;
 
 		function done(err) {
 		}
 
 		beforeEach(function () {
+			stuff = createFakeStuff();
+			createConfigurableTasks = Sinon.spy(function (prefix, subTaskConfigs) {
+				return subTasks = _.map(subTaskConfigs, function (config, name) {
+					return createSpyConfigurableTask(name);
+				});
+			});
 			factory = new ConfigurableTaskRunnerFactory(stuff);
 			gulp = new FakeGulp();
 			gulpTask = createSpyGulpTask('gulp-task');
@@ -99,37 +86,65 @@ describe('Core', function () {
 			});
 		});
 		describe('#flow()', function () {
-			var prefix = '';
-			var configs = {
-				taskInfo: {
-					name: 'series'
-				},
-				taskConfig: {
-				},
-				subTaskConfigs: {
-					task1: {
-					},
-					task2: {
+			describe('flexible sub-tasks type', function () {
+				var prefix = '';
+
+				function configs(name, subTaskConfigs, task) {
+					var result = {
+						taskInfo: {
+							name: name
+						},
+						taskConfig: {
+						}
+					};
+					if (subTaskConfigs) {
+						result.subTaskConfigs = subTaskConfigs;
+					} else {
+						result.taskInfo.task = task;
 					}
+					return result;
 				}
-			};
 
-			it('should create a flow runner', function () {
-				var actual = factory.flow(prefix, configs, createConfigurableTasks);
-				expect(actual).to.be.a('function');
-			});
-			it.skip('should be able to take sub-tasks as an array', function () {
+				function test(testCase) {
+					it(testCase.name, function () {
+						['series', 'parallel'].forEach(function (name) {
+							var actual = factory.flow(prefix, configs(name, testCase.subTaskConfigs, testCase.task), createConfigurableTasks);
+							expect(actual).to.be.a('function');
+						});
+					});
+				}
 
-			});
-			it.skip('should be able to take sub-tasks as an object', function () {
+				var objects = { task1: {}, task2: {} };
+				var arrays = [{ name: 'task1' }, { name: 'task2' }];
 
-			});
-			it.skip('should be able to take sub-tasks in "task" property', function () {
-
+				[{
+					name: 'should be able to take sub-tasks as an object',
+					subTaskConfigs: objects
+				}, {
+					name: 'should be able to take sub-tasks as an array',
+					subTaskConfigs: arrays
+				}, {
+					name: 'should be able to take sub-tasks as an object in "task" property',
+					task: objects
+				}, {
+					name: 'should be able to take sub-tasks as an array in "task" property',
+					task: arrays
+				}].forEach(test);
 			});
 		});
 		describe('#stream()', function () {
-			var prefix = '';
+			var prefix = '',
+				configs = {
+					taskInfo: {
+						name: 'stream-task'
+					},
+					taskConfig: {
+					},
+					subTaskConfigs: {
+						task1: {},
+						task2: {}
+					}
+				};
 
 			it('should create a stream runner', function () {
 				var actual = factory.stream(prefix, configs, createConfigurableTasks);

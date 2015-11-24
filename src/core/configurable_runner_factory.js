@@ -35,8 +35,8 @@ var Configuration = require('./configuration'),
 
 var parallel = require('../flows/parallel');
 
-function hasSubTasks(subTaskConfigs) {
-	return _.size(subTaskConfigs) > 0;
+function hasSubTasks(config) {
+	return config.taskInfo.task || _.size(config.subTaskConfigs) > 0;
 }
 
 function shouldExpose(stock, taskInfo) {
@@ -115,7 +115,7 @@ ConfigurableTaskRunnerFactory.prototype.recipe = function (name, configs) {
 	var self = this;
 
 	if (isRecipeTask(name)) {
-		if (hasSubTasks(configs.subTaskConfigs)) {
+		if (hasSubTasks(configs)) {
 			// warn about ignoring sub-configs.
 			log('Warning: sub-configs ignored for recipe task: ' + name + ', sub-configs: ' + Object.keys(configs.subTaskConfigs));
 		}
@@ -131,7 +131,7 @@ ConfigurableTaskRunnerFactory.prototype.flow = function (prefix, configs, create
 	var tasks, self = this, stuff = this.stuff;
 
 	if (isFlowTask(configs.taskInfo.name)) {
-		if (!hasTaskRefs() && ! hasSubTasks(configs.subTaskConfigs)) {
+		if (!hasSubTasks(configs)) {
 			throw new ConfigurationError('configure', 'a flow processor without sub-tasks is useless');
 		}
 		tasks = _createSubTasks();
@@ -140,10 +140,6 @@ ConfigurableTaskRunnerFactory.prototype.flow = function (prefix, configs, create
 
 	function isFlowTask(name) {
 		return !!stuff.flows.lookup(name);
-	}
-
-	function hasTaskRefs() {
-		return configs.taskInfo.task && configs.taskInfo.task.length;
 	}
 
 	function _createSubTasks() {
@@ -180,13 +176,13 @@ ConfigurableTaskRunnerFactory.prototype.flow = function (prefix, configs, create
 ConfigurableTaskRunnerFactory.prototype.stream = function (prefix, configs, createConfigurableTasks) {
 	var tasks, stuff = this.stuff;
 
-	if (isStreamTask(configs.taskInfo.name, configs.subTaskConfigs)) {
+	if (isStreamTask(configs.taskInfo.name) || hasSubTasks(configs)) {
 		tasks = _createSubTasks();
 		return _createStreamTaskRunner(tasks);
 	}
 
-	function isStreamTask(name, subTaskConfigs) {
-		return !!stuff.streams.lookup(name) || hasSubTasks(subTaskConfigs);
+	function isStreamTask(name) {
+		return !!stuff.streams.lookup(name);
 	}
 
 	function _createSubTasks() {
