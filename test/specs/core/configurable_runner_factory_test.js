@@ -39,7 +39,7 @@ var createFakeStuff = require(base + '/test/fake/stuff');
 
 describe('Core', function () {
 	describe('ConfigurableTaskRunnerFactory', function () {
-		var gulp, factory, stuff, gulpTask, subTasks,
+		var gulp, factory, stuff, gulpTask, subTasks, asObject, asArray,
 			configurableTask, configurableTaskConfig, configurableTaskRefConfig,
 			createConfigurableTasks;
 
@@ -63,13 +63,56 @@ describe('Core', function () {
 			gulp.task(createSpyGulpTask('gulp-task-by-ref'));
 			configurableTaskRefConfig = { keyword: 'configurable-task-by-ref' };
 			gulp.task(createSpyConfigurableTask('configurable-task-by-ref', Sinon.spy(), configurableTaskRefConfig));
+
+			asObject = {
+				task1: {},							// sub-config task
+				task2: 'gulp-task-by-ref',			// reference to registered gulp task
+				task3: 'configurable-task-by-ref',	// reference to registered configurable task runner
+				task4: gulpTask,					// registered gulp task
+				task5: configurableTask,			// registered configurable task runner
+				task6: Sinon.spy()					// stand-alone gulp task (not registered to gulp)
+			};
+			asArray = [
+				{ name: 'task1' },					// sub-config task
+				'gulp-task-by-ref',					// reference to registered gulp task
+				'configurable-task-by-ref',			// reference to registered configurable task runner
+				gulpTask,							// registered gulp task
+				configurableTask,					// registered configurable task runner
+				Sinon.spy()							// stand-alone gulp task (not registered to gulp)
+			];
 		});
 
 		function flexibleSubTaskTypes(method, recipes) {
 			describe('flexible sub-task types', function () {
-				var prefix = '';
+				var prefix;
 
-				function configs(name, subTaskConfigs, task) {
+				prefix = '';
+
+				[{
+					name: 'should be able to take sub-tasks as an object',
+					subTaskConfigs: 'object'
+				}, {
+					name: 'should be able to take sub-tasks as an array',
+					subTaskConfigs: 'array'
+				}, {
+					name: 'should be able to take sub-tasks as an object in "task" property',
+					task: 'object'
+				}, {
+					name: 'should be able to take sub-tasks as an array in "task" property',
+					task: 'array'
+				}].forEach(test);
+
+				function test(testCase) {
+					it(testCase.name, function () {
+						recipes.forEach(function (name) {
+							var configs = _configs(name, testCase.subTaskConfigs, testCase.task);
+							var actual = factory[method](prefix, configs, createConfigurableTasks);
+							expect(actual).to.be.a('function');
+						});
+					});
+				}
+
+				function _configs(name, subTaskConfigs, task) {
 					var result = {
 						taskInfo: {
 							name: name
@@ -78,38 +121,16 @@ describe('Core', function () {
 						}
 					};
 					if (subTaskConfigs) {
-						result.subTaskConfigs = subTaskConfigs;
+						result.subTaskConfigs = get(subTaskConfigs);
 					} else {
-						result.taskInfo.task = task;
+						result.taskInfo.task = get(task);
 					}
 					return result;
+
+					function get(type) {
+						return type === 'object' ? asObject : asArray;
+					}
 				}
-
-				function test(testCase) {
-					it(testCase.name, function () {
-						recipes.forEach(function (name) {
-							var actual = factory[method](prefix, configs(name, testCase.subTaskConfigs, testCase.task), createConfigurableTasks);
-							expect(actual).to.be.a('function');
-						});
-					});
-				}
-
-				var objects = { task1: {}, task2: {} };
-				var arrays = [{ name: 'task1' }, { name: 'task2' }];
-
-				[{
-					name: 'should be able to take sub-tasks as an object',
-					subTaskConfigs: objects
-				}, {
-					name: 'should be able to take sub-tasks as an array',
-					subTaskConfigs: arrays
-				}, {
-					name: 'should be able to take sub-tasks as an object in "task" property',
-					task: objects
-				}, {
-					name: 'should be able to take sub-tasks as an array in "task" property',
-					task: arrays
-				}].forEach(test);
 			});
 		}
 
