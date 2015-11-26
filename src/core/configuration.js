@@ -339,7 +339,7 @@ function getTaskRuntimeInfo(name) {
 }
 
 function isVisible(task) {
-	return task.visibility === CONSTANT.VISIBILITY.NORMAL || (!task.visibility);
+	return task.visibility === CONSTANT.VISIBILITY.NORMAL || (! ('visibility' in task));
 }
 
 function isDisabled(task) {
@@ -349,13 +349,20 @@ function isDisabled(task) {
 function shouldExpose(stock, taskInfo) {
 	var options;
 
+	// for stock  compose tasks (i.e. stream, flow), default is HIDDEN.
 	if ('visibility' in taskInfo) {
 		return taskInfo.visibility === CONSTANT.VISIBILITY.NORMAL;
 	}
 
 	if (stock.lookup(taskInfo.name)) {
 		options = getOptions();
-		return options.exposeStockComposeTasks;
+		if (options.exposeStockComposeTasks) {
+			// side-effect: update visibility here, need not check again.
+			taskInfo.visibility = CONSTANT.VISIBILITY.NORMAL;
+			return true;
+		}
+		// side-effect here too.
+		taskInfo.visibility = CONSTANT.VISIBILITY.HIDDEN;
 	}
 
 	return false;

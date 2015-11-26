@@ -117,94 +117,61 @@ ConfigurableTaskRunnerFactory.prototype.recipe = function (name, configs) {
 	}
 };
 
-ConfigurableTaskRunnerFactory.prototype.flow = function (prefix, configs, createConfigurableTasks) {
-	var tasks, self = this, stuff = this.stuff;
+function compositeCreator(stockName, implicitName, validate) {
+	return function (prefix, configs, createConfigurableTasks) {
+		var stock, runner, tasks;
 
-	if (isFlowTask(configs.taskInfo.name)) {
-		if (!hasSubTasks(configs)) {
-			throw new ConfigurationError('configure', 'a flow processor without sub-tasks is useless');
+		stock = this.stuff[stockName];
+
+		if (validate(isCompositeTask(configs.taskInfo.name), hasSubTasks(configs))) {
+			tasks = createSubTasks();
+			runner = explicitRunner(configs.taskInfo.name) || implicitRunner();
+			return this.composite(runner, tasks);
 		}
-		tasks = _createSubTasks();
-		return _createFlowTaskRunner(tasks);
-	}
 
-	function isFlowTask(name) {
-		return !!stuff.flows.lookup(name);
-	}
-
-	function _createSubTasks() {
-		if (Configuration.shouldExpose(stuff.flows, configs.taskInfo)) {
-			prefix = prefix + configs.taskInfo.name + ':';
+		function isCompositeTask(name) {
+			return !!stock.lookup(name);
 		}
-		return createConfigurableTasks(prefix, configs.subTaskConfigs, configs.taskConfig);
-	}
 
-	function _createFlowTaskRunner(tasks) {
-		var runner = explicitRunner() || implicitRunner();
-		// NOTE: important! watch the difference of signature between recipe runner and stream runner.
-		return function (gulp, config, stream, done) {
-			return runner(gulp, config, stream, tasks, done);
-		};
-	}
+		function explicitRunner(name) {
+			return stock.lookup(name);
+		}
 
-	function explicitRunner() {
-		var runner = stuff.flows.lookup(configs.taskInfo.name);
-		if (runner) {
-			if (! 'visibility' in configs.taskInfo) {
-				configs.taskInfo.visibility = Configuration.CONSTANT.VISIBILITY.HIDDEN;
+		function implicitRunner() {
+			return stock.lookup(implicitName);
+		}
+
+		function createSubTasks() {
+			if (Configuration.shouldExpose(stock, configs.taskInfo)) {
+				prefix = prefix + configs.taskInfo.name + ':';
 			}
-			return runner;
+			return createConfigurableTasks(prefix, configs.subTaskConfigs, configs.taskConfig);
 		}
 	}
+}
 
-	function implicitRunner() {
-		return stuff.flows.lookup('parallel');
+ConfigurableTaskRunnerFactory.prototype.flow = compositeCreator('flows', 'parallel', function (isStock, hasSubTasks) {
+	if (!isStock) {
+		return false;
 	}
-};
+	if (!hasSubTasks) {
+		throw new ConfigurationError('ConfigurableRunnerFactory', 'a flow processor without sub-tasks is useless');
+	}
+	return true;
+});
 
 /**
  * if there is configurations not being consumed, then treat them as sub-tasks.
  */
-ConfigurableTaskRunnerFactory.prototype.stream = function (prefix, configs, createConfigurableTasks) {
-	var tasks, stuff = this.stuff;
+ConfigurableTaskRunnerFactory.prototype.stream = compositeCreator('streams', 'merge', function (isStock, hasSubTasks) {
+	return (isStock || hasSubTasks);
+});
 
-	if (isStreamTask(configs.taskInfo.name) || hasSubTasks(configs)) {
-		tasks = _createSubTasks();
-		return _createStreamTaskRunner(tasks);
-	}
-
-	function isStreamTask(name) {
-		return !!stuff.streams.lookup(name);
-	}
-
-	function _createSubTasks() {
-		if (Configuration.shouldExpose(stuff.streams, configs.taskInfo)) {
-			prefix = prefix + configs.taskInfo.name + ':';
-		}
-		return createConfigurableTasks(prefix, configs.subTaskConfigs, configs.taskConfig);
-	}
-
-	function _createStreamTaskRunner(tasks) {
-		var runner = explicitRunner() || implicitRunner();
-		// NOTE: important! watch the difference of signature between recipe runner and stream runner.
-		return function (gulp, config, stream, done) {
-			return runner(gulp, config, stream, tasks, done);
-		};
-	}
-
-	function explicitRunner() {
-		var runner = stuff.streams.lookup(configs.taskInfo.name);
-		if (runner) {
-			if (! 'visibility' in configs.taskInfo) {
-				configs.taskInfo.visibility = Configuration.CONSTANT.VISIBILITY.HIDDEN;
-			}
-			return runner;
-		}
-	}
-
-	function implicitRunner() {
-		return stuff.streams.lookup('merge');
-	}
+ConfigurableTaskRunnerFactory.prototype.composite = function (runner, tasks) {
+	// NOTE: important! watch the difference of signature between recipe runner and stream runner.
+	return function (gulp, config, stream, done) {
+		return runner(gulp, config, stream, tasks, done);
+	};
 };
 
 ConfigurableTaskRunnerFactory.prototype.reference = function (taskName) {
