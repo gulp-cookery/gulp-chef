@@ -55,12 +55,20 @@ describe('Core', function () {
 			});
 			factory = new ConfigurableTaskRunnerFactory(stuff);
 			gulp = new FakeGulp();
+
+			// task: gulp-task
 			gulpTask = createSpyGulpTask('gulp-task');
+			gulp.task(gulpTask);
+
+			// task: configurable-task
 			configurableTaskConfig = { keyword: 'configurable-task' };
 			configurableTask = createSpyConfigurableTask('configurable-task', Sinon.spy(), configurableTaskConfig);
-			gulp.task(gulpTask);
 			gulp.task(configurableTask);
+
+			// task: gulp-task-by-ref
 			gulp.task(createSpyGulpTask('gulp-task-by-ref'));
+
+			// task: configurable-task-by-ref
 			configurableTaskRefConfig = { keyword: 'configurable-task-by-ref' };
 			gulp.task(createSpyConfigurableTask('configurable-task-by-ref', Sinon.spy(), configurableTaskRefConfig));
 
