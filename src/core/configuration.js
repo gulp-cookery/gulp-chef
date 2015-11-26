@@ -497,6 +497,10 @@ function sort(taskInfo, rawConfig, parentConfig, schema) {
 			subTaskConfigs = rawConfig;
 		}
 	} else {
+		// if taskConfig is not a plain object,
+		// then it's primitive or array,
+		// and it's no way there is other properties
+		// left for subTaskConfigs.
 		subTaskConfigs = {};
 	}
 
