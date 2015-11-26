@@ -45,7 +45,7 @@ function shouldExpose(stock, taskInfo) {
 
 	if (stock.lookup(taskInfo.name)) {
 		options = Configuration.getOptions();
-		return options.exposeStockStreamTasks;
+		return options.exposeStockComposeTasks;
 	} else {
 		return ('visibility' in taskInfo) && taskInfo.visibility === Configuration.CONSTANT.VISIBILITY.NORMAL;
 	}

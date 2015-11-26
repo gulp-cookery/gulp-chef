@@ -303,7 +303,7 @@ function defaultsDeep(object) {
 }
 
 var _defaultOptions = {
-	exposeStockStreamTasks: false
+	exposeStockComposeTasks: false
 };
 
 var _options = _defaultOptions;
