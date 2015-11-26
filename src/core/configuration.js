@@ -346,6 +346,20 @@ function isDisabled(task) {
 	return task.visibility === CONSTANT.VISIBILITY.DISABLED;
 }
 
+function shouldExpose(stock, taskInfo) {
+	var options;
+
+	if ('visibility' in taskInfo) {
+		return taskInfo.visibility === CONSTANT.VISIBILITY.NORMAL;
+	}
+
+	if (stock.lookup(taskInfo.name)) {
+		options = getOptions();
+		return options.exposeStockComposeTasks;
+	}
+
+	return false;
+}
 
 function realize(original, additional, defaults) {
 	var values = _.defaultsDeep({}, original, additional, defaults);
@@ -518,6 +532,7 @@ module.exports = {
 	getTaskRuntimeInfo: getTaskRuntimeInfo,
 	isVisible: isVisible,
 	isDisabled: isDisabled,
+	shouldExpose: shouldExpose,
 	dest: dest,
 	normalize: normalize,
 	realize: realize,

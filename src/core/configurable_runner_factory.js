@@ -40,17 +40,6 @@ function hasSubTasks(config) {
 	return config.taskInfo.task || _.size(config.subTaskConfigs) > 0;
 }
 
-function shouldExpose(stock, taskInfo) {
-	var options;
-
-	if (stock.lookup(taskInfo.name)) {
-		options = Configuration.getOptions();
-		return options.exposeStockComposeTasks;
-	} else {
-		return ('visibility' in taskInfo) && taskInfo.visibility === Configuration.CONSTANT.VISIBILITY.NORMAL;
-	}
-}
-
 /**
  * A ConfigurableTaskRunnerFactory creates runner function of the following signature:
  * ```
@@ -144,7 +133,7 @@ ConfigurableTaskRunnerFactory.prototype.flow = function (prefix, configs, create
 	}
 
 	function _createSubTasks() {
-		if (shouldExpose(stuff.flows, configs.taskInfo)) {
+		if (Configuration.shouldExpose(stuff.flows, configs.taskInfo)) {
 			prefix = prefix + configs.taskInfo.name + ':';
 		}
 		return createConfigurableTasks(prefix, configs.subTaskConfigs, configs.taskConfig);
@@ -161,7 +150,9 @@ ConfigurableTaskRunnerFactory.prototype.flow = function (prefix, configs, create
 	function explicitRunner() {
 		var runner = stuff.flows.lookup(configs.taskInfo.name);
 		if (runner) {
-			configs.taskInfo.visibility = Configuration.CONSTANT.VISIBILITY.HIDDEN;
+			if (! 'visibility' in configs.taskInfo) {
+				configs.taskInfo.visibility = Configuration.CONSTANT.VISIBILITY.HIDDEN;
+			}
 			return runner;
 		}
 	}
@@ -187,7 +178,7 @@ ConfigurableTaskRunnerFactory.prototype.stream = function (prefix, configs, crea
 	}
 
 	function _createSubTasks() {
-		if (shouldExpose(stuff.streams, configs.taskInfo)) {
+		if (Configuration.shouldExpose(stuff.streams, configs.taskInfo)) {
 			prefix = prefix + configs.taskInfo.name + ':';
 		}
 		return createConfigurableTasks(prefix, configs.subTaskConfigs, configs.taskConfig);
@@ -204,7 +195,9 @@ ConfigurableTaskRunnerFactory.prototype.stream = function (prefix, configs, crea
 	function explicitRunner() {
 		var runner = stuff.streams.lookup(configs.taskInfo.name);
 		if (runner) {
-			configs.taskInfo.visibility = Configuration.CONSTANT.VISIBILITY.HIDDEN;
+			if (! 'visibility' in configs.taskInfo) {
+				configs.taskInfo.visibility = Configuration.CONSTANT.VISIBILITY.HIDDEN;
+			}
 			return runner;
 		}
 	}
