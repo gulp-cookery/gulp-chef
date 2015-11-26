@@ -17,7 +17,7 @@ var bump = require(base + '/src/tasks/bump'),
 
 describe('task processor', function () {
 	describe('bump()', function () {
-		it('should ...', function () {
+		it.skip('should ...', function () {
 		});
 	});
 });
