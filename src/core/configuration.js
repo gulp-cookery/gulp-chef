@@ -3,7 +3,8 @@
 var _ = require('lodash'),
 	log = require('gulp-util').log,
 	normalize = require('json-normalizer').sync,
-	globsJoin = require('../helpers/globs').join;
+	globsJoin = require('../helpers/globs').join,
+	from = require('../helpers/dataflow');
 
 var ConfigurationError = require('./configuration_error');
 
@@ -441,29 +442,6 @@ function resolveDest(child, parent) {
 	}
 }
 
-function imply(mappings, source, target, overwrite) {
-	Object.keys(mappings).forEach(function (sourceProperty) {
-		var targetProperty;
-		if (source.hasOwnProperty(sourceProperty)) {
-			targetProperty = mappings[sourceProperty];
-			if (overwrite || !target.hasOwnProperty(targetProperty)) {
-				target[targetProperty] = source[sourceProperty];
-			}
-		}
-	});
-}
-
-function move(properties, source, target, overwrite) {
-	properties.forEach(function (name) {
-		if (source.hasOwnProperty(name)) {
-			if (overwrite || !target.hasOwnProperty(name)) {
-				target[name] = source[name];
-			}
-			delete source[name];
-		}
-	});
-}
-
 /**
  * If both parentConfig and taskConfig specified src property
  * then try to join paths.
@@ -472,10 +450,10 @@ function sort(taskInfo, rawConfig, parentConfig, schema) {
 	var inheritedConfig, taskConfig, subTaskConfigs, value;
 
 	if (_.isPlainObject(rawConfig)) {
-		move(TASK_METADATAS, rawConfig, taskInfo);
+		from(rawConfig).to(taskInfo).move(TASK_METADATAS);
 	}
 	if (schema && _.size(schema)) {
-		imply(TASK_SCHEMA_MAPPINGS, schema, taskInfo);
+		from(schema).to(taskInfo).imply(TASK_SCHEMA_MAPPINGS);
 	}
 
 	if (_.isPlainObject(rawConfig)) {
