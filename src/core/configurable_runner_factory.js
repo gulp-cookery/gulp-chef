@@ -175,8 +175,10 @@ ConfigurableTaskRunnerFactory.prototype.composite = function (runner, tasks) {
 };
 
 ConfigurableTaskRunnerFactory.prototype.reference = function (taskName) {
+	var runner;
+
 	if (typeof taskName === 'string') {
-		return function (gulp, config, stream, done) {
+		runner = function (gulp, config, stream, done) {
 			var task = gulp.task(taskName);
 			if (!task) {
 				throw new ConfigurationError(__filename, 'referring task not found: ' + taskName);
@@ -187,6 +189,8 @@ ConfigurableTaskRunnerFactory.prototype.reference = function (taskName) {
 			// support for tasks registered directly via gulp.task().
 			return task.call(gulp, done);
 		};
+		runner.displayName = taskName;
+		return runner;
 	}
 };
 
