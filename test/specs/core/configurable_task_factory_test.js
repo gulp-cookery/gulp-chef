@@ -147,6 +147,20 @@ describe('Core', function () {
 					expect(actual[0].displayName).to.be.a('string');
 					expect(actual[1].displayName).to.be.a('string');
 				});
+				it('should dereference task references', function () {
+					var subTaskConfigs = [
+						'gulp-task-by-ref',			// reference to registered gulp task
+						'configurable-task-by-ref',	// reference to registered configurable task runner
+						//gulpTask,					// registered gulp task
+						//configurableTask,			// registered configurable task runner
+						Sinon.spy()					// stand-alone gulp task (not registered to gulp)
+					];
+					var actual = factory.multiple('', subTaskConfigs, {});
+					expect(actual.length).to.equal(3);
+					expect(actual[0].displayName).to.equal('gulp-task-by-ref');
+					expect(actual[1].displayName).to.equal('configurable-task-by-ref');
+					expect(actual[2].displayName).to.be.a('string');
+				});
 			});
 			describe('when take subTaskConfigs as an object', function () {
 				it('should returns an array', function () {
@@ -186,6 +200,8 @@ describe('Core', function () {
 						factory.multiple('', subTaskConfigs, {})
 					}
 					expect(call).to.throw(ConfigurationError);
+				});
+				it.skip('should dereference task references', function () {
 				});
 			});
 		});

@@ -70,20 +70,42 @@ ConfigurableTaskFactory.prototype.multiple = function (prefix, subTaskConfigs, p
 	var self;
 
 	self = this;
-	return _array() || _object();
+	subTaskConfigs = _array() || _object();
+	return subTaskConfigs.reduce(function (tasks, config) {
+		var task = self.one(prefix, config.name, config, parentConfig);
+		if (task) {
+			tasks.push(task);
+		}
+		return tasks;
+	}, []);
 
 	function _array() {
 		var names;
 
 		if (Array.isArray(subTaskConfigs)) {
 			names = new UniqueNames();
-			subTaskConfigs.forEach(function(taskConfig) {
-				names.put(taskConfig.name);
-			});
-			return subTaskConfigs.reduce(function(tasks, taskConfig) {
-				taskConfig.name = names.get(taskConfig.name);
-				return create(tasks, prefix, taskConfig, parentConfig);
-			}, []);
+			return subTaskConfigs.map(objectify).map(uniquify);
+		}
+
+		function objectify(config) {
+			if (typeof config === 'string') {
+				config = {
+					name: config,
+					task: config
+				};
+			} else if (typeof config === 'function') {
+				config = {
+					name: config.displayName || config.name,
+					task: config
+				};
+			}
+			names.put(config.name);
+			return config;
+		}
+
+		function uniquify(config) {
+			config.name = names.get(config.name);
+			return config;
 		}
 	}
 
@@ -92,24 +114,34 @@ ConfigurableTaskFactory.prototype.multiple = function (prefix, subTaskConfigs, p
 
 		if (_.isPlainObject(subTaskConfigs)) {
 			orders = 0;
-			subTaskConfigs = _.map(subTaskConfigs, function (taskConfig, name) {
-				taskConfig.name = taskConfig.name || name;
-				if ('order' in taskConfig) {
-					++orders;
-				}
-				return taskConfig;
-			});
+			subTaskConfigs = _.map(subTaskConfigs, uniquify);	// NOTE: becomes an array
+			return sort(subTaskConfigs);
+		}
+
+		function uniquify(config, name) {
+			if ('order' in config) {
+				++orders;
+			}
+			config.name = name;
+			return config;
+		}
+
+		function sort(subTaskConfigs) {
 			if (orders !== 0) {
 				if (orders !== _.size(subTaskConfigs)) {
 					throw new ConfigurationError('ConfigurableTaskFactory', 'some sub-tasks defined "order" some don\'t, don\'t know how to sort');
 				}
-				subTaskConfigs = subTaskConfigs.sort(function (a, b) {
-					return a.order - b.order;
-				});
+				subTaskConfigs = subTaskConfigs.sort(comparator);
 			}
-			return subTaskConfigs.reduce(function (tasks, taskConfig) {
-				return create(tasks, prefix, taskConfig, parentConfig);
-			}, []);
+			return subTaskConfigs;
+		}
+
+		function comparator(a, b) {
+			if ('order' in a && 'order' in b) {
+				return a.order - b.order;
+			}
+			// try to make it a stable sort even if 'order' property not present.
+			return 0;
 		}
 	}
 
