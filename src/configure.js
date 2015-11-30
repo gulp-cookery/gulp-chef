@@ -11,7 +11,7 @@ function configure(rawConfigs, options) {
 	var registry = new Registry(),
 		runnerFactory = new ConfigurableTaskRunnerFactory(stuff),
 		taskFactory = new ConfigurableTaskFactory(stuff, runnerFactory, registry),
-		configs = Configuration.sort({}, rawConfigs, {}, {});
+		configs = Configuration.sort({}, rawConfigs, {}, Configuration.SCHEMA_COMMONS);
 
 	Configuration.setOptions(options);
 	taskFactory.multiple('', configs.subTaskConfigs, configs.taskConfig);

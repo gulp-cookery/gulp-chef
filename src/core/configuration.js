@@ -448,12 +448,16 @@ function resolveDest(child, parent) {
  */
 function sort(taskInfo, rawConfig, parentConfig, schema) {
 	var inheritedConfig, taskConfig, subTaskConfigs, value;
+	
 
 	if (_.isPlainObject(rawConfig)) {
 		from(rawConfig).to(taskInfo).move(TASK_METADATAS);
 	}
 	if (schema && _.size(schema)) {
 		from(schema).to(taskInfo).imply(TASK_SCHEMA_MAPPINGS);
+		schema = _.defaultsDeep(schema, SCHEMA_COMMONS);
+	} else {
+		schema = _.defaultsDeep({}, SCHEMA_DEFAULTS);
 	}
 
 	if (_.isPlainObject(rawConfig)) {
@@ -475,12 +479,6 @@ function sort(taskInfo, rawConfig, parentConfig, schema) {
 		value = resolveDest(rawConfig, parentConfig);
 		if (value) {
 			taskConfig.dest = value;
-		}
-
-		if (schema && _.size(schema)) {
-			schema = _.defaultsDeep(schema, SCHEMA_COMMONS);
-		} else {
-			schema = _.defaultsDeep({}, SCHEMA_DEFAULTS);
 		}
 
 		inheritedConfig = _.defaultsDeep(taskConfig, rawConfig, parentConfig);
@@ -512,6 +510,7 @@ function sort(taskInfo, rawConfig, parentConfig, schema) {
 
 module.exports = {
 	CONSTANT: CONSTANT,
+	SCHEMA_COMMONS: SCHEMA_COMMONS,
 	getOptions: getOptions,
 	setOptions: setOptions,
 	getTaskRuntimeInfo: getTaskRuntimeInfo,
