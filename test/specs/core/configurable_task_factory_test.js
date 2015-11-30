@@ -15,18 +15,20 @@ var ConfigurableTaskRunnerFactory = require(base + '/src/core/configurable_runne
 	Registry = require(base + '/src/core/registry');
 
 var createFakeStuff = require(base + '/test/fake/stuff'),
-	FakeGulp = require(base + '/test/fake/gulp');
+	FakeFactory = require(base + '/test/fake/factory');
 
 describe('Core', function () {
 	describe('ConfigurableTaskFactory', function () {
-		var gulp, factory;
+		var gulp, factory, gulpTask, configurableTask;
 
 		beforeEach(function () {
 			var stuff = createFakeStuff(),
 				registry = new Registry();
-			gulp = new FakeGulp();
+			gulp = FakeFactory.createFakeGulp();
 			gulp.registry(registry);
 			factory = new ConfigurableTaskFactory(stuff, new ConfigurableTaskRunnerFactory(stuff), registry);
+			gulpTask = gulp.task('gulp-task');
+			configurableTask = gulp.task('configurable-task');
 		});
 
 		describe('#create()', function () {
@@ -149,17 +151,21 @@ describe('Core', function () {
 				});
 				it('should dereference task references', function () {
 					var subTaskConfigs = [
+						{ name: 'task1' },
 						'gulp-task-by-ref',			// reference to registered gulp task
 						'configurable-task-by-ref',	// reference to registered configurable task runner
-						//gulpTask,					// registered gulp task
-						//configurableTask,			// registered configurable task runner
+						gulpTask,					// registered gulp task
+						configurableTask,			// registered configurable task runner
 						Sinon.spy()					// stand-alone gulp task (not registered to gulp)
 					];
 					var actual = factory.multiple('', subTaskConfigs, {});
-					expect(actual.length).to.equal(3);
-					expect(actual[0].displayName).to.equal('gulp-task-by-ref');
-					expect(actual[1].displayName).to.equal('configurable-task-by-ref');
-					expect(actual[2].displayName).to.be.a('string');
+					expect(actual.length).to.equal(6);
+					expect(actual[0].displayName).to.equal('task1');
+					expect(actual[1].displayName).to.equal('gulp-task-by-ref');
+					expect(actual[2].displayName).to.equal('configurable-task-by-ref');
+					expect(actual[3].displayName).to.equal('gulp-task');
+					expect(actual[4].displayName).to.equal('configurable-task');
+					expect(actual[5].displayName).to.be.a('string');
 				});
 			});
 			describe('when take subTaskConfigs as an object', function () {
@@ -201,7 +207,23 @@ describe('Core', function () {
 					}
 					expect(call).to.throw(ConfigurationError);
 				});
-				it.skip('should dereference task references', function () {
+				it('should dereference task references', function () {
+					var subTaskConfigs = {
+						task1: {},							// sub-config task
+						task2: 'gulp-task-by-ref',			// reference to registered gulp task
+						task3: 'configurable-task-by-ref',	// reference to registered configurable task runner
+						task4: gulpTask,					// registered gulp task
+						task5: configurableTask,			// registered configurable task runner
+						task6: Sinon.spy()					// stand-alone gulp task (not registered to gulp)
+					};
+					var actual = factory.multiple('', subTaskConfigs, {});
+					expect(actual.length).to.equal(6);
+					expect(actual[0].displayName).to.equal('task1');
+					expect(actual[1].displayName).to.equal('gulp-task-by-ref');
+					expect(actual[2].displayName).to.equal('configurable-task-by-ref');
+					expect(actual[3].displayName).to.equal('gulp-task');
+					expect(actual[4].displayName).to.equal('configurable-task');
+					expect(actual[5].displayName).to.be.a('string');
 				});
 			});
 		});

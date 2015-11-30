@@ -114,15 +114,32 @@ ConfigurableTaskFactory.prototype.multiple = function (prefix, subTaskConfigs, p
 
 		if (_.isPlainObject(subTaskConfigs)) {
 			orders = 0;
-			subTaskConfigs = _.map(subTaskConfigs, uniquify);	// NOTE: becomes an array
+			subTaskConfigs = _.map(subTaskConfigs, uniquify).map(objectify);	// NOTE: becomes an array
 			return sort(subTaskConfigs);
 		}
 
 		function uniquify(config, name) {
-			if ('order' in config) {
-				++orders;
+			if (_.isPlainObject(config)) {
+				if ('order' in config) {
+					++orders;
+				}
+				config.name = name;
 			}
-			config.name = name;
+			return config;
+		}
+
+		function objectify(config) {
+			if (typeof config === 'string') {
+				config = {
+					name: config,
+					task: config
+				};
+			} else if (typeof config === 'function') {
+				config = {
+					name: config.displayName || config.name,
+					task: config
+				};
+			}
 			return config;
 		}
 
