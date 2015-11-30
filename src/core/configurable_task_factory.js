@@ -84,21 +84,10 @@ ConfigurableTaskFactory.prototype.multiple = function (prefix, subTaskConfigs, p
 
 		if (Array.isArray(subTaskConfigs)) {
 			names = new UniqueNames();
-			return subTaskConfigs.map(objectify).map(uniquify);
+			return subTaskConfigs.map(objectify).map(preuniquify).map(uniquify);
 		}
 
-		function objectify(config) {
-			if (typeof config === 'string') {
-				config = {
-					name: config,
-					task: config
-				};
-			} else if (typeof config === 'function') {
-				config = {
-					name: config.displayName || config.name,
-					task: config
-				};
-			}
+		function preuniquify(config) {
 			names.put(config.name);
 			return config;
 		}
@@ -128,21 +117,6 @@ ConfigurableTaskFactory.prototype.multiple = function (prefix, subTaskConfigs, p
 			return config;
 		}
 
-		function objectify(config) {
-			if (typeof config === 'string') {
-				config = {
-					name: config,
-					task: config
-				};
-			} else if (typeof config === 'function') {
-				config = {
-					name: config.displayName || config.name,
-					task: config
-				};
-			}
-			return config;
-		}
-
 		function sort(subTaskConfigs) {
 			if (orders !== 0) {
 				if (orders !== _.size(subTaskConfigs)) {
@@ -160,6 +134,21 @@ ConfigurableTaskFactory.prototype.multiple = function (prefix, subTaskConfigs, p
 			// try to make it a stable sort even if 'order' property not present.
 			return 0;
 		}
+	}
+
+	function objectify(config) {
+		if (typeof config === 'string') {
+			config = {
+				name: config,
+				task: config
+			};
+		} else if (typeof config === 'function') {
+			config = {
+				name: config.displayName || config.name,
+				task: config
+			};
+		}
+		return config;
 	}
 
 	function create(tasks, prefix, taskConfig, parentConfig) {
