@@ -11,37 +11,13 @@ var base = process.cwd();
 var ConfigurableTaskRunnerFactory = require(base + '/src/core/configurable_runner_factory'),
 	ConfigurationError = require(base + '/src/core/configuration_error');
 
-var FakeGulp = require(base + '/test/fake/gulp');
-
-function createSpyGulpTask(name, gulpTask) {
-	var task = Sinon.spy(gulpTask);
-	task.displayName = name;
-	return task;
-}
-
-function createSpyConfigurableTask(name, configurableRunner, taskConfig) {
-	var run, task;
-	configurableRunner = configurableRunner || Sinon.spy();
-	taskConfig = taskConfig || {};
-	run = Sinon.spy(function (gulp, config, stream, done) {
-		config = _.defaultsDeep([], taskConfig, config);
-		configurableRunner(gulp, config, stream, done);
-	});
-	task = createSpyGulpTask(name, function (done) {
-		run(this, taskConfig, null, done);
-	});
-	task.run = run;
-	return task;
-}
-
+var FakeFactory = require(base + '/test/fake/factory');
 var createFakeStuff = require(base + '/test/fake/stuff');
-
 
 describe('Core', function () {
 	describe('ConfigurableTaskRunnerFactory', function () {
 		var gulp, factory, stuff, gulpTask, subTasks, asObject, asArray,
-			configurableTask, configurableTaskConfig, configurableTaskRefConfig,
-			createConfigurableTasks;
+			configurableTask, createConfigurableTasks;
 
 		function done(err) {
 		}
@@ -50,27 +26,17 @@ describe('Core', function () {
 			stuff = createFakeStuff();
 			createConfigurableTasks = Sinon.spy(function (prefix, subTaskConfigs) {
 				return subTasks = _.map(subTaskConfigs, function (config, name) {
-					return createSpyConfigurableTask(name);
+					return FakeFactory.createSpyConfigurableTask(name);
 				});
 			});
 			factory = new ConfigurableTaskRunnerFactory(stuff);
-			gulp = new FakeGulp();
+			gulp = FakeFactory.createFakeGulp();
 
 			// task: gulp-task
-			gulpTask = createSpyGulpTask('gulp-task');
-			gulp.task(gulpTask);
+			gulpTask = gulp.task('gulp-task');
 
 			// task: configurable-task
-			configurableTaskConfig = { keyword: 'configurable-task' };
-			configurableTask = createSpyConfigurableTask('configurable-task', Sinon.spy(), configurableTaskConfig);
-			gulp.task(configurableTask);
-
-			// task: gulp-task-by-ref
-			gulp.task(createSpyGulpTask('gulp-task-by-ref'));
-
-			// task: configurable-task-by-ref
-			configurableTaskRefConfig = { keyword: 'configurable-task-by-ref' };
-			gulp.task(createSpyConfigurableTask('configurable-task-by-ref', Sinon.spy(), configurableTaskRefConfig));
+			configurableTask = gulp.task('configurable-task');
 
 			asObject = {
 				task1: {},							// sub-config task
