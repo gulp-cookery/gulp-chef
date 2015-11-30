@@ -469,98 +469,98 @@ var taskConfigs = {
 		"src": "../test/_fixtures/modules/**/*.html",
 		'flatten': true
 	},
-	 "module2": {
-	     "src": "../test/_fixtures/modules",
-	     "directives": {
-	         ".browserify": {
-	             "bundle": {
-	                 "entries": "directives/index.js",
-	                 "file": "directives.js",
-	             }
-	         }
-	     },
-	     "services": {
-	         ".browserify": {
-	             "bundle": {
-	                 "entries": "services/index.js",
-	                 "file": "services.js",
-	             }
-	         }
-	     },
-	     "views": {
-	         ".browserify": {
-	             "bundle": {
-	                 "entries": "views/index.js",
-	                 "file": "views.js",
-	             }
-	         }
-	     }
-	 },
-	 "foreach": {
-		 "each": {
-			 "values": [{
-				 "dir": "directives"
-			 }, {
-				 "dir": "services"
-			 }, {
-				 "dir": "views"
-			 }],
-			 "process": {
-				 "task": function (gulp, config, stream, done) {
-					 var emptyStream = require("./src/helpers/streams").empty();
-					 console.log(config.dir);
-					 return emptyStream;
-				 }
-		     }
-	     }
-	 },
-	 "manifest": {
-	 },
-	 "locales": {
-	 },
-	 "serve": {
-	 },
-	 "bump": {
-		 "target": ["bower.json"]
-	 },
-	 "clean": {
-	 },
-	 "lint": {
-	 },
-	 "deploy": {
-	 },
-	 "through": {
-	     "task": function () {
-	         var EmptyStream  = require("./src/helpers/empty_stream");
-	         return new EmptyStream();
-	     }
-	 },
-	 "build": {
-	     "depends": ["clean"],
-	     "task": ["scripts", "styles", "markups", "images"]
-	 },
-	 "build2": {
-	     "depends": ["clean"],
-	     "task": function () {
-	         gulp.start("scripts", "styles", "markups", "images");
-	     }
-	 },
-	 "watch": {
-	     "task": ["scripts", "styles", "markups", "images"]
-	 },
-	 "test": {
-		 "task": function () {
-			 var mocha = require("gulp-mocha");
-			 return gulp.src(["test/specs/**/*_test.js"], { read: false })
-				 .pipe(mocha({
-					 reporter: "spec",
-					 timeout: Infinity
-				 }));
-		 }
-	 },
-	 "default": {
-	     "task": ["build"]
-	 }
+	"module2": {
+		"src": "../test/_fixtures/modules",
+		"directives": {
+			".browserify": {
+				"bundle": {
+					"entries": "directives/index.js",
+					"file": "directives.js",
+				}
+			}
+		},
+		"services": {
+			".browserify": {
+				"bundle": {
+					"entries": "services/index.js",
+					"file": "services.js",
+				}
+			}
+		},
+		"views": {
+			".browserify": {
+				"bundle": {
+					"entries": "views/index.js",
+					"file": "views.js",
+				}
+			}
+		}
+	},
+	"foreach": {
+		"each": {
+			"values": [{
+				"dir": "directives"
+			}, {
+				"dir": "services"
+			}, {
+				"dir": "views"
+			}],
+			"process": {
+				"task": function (gulp, config, stream, done) {
+					var emptyStream = require("./src/helpers/streams").empty();
+					console.log(config.dir);
+					return emptyStream;
+				}
+			}
+		}
+	},
+	"manifest": {
+	},
+	"locales": {
+	},
+	"serve": {
+	},
+	"bump": {
+		"target": ["bower.json"]
+	},
+	"clean": {
+	},
+	"lint": {
+	},
+	"deploy": {
+	},
+	"through": {
+		"task": function () {
+			var EmptyStream  = require("./src/helpers/empty_stream");
+			return new EmptyStream();
+		}
+	},
+	"build": {
+		"depends": ["clean"],
+		"task": ["scripts", "styles", "markups", "images"]
+	},
+	"build2": {
+		"depends": ["clean"],
+		"task": function () {
+			gulp.start("scripts", "styles", "markups", "images");
+		}
+	},
+	"watch": {
+		"task": ["scripts", "styles", "markups", "images"]
+	},
+	"test": {
+		"task": function () {
+			var mocha = require("gulp-mocha");
+			return gulp.src(["test/specs/**/*_test.js"], { read: false })
+				.pipe(mocha({
+					reporter: "spec",
+					timeout: Infinity
+				}));
+		}
+	},
+	"default": {
+		"task": ["build"]
+	}
 };
 
 var recipes = createGulpTasks(taskConfigs, config);
