@@ -169,10 +169,10 @@ ConfigurableTaskFactory.prototype.create = function (prefix, taskInfo, taskConfi
 		return run(registry.gulp, taskConfig, null, done);
 	};
 	var name = (taskInfo.name || configurableRunner.displayName || configurableRunner.name || '<anonymous>');
-	configurableTask.displayName = prefix + name;
-	configurableTask.description = taskInfo.description || configurableRunner.description || '';
-	configurableTask.visibility = taskInfo.visibility;
-	configurableTask.runtime = taskInfo.runtime;
+	set(configurableTask, 'displayName', prefix + name);
+	set(configurableTask, 'description', taskInfo.description || configurableRunner.description || '');
+	set(configurableTask, 'visibility', taskInfo.visibility);
+	set(configurableTask, 'runtime', taskInfo.runtime);
 	configurableTask.run = run;
 	configurableTask.config = taskConfig;
 	if (Configuration.isVisible(configurableTask)) {
@@ -182,6 +182,12 @@ ConfigurableTaskFactory.prototype.create = function (prefix, taskInfo, taskConfi
 		metadata.set(configurableTask, '<' + name + '>');
 	}
 	return configurableTask;
+
+	function set(target, property, value) {
+		if (typeof value !== 'undefined') {
+			target[property] = value;
+		}
+	}
 };
 
 module.exports = ConfigurableTaskFactory;
