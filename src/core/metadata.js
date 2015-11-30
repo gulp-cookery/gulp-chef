@@ -9,7 +9,13 @@
  * 1. A hack: require that very module instance, as here we do.
  * 2. A override: override gulp.tree() method.
  */
-var _metadata = require('gulp/node_modules/undertaker/lib/helpers/metadata');
+var _metadata;
+
+try {
+	_metadata = require('gulp/node_modules/undertaker/lib/helpers/metadata');
+} catch (ex) {
+	_metadata = require('undertaker/lib/helpers/metadata');
+}
 
 // Reference:
 // https://github.com/gulpjs/undertaker/blob/master/lib/set-task.js
