@@ -169,8 +169,8 @@ ConfigurableTaskFactory.prototype.create = function (prefix, taskInfo, taskConfi
 		return run(registry.gulp, taskConfig, null, done);
 	};
 	var name = (taskInfo.name || configurableRunner.displayName || configurableRunner.name || '<anonymous>');
-	set(configurableTask, 'displayName', prefix + name);
-	set(configurableTask, 'description', taskInfo.description || configurableRunner.description || '');
+	configurableTask.displayName = prefix + name;
+	set(configurableTask, 'description', taskInfo.description || configurableRunner.description);
 	set(configurableTask, 'visibility', taskInfo.visibility);
 	set(configurableTask, 'runtime', taskInfo.runtime);
 	configurableTask.run = run;
