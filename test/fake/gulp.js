@@ -1,7 +1,12 @@
 'use strict';
 
-function FakeGulp(tasks) {
-	this.taskRegistry = tasks || {};
+var _ = require('lodash');
+
+var base = process.cwd();
+var Registry = require(base + '/src/core/registry');
+
+function FakeGulp() {
+	this._registry = new Registry();
 }
 
 FakeGulp.prototype.task = function (name, runner) {
@@ -10,17 +15,25 @@ FakeGulp.prototype.task = function (name, runner) {
 		name = runner.displayName || runner.name;
 	}
 	if (typeof name === 'string' && typeof runner === 'function') {
-		this.taskRegistry[name] = runner;
+		this._registry.set(name, runner);
 	}
-	return this.taskRegistry[name];
+	return this._registry.get(name);
 };
 
 FakeGulp.prototype.registry = function (registry) {
+	var tasks;
+
 	if (!registry) {
 		return this._registry;
 	}
-	this._registry = registry;
-	registry.init(this);
+	tasks = this._registry.tasks();
+	this._registry = _.reduce(tasks, setTasks, registry);
+	this._registry.init(this);
+
+	function setTasks(registry, task, name) {
+		registry.set(name, task);
+		return registry;
+	}
 };
 
 module.exports = FakeGulp;
