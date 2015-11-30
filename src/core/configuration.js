@@ -413,6 +413,7 @@ function dest(values) {
 	return result.values;
 }
 
+// TODO: make sure path separator works in all operating systems (especially windows that use "\\").
 function resolveSrc(child, parent) {
 	var value;
 
@@ -448,7 +449,7 @@ function resolveDest(child, parent) {
  */
 function sort(taskInfo, rawConfig, parentConfig, schema) {
 	var inheritedConfig, taskConfig, subTaskConfigs, value;
-	
+
 
 	if (_.isPlainObject(rawConfig)) {
 		from(rawConfig).to(taskInfo).move(TASK_METADATAS);
