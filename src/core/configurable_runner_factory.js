@@ -25,7 +25,7 @@
  *
  * configurableTask.displayName
  * configurableTask.description
- * configurableTask.schema
+ * configurableTask.schemRefactoring helpersa
  *
  */
 
@@ -39,7 +39,7 @@ var parallel = require('../flows/parallel');
 
 function hasSubTasks(config) {
 	// TODO: determine should Configuration.sort() treat "task" as "subTaskConfigs".
-	return config.taskInfo.task || _.size(config.subTaskConfigs) > 0;
+	return _.size(config.subTaskConfigs) > 0;
 }
 
 /**
@@ -109,7 +109,7 @@ ConfigurableTaskRunnerFactory.prototype.recipe = function (name, configs) {
 	if (isRecipeTask(name)) {
 		if (hasSubTasks(configs)) {
 			// warn about ignoring sub-configs.
-			log('Warning: sub-configs ignored for recipe task: ' + name + ', sub-configs: ' + Object.keys(configs.subTaskConfigs));
+			log('ConfigurableRunnerFactory', 'Warning: sub-configs ignored for recipe task: ' + name + ', sub-configs: ' + Object.keys(configs.subTaskConfigs));
 		}
 		return this.stuff.recipes.lookup(name);
 	}
@@ -157,7 +157,7 @@ ConfigurableTaskRunnerFactory.prototype.flow = compositeCreator('flows', 'parall
 		return false;
 	}
 	if (!hasSubTasks) {
-		throw new ConfigurationError('ConfigurableRunnerFactory', 'a flow processor without sub-tasks is useless');
+		log('ConfigurableRunnerFactory', 'Warning: a flow processor without sub-tasks is useless');
 	}
 	return true;
 });
