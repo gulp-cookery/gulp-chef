@@ -10,10 +10,17 @@ var config = {
 	dest: 'dist'
 };
 
-// (stylus, autoprefix, minify 是內建支援的 recipe task)
-// (src, base, cwd, eachdir, dest, flatten, file 是保留字，用來決定 task 如何輸入輸出, 優先性：file > dest)
-// (options 是保留字，做為傳遞給 task 的選項結構)
-// (join, merge, 是 stream 處理選項，不會輸出為 task)
+function normalGulpTask(done) {
+}
+
+function configurableGulpTask(done) {
+}
+
+// stylus, autoprefix, minify 是內建支援的 recipe task。
+// src, base, cwd, dest, flatten, file 是 task property，用來決定 task 如何輸入輸出, 優先性：file > dest。
+// options 是 task property，做為傳遞給 task 的選項結構。
+// join, merge, queue, 是 stream processor recipes，預設不會輸出為 task，也就是無法由命令列直接執行。
+// series, parallel, 是 flow processor recipes，預設不會輸出為 task，也就是無法由命令列直接執行。
 var SampleConfigs = {
 	"globs": {
 		"single-glob": {
@@ -65,20 +72,55 @@ var SampleConfigs = {
 	"flows": {
 		"parallel-in-object": {
 			"parallel": {
-				"task-1": {},
-				"task-2": {},
-				"named-inline": {
-					"task": function (gulp, config, stream, done) {}
+				"configurable-task": {},
+				"inline-with-config": {
+					"name": "this name will be override by named-inline",
+					"task": function (done) {}
 				},
-				"inline": function (gulp, config, stream, done) {}
+				"inline": function (done) {},
+				"reference-with-config": {
+					"task": "series-in-object:configurable-task"
+				},
+				"reference": "series-in-object:configurable-task",
+				"direct-function-reference": normalGulpTask,
+				"direct-function-reference-with-config": {
+					"task": normalGulpTask
+				},
+				"direct-configurable-function-reference": configurableGulpTask,
+				"direct-configurable-function-reference-with-config": {
+					"task": configurableGulpTask
+				},
 			}
 		},
 		"parallel-in-array": {
 			"parallel": [
-				"task-1",
-				"task-2",
-				{ "name": "named-inline", "task": function (gulp, config, stream, done) {} },
-				function (gulp, config, stream, done) {}
+				{
+					"name": "configurable-task",
+					"options": {}
+				},
+				{
+					"name": "inline-with-config",
+					"task": function (done) {}
+				},
+				function inline(done) {},
+				{
+					"name": "reference-with-config",
+					"task": "series-in-object:configurable-task"
+				},
+				// reference
+				"series-in-object:configurable-task",
+				// direct-function-reference
+				normalGulpTask,
+				{
+					"name": "direct-function-reference-with-config",
+					"task": normalGulpTask
+				},
+				// direct-configurable-function-reference
+				configurableGulpTask,
+				{
+					"name": "direct-configurable-function-reference-with-config",
+					"task": configurableGulpTask
+				}
 			]
 		},
 		"series-in-object": {
@@ -88,25 +130,59 @@ var SampleConfigs = {
 			// Or, you can add an "order" property to sub-task.
 			// https://github.com/caolan/async#seriestasks-callback
 			"series": {
-				"task-1": {
-					"order": 0	// just used to sort
+				"configurable-task": {
+					"order": 0	// just used to sort, don't have to be unique or continuous.
 				},
-				"task-2": {
-					"order": 1
+				"inline-with-config": {
+					"order": 1,
+					"task": function (done) {}
 				},
-				"named-inline": {
-					"order": 2,
-					"task": function (gulp, config, stream, done) {}
+				"inline": function (done) {
 				},
-				"inline": function (gulp, config, stream, done) {}
+				"reference-with-config": {
+					"order": 3,
+					"task": "series-in-object:configurable-task"
+				},
+				"reference": "series-in-object:configurable-task",
+				"direct-function-reference": normalGulpTask,
+				"direct-function-reference-with-config": {
+					"task": normalGulpTask
+				},
+				"direct-configurable-function-reference": configurableGulpTask,
+				"direct-configurable-function-reference-with-config": {
+					"task": configurableGulpTask
+				},
 			}
 		},
 		"series-in-array": {
 			"series": [
-				{ "name": "task-1" },
-				"task-2",
-				{ "name": "named-inline", "task": function (gulp, config, stream, done) {} },
-				function (gulp, config, stream, done) {}
+				{
+					"name": "configurable-task",
+					"options": {}
+				},
+				{
+					"name": "inline-with-config",
+					"task": function (done) {}
+				},
+				function inline(done) {},
+				{
+					"name": "reference-with-config",
+					"task": "series-in-object:configurable-task"
+				},
+				// reference
+				"series-in-object:configurable-task",
+				// direct-function-reference
+				normalGulpTask,
+				{
+					"name": "direct-function-reference-with-config",
+					"task": normalGulpTask
+				},
+				// direct-configurable-function-reference
+				configurableGulpTask,
+				{
+					"name": "direct-configurable-function-reference-with-config",
+					"task": configurableGulpTask
+				}
 			]
 		}
 	},
@@ -506,7 +582,7 @@ var taskConfigs = {
 				"dir": "views"
 			}],
 			"process": {
-				"task": function (gulp, config, stream, done) {
+				"task": function () {
 					var emptyStream = require("./src/helpers/streams").empty();
 					console.log(config.dir);
 					return emptyStream;
