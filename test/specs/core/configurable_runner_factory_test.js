@@ -68,12 +68,12 @@ describe('Core', function () {
 				}, {
 					name: 'should be able to take sub-tasks as an array',
 					subTaskConfigs: 'array'
-				}, {
-					name: 'should be able to take sub-tasks as an object in "task" property',
-					task: 'object'
-				}, {
-					name: 'should be able to take sub-tasks as an array in "task" property',
-					task: 'array'
+				//}, {
+				//	name: 'should be able to take sub-tasks as an object in "task" property',
+				//	task: 'object'
+				//}, {
+				//	name: 'should be able to take sub-tasks as an array in "task" property',
+				//	task: 'array'
 				}].forEach(test);
 
 				function test(testCase) {
@@ -95,9 +95,9 @@ describe('Core', function () {
 						}
 					};
 					if (subTaskConfigs) {
-						result.subTaskConfigs = get(subTaskConfigs);
-					} else {
-						result.taskInfo.task = get(task);
+						result.subTaskConfigs = (typeof subTaskConfigs === 'string') ? get(subTaskConfigs) : subTaskConfigs;
+					} else if (task) {
+						result.taskInfo.task = (typeof task === 'string') ? get(task) : task;
 					}
 					return result;
 
