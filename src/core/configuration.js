@@ -9,16 +9,19 @@ var _ = require('lodash'),
 var ConfigurationError = require('./configuration_error');
 
 var INTERPOLATE = /{{([\s\S]+?)}}/g,
-	TASK_METADATAS = [
-		// task
-		'name', 'description', 'order', 'task',
-		// runtime
-		'visibility', 'runtime'
-	],
+	TASK_SCHEMAS = {
+		"name": "Name of this task.",
+		"description": "",
+		"order": "Series execution order of this task. Just used to sort, don't have to be unique or continuous.",
+		"task": "Inline task function or reference to other task",
+		"visibility": "",
+		"runtime": ""
+	},
 	TASK_SCHEMA_MAPPINGS = {
 		title: 'name',
 		description: 'description'
 	},
+	TASK_METADATAS = Object.keys(TASK_SCHEMAS),
 	SCHEMA_SRC = {
 		"properties": {
 			"globs": {
