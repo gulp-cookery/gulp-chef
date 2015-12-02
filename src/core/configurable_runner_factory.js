@@ -21,7 +21,7 @@
  * configurableTask.run = function (gulp, config, stream, done) {
  * }
  *
- * TODO: consider make ConfigurableTask Runner be function(done, gulp, config, stream), so a runner can be used as normal gulp task.
+ * TODO: make ConfigurableTask Runner be function(done), and with { gulp, config, stream } as context, so a normal gulp task can be a runner.
  *
  * configurableTask.displayName
  * configurableTask.description
