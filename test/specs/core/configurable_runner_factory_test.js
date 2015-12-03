@@ -68,12 +68,6 @@ describe('Core', function () {
 				}, {
 					name: 'should be able to take sub-tasks as an array',
 					subTaskConfigs: 'array'
-				//}, {
-				//	name: 'should be able to take sub-tasks as an object in "task" property',
-				//	task: 'object'
-				//}, {
-				//	name: 'should be able to take sub-tasks as an array in "task" property',
-				//	task: 'array'
 				}].forEach(test);
 
 				function test(testCase) {
