@@ -81,7 +81,6 @@ DependencyManager.prototype.flush = function () {
 
 DependencyManager.prototype.save = function (file) {
 	var contents = JSON.stringify(this._store, null, 2);
-	console.log('contents=' + contents);
 	fs.writeFileSync(file, contents, 'utf8');
 };
 
