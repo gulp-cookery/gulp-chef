@@ -3,6 +3,18 @@
 var _ = require('lodash');
 var semver = require('semver');
 
+/**
+ *
+ * Notes:
+ *
+ *  Although there are recipes touches the package.json, e.g. "bump".
+ *  But, the dependency checking is performed before running tasks, and,
+ *  once there is any dependency not installed, the process will stop,
+ *  and prompt the user to run "npm update" to install required modules.
+ *  Therefore, the preloaded package.json is safe to add modules
+ *  to "devDependencies" field and save back to disk.
+ *
+ */
 function DependencyManager(store) {
 	this._store = store;
 	this._registry = {};
