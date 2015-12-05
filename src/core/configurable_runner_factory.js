@@ -38,7 +38,6 @@ var Configuration = require('./configuration'),
 var parallel = require('../flows/parallel');
 
 function hasSubTasks(config) {
-	// TODO: determine should Configuration.sort() treat "task" as "subTaskConfigs".
 	return _.size(config.subTaskConfigs) > 0;
 }
 

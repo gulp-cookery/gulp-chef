@@ -9,7 +9,6 @@ var ConfigurableTaskRunnerFactory = require('./core/configurable_runner_factory'
 	stuff = require('./stuff'),
 	helpRunner = stuff.recipes.lookup('help');
 
-// TODO: resolve too many dependencies problem. (optionalDependencies?). [THOUGHT]: check out bumpTask's bumpTask.requires comments.
 function configure(rawConfigs, options) {
 	var registry = new Registry(),
 		manager = new DependencyManager(store),
@@ -19,7 +18,7 @@ function configure(rawConfigs, options) {
 
 	Configuration.setOptions(options);
 	taskFactory.multiple('', configs.subTaskConfigs, configs.taskConfig);
-	if (true ||manager.flush()) {
+	if (manager.flush()) {
 		try {
 			manager.save(packages + '.new');
 			console.log('Notice: new dependencies required by used recipes, please run "npm update" to install them.')
