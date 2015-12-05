@@ -1,11 +1,54 @@
 'use strict';
 
-var base = process.cwd();
+var Chai = require('chai'),
+	expect = Chai.expect;
 
+var semver = require('semver');
+
+
+var base = process.cwd();
 var DependencyManager = require(base + '/src/core/dependency_manager');
 
 
 describe('core', function () {
+	describe.only('semver', function () {
+		describe('.clean() & .compare() & .valid()', function () {
+			it('do not accept range', function () {
+				expect(semver.clean('1.0.9')).to.equal('1.0.9');
+				expect(semver.clean('~1.0.9')).to.be.null;
+				expect(semver.clean('^1.0.9')).to.be.null;
+				expect(semver.clean('>=1.0.9')).to.be.null;
+				expect(semver.clean('*')).to.be.null;
+
+				expect(semver.compare('1.0.9', '1.0.9')).to.equal(0);
+				expect(function () { semver.compare('~1.0.9', '1.0.9'); }).to.throw;
+				expect(function () { semver.compare('1.0.9', '^1.0.9'); }).to.throw;
+				expect(function () { semver.compare('~1.0.9', '^1.0.9'); }).to.throw;
+				expect(function () { semver.compare('^1.0.9', '1.0.9'); }).to.throw;
+				expect(function () { semver.compare('1.0.9', '~1.0.9'); }).to.throw;
+				expect(function () { semver.compare('^1.0.9', '~1.0.9'); }).to.throw;
+
+				expect(semver.valid('1.0.9')).to.equal('1.0.9');
+				expect(semver.valid('^1.0.9')).to.be.null;
+				expect(semver.valid('~1.0.9')).to.be.null;
+				expect(semver.valid('*')).to.be.null;
+			});
+		});
+		describe('.validRange()', function () {
+			it('accept version & range', function () {
+				expect(semver.validRange('1.0.9')).to.equal('1.0.9');
+				expect(semver.validRange('^1.0.9')).to.equal('>=1.0.9 <2.0.0');
+				expect(semver.validRange('~1.0.9')).to.equal('>=1.0.9 <1.1.0');
+			});
+			it('just do simple join when multiple ranges provided', function () {
+				expect(semver.validRange('~1.0.9 ~1.0.7')).to.equal('>=1.0.9 <1.1.0 >=1.0.7 <1.1.0');
+				expect(semver.validRange('~1.0.7 ~1.0.9')).to.equal('>=1.0.7 <1.1.0 >=1.0.9 <1.1.0');
+				expect(semver.validRange('^1.0.9 ~1.0.7')).to.equal('>=1.0.9 <2.0.0 >=1.0.7 <1.1.0');
+				expect(semver.validRange('^1.0.7 ~1.0.9')).to.equal('>=1.0.7 <2.0.0 >=1.0.9 <1.1.0');
+			});
+		});
+	});
+
 	describe('DependencyManager', function () {
 		var manager;
 
