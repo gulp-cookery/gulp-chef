@@ -18,14 +18,17 @@ function configure(rawConfigs, options) {
 
 	Configuration.setOptions(options);
 	taskFactory.multiple('', configs.subTaskConfigs, configs.taskConfig);
-	if (manager.flush()) {
+	if (true ||manager.flush()) {
+		// TODO: ask permission for modifying package.json and prompt to run "npm update".
 		try {
+			console.log('Notice: need to update package.json to add new dependencies required by used recipes.');
+			//console.log('Do you wish to do that?');
 			if (process.cwd().endsWith('configurable-gulp-recipes')) {
 				manager.save(packages + '.new');
 			} else {
 				manager.save(packages);
 			}
-			console.log('Notice: new dependencies required by used recipes, please run "npm update" to install them.')
+			console.log('Please run "npm update" to install them.');
 		} catch (ex) {
 			console.log('Error: can\'t update package.json for required modules');
 		}
