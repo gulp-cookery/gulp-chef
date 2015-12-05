@@ -20,7 +20,11 @@ function configure(rawConfigs, options) {
 	taskFactory.multiple('', configs.subTaskConfigs, configs.taskConfig);
 	if (manager.flush()) {
 		try {
-			manager.save(packages + '.new');
+			if (process.cwd().endsWith('configurable-gulp-recipes')) {
+				manager.save(packages + '.new');
+			} else {
+				manager.save(packages);
+			}
 			console.log('Notice: new dependencies required by used recipes, please run "npm update" to install them.')
 		} catch (ex) {
 			console.log('Error: can\'t update package.json for required modules');
