@@ -18,7 +18,7 @@ function configure(rawConfigs, options) {
 
 	Configuration.setOptions(options);
 	taskFactory.multiple('', configs.subTaskConfigs, configs.taskConfig);
-	if (true ||manager.flush()) {
+	if (manager.flush()) {
 		// TODO: ask permission for modifying package.json and prompt to run "npm update".
 		try {
 			console.log('Notice: need to update package.json to add new dependencies required by used recipes.');
