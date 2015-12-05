@@ -76,7 +76,18 @@ DependencyManager.prototype.flush = function () {
 			dirty = true;
 		}
 	});
+	if (dirty) {
+		this._store.devDependencies = sort(devDependencies);
+	}
 	return dirty;
+
+	function sort(source) {
+		var ordered = {};
+		Object.keys(source).sort().forEach(function(key) {
+			ordered[key] = source[key];
+		});
+		return ordered;
+	}
 };
 
 DependencyManager.prototype.save = function (file) {
