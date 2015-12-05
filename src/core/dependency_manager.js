@@ -1,5 +1,6 @@
 'use strict';
 
+var fs = require('fs');
 var _ = require('lodash');
 var semver = require('semver');
 
@@ -76,6 +77,13 @@ DependencyManager.prototype.flush = function () {
 		}
 	});
 	return dirty;
-}
+};
+
+DependencyManager.prototype.save = function (file) {
+	var contents = JSON.stringify(this._store, '\t');
+	fs.writeFile(file, contents, function(err) {
+		console.log('Error: can\'t update package.json for required modules');
+	});
+};
 
 module.exports = DependencyManager;
