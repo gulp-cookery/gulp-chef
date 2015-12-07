@@ -1,18 +1,24 @@
 'use strict';
 
-var path = require('path'),
-	safeRequireDir = require('./helpers/safe_require_dir'),
-	ConfigurableTaskRunnerRegistry = require('./core/configurable_runner_registry');
+var ConfigurableTaskRunnerRegistry = require('./core/configurable_runner_registry');
 
 var cwd = process.cwd();
 
-function loadRegistry() {
-	var tasks = safeRequireDir.apply(null, arguments);
-	return new ConfigurableTaskRunnerRegistry(tasks);
-}
-
 module.exports = {
-	flows: loadRegistry(path.join(cwd, 'gulp/flows'), './flows'),
-	streams: loadRegistry(path.join(cwd, 'gulp/streams'), './streams'),
-	recipes: loadRegistry(path.join(cwd, 'gulp'), path.join(cwd, 'gulp/tasks'), './tasks')
+	flows: ConfigurableTaskRunnerRegistry.builder()
+		.dir(cwd, 'gulp/flows')
+		.npm({})
+		.dir(__dirname, 'flows')
+		.build(),
+	streams: ConfigurableTaskRunnerRegistry.builder()
+		.dir(cwd, 'gulp/streams')
+		.npm({})
+		.dir(__dirname, 'streams')
+		.build(),
+	recipes: ConfigurableTaskRunnerRegistry.builder()
+		.dir(cwd, 'gulp')
+		.dir(cwd, 'gulp/tasks')
+		.npm({})
+		.dir(__dirname, 'tasks')
+		.build()
 };

@@ -2,16 +2,15 @@
 var ConfigurableTaskRunnerFactory = require('./core/configurable_runner_factory'),
 	ConfigurableTaskFactory = require('./core/configurable_task_factory'),
 	Configuration = require('./core/configuration'),
-	Registry = require('./core/registry'),
-	stuff = require('./stuff'),
-	promptly = require('promptly-sync'),
-	helpRunner = stuff.recipes.lookup('help');
+	Registry = require('./core/registry');
 
 function configure(rawConfigs, options) {
 	var registry = new Registry(),
+		stuff = require('./stuff'),
 		runnerFactory = new ConfigurableTaskRunnerFactory(stuff),
 		taskFactory = new ConfigurableTaskFactory(stuff, runnerFactory, registry),
-		configs = Configuration.sort({}, rawConfigs, {}, Configuration.SCHEMA_COMMONS);
+		configs = Configuration.sort({}, rawConfigs, {}, Configuration.SCHEMA_COMMONS),
+		helpRunner = stuff.recipes.lookup('help');
 
 	Configuration.setOptions(options);
 	taskFactory.multiple('', configs.subTaskConfigs, configs.taskConfig);
