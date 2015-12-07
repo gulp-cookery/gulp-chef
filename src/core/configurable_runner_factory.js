@@ -49,18 +49,13 @@ function hasSubTasks(config) {
  * @param stuff
  * @constructor
  */
-function ConfigurableTaskRunnerFactory(stuff, manager) {
+function ConfigurableTaskRunnerFactory(stuff) {
 	this.stuff = stuff;
-	this.manager = manager;
 }
 
 ConfigurableTaskRunnerFactory.prototype.create = function (prefix, configs, createConfigurableTasks) {
-	var runner, self = this;
-	runner = recipeRunner() || flowRunner() || streamRunner() || taskRunner() || defaultRunner();
-	if (runner && runner.requires) {
-		this.manager.register(runner.requires);
-	}
-	return runner;
+	var self = this;
+	return recipeRunner() || flowRunner() || streamRunner() || taskRunner() || defaultRunner();
 
 	function recipeRunner() {
 		return self.recipe(configs.taskInfo.name, configs);
