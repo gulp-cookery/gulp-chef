@@ -583,9 +583,7 @@ var taskConfigs = {
 			}],
 			"process": {
 				"task": function () {
-					var emptyStream = require("./src/helpers/streams").empty();
-					console.log(config.dir);
-					return emptyStream;
+					return require('streamifier')('');
 				}
 			}
 		}
@@ -607,8 +605,7 @@ var taskConfigs = {
 	},
 	"through": {
 		"task": function () {
-			var EmptyStream  = require("./src/helpers/empty_stream");
-			return new EmptyStream();
+			return require('streamifier')('');
 		}
 	},
 	"build": {
