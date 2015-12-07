@@ -6,7 +6,7 @@ var ConfigurableTaskRunnerFactory = require('./core/configurable_runner_factory'
 
 function configure(rawConfigs, options) {
 	var registry = new Registry(),
-		stuff = require('./stuff'),
+		stuff = require('./stuff')(options),
 		runnerFactory = new ConfigurableTaskRunnerFactory(stuff),
 		taskFactory = new ConfigurableTaskFactory(stuff, runnerFactory, registry),
 		configs = Configuration.sort({}, rawConfigs, {}, Configuration.SCHEMA_COMMONS),

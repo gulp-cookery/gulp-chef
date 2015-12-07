@@ -4,21 +4,23 @@ var ConfigurableTaskRunnerRegistry = require('./core/configurable_runner_registr
 
 var cwd = process.cwd();
 
-module.exports = {
-	flows: ConfigurableTaskRunnerRegistry.builder()
-		.dir(cwd, 'gulp/flows')
-		.npm({})
-		.dir(__dirname, 'flows')
-		.build(),
-	streams: ConfigurableTaskRunnerRegistry.builder()
-		.dir(cwd, 'gulp/streams')
-		.npm({})
-		.dir(__dirname, 'streams')
-		.build(),
-	recipes: ConfigurableTaskRunnerRegistry.builder()
-		.dir(cwd, 'gulp')
-		.dir(cwd, 'gulp/tasks')
-		.npm({})
-		.dir(__dirname, 'tasks')
-		.build()
+module.exports = function (options) {
+	return {
+		flows: ConfigurableTaskRunnerRegistry.builder()
+			.dir(cwd, 'gulp/flows')
+			.npm(options)
+			.dir(__dirname, 'flows')
+			.build(),
+		streams: ConfigurableTaskRunnerRegistry.builder()
+			.dir(cwd, 'gulp/streams')
+			.npm(options)
+			.dir(__dirname, 'streams')
+			.build(),
+		recipes: ConfigurableTaskRunnerRegistry.builder()
+			.dir(cwd, 'gulp')
+			.dir(cwd, 'gulp/tasks')
+			.npm(options)
+			.dir(__dirname, 'tasks')
+			.build()
+	};
 };
