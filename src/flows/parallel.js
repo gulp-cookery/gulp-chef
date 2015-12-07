@@ -5,7 +5,7 @@
  * parallel
  *
  * Ingredients:
- * gulp.parallel()
+ * async, asnyc-done
  *
  * Note:
  *  Some kind of non-stream version of merge() stream recipe.
