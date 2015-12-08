@@ -372,8 +372,8 @@ function shouldExpose(stock, taskInfo) {
 	return false;
 }
 
-function realize(original, additional, defaults) {
-	var values = _.defaultsDeep({}, original, additional, defaults);
+function realize(original, additional) {
+	var values = _.defaultsDeep({}, original, additional);
 	return realizeAll({}, values);
 
 	function realizeAll(target, source) {
