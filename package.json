@@ -26,13 +26,14 @@
     "del": "^1.2.0",
     "glob": "^6.0.1",
     "globby": "^2.1.0",
+    "globjoin": "git+https://github.com/amobiz/globjoin.git",
     "gulp-load-plugins": "^1.1.0",
     "gulp-util": "^3.0.6",
     "json-normalizer": "^0.2.2",
     "lodash": "^3.10.1",
     "merge-stream": "^0.1.8",
-    "streamqueue": "^1.1.0",
-    "require-dir": "^0.3.0"
+    "require-dir": "^0.3.0",
+    "streamqueue": "^1.1.0"
   },
   "peerDependencies": {
     "gulp": ">=4.0.0 || >=4.0.0-alpha.1 || >=4.0.0-beta.1"
