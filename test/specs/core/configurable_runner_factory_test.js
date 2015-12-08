@@ -149,24 +149,36 @@ describe('Core', function () {
 		});
 		describe('#reference()', function () {
 			it('should throw at runtime if the referring task not found', function () {
+				var ctx = {
+					gulp: gulp,
+					config: {}
+				};
 				var actual = factory.reference('non-existent');
-				expect(function () { actual.call(gulp, gulp, {}, null, done); }).to.throw(ConfigurationError);
+				expect(function () { actual.call(ctx, done); }).to.throw(ConfigurationError);
 			});
 
 			it('should wrap a normal gulp task', function () {
+				var ctx = {
+					gulp: gulp,
+					config: {}
+				};
 				var actual = factory.reference(gulpTask.displayName);
 				expect(actual).to.be.a('function');
-				actual(gulp, {}, null, done);
-				expect(gulpTask.calledOn(gulp)).to.be.true;
+				actual.call(ctx, done);
+				expect(gulpTask.calledOn(ctx)).to.be.true;
 				expect(gulpTask.calledWithExactly(done)).to.be.true;
 			});
 
 			it("should call target's run() at runtime if already a ConfigurableTask", function () {
+				var ctx = {
+					gulp: gulp,
+					config: {}
+				};
 				var actual = factory.reference(configurableTask.displayName);
 				expect(actual).to.be.a('function');
-				actual(gulp, {}, null, done);
-				expect(configurableTask.run.calledOn(configurableTask)).to.be.true;
-				expect(configurableTask.run.calledWithExactly(gulp, {}, null, done)).to.be.true;
+				actual.call(ctx, done);
+				expect(configurableTask.run.calledOn(ctx)).to.be.true;
+				expect(configurableTask.run.calledWithExactly(done)).to.be.true;
 			});
 		});
 	});

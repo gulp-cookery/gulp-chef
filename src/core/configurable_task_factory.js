@@ -49,7 +49,7 @@ ConfigurableTaskFactory.prototype.one = function (prefix, name, rawConfig, paren
 	runner = this.runnerFactory.create(prefix, configs, createSubTasks);
 	if (! runner) {
 		log("Warning: can't infer to a proper recipe task: " + taskInfo.name + ': task will do nothing.');
-		runner = function (gulp, config, stream, done) { done(); };
+		runner = this.runnerFactory.noop();
 	}
 	task = this.create(prefix, taskInfo, configs.taskConfig, runner);
 	buildMetadataTree(task, subTasks);
@@ -161,18 +161,24 @@ ConfigurableTaskFactory.prototype.multiple = function (prefix, subTaskConfigs, p
 };
 
 ConfigurableTaskFactory.prototype.create = function (prefix, taskInfo, taskConfig, configurableRunner) {
-	var registry = this.registry;
+	var registry = this.registry,
+		stuff = this.stuff;
 	// make sure config is inherited at config time and injected, realized at runtime.
 	// invoked from stream processor
-	var run = function (gulp, injectConfig, stream, done) {
+	var run = function (done) {
+		var ctx = this;
 		// inject and realize runtime configuration.
-		var config = Configuration.realize(taskConfig, injectConfig, configurableRunner.defaults);
-		return configurableRunner(gulp, config, stream, done);
+		ctx.config = Configuration.realize(taskConfig, ctx.config);
+		return configurableRunner.call(ctx, done);
 	};
 	// invoked from gulp
 	var configurableTask = function (done) {
 		// NOTE: gulp 4.0 task are called on undefined context. So we need gulp reference from registry here.
-		return run(registry.gulp, taskConfig, null, done);
+		var ctx = {
+			gulp: registry.gulp,
+			config: taskConfig
+		};
+		return run.call(ctx, done);
 	};
 	var name = (taskInfo.name || configurableRunner.displayName || configurableRunner.name || '<anonymous>');
 	configurableTask.displayName = prefix + name;

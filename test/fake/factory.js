@@ -15,12 +15,14 @@ function createSpyConfigurableTask(name, configurableRunner, taskConfig) {
 	var run, task;
 	configurableRunner = configurableRunner || Sinon.spy();
 	taskConfig = taskConfig || {};
-	run = Sinon.spy(function (gulp, config, stream, done) {
-		config = _.defaultsDeep([], taskConfig, config);
-		configurableRunner(gulp, config, stream, done);
+	run = Sinon.spy(function (done) {
+		var ctx = this;
+		ctx.config = _.defaultsDeep({}, taskConfig, ctx.config);
+		return configurableRunner.call(ctx, done);
 	});
 	task = createSpyGulpTask(name, function (done) {
-		run(this, taskConfig, null, done);
+		var ctx = this;
+		run.call(ctx, done);
 	});
 	task.displayName = name;
 	task.run = run;

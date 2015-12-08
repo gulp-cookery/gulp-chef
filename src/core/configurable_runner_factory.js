@@ -21,8 +21,6 @@
  * configurableTask.run = function (gulp, config, stream, done) {
  * }
  *
- * TODO: make ConfigurableTask Runner be function(done), and with { gulp, config, stream } as context, so a normal gulp task can be a runner.
- *
  * configurableTask.displayName
  * configurableTask.description
  * configurableTask.schemRefactoring helpersa
@@ -162,8 +160,10 @@ ConfigurableTaskRunnerFactory.prototype.stream = compositeCreator('streams', 'me
 
 ConfigurableTaskRunnerFactory.prototype.composite = function (runner, tasks) {
 	// NOTE: important! watch the difference of signature between recipe runner and stream runner.
-	return function (gulp, config, stream, done) {
-		return runner(gulp, config, stream, tasks, done);
+	return function (done) {
+		var ctx = this;
+		ctx.tasks = tasks;
+		return runner.call(ctx, done);
 	};
 };
 
@@ -171,28 +171,27 @@ ConfigurableTaskRunnerFactory.prototype.reference = function (taskName) {
 	var runner;
 
 	if (typeof taskName === 'string') {
-		runner = function (gulp, config, stream, done) {
-			var task = gulp.task(taskName);
+		runner = function (done) {
+			var ctx = this;
+			var task = ctx.gulp.task(taskName);
 			if (!task) {
 				throw new ConfigurationError(__filename, 'referring task not found: ' + taskName);
 			}
 			if (typeof task.run === 'function') {
-				return task.run(gulp, config, stream, done);
+				return task.run.call(ctx, done);
 			}
-			// support for tasks registered directly via gulp.task().
-			return task.call(gulp, done);
+			// support for tasks registered directly via gulp.task(), gulp.series() or gulp.parallel().
+			return task.call(ctx, done);
 		};
 		runner.displayName = taskName;
 		return runner;
 	}
 };
 
-ConfigurableTaskRunnerFactory.prototype.wrapper = function (task) {
-	if (typeof task === 'function') {
-		return function (gulp, config, stream, done) {
-			return task.call(gulp, done);
-		};
-	}
+ConfigurableTaskRunnerFactory.prototype.noop = function () {
+	return function (done) {
+		done();
+	};
 };
 
 module.exports = ConfigurableTaskRunnerFactory;

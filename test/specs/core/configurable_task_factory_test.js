@@ -68,15 +68,25 @@ describe('Core', function () {
 					actual = factory.create(prefix, taskInfo, taskConfig, configurableRunner);
 				expect(actual.displayName).to.equal(prefix + taskInfo.name);
 			});
-			it('should invoke configurableRunner() when act as a gulp task', function () {
+			it('should invoke configurableRunner() when act as a gulp task: invoked directly', function () {
+				var ctx = {
+					gulp: gulp,
+					config: taskConfig
+				};
 				var actual = factory.create('', taskInfo, taskConfig, configurableRunner);
 				actual(done);
-				expect(configurableRunner.calledWith(gulp, taskConfig, null, done)).to.be.true;
+				expect(configurableRunner.thisValues[0]).to.deep.equal({ gulp: gulp, config: taskConfig });
+				expect(configurableRunner.calledWith(done)).to.be.true;
 			});
-			it('should invoke configurableRunner() in run() method whe act as a configurable task', function () {
+			it('should invoke configurableRunner() method when act as a configurable task: invoked via configurableRunner.run()', function () {
+				var ctx = {
+					gulp: gulp,
+					config: taskConfig
+				};
 				var actual = factory.create('', taskInfo, taskConfig, configurableRunner);
-				actual.run(gulp, taskConfig, stream, done);
-				expect(configurableRunner.calledWith(gulp, taskConfig, stream, done)).to.be.true;
+				actual.run.call(ctx, done);
+				expect(configurableRunner.calledOn(ctx)).to.be.true;
+				expect(configurableRunner.calledWith(done)).to.be.true;
 			});
 			it('should be able to inject value and resolve config at runtime when act as a configurable task', function () {
 				var taskConfig = {
@@ -89,9 +99,13 @@ describe('Core', function () {
 						template: 'inject-value: resolved-value',
 						'inject-value': 'resolved-value'
 					};
+				var ctx = {
+					gulp: gulp,
+					config: injectConfig
+				};
 				var actual = factory.create('', taskInfo, taskConfig, configurableRunner);
-				actual.run(gulp, injectConfig, stream, done);
-				expect(configurableRunner.calledWith(gulp, expectedConfig, stream, done)).to.be.true;
+				actual.run.call(ctx, done);
+				expect(configurableRunner.thisValues[0].config).to.deep.equal(expectedConfig);
 			});
 		});
 		describe('#one()', function () {
