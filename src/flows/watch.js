@@ -42,15 +42,13 @@ function watchTask(gulp, config, stream, tasks, done) {
 	gulp.watch(globs, depends);
 }
 
-watchTask.requires = {
-	"lodash": ""
-};
-
 watchTask.schema = {
 	"title": "watch",
 	"description": "",
 	"type": "object",
 	"properties": {}
 };
+
+watchTask.type = 'flow';
 
 module.export = watchTask;

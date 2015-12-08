@@ -33,6 +33,7 @@ function pipe(gulp, config, stream, tasks) {
 }
 
 pipe.expose = [];
+
 pipe.schema = {
 	"title": "pipe",
 	"description": "",
@@ -40,5 +41,6 @@ pipe.schema = {
 	}
 };
 
+pipe.type = 'stream';
 
 module.exports = pipe;

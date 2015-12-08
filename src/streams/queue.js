@@ -58,10 +58,6 @@ function queue(gulp, config, stream, tasks) {
 
 queue.expose = [];
 
-queue.requires = {
-	"streamqueue": ""
-};
-
 queue.schema = {
 	"title": "queue",
 	"description": "Pipe queued streams progressively",
@@ -69,5 +65,6 @@ queue.schema = {
 	}
 };
 
+queue.type = 'stream';
 
 module.exports = queue;

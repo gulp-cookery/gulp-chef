@@ -37,10 +37,6 @@ function each(gulp, config, stream, tasks) {
 
 each.expose = [];
 
-each.requires = {
-	"merge-stream": ""
-};
-
 each.schema = {
 	"title": "each",
 	"description": "",
@@ -53,5 +49,7 @@ each.schema = {
 	},
 	"required": ["values"]
 };
+
+each.type = 'stream';
 
 module.exports = each;

@@ -58,14 +58,6 @@ function stylusTask(gulp, config, stream, done) {
 		.pipe(gulp.dest(config.dest.path, config.dest.options));
 }
 
-stylusTask.requires = {
-	"gulp-flatten": "",
-	"gulp-stylus": "",
-	"gulp-sourcemaps": "",
-	"gulp-newer": "",
-	"lodash": ""
-};
-
 stylusTask.schema = {
 	"title": "stylus",
 	"description": "",
@@ -112,5 +104,7 @@ stylusTask.schema = {
 	},
 	"required": ["src", "dest"]
 };
+
+stylusTask.type = 'task';
 
 module.exports = stylusTask;

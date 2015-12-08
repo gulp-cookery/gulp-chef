@@ -43,12 +43,6 @@ function markupsTask(gulp, config, stream, done) {
 	return stream.pipe(gulp.dest(config.dest.path, config.dest.options));
 }
 
-markupsTask.requires = {
-	"gulp-flatten": "",
-	"gulp-htmlmin": "",
-	"gulp-newer": ""
-};
-
 markupsTask.schema = {
 	"title": "markups",
 	"description": "",
@@ -82,5 +76,7 @@ markupsTask.schema = {
 	},
 	"required": ["src", "dest"]
 };
+
+markupsTask.type = 'task';
 
 module.exports = markupsTask;

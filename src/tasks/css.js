@@ -77,18 +77,6 @@ function cssTask(gulp, config, stream, done) {
 		.pipe(gulp.dest(config.dest.path, config.dest.options));
 }
 
-cssTask.requires = {
-	"gulp-flatten": "",
-	"gulp-autoprefixer": "",
-	"gulp-minify-css": "",
-	"gulp-newer": "",
-	"gulp-rename": "",
-	"gulp-sourcemaps": "",
-	"lodash": ""
-};
-
-cssTask.consumes = ['dest', 'flatten', 'options', 'sourcemap', 'sourcemaps', 'src', "min.css"];
-
 cssTask.schema = {
 	"title": "css",
 	"description": "",
@@ -153,5 +141,7 @@ cssTask.schema = {
 	},
 	"required": ["src", "dest"]
 };
+
+cssTask.type = 'task';
 
 module.exports = cssTask;

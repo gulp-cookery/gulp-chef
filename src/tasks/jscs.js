@@ -16,10 +16,6 @@ function jscsTask(gulp, config, stream, done) {
 		.pipe(jscs(config.options));
 }
 
-jscsTask.requires = {
-	"jscs": ""
-};
-
 jscsTask.schema = {
 	"title": "jscs",
 	"description": "",
@@ -45,5 +41,7 @@ jscsTask.schema = {
 	},
 	"required": ["src"]
 };
+
+jscsTask.type = 'task';
 
 module.exports = jscsTask;

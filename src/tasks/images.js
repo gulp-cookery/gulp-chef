@@ -93,14 +93,6 @@ function imagesTaskV2(gulp, config, stream, done) {
 		.pipe(gulp.dest(config.dest.path, config.dest.options));
 }
 
-imagesTaskV2.requires = {
-	"gulp-flatten": "",
-	"file-contents": "",
-	"gulp-imagemin": "",
-	"gulp-newer": "",
-	"lodash": ""
-};
-
 imagesTaskV2.schema = {
 	"title": "images",
 	"description": "",
@@ -139,5 +131,7 @@ imagesTaskV2.schema = {
 	},
 	"required": ["src", "dest"]
 };
+
+imagesTaskV2.type = 'task';
 
 module.exports = imagesTaskV2;

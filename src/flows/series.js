@@ -21,16 +21,13 @@ function series(gulp, config, stream, tasks, done) {
 	}, done);
 }
 
-series.requires = {
-	"async": "",
-	"async-done": ""
-};
-
 series.schema = {
 	"title": "series",
 	"description": "Run the functions in the tasks array in series, each one running once the previous function has completed.",
 	"type": "object",
 	"properties": {}
 };
+
+series.type = 'flow';
 
 module.exports = series;

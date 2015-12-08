@@ -36,11 +36,6 @@ function uglifyTask(gulp, config, stream) {
 	return stream;
 }
 
-uglifyTask.requires = {
-	"gulp-rename": "",
-	"gulp-uglify": ""
-};
-
 uglifyTask.schema = {
 	"title": "uglify",
 	"description": "",
@@ -68,5 +63,7 @@ uglifyTask.schema = {
 	},
 	"required": ["src", "dest", "file"]
 };
+
+uglifyTask.type = 'task';
 
 module.exports = uglifyTask;

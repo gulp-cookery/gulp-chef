@@ -28,10 +28,6 @@ function copyTask(gulp, config, stream, done) {
 	return stream.pipe(gulp.dest(config.dest.path, config.dest.options));
 }
 
-copyTask.requires = {
-	"gulp-flatten": ""
-};
-
 copyTask.schema = {
 	"title": "copy",
 	"description": "",
@@ -49,5 +45,7 @@ copyTask.schema = {
 	},
 	"required": ["src", "dest"]
 };
+
+copyTask.type = 'task';
 
 module.exports = copyTask;

@@ -33,4 +33,6 @@ help.schema = {
 	}
 };
 
+help.type = 'task';
+
 module.exports = help;

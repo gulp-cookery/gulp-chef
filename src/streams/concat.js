@@ -39,11 +39,6 @@ function concat(gulp, config, stream, tasks) {
 		.pipe(gulp.dest(config.dest.path, config.dest.options));
 }
 
-concat.requires = {
-	"gulp-concat": "",
-	"streamqueue": ""
-};
-
 concat.schema = {
 	"title": "concat",
 	"description": "Concatenates files",
@@ -61,5 +56,7 @@ concat.schema = {
 	},
 	"required": ["dest", "file"]
 };
+
+concat.type = 'stream';
 
 module.exports = concat;

@@ -54,15 +54,13 @@ function merge(gulp, config, stream, tasks) {
 
 merge.expose = [];
 
-merge.requires = {
-	"merge-stream": ""
-};
-
 merge.schema = {
 	"title": "merge",
 	"description": "",
 	"properties": {
 	}
 };
+
+merge.type = 'stream';
 
 module.exports = merge;

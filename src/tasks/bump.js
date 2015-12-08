@@ -66,14 +66,6 @@ function bumpTask(gulp, config, stream, done) {
 	}
 }
 
-// TODO: let configure() check task.requires first, and see if the deps installed. Add deps to host project's package.json's devDependencies section when necessary. And prompt user to run `npm update`.
-// TODO: thought no.2: make every recipe a standalone module with package.json, and read deps form it. trade-off: too heavy, hard to install to sub-dir, hard to tell stream task or recipe task.
-bumpTask.requires = {
-	"semver": "",
-	"gulp-bump": "",
-	"gulp-prompt": ""
-};
-
 bumpTask.schema = {
 	"title": "bump",
 	"description": "Bump semver versions.",
@@ -111,5 +103,7 @@ bumpTask.schema = {
 	},
 	"required": ["target"]
 };
+
+bumpTask.type = 'task';
 
 module.exports = bumpTask;

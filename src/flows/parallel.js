@@ -26,16 +26,13 @@ function parallel(gulp, config, stream, tasks, done) {
 	}, done);
 }
 
-parallel.requires = {
-	"async": "",
-	"async-done": ""
-};
-
 parallel.schema = {
 	"title": "parallel",
 	"description": "Run the tasks array of functions in parallel, without waiting until the previous function has completed.",
 	"type": "object",
 	"properties": {}
 };
+
+parallel.type = 'flow';
 
 module.exports = parallel;

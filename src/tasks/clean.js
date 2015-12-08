@@ -20,14 +20,13 @@ cleanTask.schema = {
 	"title": "clean",
 	"description": "",
 	"properties": {
-		"src": {
-			"description": ""
-		},
 		"dest": {
 			"description": ""
 		}
 	},
-	"required": []
+	"required": ["dest"]
 };
+
+cleanTask.type = 'task';
 
 module.exports = cleanTask;
