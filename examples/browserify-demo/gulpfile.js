@@ -5,10 +5,6 @@ var recipes = config({
 	src: 'app',
 	dest: 'dist',
 	clean: {
-		src: {
-			glob: 'dist',
-			override: true
-		}
 	},
 	scripts: {
 		browserify: {
