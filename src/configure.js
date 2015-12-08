@@ -1,4 +1,7 @@
 'use strict';
+
+// TODO: use ESLint
+
 var ConfigurableTaskRunnerFactory = require('./core/configurable_runner_factory'),
 	ConfigurableTaskFactory = require('./core/configurable_task_factory'),
 	Configuration = require('./core/configuration'),

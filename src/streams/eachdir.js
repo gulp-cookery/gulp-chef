@@ -1,6 +1,5 @@
 'use strict';
 
-// TODO: use ESLint
 /*jshint node: true */
 /*global process*/
 /**
