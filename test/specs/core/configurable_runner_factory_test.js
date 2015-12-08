@@ -169,33 +169,5 @@ describe('Core', function () {
 				expect(configurableTask.run.calledWithExactly(gulp, {}, null, done)).to.be.true;
 			});
 		});
-		describe('#parallel()', function () {
-			var tasks;
-
-			beforeEach(function () {
-				tasks = [
-					'gulp-task-by-ref',			// reference to registered gulp task
-					'configurable-task-by-ref',	// reference to registered configurable task runner
-					gulpTask,					// registered gulp task
-					configurableTask,			// registered configurable task runner
-					Sinon.spy()					// stand-alone gulp task (not registered to gulp)
-				];
-			});
-
-			it('should create a function', function () {
-				var actual = factory.parallel(tasks);
-				expect(actual).to.be.a('function');
-			});
-
-			it('should each tasks eventually be called when call the generated function', function () {
-				var actual = factory.parallel(tasks);
-				actual(gulp, {}, null, done);
-				expect(gulp.task('gulp-task-by-ref').called).to.be.true;
-				expect(gulp.task('configurable-task-by-ref').run.called).to.be.true;
-				expect(gulpTask.called).to.be.true;
-				expect(configurableTask.run.called).to.be.true;
-				expect(configurableTask.run.calledWith(gulp, {}, null)).to.be.true;
-			});
-		});
 	});
 });

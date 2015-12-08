@@ -35,8 +35,6 @@ var _ = require('lodash'),
 var Configuration = require('./configuration'),
 	ConfigurationError = require('./configuration_error');
 
-var parallel = require('../flows/parallel');
-
 function hasSubTasks(config) {
 	return _.size(config.subTaskConfigs) > 0;
 }
@@ -71,7 +69,7 @@ ConfigurableTaskRunnerFactory.prototype.create = function (prefix, configs, crea
 
 	function taskRunner() {
 		var task = configs.taskInfo.task;
-		return inlineRunner() || referenceRunner() || parallelRunner();
+		return inlineRunner() || referenceRunner();
 
 		function inlineRunner() {
 			if (typeof task === 'function') {
@@ -82,12 +80,6 @@ ConfigurableTaskRunnerFactory.prototype.create = function (prefix, configs, crea
 		function referenceRunner() {
 			if (typeof task === 'string') {
 				return self.reference(task);
-			}
-		}
-
-		function parallelRunner() {
-			if (Array.isArray(task)) {
-				return self.parallel(task);
 			}
 		}
 	}
@@ -192,35 +184,6 @@ ConfigurableTaskRunnerFactory.prototype.reference = function (taskName) {
 		};
 		runner.displayName = taskName;
 		return runner;
-	}
-};
-
-ConfigurableTaskRunnerFactory.prototype.parallel = function (tasks) {
-	var self = this;
-
-	if (Array.isArray(tasks)) {
-
-		tasks = tasks.map(function (task) {
-			if (typeof task === 'string') {
-				return self.reference(task);
-			} else if (typeof task === 'function') {
-				if (typeof task.run === 'function') {
-					return task.run;
-				}
-				return self.wrapper(task);
-			}
-			return function () {};
-		});
-
-		return function (gulp, config, stream/*, done*/) {
-			// TODO: replace fake implementation
-			for (var i = 0; i < tasks.length; ++i) {
-				tasks[i](gulp, config, stream, done);
-			}
-
-			function done() {
-			}
-		};
 	}
 };
 
