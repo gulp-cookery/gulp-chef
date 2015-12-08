@@ -23,7 +23,7 @@ ConfigurableTaskRunnerRegistry.prototype.lookup = function (name) {
 	return this.runners[name];
 };
 
-ConfigurableTaskRunnerRegistry.builder = function () {
+ConfigurableTaskRunnerRegistry.builder = function (type) {
 	var runners = {};
 
 	return {
@@ -34,7 +34,7 @@ ConfigurableTaskRunnerRegistry.builder = function () {
 		},
 		npm: function (options) {
 			var recipes = loadPlugins(_.defaults(options || {}, defaults));
-			lazyDefaults(runners, recipes);
+			lazyDefaults(runners, recipes, type);
 			return this;
 		},
 		build: function() {
@@ -43,7 +43,7 @@ ConfigurableTaskRunnerRegistry.builder = function () {
 	};
 };
 
-function lazyDefaults(target, source) {
+function lazyDefaults(target, source, type) {
 	var properties = Object.getOwnPropertyNames(source);
 	properties.forEach(function (property) {
 		if (!target.hasOwnProperty(property)) {
@@ -55,7 +55,12 @@ function lazyDefaults(target, source) {
 		var descriptor = Object.getOwnPropertyDescriptor(source, property);
 		if (descriptor.get) {
 			Object.defineProperty(target, property, {
-				get: descriptor.get
+				get: function () {
+					var inst = descriptor.get();
+					if (inst.type === type) {
+						return inst;
+					}
+				}
 			});
 		} else {
 			target[property] = source[property];
