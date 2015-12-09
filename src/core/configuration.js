@@ -9,19 +9,6 @@ var _ = require('lodash'),
 var ConfigurationError = require('./configuration_error');
 
 var INTERPOLATE = /{{([\s\S]+?)}}/g,
-	TASK_SCHEMAS = {
-		"name": "Name of this task.",
-		"description": "",
-		"order": "Series execution order of this task. Just used to sort, don't have to be unique or continuous.",
-		"task": "Inline task function or reference to other task",
-		"visibility": "",
-		"runtime": ""
-	},
-	TASK_SCHEMA_MAPPINGS = {
-		title: 'name',
-		description: 'description'
-	},
-	TASK_METADATAS = Object.keys(TASK_SCHEMAS),
 	SCHEMA_SRC = {
 		"properties": {
 			"globs": {
@@ -260,7 +247,35 @@ var INTERPOLATE = /{{([\s\S]+?)}}/g,
 			"src": SCHEMA_SRC,
 			"dest": SCHEMA_DEST
 		}
-	};
+	},
+	SCHEMA_TASK = {
+		"properties": {
+			"name": {
+				"description": "Name of this task."
+			},
+			"description": {
+				"description": ""
+			},
+			"order": {
+				"description": "Series execution order of this task. Just used to sort, don't have to be unique or continuous."
+			},
+			"task": {
+				"description": "Inline task function or reference to other task"
+			},
+			"visibility": {
+				"description": ""
+			},
+			"runtime": {
+				"description": ""
+			}
+		}
+	},
+	TASK_SCHEMA_MAPPINGS = {
+		title: 'name',
+		description: 'description'
+	},
+	TASK_METADATAS = Object.keys(SCHEMA_TASK.properties);
+
 
 var REGEX_RUNTIME_OPTIONS = /^([.#]?)([_\w][-_:\s\w]*)([!?]?)$/;
 

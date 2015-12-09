@@ -170,6 +170,8 @@ ConfigurableTaskRunnerFactory.prototype.composite = function (runner, tasks) {
 ConfigurableTaskRunnerFactory.prototype.reference = function (taskName) {
 	var runner;
 
+	// TODO: try to dereference early: task maybe already available.
+	// TODO: try to dereference after end of configure() call, and report error if missing.
 	if (typeof taskName === 'string') {
 		runner = function (done) {
 			var ctx = this;
