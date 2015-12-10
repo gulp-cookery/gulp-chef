@@ -1,32 +1,5 @@
 'use strict';
 
-/**
- *
- * Normal GulpTask:
- *
- * function gulpTask(done) {
- * }
- *
- *
- * ConfigurableTask:
- * (signature same as normal gulp task and can be used just as normal gulp task)
- *
- * function configurableTask(done) {
- * }
- *
- *
- * ConfigurableTask Runner:
- * ConfigurableTask Runner is called with config, and be wrapped in ConfigurableTask.run().
- *
- * configurableTask.run = function (gulp, config, stream, done) {
- * }
- *
- * configurableTask.displayName
- * configurableTask.description
- * configurableTask.schemRefactoring helpersa
- *
- */
-
 var _ = require('lodash'),
 	log = require('gulp-util').log;
 
