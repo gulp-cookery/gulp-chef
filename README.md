@@ -91,7 +91,7 @@ styles: {
   dest: 'dist'
 }
 ```
-If you want sub tasks executed in __series__, you can use `series` "flow control", and add `order` property to them:
+If you want sub tasks executed in __series__, you can use `series` "flow controller", and add `order` property to them:
 ```
 var recipes = configure({
   src: 'src',
@@ -133,6 +133,44 @@ function configurableTaskRunner(done) {
 }
 ```
 
+There are 3 kinds of recipes: "task", "stream processor" and "flow controller".
+
+If you write recipes only for your own project use, you can put them in sub folders within your project's root folder:
+
+type            |folder
+----------------|------------------
+task            |gulp, gulp/tasks
+stream processor|gulp/streams
+flow controller |gulp/flows
+
+If you willing to share your recipes, you can write them as plugins. Check out [Write Plugins] for how.
+
+If your recipes do not need configuration, you can write them just as normal gulp tasks. That is, your existing gulp tasks are already reusable recipes! You just need to put them in a standalone module file separately, and put to the "gulp" folder within your project's root folder.
+
+To use your existing recipe, write a configuration with a property name same as your recipe's module name.
+For example, say you have your "my-recipe.js" recipe in `<your-project>/gulp` folder. Write a configuration to reference it:
+```
+var recipes = configure({
+	"my-recipe": {}
+});
+```
+Then you can run it by executing `gulp my-recipe` from console.
+
+However, configurations helps maximizing the reusability of recpies. A configurable task runner takes its configurations via its execution context, i.e., `this` variable.
+```
+function scripts(done) {
+	var gulp = this.gulp,
+		config = this.config;
+
+	return gulp.src(config.src)
+		.pipe(eslint())
+		.pipe(concat())
+		.pipe(uglify())
+		.pipe(gulp.dest(config.dest));
+}
+
+module.exports = scripts;
+```
 
 ## Task
 
@@ -156,7 +194,7 @@ function configurableTaskRunner(done) {
 
 
 
-## Flow Control
+## Flow Controller
 
 ### parallel
 
@@ -164,3 +202,5 @@ function configurableTaskRunner(done) {
 
 ### watch
 
+
+## Write Plugins
