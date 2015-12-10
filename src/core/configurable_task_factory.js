@@ -161,8 +161,8 @@ ConfigurableTaskFactory.prototype.multiple = function (prefix, subTaskConfigs, p
 };
 
 ConfigurableTaskFactory.prototype.create = function (prefix, taskInfo, taskConfig, configurableRunner) {
-	var registry = this.registry,
-		stuff = this.stuff;
+	var registry = this.registry;
+
 	// make sure config is inherited at config time and injected, realized at runtime.
 	// invoked from stream processor
 	var run = function (done) {
