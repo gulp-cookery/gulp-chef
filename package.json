@@ -26,7 +26,7 @@
     "del": "^1.2.0",
     "glob": "^6.0.1",
     "globby": "^2.1.0",
-    "globjoin": "git+https://github.com/amobiz/globjoin.git",
+    "globjoin": "^0.1.1",
     "gulp-load-plugins": "^1.1.0",
     "gulp-util": "^3.0.6",
     "json-normalizer": "^0.2.2",
