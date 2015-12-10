@@ -159,7 +159,6 @@ ConfigurableTaskRunnerFactory.prototype.stream = compositeCreator('streams', 'me
 });
 
 ConfigurableTaskRunnerFactory.prototype.composite = function (runner, tasks) {
-	// NOTE: important! watch the difference of signature between recipe runner and stream runner.
 	return function (done) {
 		var ctx = this;
 		ctx.tasks = tasks;
