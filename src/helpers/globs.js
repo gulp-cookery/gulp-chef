@@ -11,12 +11,18 @@ function folders(globs, options) {
 
 	options = options || {};
 	base = options.base || '';
-	return globby.sync(globs, options)
-		.filter(function (file) {
-			return FileSystem.statSync(Path.join(base, file)).isDirectory();
-		});
+	return globby.sync(globs, options).filter(isDirectory);
+}
+
+function isDirectory(path) {
+	try {
+		return FileSystem.statSync(path).isDirectory();
+	} catch (ex) {
+		return false;
+	}
 }
 
 exports.folders = folders;
+exports.isDirectory = isDirectory;
 exports.join = globjoin;
 exports.isGlob = glob.hasMagic;
