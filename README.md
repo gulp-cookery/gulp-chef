@@ -30,14 +30,14 @@ gulp.task(myTask);
 
 ### Configurable Task
 
-A configurable task has signature same as normal gulp task, and can be used just as a normal gulp task. But, were called with an object: `{ gulp, config, upstream }`as context.
-Configurations come from the json that passed to `configure()` function.
+A configurable task has signature same as normal gulp task, and can be used just as a normal gulp task. But, were called with an object: `{ gulp, config, upstream }`as context. Configurable tasks are called with
+configurations come from the json object that passed to `configure()` function.
 ```
 function configurableTask(done) {
 }
 ```
 
-You don't write a configurable task function, instead, you create a configurable task by defining a configuration, and call `configure()` function.
+You don't write configurable tasks, instead, you create a configurable task by defining a configuration, and call `configure()` function.
 ```
 var gulp = require('gulp');
 var configure = require('configurable-gulp-recipes');
@@ -49,7 +49,7 @@ var recipes = configure({
 });
 gulp.registry(recipes);
 ```
-This creates a configurable task called "`scripts`" for you, and can be accessed via`recipes.get('scripts')`. The configurable task will be called with the configuration defined with it, some kind of like this:
+This generates a configurable task called "`scripts`" for you, and can be accessed via`recipes.get('scripts')`. The configurable task will be called with the configuration defined with it, some kind of like this:
 ```
 scripts.call({
   gulp: gulp,
@@ -83,7 +83,7 @@ This creates __3__ configurable tasks for you: "`build`", "`build:scripts`" and 
 
 #### Parallel Tasks
 
-When you run `build`, its sub tasks `scripts` and `styles` will be executed in __parallel__, and be called with configurations like this:
+In the above example, when you run `build`, its sub tasks `scripts` and `styles` will be executed in __parallel__, and be called with configurations like this:
 ```
 scripts: {
   src: 'src/**/*.js',
@@ -134,7 +134,7 @@ var recipes = configure({
 
 #### Referencing Tasks
 
-Or you can reference other task by its name.
+You can reference other task by its name.
 ```
 var recipes = configure({
   src: 'src',
@@ -149,6 +149,8 @@ var recipes = configure({
   build: ['clean', ['scripts', 'styles']]
 };
 ```
+
+Referencing tasks won't generate new task names, so you can't run them in console. In this example, only `clean`, `scripts`, `styles` and `build` task were generated.
 
 Note in the above example, `scripts` and `styles` are in array, so they will be executed in series. You can use `parallel` "flow controller" to change this behavior.
 ```
@@ -167,11 +169,11 @@ var recipes = configure({
 ```
 
 
-### Configurable Task Runner
+### Configurable Recipe
 
-A configurable task runner is the actual function that do things, and also has signature same as normal gulp task. A configurable task runner is the actual __recipe__ you want to write and reuse.
+A configurable recipe is the actual function that do things, and also has signature same as normal gulp task. A configurable recipe is the actual __recipe__ you want to write and reuse. In fact, "configurable task" is simply a wrapper that calls "configurable recipe" with exactly the same name.
 ```
-function configurableTaskRunner(done) {
+function configurableRecipe(done) {
 }
 ```
 
@@ -238,12 +240,20 @@ var recipes = configure({
 
 ## Stream Processor
 
+A stream processor manipulates its sub tasks' input and/or output streams.
+
+In the "Configurable Recipe" section, that said "configurable task" is simply a wrapper that calls "configurable recipe" with exactly the same name. That's not entirely true. Stream processor may not has the same name as "configurable task".
+
 ### merge
+A merge stream processor creates a new stream, that ends only when all its sub tasks' stream ends.
+See [merge-stream](https://www.npmjs.com/package/merge-stream) for details.
 
 ### queue
+A queue stream processor creates a new stream, that pipe queued streams of its sub tasks progressively, keeping datas order.
+See [streamqueue](https://www.npmjs.com/package/streamqueue) for details.
 
 ### pipe
-
+Provides `gulp.pipe()` functionality. Pipe streams from one sub task to another.
 
 
 
