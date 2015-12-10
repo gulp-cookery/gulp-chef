@@ -62,7 +62,7 @@ scripts.call({
 
 Note the `configure()` function returns a registry, you can call `gulp.registry()` to register all available tasks in the registry.
 
-#### Nesting Tasks
+#### Nesting Task
 
 Tasks can be nested. Sub tasks lexically inherits its parent's configurations. And even better, for some predefined properties, e.g. `src`, `dest`, paths are joined automatically.
 ```
@@ -132,7 +132,7 @@ var recipes = configure({
 };
 ```
 
-#### Referencing Tasks
+#### Referencing Task
 
 You can reference other task by its name.
 ```
@@ -163,6 +163,43 @@ var recipes = configure({
   },
   styles: {
     src: '**/*.css'
+  },
+  build: ['clean', { parallel: ['scripts', 'styles'] }]
+};
+```
+
+#### Raw Task
+Tasks can be normal Javascript functions and referenced directly.
+```
+function clean(done) {
+	del('dist', done);
+}
+
+function scripts(done) {
+	// ...
+}
+
+function styles(done) {
+	// ...
+}
+
+var recipes = configure({
+  build: [clean, { parallel: [scripts, styles] }]
+};
+```
+
+#### Inline Task
+Tasks can be defined inline and referenced by name.
+```
+var recipes = configure({
+  src: 'src',
+  dest: 'dist',
+  clean: function (done) {
+	del(this.dest.path, done);
+  },
+  scripts: function (done) {
+  },
+  styles: function (done) {
   },
   build: ['clean', { parallel: ['scripts', 'styles'] }]
 };
@@ -206,11 +243,11 @@ function scripts(done) {
 	var gulp = this.gulp,
 		config = this.config;
 
-	return gulp.src(config.src)
+	return gulp.src(config.src.globs)
 		.pipe(eslint())
 		.pipe(concat(config.file))
 		.pipe(uglify())
-		.pipe(gulp.dest(config.dest));
+		.pipe(gulp.dest(config.dest.path));
 }
 
 module.exports = scripts;
