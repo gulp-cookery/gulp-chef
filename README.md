@@ -143,7 +143,7 @@ task            |gulp, gulp/tasks
 stream processor|gulp/streams
 flow controller |gulp/flows
 
-If you willing to share your recipes, you can write them as plugins. Check out [Write Plugins] for how.
+If you willing to share your recipes, you can write them as plugins. Check out [Writing Plugins] for how.
 
 If your recipes do not need configuration, you can write them just as normal gulp tasks. That is, your existing gulp tasks are already reusable recipes! You just need to put them in a standalone module file separately, and put to the "gulp" folder within your project's root folder.
 
@@ -164,7 +164,7 @@ function scripts(done) {
 
 	return gulp.src(config.src)
 		.pipe(eslint())
-		.pipe(concat())
+		.pipe(concat('bundle.js'))
 		.pipe(uglify())
 		.pipe(gulp.dest(config.dest));
 }
@@ -203,4 +203,4 @@ module.exports = scripts;
 ### watch
 
 
-## Write Plugins
+## Writing Plugins
