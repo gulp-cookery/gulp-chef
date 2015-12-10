@@ -452,8 +452,7 @@ function resolveDest(child, parent) {
 	if (child.dest) {
 		value = dest(child.dest);
 		if (parent.dest && !(value.options && value.options.override)) {
-			// force dest since it may not already exists (dest must be a folder).
-			value.path = globsJoin(parent.dest.path, value.path, true);
+			value.path = globsJoin(parent.dest.path, value.path);
 		}
 		return value;
 	} else {
