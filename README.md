@@ -168,6 +168,23 @@ var recipes = configure({
 };
 ```
 
+To reference sub tasks, use their full name.
+```
+var recipes = configure({
+  src: 'src',
+  dest: 'dist',
+  build: {
+	scripts: {
+	  src: '**/*.js'
+	},
+	styles: {
+	  src: '**/*.css'
+	}
+  },
+  watch: ['build:scripts', 'build:styles']
+});
+```
+
 #### Raw Task
 Tasks can be normal Javascript functions and referenced directly.
 ```
