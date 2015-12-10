@@ -7,7 +7,7 @@ Gulp 4.0 recipes ready to use and configurable.
 
 ### Gulp Task
 
-Start from gulp 4.0, a normal gulp task takes `undefined` as context,
+Starting from gulp 4.0, a normal gulp task takes `undefined` as context,
 and returns stream / promise, or call `done()` callback when finished.
 ```
 function gulpTask(done) {
