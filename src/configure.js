@@ -8,9 +8,9 @@ var ConfigurableTaskRunnerFactory = require('./core/configurable_runner_factory'
 	Registry = require('./core/registry');
 
 function configure(rawConfigs, options) {
-	var registry = new Registry(),
+	var registry = new Registry(onInitGulp),
 		stuff = require('./stuff')(options),
-		runnerFactory = new ConfigurableTaskRunnerFactory(stuff),
+		runnerFactory = new ConfigurableTaskRunnerFactory(stuff, registry),
 		taskFactory = new ConfigurableTaskFactory(stuff, runnerFactory, registry),
 		configs = Configuration.sort({}, rawConfigs, {}, Configuration.SCHEMA_COMMONS),
 		helpRunner = stuff.recipes.lookup('help');
@@ -21,6 +21,13 @@ function configure(rawConfigs, options) {
 
 	// export recipes registry
 	return registry;
+
+	function onInitGulp(gulp) {
+		var missing = registry.missing(gulp);
+		if (missing) {
+			console.log('Warning: missing task reference: ' + missing.join(', '));
+		}
+	}
 }
 
 module.exports = configure;

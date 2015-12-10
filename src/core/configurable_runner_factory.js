@@ -45,8 +45,9 @@ function hasSubTasks(config) {
  * @param stuff
  * @constructor
  */
-function ConfigurableTaskRunnerFactory(stuff) {
+function ConfigurableTaskRunnerFactory(stuff, registry) {
 	this.stuff = stuff;
+	this.registry = registry;
 }
 
 ConfigurableTaskRunnerFactory.prototype.create = function (prefix, configs, createConfigurableTasks) {
@@ -167,24 +168,24 @@ ConfigurableTaskRunnerFactory.prototype.composite = function (runner, tasks) {
 };
 
 ConfigurableTaskRunnerFactory.prototype.reference = function (taskName) {
-	var runner;
+	var task, runner;
 
-	// TODO: try to dereference early: task maybe already available.
-	// TODO: try to dereference after end of configure() call, and report error if missing.
 	if (typeof taskName === 'string') {
+		task = this.registry.refer(taskName);
+		if (task) {
+			return task.run || task;
+		}
 		runner = function (done) {
 			var ctx = this;
 			var task = ctx.gulp.task(taskName);
-			if (!task) {
+			if (typeof task !== 'function') {
 				throw new ConfigurationError(__filename, 'referring task not found: ' + taskName);
 			}
-			if (typeof task.run === 'function') {
-				return task.run.call(ctx, done);
-			}
-			// support for tasks registered directly via gulp.task(), gulp.series() or gulp.parallel().
+			// support for configurable task,
+			// or tasks registered directly via gulp.task().
+			task = task.run || task;
 			return task.call(ctx, done);
 		};
-		runner.displayName = taskName;
 		return runner;
 	}
 };

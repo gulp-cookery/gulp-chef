@@ -9,27 +9,29 @@ var _ = require('lodash');
 var base = process.cwd();
 
 var ConfigurableTaskRunnerFactory = require(base + '/src/core/configurable_runner_factory'),
-	ConfigurationError = require(base + '/src/core/configuration_error');
+	ConfigurationError = require(base + '/src/core/configuration_error'),
+	Registry = require(base + '/src/core/registry');
 
 var FakeFactory = require(base + '/test/fake/factory');
 var createFakeStuff = require(base + '/test/fake/stuff');
 
 describe('Core', function () {
 	describe('ConfigurableTaskRunnerFactory', function () {
-		var gulp, factory, stuff, gulpTask, subTasks, asObject, asArray,
+		var gulp, factory, registry, stuff, gulpTask, subTasks, asObject, asArray,
 			configurableTask, createConfigurableTasks;
 
 		function done(err) {
 		}
 
 		beforeEach(function () {
+			registry = new Registry();
 			stuff = createFakeStuff();
 			createConfigurableTasks = Sinon.spy(function (prefix, subTaskConfigs) {
 				return subTasks = _.map(subTaskConfigs, function (config, name) {
 					return FakeFactory.createSpyConfigurableTask(name);
 				});
 			});
-			factory = new ConfigurableTaskRunnerFactory(stuff);
+			factory = new ConfigurableTaskRunnerFactory(stuff, registry);
 			gulp = FakeFactory.createFakeGulp();
 
 			// task: gulp-task

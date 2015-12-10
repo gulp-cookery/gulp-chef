@@ -185,6 +185,7 @@ ConfigurableTaskFactory.prototype.create = function (prefix, taskInfo, taskConfi
 	set(configurableTask, 'description', taskInfo.description || configurableRunner.description);
 	set(configurableTask, 'visibility', taskInfo.visibility);
 	set(configurableTask, 'runtime', taskInfo.runtime);
+	configurableTask.runner = configurableRunner;
 	configurableTask.run = run;
 	configurableTask.config = taskConfig;
 	if (Configuration.isVisible(configurableTask)) {

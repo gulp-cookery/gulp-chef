@@ -26,7 +26,7 @@ describe('Core', function () {
 				registry = new Registry();
 			gulp = FakeFactory.createFakeGulp();
 			gulp.registry(registry);
-			factory = new ConfigurableTaskFactory(stuff, new ConfigurableTaskRunnerFactory(stuff), registry);
+			factory = new ConfigurableTaskFactory(stuff, new ConfigurableTaskRunnerFactory(stuff, registry), registry);
 			gulpTask = gulp.task('gulp-task');
 			configurableTask = gulp.task('configurable-task');
 		});
