@@ -2,6 +2,10 @@
 
 Gulp 4.0 recipes ready to use and configurable.
 
+## Install
+```
+$ npm install --save-dev https://github.com/amobiz/configurable-gulp-recipes.git
+```
 
 ## Terminology
 
@@ -27,13 +31,13 @@ gulp.task(myTask);
 ### Configurable Task
 
 A configurable task has signature same as normal gulp task, and can be used just as a normal gulp task. But, were called with an object: `{ gulp, config, upstream }`as context.
-Configs come from the json that passed to `configure()` function.
+Configurations come from the json that passed to `configure()` function.
 ```
 function configurableTask(done) {
 }
 ```
 
-You don't have to write a configurable task function, instead, you create a configurable task by defining a configuration, and call `configure()` function.
+You don't write a configurable task function, instead, you create a configurable task by defining a configuration, and call `configure()` function.
 ```
 var gulp = require('gulp');
 var configure = require('configurable-gulp-recipes');
@@ -58,7 +62,7 @@ scripts.call({
 
 Note the `configure()` function returns a registry, you can call `gulp.registry()` to register all available tasks in the registry.
 
-Tasks can be nested. Sub tasks lexically inherits its parent's configurations. Even better, for some predefined properties, e.g. `src`, `dest`, paths are joined automatically.
+Tasks can be nested. Sub tasks lexically inherits its parent's configurations. And even better, for some predefined properties, e.g. `src`, `dest`, paths are joined automatically.
 ```
 var recipes = configure({
   src: 'src',
@@ -73,7 +77,9 @@ var recipes = configure({
   }
 });
 ```
-This creates __3__ configurable tasks for you: "`build`", "`build:scripts`" and "`build:styles`". When you run `build`, its sub tasks `scripts` and `styles` will be executed in __parallel__, and be called with configurations like this:
+This creates __3__ configurable tasks for you: "`build`", "`build:scripts`" and "`build:styles`".
+
+When you run `build`, its sub tasks `scripts` and `styles` will be executed in __parallel__, and be called with configurations like this:
 ```
 scripts: {
   src: 'src/**/*.js',
@@ -126,3 +132,35 @@ A configurable task runner is the actual function that do things, and also has s
 function configurableTaskRunner(done) {
 }
 ```
+
+
+## Task
+
+### clean
+
+### copy
+
+### help
+
+
+
+
+## Stream Processor
+
+### merge
+
+### queue
+
+### pipe
+
+
+
+
+## Flow Control
+
+### parallel
+
+### series
+
+### watch
+
