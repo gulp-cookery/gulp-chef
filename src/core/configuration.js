@@ -460,13 +460,14 @@ function resolveDest(child, parent) {
 	}
 }
 
+// TODO: process 'development' / 'product' mode.
+
 /**
  * If both parentConfig and taskConfig specified src property
  * then try to join paths.
  */
 function sort(taskInfo, rawConfig, parentConfig, schema) {
 	var inheritedConfig, taskConfig, subTaskConfigs, value;
-
 
 	if (_.isPlainObject(rawConfig)) {
 		from(rawConfig).to(taskInfo).move(TASK_METADATAS);
