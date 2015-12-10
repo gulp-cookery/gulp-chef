@@ -62,6 +62,8 @@ scripts.call({
 
 Note the `configure()` function returns a registry, you can call `gulp.registry()` to register all available tasks in the registry.
 
+#### Nesting Tasks
+
 Tasks can be nested. Sub tasks lexically inherits its parent's configurations. And even better, for some predefined properties, e.g. `src`, `dest`, paths are joined automatically.
 ```
 var recipes = configure({
@@ -79,6 +81,8 @@ var recipes = configure({
 ```
 This creates __3__ configurable tasks for you: "`build`", "`build:scripts`" and "`build:styles`".
 
+#### Parallel Tasks
+
 When you run `build`, its sub tasks `scripts` and `styles` will be executed in __parallel__, and be called with configurations like this:
 ```
 scripts: {
@@ -91,6 +95,9 @@ styles: {
   dest: 'dist'
 }
 ```
+
+#### Series Tasks
+
 If you want sub tasks executed in __series__, you can use `series` "flow controller", and add `order` property to them:
 ```
 var recipes = configure({
@@ -124,6 +131,41 @@ var recipes = configure({
   }]
 };
 ```
+
+#### Referencing Tasks
+
+Or you can reference other task by its name.
+```
+var recipes = configure({
+  src: 'src',
+  dest: 'dist',
+  clean: {},
+  scripts: {
+    src: '**/*.js'
+  },
+  styles: {
+    src: '**/*.css'
+  },
+  build: ['clean', ['scripts', 'styles']]
+};
+```
+
+Note in the above example, `scripts` and `styles` are in array, so they will be executed in series. You can use `parallel` "flow controller" to change this behavior.
+```
+var recipes = configure({
+  src: 'src',
+  dest: 'dist',
+  clean: {},
+  scripts: {
+    src: '**/*.js'
+  },
+  styles: {
+    src: '**/*.css'
+  },
+  build: ['clean', { parallel: ['scripts', 'styles'] }]
+};
+```
+
 
 ### Configurable Task Runner
 
@@ -164,12 +206,23 @@ function scripts(done) {
 
 	return gulp.src(config.src)
 		.pipe(eslint())
-		.pipe(concat('bundle.js'))
+		.pipe(concat(config.file))
 		.pipe(uglify())
 		.pipe(gulp.dest(config.dest));
 }
 
 module.exports = scripts;
+```
+And can be configured as:
+```
+var recipes = configure({
+	src: 'src',
+	dest: 'dist',
+	scripts: {
+		src: '**/*.js',
+		file: 'bundle.js'
+	}
+});
 ```
 
 ## Task
