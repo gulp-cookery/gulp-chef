@@ -191,7 +191,7 @@ If you willing to share your recipes, you can write them as plugins. Check out [
 
 If your recipes do not need configuration, you can write them just as normal gulp tasks. That is, your existing gulp tasks are already reusable recipes! You just need to put them in a standalone module file separately, and put to the "gulp" folder within your project's root folder.
 
-To use your existing recipe, write a configuration with a property name same as your recipe's module name.
+To use your existing recipe, write a configuration with a property name exactly same as your recipe's module name.
 For example, say you have your "my-recipe.js" recipe in `<your-project>/gulp` folder. Write a configuration to reference it:
 ```
 var recipes = configure({
