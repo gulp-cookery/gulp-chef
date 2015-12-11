@@ -376,7 +376,7 @@ var recipes = configure({
 ```
 Then you can run it by executing `gulp my-recipe` from console.
 
-However, configurations helps maximizing the reusability of recpies. A configurable task runner takes its configurations via its execution context, i.e., `this` variable.
+However, configurations helps maximizing the reusability of recpies. A configurable recipe takes its configurations via its execution context, i.e., `this` variable.
 ```
 function scripts(done) {
 	var gulp = this.gulp,
@@ -470,6 +470,7 @@ See [streamqueue](https://www.npmjs.com/package/streamqueue) for details.
 
 ### pipe
 Provides the same functionality of `gulp.pipe()`. Pipe streams from one sub task to another.
+
 
 
 ## Flow Controller
