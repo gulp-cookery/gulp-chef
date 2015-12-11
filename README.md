@@ -11,8 +11,7 @@ $ npm install --save-dev https://github.com/amobiz/configurable-gulp-recipes.git
 
 ### Gulp Task
 
-Starting from gulp 4.0, a normal gulp task takes `undefined` as context,
-and returns stream / promise, or call `done()` callback when finished.
+Starting from gulp 4.0, a gulp task takes `undefined` as context, and returns stream / promise, or call `done()` callback when finished.
 ```
 function gulpTask(done) {
 }
