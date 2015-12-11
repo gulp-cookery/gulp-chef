@@ -25,10 +25,10 @@ function ConfigurableRecipeFactory(stuff, registry) {
 
 ConfigurableRecipeFactory.prototype.create = function (prefix, configs, createConfigurableTasks) {
 	var self = this;
-	return recipeRunner() || flowRunner() || streamRunner() || taskRunner() || defaultRunner();
+	return taskRunner() || flowRunner() || streamRunner() || indirectRunner() || defaultRunner();
 
-	function recipeRunner() {
-		return self.recipe(configs.taskInfo.name, configs);
+	function taskRunner() {
+		return self.task(configs.taskInfo.name, configs);
 	}
 
 	function flowRunner() {
@@ -39,7 +39,7 @@ ConfigurableRecipeFactory.prototype.create = function (prefix, configs, createCo
 		return self.stream(prefix, configs, createConfigurableTasks);
 	}
 
-	function taskRunner() {
+	function indirectRunner() {
 		var task = configs.taskInfo.task;
 		return inlineRunner() || referenceRunner();
 
@@ -58,7 +58,7 @@ ConfigurableRecipeFactory.prototype.create = function (prefix, configs, createCo
 
 	function defaultRunner() {
 		if (configs.taskConfig.src && configs.taskConfig.dest) {
-			return self.stuff.recipes.lookup('copy');
+			return self.stuff.tasks.lookup('copy');
 		}
 	}
 };
@@ -66,7 +66,7 @@ ConfigurableRecipeFactory.prototype.create = function (prefix, configs, createCo
 /**
  * if there is a matching recipe, use it and ignore any sub-configs.
  */
-ConfigurableRecipeFactory.prototype.recipe = function (name, configs) {
+ConfigurableRecipeFactory.prototype.task = function (name, configs) {
 	var self = this;
 
 	if (isRecipeTask(name)) {
@@ -74,11 +74,11 @@ ConfigurableRecipeFactory.prototype.recipe = function (name, configs) {
 			// warn about ignoring sub-configs.
 			log('ConfigurableRecipeFactory', 'Warning: sub-configs ignored for recipe task: ' + name + ', sub-configs: ' + Object.keys(configs.subTaskConfigs));
 		}
-		return this.stuff.recipes.lookup(name);
+		return this.stuff.tasks.lookup(name);
 	}
 
 	function isRecipeTask(name) {
-		return !!self.stuff.recipes.lookup(name);
+		return !!self.stuff.tasks.lookup(name);
 	}
 };
 

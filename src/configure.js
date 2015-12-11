@@ -13,7 +13,7 @@ function configure(rawConfigs, options) {
 		runnerFactory = new ConfigurableRecipeFactory(stuff, registry),
 		taskFactory = new ConfigurableTaskFactory(stuff, runnerFactory, registry),
 		configs = Configuration.sort({}, rawConfigs, {}, Configuration.SCHEMA_COMMONS),
-		helpRunner = stuff.recipes.lookup('help');
+		helpRunner = stuff.tasks.lookup('help');
 
 	Configuration.setOptions(options);
 	taskFactory.multiple('', configs.subTaskConfigs, configs.taskConfig);

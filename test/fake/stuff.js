@@ -11,13 +11,13 @@ module.exports = function () {
 			parallel: Sinon.spy(),
 			series: Sinon.spy()
 		}),
-		recipes: new ConfigurableRecipeRegistry({
-			copy: Sinon.spy(),
-			'recipe-task': Sinon.spy()
-		}),
 		streams: new ConfigurableRecipeRegistry({
 			merge: fakeStreamRunner,
 			'stream-task': fakeStreamRunner
+		}),
+		tasks: new ConfigurableRecipeRegistry({
+			copy: Sinon.spy(),
+			'recipe-task': Sinon.spy()
 		})
 	};
 

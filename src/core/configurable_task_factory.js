@@ -56,7 +56,7 @@ ConfigurableTaskFactory.prototype.one = function (prefix, name, rawConfig, paren
 	return task;
 
 	function getTaskSchema(name) {
-		var configurableTask = stuff.streams.lookup(name) || stuff.recipes.lookup(name);
+		var configurableTask = stuff.streams.lookup(name) || stuff.tasks.lookup(name);
 		return configurableTask && configurableTask.schema;
 	}
 

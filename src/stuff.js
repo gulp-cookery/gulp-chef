@@ -16,7 +16,7 @@ module.exports = function (options) {
 			.npm(options)
 			.dir(__dirname, 'streams')
 			.build(),
-		recipes: ConfigurableRecipeRegistry.builder()
+		tasks: ConfigurableRecipeRegistry.builder()
 			.dir(cwd, 'gulp')
 			.dir(cwd, 'gulp/tasks')
 			.npm(options)

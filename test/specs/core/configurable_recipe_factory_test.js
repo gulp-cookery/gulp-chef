@@ -104,7 +104,7 @@ describe('Core', function () {
 			});
 		}
 
-		describe('#recipe()', function () {
+		describe('#task()', function () {
 			var name = 'recipe-task',
 				configs = {
 					taskInfo: {
@@ -115,14 +115,14 @@ describe('Core', function () {
 					}
 				};
 			it('should create a recipe runner', function () {
-				var actual = factory.recipe(name, configs);
+				var actual = factory.task(name, configs);
 				expect(actual).to.be.a('function');
 			});
 			it('should refer to correct recipe', function () {
-				var actual = factory.recipe(name, configs);
+				var actual = factory.task(name, configs);
 				actual(gulp, configs.taskConfig, null, done);
-				expect(stuff.recipes.lookup(name).called).to.be.true;
-				expect(stuff.recipes.lookup(name).calledWithExactly(gulp, configs.taskConfig, null, done)).to.be.true;
+				expect(stuff.tasks.lookup(name).called).to.be.true;
+				expect(stuff.tasks.lookup(name).calledWithExactly(gulp, configs.taskConfig, null, done)).to.be.true;
 			});
 		});
 		describe('#flow()', function () {
