@@ -289,7 +289,61 @@ Disable a task and all its sub tasks. Not defined at all.
 
 
 #### Development / Production Mode
+```
+var recipes = configure({
+	"scripts": {
 
+		// common configs
+		"src": "src",
+
+		// common options
+		"options": {
+
+			// common options
+
+			// production options
+			"production": {
+				"uglify": true,
+				"sourcemap": "external"
+			},
+
+			// development options
+			"development": {
+				"uglify": false,
+				"sourcemap": false
+			}
+		},
+
+		// production configs
+		"production": {
+			// production configs
+
+			// production options
+			"options": {
+			}
+		},
+
+		// development configs
+		"development": {
+			// development configs
+
+			// development options
+			"options": {
+			}
+		},
+
+		// sub tasks
+
+		"typescript": {
+			"src": "**/*.ts"
+		},
+
+		"js": {
+			"src": "**/*.js"
+		}
+	}
+});
+```
 
 ### Configurable Recipe
 
