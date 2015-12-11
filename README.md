@@ -290,13 +290,17 @@ var recipes = configure({
 });
 ```
 
-#### Development / Production Mode
+#### Dynamic Configuration / Template Variable Realizing
 
-Configurable recipes don't have to worry about development/production mode. Configurations are resolved for that specific mode already.
+Some stream processors (e.g., "gulp-recipe-eachdir") programmatically modify and/or generate new configurations. The new configuratuin are injected to recipe's configuration at runtime. And templates with `${var}` syntax are realized with resolved variables.
 
 #### Configuration Schema
 
 Configurable-gulp-recipes uses "[json-normalizer](https://www.npmjs.com/package/json-normalizer)" to normalize json configuration. You can use it to support property alias, type convertion, default values, etc.
+
+#### Development / Production Mode
+
+Configurable recipes don't have to worry about development/production mode. Configurations are resolved for that specific mode already.
 
 ## Task
 
