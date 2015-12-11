@@ -488,3 +488,35 @@ A flow controller takes care of when to execute, and execution order of its sub 
 
 Configurable-gulp-recipes uses "[json-normalizer](https://www.npmjs.com/package/json-normalizer)" to normalize json configurations. You can define your configuration schema to support property alias, type convertion and default values, etc.
 
+## List of Recipe Plugins
+
+### Task
+
+#### gulp-recipe-atomify
+#### gulp-recipe-babel
+#### gulp-recipe-browserify
+#### gulp-recipe-bump
+#### gulp-recipe-css
+#### gulp-recipe-eslint
+#### gulp-recipe-images
+#### gulp-recipe-jscs
+#### gulp-recipe-jshint
+#### gulp-recipe-markups
+#### gulp-recipe-stylus
+#### gulp-recipe-uglify
+#### gulp-recipe-webpack
+
+### Stream Processor
+
+#### gulp-recipe-concat
+#### gulp-recipe-each
+#### gulp-recipe-each-dir
+
+### Flow Controller
+
+#### gulp-recipe-if
+
+### Filter
+
+#### gulp-recipe-newer
+#### gulp-recipe-changed
