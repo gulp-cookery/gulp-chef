@@ -1,6 +1,6 @@
 # configurable-gulp-recipes (Alpha)
 
-Gulp 4.0 recipes ready to use and configurable.
+Gulp 4.0 recipes ready to use and configurable. An elegant, intuition way to reuse gulp tasks.
 
 ## Install
 ```
