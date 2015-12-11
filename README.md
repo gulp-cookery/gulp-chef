@@ -229,7 +229,7 @@ Hide a task from cli, without hide its sub tasks. Still functional by running it
 Disable a task and all its sub tasks. Not defined at all.
 
 
-#### Development Mode / Production Mode
+#### Development / Production Mode
 
 
 ### Configurable Recipe
@@ -289,6 +289,14 @@ var recipes = configure({
 	}
 });
 ```
+
+#### Development / Production Mode
+
+Configurable recipes don't have to worry about development/production mode. Configurations are resolved for that specific mode already.
+
+#### Configuration Schema
+
+Configurable-gulp-recipes uses "[json-normalizer](https://www.npmjs.com/package/json-normalizer)" to normalize json configuration. You can use it to support property alias, type convertion, default values, etc.
 
 ## Task
 
