@@ -473,6 +473,7 @@ Provides the same functionality of `gulp.pipe()`. Pipe streams from one sub task
 
 
 ## Flow Controller
+A flow controller takes care of when to execute, and execution order of its sub tasks and don't care their input and/or output streams.
 
 ### parallel
 
