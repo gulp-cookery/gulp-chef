@@ -29,8 +29,7 @@ gulp.task(myTask);
 
 ### Configurable Task
 
-A configurable task has signature same as normal gulp task, and can be used just as a normal gulp task. But, were called with an object: `{ gulp, config, upstream }`as context. Configurable tasks are called with
-configurations come from the json object that passed to `configure()` function.
+A configurable task has signature same as normal gulp task, and can be used just as a normal gulp task. But, were called with an object: `{ gulp, config, upstream }` as context.
 ```
 function configurableTask(done) {
 }
@@ -41,26 +40,25 @@ You don't write configurable tasks, instead, you create a configurable task by d
 var gulp = require('gulp');
 var configure = require('configurable-gulp-recipes');
 var recipes = configure({
-  scripts: {
-    src: 'src/**/*.js',
-    dest: 'dist'
-  }
+	scripts: {
+		src: 'src/**/*.js',
+		dest: 'dist'
+	}
 });
 gulp.registry(recipes);
 ```
 This generates a configurable task called "`scripts`" for you, and can be accessed via`recipes.get('scripts')`. The configurable task will be called with the configuration defined with it, some kind of like this:
 ```
 scripts.call({
-  gulp: gulp,
-  config: {
-    src: 'src/**/*.js',
-    dest: 'dist'
-  }
+	gulp: gulp,
+	config: {
+		src: 'src/**/*.js',
+		dest: 'dist'
+	}
 }, done);
 ```
 
 Note the `configure()` function returns a registry, you can call `gulp.registry()` to register all available tasks in the registry.
-
 #### Nesting Task
 
 Tasks can be nested. Sub tasks lexically inherits its parent's configurations. And even better, for some predefined properties, e.g. `src`, `dest`, paths are joined automatically.
