@@ -11,14 +11,14 @@ function createSpyGulpTask(name, gulpTask) {
 	return task;
 }
 
-function createSpyConfigurableTask(name, configurableRunner, taskConfig) {
+function createSpyConfigurableTask(name, recipe, taskConfig) {
 	var run, task;
-	configurableRunner = configurableRunner || Sinon.spy();
+	recipe = recipe || Sinon.spy();
 	taskConfig = taskConfig || {};
 	run = Sinon.spy(function (done) {
 		var ctx = this;
 		ctx.config = _.defaultsDeep({}, taskConfig, ctx.config);
-		return configurableRunner.call(ctx, done);
+		return recipe.call(ctx, done);
 	});
 	task = createSpyGulpTask(name, function (done) {
 		var ctx = this;

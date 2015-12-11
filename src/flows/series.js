@@ -4,19 +4,23 @@
  * Note:
  *  Some kind of non-stream version of queue() stream recipe.
  *
- * @param gulp
- * @param config
- * @param stream
- * @param tasks
  * @param done
  */
-function series(gulp, config, stream, tasks, done) {
+function series(done) {
 	var async = require('async'),
 		asyncDone = require('async-done');
 
+	var gulp = this.gulp,
+		config = this.config,
+		tasks = this.tasks;
+
 	async.mapSeries(tasks, function (task, itemDone) {
 		asyncDone(function (taskDone) {
-			return task.run(gulp, config, stream, taskDone);
+			var ctx = {
+				gulp: gulp,
+				config: config
+			};
+			return task.run.call(ctx, taskDone);
 		}, itemDone);
 	}, done);
 }

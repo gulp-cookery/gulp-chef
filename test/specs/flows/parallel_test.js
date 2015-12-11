@@ -15,8 +15,13 @@ var gulp = new FakeGulp();
 describe('Flow Processor', function () {
 	describe('parallel()', function () {
 		it('should run all type of tasks', function (done) {
-			var test = cases.prepare(['done', 'async', 'promise', 'stream']);
-			parallel(gulp, null, null, test.tasks, function (err, actual) {
+			var test = cases.prepare(gulp, ['done', 'async', 'promise', 'stream']);
+			var ctx = {
+				gulp: gulp,
+				config: {},
+				tasks: test.tasks
+			};
+			parallel.call(ctx, function (err, actual) {
 				expect(actual).to.deep.equal(test.expects);
 				done();
 			});

@@ -9,13 +9,13 @@ function FakeGulp() {
 	this._registry = new Registry();
 }
 
-FakeGulp.prototype.task = function (name, runner) {
+FakeGulp.prototype.task = function (name, task) {
 	if (typeof name === 'function') {
-		runner = name;
-		name = runner.displayName || runner.name;
+		task = name;
+		name = task.displayName || task.name;
 	}
-	if (typeof name === 'string' && typeof runner === 'function') {
-		this._registry.set(name, runner);
+	if (typeof name === 'string' && typeof task === 'function') {
+		this._registry.set(name, task);
 	}
 	return this._registry.get(name);
 };

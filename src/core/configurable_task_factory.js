@@ -7,9 +7,9 @@ var Configuration = require('./configuration'),
 	UniqueNames = require('../helpers/unique_names'),
 	metadata = require('./metadata');
 
-function ConfigurableTaskFactory(stuff, runnerFactory, registry) {
+function ConfigurableTaskFactory(stuff, recipeFactory, registry) {
 	this.stuff = stuff;
-	this.runnerFactory = runnerFactory;
+	this.recipeFactory = recipeFactory;
 	this.registry = registry;
 }
 
@@ -28,7 +28,7 @@ function buildMetadataTree(task, subTasks) {
 }
 
 ConfigurableTaskFactory.prototype.one = function (prefix, name, rawConfig, parentConfig) {
-	var self, stuff, schema, configs, taskInfo, runner, task, subTasks;
+	var self, stuff, schema, configs, taskInfo, recipe, task, subTasks;
 
 	self = this;
 	stuff = this.stuff;
@@ -46,12 +46,12 @@ ConfigurableTaskFactory.prototype.one = function (prefix, name, rawConfig, paren
 		return null;
 	}
 
-	runner = this.runnerFactory.create(prefix, configs, createSubTasks);
-	if (! runner) {
+	recipe = this.recipeFactory.create(prefix, configs, createSubTasks);
+	if (! recipe) {
 		log("Warning: can't infer to a proper recipe task: " + taskInfo.name + ': task will do nothing.');
-		runner = this.runnerFactory.noop();
+		recipe = this.recipeFactory.noop();
 	}
-	task = this.create(prefix, taskInfo, configs.taskConfig, runner);
+	task = this.create(prefix, taskInfo, configs.taskConfig, recipe);
 	buildMetadataTree(task, subTasks);
 	return task;
 
@@ -160,7 +160,7 @@ ConfigurableTaskFactory.prototype.multiple = function (prefix, subTaskConfigs, p
 	}
 };
 
-ConfigurableTaskFactory.prototype.create = function (prefix, taskInfo, taskConfig, configurableRunner) {
+ConfigurableTaskFactory.prototype.create = function (prefix, taskInfo, taskConfig, recipe) {
 	var registry = this.registry;
 
 	// make sure config is inherited at config time and injected, realized at runtime.
@@ -169,7 +169,7 @@ ConfigurableTaskFactory.prototype.create = function (prefix, taskInfo, taskConfi
 		var ctx = this;
 		// inject and realize runtime configuration.
 		ctx.config = Configuration.realize(taskConfig, ctx.config);
-		return configurableRunner.call(ctx, done);
+		return recipe.call(ctx, done);
 	};
 	// invoked from gulp
 	var configurableTask = function (done) {
@@ -180,12 +180,12 @@ ConfigurableTaskFactory.prototype.create = function (prefix, taskInfo, taskConfi
 		};
 		return run.call(ctx, done);
 	};
-	var name = (taskInfo.name || configurableRunner.displayName || configurableRunner.name || '<anonymous>');
+	var name = (taskInfo.name || recipe.displayName || recipe.name || '<anonymous>');
 	configurableTask.displayName = prefix + name;
-	set(configurableTask, 'description', taskInfo.description || configurableRunner.description);
+	set(configurableTask, 'description', taskInfo.description || recipe.description);
 	set(configurableTask, 'visibility', taskInfo.visibility);
 	set(configurableTask, 'runtime', taskInfo.runtime);
-	configurableTask.runner = configurableRunner;
+	configurableTask.recipe = recipe;
 	configurableTask.run = run;
 	configurableTask.config = taskConfig;
 	if (Configuration.isVisible(configurableTask)) {

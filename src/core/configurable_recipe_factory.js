@@ -11,9 +11,9 @@ function hasSubTasks(config) {
 }
 
 /**
- * A ConfigurableRecipeFactory creates runner function of the following signature:
+ * A ConfigurableRecipeFactory lookups or creates recipe function of the following signature:
  * ```
- * function (gulp, config, stream, done)
+ * function (done)
  * ```
  * @param stuff
  * @constructor
@@ -25,38 +25,38 @@ function ConfigurableRecipeFactory(stuff, registry) {
 
 ConfigurableRecipeFactory.prototype.create = function (prefix, configs, createConfigurableTasks) {
 	var self = this;
-	return taskRunner() || flowRunner() || streamRunner() || indirectRunner() || defaultRunner();
+	return taskRecipe() || flowRecipe() || streamRecipe() || indirectRecipe() || defaultRecipe();
 
-	function taskRunner() {
+	function taskRecipe() {
 		return self.task(configs.taskInfo.name, configs);
 	}
 
-	function flowRunner() {
+	function flowRecipe() {
 		return self.flow(prefix, configs, createConfigurableTasks);
 	}
 
-	function streamRunner() {
+	function streamRecipe() {
 		return self.stream(prefix, configs, createConfigurableTasks);
 	}
 
-	function indirectRunner() {
+	function indirectRecipe() {
 		var task = configs.taskInfo.task;
-		return inlineRunner() || referenceRunner();
+		return inlineRecipe() || referenceRecipe();
 
-		function inlineRunner() {
+		function inlineRecipe() {
 			if (typeof task === 'function') {
 				return task;
 			}
 		}
 
-		function referenceRunner() {
+		function referenceRecipe() {
 			if (typeof task === 'string') {
 				return self.reference(task);
 			}
 		}
 	}
 
-	function defaultRunner() {
+	function defaultRecipe() {
 		if (configs.taskConfig.src && configs.taskConfig.dest) {
 			return self.stuff.tasks.lookup('copy');
 		}
@@ -84,25 +84,25 @@ ConfigurableRecipeFactory.prototype.task = function (name, configs) {
 
 function compositeCreator(stockName, implicitName, validate) {
 	return function (prefix, configs, createConfigurableTasks) {
-		var stock, runner, tasks;
+		var stock, recipe, tasks;
 
 		stock = this.stuff[stockName];
 
-		if (validate(isCompositeTask(configs.taskInfo.name), hasSubTasks(configs))) {
+		if (validate(isCompositeRecipe(configs.taskInfo.name), hasSubTasks(configs))) {
 			tasks = createSubTasks();
-			runner = explicitRunner(configs.taskInfo.name) || implicitRunner();
-			return this.composite(runner, tasks);
+			recipe = explicitRecipe(configs.taskInfo.name) || implicitRecipe();
+			return this.composite(recipe, tasks);
 		}
 
-		function isCompositeTask(name) {
+		function isCompositeRecipe(name) {
 			return !!stock.lookup(name);
 		}
 
-		function explicitRunner(name) {
+		function explicitRecipe(name) {
 			return stock.lookup(name);
 		}
 
-		function implicitRunner() {
+		function implicitRecipe() {
 			return stock.lookup(implicitName);
 		}
 
@@ -132,23 +132,23 @@ ConfigurableRecipeFactory.prototype.stream = compositeCreator('streams', 'merge'
 	return (isStock || hasSubTasks);
 });
 
-ConfigurableRecipeFactory.prototype.composite = function (runner, tasks) {
+ConfigurableRecipeFactory.prototype.composite = function (recipe, tasks) {
 	return function (done) {
 		var ctx = this;
 		ctx.tasks = tasks;
-		return runner.call(ctx, done);
+		return recipe.call(ctx, done);
 	};
 };
 
 ConfigurableRecipeFactory.prototype.reference = function (taskName) {
-	var task, runner;
+	var task, recipe;
 
 	if (typeof taskName === 'string') {
 		task = this.registry.refer(taskName);
 		if (task) {
 			return task.run || task;
 		}
-		runner = function (done) {
+		recipe = function (done) {
 			var ctx = this;
 			var task = ctx.gulp.task(taskName);
 			if (typeof task !== 'function') {
@@ -159,7 +159,7 @@ ConfigurableRecipeFactory.prototype.reference = function (taskName) {
 			task = task.run || task;
 			return task.call(ctx, done);
 		};
-		return runner;
+		return recipe;
 	}
 };
 

@@ -10,14 +10,14 @@ var ConfigurableRecipeFactory = require('./core/configurable_recipe_factory'),
 function configure(rawConfigs, options) {
 	var registry = new Registry(onInitGulp),
 		stuff = require('./stuff')(options),
-		runnerFactory = new ConfigurableRecipeFactory(stuff, registry),
-		taskFactory = new ConfigurableTaskFactory(stuff, runnerFactory, registry),
+		recipeFactory = new ConfigurableRecipeFactory(stuff, registry),
+		taskFactory = new ConfigurableTaskFactory(stuff, recipeFactory, registry),
 		configs = Configuration.sort({}, rawConfigs, {}, Configuration.SCHEMA_COMMONS),
-		helpRunner = stuff.tasks.lookup('help');
+		helpRecipe = stuff.tasks.lookup('help');
 
 	Configuration.setOptions(options);
 	taskFactory.multiple('', configs.subTaskConfigs, configs.taskConfig);
-	registry.set('help', taskFactory.create('', {}, {}, helpRunner));
+	registry.set('help', taskFactory.create('', {}, {}, helpRecipe));
 
 	// export recipes registry
 	return registry;

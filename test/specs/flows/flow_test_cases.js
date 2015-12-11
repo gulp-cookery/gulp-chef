@@ -7,13 +7,13 @@ var streamifier = require('streamifier');
 
 var recipes = {
 	done: {
-		fn: function (gulp, config, stream, done) {
+		fn: function (done) {
 			done(null, 1);
 		},
 		expected: 1
 	},
 	async: {
-		fn: function (gulp, config, stream, done) {
+		fn: function (done) {
 			setTimeout(function () {
 				done(null, 2);
 			}, 10);
@@ -34,7 +34,7 @@ var recipes = {
 		description: 'async-done does not return anything for stream'
 	},
 	errback: {
-		fn: function (gulp, config, stream, done) {
+		fn: function (done) {
 			done(new Error('An Error Occurred'));
 		},
 		error: new Error('An Error Occurred')
@@ -47,7 +47,7 @@ var recipes = {
 	}
 };
 
-function prepare(keys) {
+function prepare(gulp, keys) {
 	var tasks, expects, errors, bundle;
 
 	tasks = [];
@@ -66,13 +66,18 @@ function prepare(keys) {
 	};
 	return bundle;
 
-	function createFakeTask(name, runner) {
-		var run = function (gulp, config, stream, done) {
+	function createFakeTask(name, recipe) {
+		var run = function (done) {
+			var ctx = this;
 			bundle.logs.push(name);
-			return runner(gulp, config, stream, done);
+			return recipe.call(ctx, done);
 		};
 		var task = function (done) {
-			return run(this, null, null, done);
+			var ctx = {
+				gulp: gulp,
+				config: {}
+			};
+			return run.call(ctx, done);
 		};
 		task.run = run;
 		return task;
@@ -82,29 +87,49 @@ function prepare(keys) {
 function commons(gulp, flow) {
 	describe('common flow error handling', function () {
 		it('should deal with errback', function (done) {
-			var test = prepare(['errback']);
-			flow(gulp, null, null, test.tasks, function (err) {
+			var test = prepare(gulp, ['errback']);
+			var ctx = {
+				gulp: gulp,
+				config: {},
+				tasks: test.tasks
+			};
+			flow.call(ctx, function (err) {
 				expect(err).to.be.an.instanceof(Error);
 				done();
 			});
 		});
 		it('should deal with exception', function (done) {
-			var test = prepare(['exception']);
-			flow(gulp, null, null, test.tasks, function (err) {
+			var test = prepare(gulp, ['exception']);
+			var ctx = {
+				gulp: gulp,
+				config: {},
+				tasks: test.tasks
+			};
+			flow.call(ctx, function (err) {
 				expect(err).to.be.an.instanceof(Error);
 				done();
 			});
 		});
 		it('should stop if any task errback', function (done) {
-			var test = prepare(['done', 'async', 'promise', 'stream', 'errback']);
-			flow(gulp, null, null, test.tasks, function (err) {
+			var test = prepare(gulp, ['done', 'async', 'promise', 'stream', 'errback']);
+			var ctx = {
+				gulp: gulp,
+				config: {},
+				tasks: test.tasks
+			};
+			flow.call(ctx, function (err) {
 				expect(err).to.be.an.instanceof(Error);
 				done();
 			});
 		});
 		it('should stop if any task throw exception', function (done) {
-			var test = prepare(['done', 'async', 'promise', 'stream', 'exception']);
-			flow(gulp, null, null, test.tasks, function (err) {
+			var test = prepare(gulp, ['done', 'async', 'promise', 'stream', 'exception']);
+			var ctx = {
+				gulp: gulp,
+				config: {},
+				tasks: test.tasks
+			};
+			flow.call(ctx, function (err) {
 				expect(err).to.be.an.instanceof(Error);
 				done();
 			});

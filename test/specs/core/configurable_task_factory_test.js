@@ -167,9 +167,9 @@ describe('Core', function () {
 					var subTaskConfigs = [
 						{ name: 'task1' },
 						'gulp-task-by-ref',			// reference to registered gulp task
-						'configurable-task-by-ref',	// reference to registered configurable task runner
+						'configurable-task-by-ref',	// reference to registered configurable task
 						gulpTask,					// registered gulp task
-						configurableTask,			// registered configurable task runner
+						configurableTask,			// registered configurable task
 						Sinon.spy()					// stand-alone gulp task (not registered to gulp)
 					];
 					var actual = factory.multiple('', subTaskConfigs, {});
@@ -225,9 +225,9 @@ describe('Core', function () {
 					var subTaskConfigs = {
 						task1: {},							// sub-config task
 						task2: 'gulp-task-by-ref',			// reference to registered gulp task
-						task3: 'configurable-task-by-ref',	// reference to registered configurable task runner
+						task3: 'configurable-task-by-ref',	// reference to registered configurable task
 						task4: gulpTask,					// registered gulp task
-						task5: configurableTask,			// registered configurable task runner
+						task5: configurableTask,			// registered configurable task
 						task6: Sinon.spy()					// stand-alone gulp task (not registered to gulp)
 					};
 					var actual = factory.multiple('', subTaskConfigs, {});

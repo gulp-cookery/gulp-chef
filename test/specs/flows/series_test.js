@@ -23,8 +23,13 @@ describe('Flow Processor', function () {
 				['promise', 'stream', 'async', 'done', 'stream', 'promise']
 			];
 			async.each(sequences, function(sequence, eachDone) {
-				var test = cases.prepare(sequence);
-				series(gulp, null, null, test.tasks, function (err, actual) {
+				var test = cases.prepare(gulp, sequence);
+				var ctx = {
+					gulp: gulp,
+					config: {},
+					tasks: test.tasks
+				};
+				series.call(ctx, function (err, actual) {
 					expect(actual).to.deep.equal(test.expects);
 					expect(test.logs).to.deep.equal(sequence);
 					eachDone();
