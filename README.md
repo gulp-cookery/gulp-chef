@@ -456,7 +456,6 @@ Additional options to pass to task. Usually used by underling gulp plugins.
 
 
 ## Stream Processor
-
 A stream processor manipulates its sub tasks' input and/or output streams.
 
 In the "Configurable Recipe" section, that said "configurable task" is simply a wrapper that calls "configurable recipe" with exactly the same name. That's not entirely true. Stream processor may not has the same name as "configurable task".
@@ -470,8 +469,7 @@ A queue stream processor creates a new stream, that pipe queued streams of its s
 See [streamqueue](https://www.npmjs.com/package/streamqueue) for details.
 
 ### pipe
-Provides `gulp.pipe()` functionality. Pipe streams from one sub task to another.
-
+Provides the same functionality of `gulp.pipe()`. Pipe streams from one sub task to another.
 
 
 ## Flow Controller
