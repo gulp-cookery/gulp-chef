@@ -483,3 +483,8 @@ A flow controller takes care of when to execute, and execution order of its sub 
 
 
 ## Writing Plugins
+
+#### Configuration Schema
+
+Configurable-gulp-recipes uses "[json-normalizer](https://www.npmjs.com/package/json-normalizer)" to normalize json configurations. You can define your configuration schema to support property alias, type convertion and default values, etc.
+
