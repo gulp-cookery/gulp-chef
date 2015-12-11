@@ -260,8 +260,29 @@ var recipes = configure({
 };
 ```
 
-#### Hidden Task
-Hide a task from cli, without hide its sub tasks. Still functional by running its parent task or referenced by other task.
+#### Invisible Task
+Do not expose a task to CLI and can't be referenced, without affacting its sub tasks. Since it's invisible, its sub tasks won't prefix it's name, but still inherit its configuration. A invisible task is still functional if invoked from its parent task.
+```
+var recipes = configure({
+	src: 'src',
+	dest: 'dist',
+	scripts: {
+		'.concat': {
+			hidden: true,
+			file: 'bundle.js',
+			src: 'lib',
+			coffee: {
+				src: '**/*.coffee
+			},
+			js: {
+				src: '**/*.js
+			}
+		}
+	}
+};
+
+```
+In this example the `concat` task is invisible.
 
 #### Disabled Task
 Disable a task and all its sub tasks. Not defined at all.
