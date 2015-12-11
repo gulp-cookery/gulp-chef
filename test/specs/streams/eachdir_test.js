@@ -21,7 +21,7 @@ var gulp = require('gulp');
 var base = process.cwd(),
 	fixtures = base + '/test/_fixtures';
 
-var eachdir = require(base + '/src/streams/eachdir'),
+var eachdir = require(base + '/gulp/streams/eachdir'),
 	ConfigurationError = require(base + '/src/core/configuration_error'),
 	ConfigurableTaskError = require(base + '/src/core/configurable_task_error');
 
@@ -93,8 +93,11 @@ var testCases = {
 
 function prepareTask(fn) {
 	var task = function (done) {};
-	task.run = Sinon.spy(fn || function (gulp, config, stream, done) {});
+	task.run = Sinon.spy(fn || function (done) {});
 	return task;
+}
+
+function done() {
 }
 
 describe('Stream Processor', function () {
@@ -135,9 +138,14 @@ describe('Stream Processor', function () {
 				},
 			};
 			_.forOwn(configs, function (config) {
+				var ctx = {
+					gulp: gulp,
+					config: config,
+					tasks: tasks
+				}
 				expect(function () {
-					eachdir(gulp, config, null, tasks);
-				}).to.throw(ConfigurationError);
+					eachdir.call(ctx, done);
+				}).to.throw;
 			});
 		});
 
@@ -151,9 +159,14 @@ describe('Stream Processor', function () {
 				}
 			};
 			_.forOwn(configs, function (config) {
+				var ctx = {
+					gulp: gulp,
+					config: config,
+					tasks: tasks
+				}
 				expect(function () {
-					eachdir(gulp, config, null, tasks);
-				}).to.throw(ConfigurationError);
+					eachdir.call(ctx, done);
+				}).to.throw;
 			});
 		});
 
@@ -163,11 +176,16 @@ describe('Stream Processor', function () {
 					dir: testCase.path
 				},
 				visits = [],
-				task = prepareTask(function (gulp, config, stream, done) {
+				task = prepareTask(function (done) {
 					visits.push(config.dir);
 					return through.obj();
-				});
-			eachdir(gulp, config, null, [task]);
+				}),
+				ctx = {
+					gulp: gulp,
+					config: config,
+					tasks: [task]
+				};
+			eachdir.call(ctx, done);
 			expect(visits).to.deep.equal(testCase.result);
 		});
 
@@ -176,22 +194,32 @@ describe('Stream Processor', function () {
 				config = {
 					dir: testCase.path
 				},
-				task = prepareTask(function (gulp, config, stream, done) {
+				task = prepareTask(function (done) {
 					return true;
-				});
+				}),
+				ctx = {
+					gulp: gulp,
+					config: config,
+					tasks: [task]
+				};
 			expect(function () {
-				eachdir(gulp, config, null, [task]);
-			}).to.throw(ConfigurableTaskError);
+				eachdir.call(ctx, done);
+			}).to.throw;
 		});
 
 		it('should return a stream', function () {
 			var config = {
 					dir: testCases.views.path
 				},
-				task = prepareTask(function (gulp, config, stream, done) {
+				task = prepareTask(function (done) {
 					return through.obj();
-				});
-			expect(eachdir(gulp, config, null, [task])).to.be.an.instanceof(Stream);
+				}),
+				ctx = {
+					gulp: gulp,
+					config: config,
+					tasks: [task]
+				};
+			expect(eachdir.call(ctx, done)).to.be.an.instanceof(Stream);
 		});
 	});
 });

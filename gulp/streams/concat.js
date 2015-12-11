@@ -14,22 +14,26 @@
  * @param tasks configurable sub-tasks
  *
  */
-function concat(gulp, config, stream, tasks) {
+function concat(done) {
 	// lazy loading required modules.
 	var queue = require('./queue'),
 		gulpConcat = require('gulp-concat');
 
-	var ConfigurationError = require('../core/configuration_error'),
-		verify = require('../core/configuration_verifier');
+	var verify = require('../../src/core/configuration_verifier');
+
+	var gulp = this.gulp,
+		config = this.config,
+		stream = this.stream,
+		tasks = this.tasks;
 
 	verify(concat.schema, config);
 
 	if (tasks.length !== 0) {
-		stream = queue(gulp, config, stream, tasks);
+		stream = queue.call(this);
 	} else {
 		if (!stream && !config.src) {
 			// TODO: Do not throw errors inside a stream. According to the [Guidelines](https://github.com/gulpjs/gulp/blob/4.0/docs/writing-a-plugin/guidelines.md)
-			throw new ConfigurationError('concat', 'configuration property "src" is required, otherwise an up-stream must be provided')
+			throw new Error('concat', 'configuration property "src" is required, otherwise an up-stream must be provided')
 		}
 		stream = stream || gulp.src(config.src.globs, config.src.options);
 	}

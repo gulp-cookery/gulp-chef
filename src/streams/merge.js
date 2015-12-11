@@ -17,10 +17,15 @@
  * @tasks 傳入的子 tasks 為 configurableTask，是尚未綁定 config 的 task 形式。
  *
  */
-function merge(gulp, config, stream, tasks) {
+function merge(done) {
 	// lazy loading required modules.
 	var _merge = require('merge-stream'),
 		ConfigurableTaskError = require('../core/configurable_task_error.js');
+
+	var gulp = this.gulp,
+		config = this.config,
+		stream = this.stream,
+		tasks = this.tasks;
 
 	if (stream) {
 		throw new ConfigurableTaskError('merge', 'merge stream-processor do not accept up-stream');

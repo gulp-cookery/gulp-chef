@@ -14,12 +14,17 @@
  * @tasks 傳入的子 tasks 為 configurableTask，是尚未綁定 config 的 task 形式。
  *
  */
-function each(gulp, config, stream, tasks) {
+function each(done) {
 	// lazy loading required modules.
 	var mergeStream = require('merge-stream'),
-		merge = require('./merge');
+		merge = require('../../src/streams/merge');
 
-	var verify = require('../core/configuration_verifier');
+	var verify = require('../../src/core/configuration_verifier');
+
+	var gulp = this.gulp,
+		config = this.config,
+		stream = this.stream,
+		tasks = this.tasks;
 
 	verify(each.schema, config);
 
@@ -31,7 +36,13 @@ function each(gulp, config, stream, tasks) {
 	return mergeStream(streams);
 
 	function processValue(value) {
-		return merge(gulp, value, stream, tasks);
+		var context = {
+			gulp: gulp,
+			config: value,
+			stream: stream,
+			tasks: tasks
+		};
+		return merge.call(context, done);
 	}
 }
 

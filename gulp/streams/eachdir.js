@@ -20,19 +20,23 @@
  * @tasks 傳入的子 tasks 為 configurableTask，是尚未綁定 config 的 task 形式。
  *
  */
-function eachdir(gulp, config, stream, tasks) {
+function eachdir(done) {
 	// lazy loading required modules.
 	var fs = require('fs'),
 		path = require('path'),
 		each = require('./each');
 
-	var ConfigurationError = require('../core/configuration_error.js'),
-		verify = require('../core/configuration_verifier');
+	var verify = require('../../src/core/configuration_verifier');
 
-	var cwd, folders, inject, values, dir;
+	var gulp = this.gulp,
+		config = this.config,
+		stream = this.stream,
+		tasks = this.tasks;
+
+	var cwd, folders, inject, values, dir, context;
 
 	if (stream) {
-		throw new ConfigurationError('eachdir', 'eachdir stream-processor do not accept up-stream');
+		throw new Error('eachdir', 'eachdir stream-processor do not accept up-stream');
 	}
 	verify(eachdir.schema, config);
 
@@ -40,7 +44,7 @@ function eachdir(gulp, config, stream, tasks) {
 	cwd = process.cwd();
 	folders = getFolders(dir);
 	if (folders.length === 0) {
-		throw new ConfigurationError('eachdir', 'no sub folders found in ' + dir);
+		throw new Error('eachdir', 'no sub folders found in ' + dir);
 	}
 
 	values = folders.map(function (folder) {
@@ -54,7 +58,14 @@ function eachdir(gulp, config, stream, tasks) {
 		values: values
 	};
 
-	return each(gulp, inject, stream, tasks);
+	context = {
+		gulp: gulp,
+		config: inject,
+		stream: stream,
+		tasks: tasks
+	};
+
+	return each.call(context, done);
 
 	function getFolders(dir) {
 		try {
