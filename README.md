@@ -222,6 +222,15 @@ var recipes = configure({
 };
 ```
 
+#### Hidden Task
+Hide a task from cli, without hide its sub tasks. Still functional by running its parent task or referenced by other task.
+
+#### Disabled Task
+Disable a task and all its sub tasks. Not defined at all.
+
+
+#### Development Mode / Production Mode
+
 
 ### Configurable Recipe
 
