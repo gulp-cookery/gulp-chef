@@ -135,52 +135,80 @@ var recipes = configure({
 You can reference other task by its name.
 ```
 var recipes = configure({
-  src: 'src',
-  dest: 'dist',
-  clean: {},
-  scripts: {
-    src: '**/*.js'
-  },
-  styles: {
-    src: '**/*.css'
-  },
-  build: ['clean', ['scripts', 'styles']]
+	src: 'src',
+	dest: 'dist',
+	clean: {},
+	scripts: {
+		src: '**/*.js'
+	},
+	styles: {
+		src: '**/*.css'
+	},
+	build: ['clean', ['scripts', 'styles']]
 };
 ```
 
 Referencing tasks won't generate new task names, so you can't run them in console. In this example, only `clean`, `scripts`, `styles` and `build` task were generated.
 
-Note in the above example, `scripts` and `styles` are in array, so they will be executed in series. You can use `parallel` "flow controller" to change this behavior.
+As said previously, sub tasks lexically inherits its parent's configurations, since refered tasks are not defined under the referencing task, they won't inherit its static configuration. However, dynamic generated configurations are still injected to refered tasks. See [Dynamic Configuration] for detail.
+
+Note in the above example, `scripts` and `styles` are in array, so they will be executed in series. You can use `parallel` "flow controller" to change this default behavior.
 ```
 var recipes = configure({
-  src: 'src',
-  dest: 'dist',
-  clean: {},
-  scripts: {
-    src: '**/*.js'
-  },
-  styles: {
-    src: '**/*.css'
-  },
-  build: ['clean', { parallel: ['scripts', 'styles'] }]
+	src: 'src',
+	dest: 'dist',
+	clean: {},
+	scripts: {
+		src: '**/*.js'
+	},
+	styles: {
+		src: '**/*.css'
+	},
+	build: ['clean', { parallel: ['scripts', 'styles'] }]
 };
 ```
 
-To reference sub tasks, use their full name.
+Or you can put them into a common parent, so they will be executed parallel by default. To reference sub tasks, use their full name.
 ```
 var recipes = configure({
-  src: 'src',
-  dest: 'dist',
-  build: {
-	scripts: {
-	  src: '**/*.js'
+	src: 'src',
+	dest: 'dist',
+	clean: {},
+	make: {
+		scripts: {
+			src: '**/*.js'
+		},
+		styles: {
+			src: '**/*.css'
+		}
 	},
-	styles: {
-	  src: '**/*.css'
-	}
-  },
-  watch: ['build:scripts', 'build:styles']
+	build: ['clean', 'make'],
+	watch: ['make:scripts', 'make:styles']
 });
+```
+
+You can use `task` property to specify the referred tasks, so referencing tasks can have their own configurations.
+```
+var recipes = configure({
+	src: 'src',
+	dest: 'dist',
+	clean: {},
+	make: {
+		scripts: {
+			src: '**/*.js'
+		},
+		styles: {
+			src: '**/*.css'
+		}
+	},
+	build: ['clean', 'make'],
+	watch: {
+	options: {
+		usePolling: true
+	},
+	task: ['make:scripts', 'make:styles']
+	}
+};
 ```
 
 #### Raw Task
