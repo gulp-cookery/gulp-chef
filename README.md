@@ -211,40 +211,52 @@ var recipes = configure({
 };
 ```
 
-#### Raw Task
-Tasks can be normal Javascript functions and referenced directly.
+#### Plain / Inline Function
+Tasks can be plain Javascript functions and be referenced directly, or can be defined inline and be referenced by name.
 ```
 function clean(done) {
-	del('dist', done);
-}
-
-function scripts(done) {
-	// ...
-}
-
-function styles(done) {
-	// ...
+	del(this.dest.path, done);
 }
 
 var recipes = configure({
-  build: [clean, { parallel: [scripts, styles] }]
+	src: 'src',
+	dest: 'dist',
+	scripts: function (done) {
+	},
+	styles: function (done) {
+	},
+	build: [clean, { parallel: ['scripts', 'styles'] }]
 };
 ```
+Note in this example, since `clean` was never defined in configuration, it is never exposed, i.e., can't be run in CLI. The other thing to note is that even plain functions are called in the `{ gulp, config, upstream }` context.
 
-#### Inline Task
-Tasks can be defined inline and referenced by name.
+You can use `task` property to specify the plain/inline functions, so referencing tasks can have their own configurations too.
 ```
-var recipes = configure({
-  src: 'src',
-  dest: 'dist',
-  clean: function (done) {
+function clean(done) {
 	del(this.dest.path, done);
-  },
-  scripts: function (done) {
-  },
-  styles: function (done) {
-  },
-  build: ['clean', { parallel: ['scripts', 'styles'] }]
+}
+
+var recipes = configure({
+	src: 'src',
+	dest: 'dist',
+	make: {
+		scripts: {
+			src: '**/*.js,
+			task: function (done) {
+			}
+		},
+		styles: {
+			src: '**/*.css,
+			task: function (done) {
+			}
+		}
+	},
+	build: {
+	options: {
+		usePolling: true
+	},
+	task: [clean, 'make']
+	}
 };
 ```
 
