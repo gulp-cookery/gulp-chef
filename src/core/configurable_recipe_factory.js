@@ -11,19 +11,19 @@ function hasSubTasks(config) {
 }
 
 /**
- * A ConfigurableTaskRunnerFactory creates runner function of the following signature:
+ * A ConfigurableRecipeFactory creates runner function of the following signature:
  * ```
  * function (gulp, config, stream, done)
  * ```
  * @param stuff
  * @constructor
  */
-function ConfigurableTaskRunnerFactory(stuff, registry) {
+function ConfigurableRecipeFactory(stuff, registry) {
 	this.stuff = stuff;
 	this.registry = registry;
 }
 
-ConfigurableTaskRunnerFactory.prototype.create = function (prefix, configs, createConfigurableTasks) {
+ConfigurableRecipeFactory.prototype.create = function (prefix, configs, createConfigurableTasks) {
 	var self = this;
 	return recipeRunner() || flowRunner() || streamRunner() || taskRunner() || defaultRunner();
 
@@ -66,13 +66,13 @@ ConfigurableTaskRunnerFactory.prototype.create = function (prefix, configs, crea
 /**
  * if there is a matching recipe, use it and ignore any sub-configs.
  */
-ConfigurableTaskRunnerFactory.prototype.recipe = function (name, configs) {
+ConfigurableRecipeFactory.prototype.recipe = function (name, configs) {
 	var self = this;
 
 	if (isRecipeTask(name)) {
 		if (hasSubTasks(configs)) {
 			// warn about ignoring sub-configs.
-			log('ConfigurableRunnerFactory', 'Warning: sub-configs ignored for recipe task: ' + name + ', sub-configs: ' + Object.keys(configs.subTaskConfigs));
+			log('ConfigurableRecipeFactory', 'Warning: sub-configs ignored for recipe task: ' + name + ', sub-configs: ' + Object.keys(configs.subTaskConfigs));
 		}
 		return this.stuff.recipes.lookup(name);
 	}
@@ -115,12 +115,12 @@ function compositeCreator(stockName, implicitName, validate) {
 	}
 }
 
-ConfigurableTaskRunnerFactory.prototype.flow = compositeCreator('flows', 'parallel', function (isStock, hasSubTasks) {
+ConfigurableRecipeFactory.prototype.flow = compositeCreator('flows', 'parallel', function (isStock, hasSubTasks) {
 	if (!isStock) {
 		return false;
 	}
 	if (!hasSubTasks) {
-		log('ConfigurableRunnerFactory', 'Warning: a flow processor without sub-tasks is useless');
+		log('ConfigurableRecipeFactory', 'Warning: a flow processor without sub-tasks is useless');
 	}
 	return true;
 });
@@ -128,11 +128,11 @@ ConfigurableTaskRunnerFactory.prototype.flow = compositeCreator('flows', 'parall
 /**
  * if there is configurations not being consumed, then treat them as sub-tasks.
  */
-ConfigurableTaskRunnerFactory.prototype.stream = compositeCreator('streams', 'merge', function (isStock, hasSubTasks) {
+ConfigurableRecipeFactory.prototype.stream = compositeCreator('streams', 'merge', function (isStock, hasSubTasks) {
 	return (isStock || hasSubTasks);
 });
 
-ConfigurableTaskRunnerFactory.prototype.composite = function (runner, tasks) {
+ConfigurableRecipeFactory.prototype.composite = function (runner, tasks) {
 	return function (done) {
 		var ctx = this;
 		ctx.tasks = tasks;
@@ -140,7 +140,7 @@ ConfigurableTaskRunnerFactory.prototype.composite = function (runner, tasks) {
 	};
 };
 
-ConfigurableTaskRunnerFactory.prototype.reference = function (taskName) {
+ConfigurableRecipeFactory.prototype.reference = function (taskName) {
 	var task, runner;
 
 	if (typeof taskName === 'string') {
@@ -163,10 +163,10 @@ ConfigurableTaskRunnerFactory.prototype.reference = function (taskName) {
 	}
 };
 
-ConfigurableTaskRunnerFactory.prototype.noop = function () {
+ConfigurableRecipeFactory.prototype.noop = function () {
 	return function (done) {
 		done();
 	};
 };
 
-module.exports = ConfigurableTaskRunnerFactory;
+module.exports = ConfigurableRecipeFactory;

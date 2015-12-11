@@ -3,19 +3,19 @@ var Sinon = require('sinon'),
 	_ = require('lodash'),
 	base = process.cwd();
 
-var ConfigurableTaskRunnerRegistry = require(base + '/src/core/configurable_runner_registry');
+var ConfigurableRecipeRegistry = require(base + '/src/core/configurable_recipe_registry');
 
 module.exports = function () {
 	return {
-		flows: new ConfigurableTaskRunnerRegistry({
+		flows: new ConfigurableRecipeRegistry({
 			parallel: Sinon.spy(),
 			series: Sinon.spy()
 		}),
-		recipes: new ConfigurableTaskRunnerRegistry({
+		recipes: new ConfigurableRecipeRegistry({
 			copy: Sinon.spy(),
 			'recipe-task': Sinon.spy()
 		}),
-		streams: new ConfigurableTaskRunnerRegistry({
+		streams: new ConfigurableRecipeRegistry({
 			merge: fakeStreamRunner,
 			'stream-task': fakeStreamRunner
 		})

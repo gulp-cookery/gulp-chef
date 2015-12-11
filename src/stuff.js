@@ -1,22 +1,22 @@
 'use strict';
 
-var ConfigurableTaskRunnerRegistry = require('./core/configurable_runner_registry');
+var ConfigurableRecipeRegistry = require('./core/configurable_recipe_registry');
 
 var cwd = process.cwd();
 
 module.exports = function (options) {
 	return {
-		flows: ConfigurableTaskRunnerRegistry.builder()
+		flows: ConfigurableRecipeRegistry.builder()
 			.dir(cwd, 'gulp/flows')
 			.npm(options)
 			.dir(__dirname, 'flows')
 			.build(),
-		streams: ConfigurableTaskRunnerRegistry.builder()
+		streams: ConfigurableRecipeRegistry.builder()
 			.dir(cwd, 'gulp/streams')
 			.npm(options)
 			.dir(__dirname, 'streams')
 			.build(),
-		recipes: ConfigurableTaskRunnerRegistry.builder()
+		recipes: ConfigurableRecipeRegistry.builder()
 			.dir(cwd, 'gulp')
 			.dir(cwd, 'gulp/tasks')
 			.npm(options)

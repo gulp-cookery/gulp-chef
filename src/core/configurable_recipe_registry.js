@@ -11,19 +11,19 @@ var defaults = {
 	replaceString: /^gulp[-.]recipe[-.]/g
 };
 
-function ConfigurableTaskRunnerRegistry(runners) {
+function ConfigurableRecipeRegistry(runners) {
 	this.runners = runners;
 }
 
-ConfigurableTaskRunnerRegistry.prototype.size = function () {
+ConfigurableRecipeRegistry.prototype.size = function () {
 	return _.size(this.runners);
 };
 
-ConfigurableTaskRunnerRegistry.prototype.lookup = function (name) {
+ConfigurableRecipeRegistry.prototype.lookup = function (name) {
 	return this.runners[name];
 };
 
-ConfigurableTaskRunnerRegistry.builder = function (type) {
+ConfigurableRecipeRegistry.builder = function (type) {
 	var runners = {};
 
 	return {
@@ -38,7 +38,7 @@ ConfigurableTaskRunnerRegistry.builder = function (type) {
 			return this;
 		},
 		build: function() {
-			return new ConfigurableTaskRunnerRegistry(runners);
+			return new ConfigurableRecipeRegistry(runners);
 		}
 	};
 };
@@ -68,4 +68,4 @@ function lazyDefaults(target, source, type) {
 	}
 }
 
-module.exports = ConfigurableTaskRunnerRegistry;
+module.exports = ConfigurableRecipeRegistry;

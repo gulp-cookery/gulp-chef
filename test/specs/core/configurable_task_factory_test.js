@@ -8,7 +8,7 @@ var _ = require('lodash');
 
 var base = process.cwd();
 
-var ConfigurableTaskRunnerFactory = require(base + '/src/core/configurable_runner_factory'),
+var ConfigurableRecipeFactory = require(base + '/src/core/configurable_recipe_factory'),
 	ConfigurableTaskFactory = require(base + '/src/core/configurable_task_factory'),
 	Configuration = require(base + '/src/core/configuration'),
 	ConfigurationError = require(base + '/src/core/configuration_error'),
@@ -26,7 +26,7 @@ describe('Core', function () {
 				registry = new Registry();
 			gulp = FakeFactory.createFakeGulp();
 			gulp.registry(registry);
-			factory = new ConfigurableTaskFactory(stuff, new ConfigurableTaskRunnerFactory(stuff, registry), registry);
+			factory = new ConfigurableTaskFactory(stuff, new ConfigurableRecipeFactory(stuff, registry), registry);
 			gulpTask = gulp.task('gulp-task');
 			configurableTask = gulp.task('configurable-task');
 		});

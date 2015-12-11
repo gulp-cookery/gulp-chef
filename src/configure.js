@@ -2,7 +2,7 @@
 
 // TODO: use ESLint
 
-var ConfigurableTaskRunnerFactory = require('./core/configurable_runner_factory'),
+var ConfigurableRecipeFactory = require('./core/configurable_recipe_factory'),
 	ConfigurableTaskFactory = require('./core/configurable_task_factory'),
 	Configuration = require('./core/configuration'),
 	Registry = require('./core/registry');
@@ -10,7 +10,7 @@ var ConfigurableTaskRunnerFactory = require('./core/configurable_runner_factory'
 function configure(rawConfigs, options) {
 	var registry = new Registry(onInitGulp),
 		stuff = require('./stuff')(options),
-		runnerFactory = new ConfigurableTaskRunnerFactory(stuff, registry),
+		runnerFactory = new ConfigurableRecipeFactory(stuff, registry),
 		taskFactory = new ConfigurableTaskFactory(stuff, runnerFactory, registry),
 		configs = Configuration.sort({}, rawConfigs, {}, Configuration.SCHEMA_COMMONS),
 		helpRunner = stuff.recipes.lookup('help');
