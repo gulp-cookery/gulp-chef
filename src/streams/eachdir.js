@@ -1,5 +1,7 @@
 'use strict';
 
+// TODO: `each-dir` can be a plugin of `each`.
+
 /*jshint node: true */
 /*global process*/
 /**
