@@ -59,21 +59,22 @@ scripts.call({
 ```
 
 Note the `configure()` function returns a registry, you can call `gulp.registry()` to register all available tasks in the registry.
+
 #### Nesting Task
 
 Tasks can be nested. Sub tasks lexically inherits its parent's configurations. And even better, for some predefined properties, e.g. `src`, `dest`, paths are joined automatically.
 ```
 var recipes = configure({
-  src: 'src',
-  dest: 'dist',
-  build: {
-	scripts: {
-	  src: '**/*.js'
-	},
-	styles: {
-	  src: '**/*.css'
+	src: 'src',
+	dest: 'dist',
+	build: {
+		scripts: {
+			src: '**/*.js'
+		},
+		styles: {
+			src: '**/*.css'
+		}
 	}
-  }
 });
 ```
 This creates __3__ configurable tasks for you: "`build`", "`build:scripts`" and "`build:styles`".
@@ -83,49 +84,49 @@ This creates __3__ configurable tasks for you: "`build`", "`build:scripts`" and 
 In the above example, when you run `build`, its sub tasks `scripts` and `styles` will be executed in __parallel__, and be called with configurations like this:
 ```
 scripts: {
-  src: 'src/**/*.js',
-  dest: 'dist'
+	src: 'src/**/*.js',
+	dest: 'dist'
 }
 
 styles: {
-  src: 'src/**/*.css',
-  dest: 'dist'
+	src: 'src/**/*.css',
+	dest: 'dist'
 }
 ```
 
 #### Series Tasks
 
-If you want sub tasks executed in __series__, you can use `series` "flow controller", and add `order` property to them:
+If you want sub tasks be executed in __series__, you can use `series` "flow controller", and add `order` property to them:
 ```
 var recipes = configure({
-  src: 'src',
-  dest: 'dist',
-  build: {
-    series: {
-	  scripts: {
-	    src: '**/*.js',
-	    order: 0
-	  },
- 	  styles: {
-	    src: '**/*.css',
-	    order: 1
-      }
+	src: 'src',
+	dest: 'dist',
+	build: {
+		series: {
+			scripts: {
+				src: '**/*.js',
+				order: 0
+			},
+			styles: {
+				src: '**/*.css',
+				order: 1
+			}
+		}
 	}
-  }
 });
 ```
 Or even simpler, just put sub task configurations in array:
 ```
 var recipes = configure({
-  src: 'src',
-  dest: 'dist',
-  build: [{
-	name: 'scripts',
-    src: '**/*.js'
-  }, {
-	name: 'styles',
-    src: '**/*.css'
-  }]
+	src: 'src',
+	dest: 'dist',
+	build: [{
+		name: 'scripts',
+		src: '**/*.js'
+	}, {
+		name: 'styles',
+		src: '**/*.css'
+	}]
 };
 ```
 
