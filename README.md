@@ -407,13 +407,42 @@ var recipes = configure({
 
 Some stream processors (e.g., "gulp-recipe-eachdir") programmatically modify and/or generate new configurations. The new configuratuin are injected to recipe's configuration at runtime. And templates with `${var}` syntax are realized with resolved variables.
 
-#### Configuration Schema
-
-Configurable-gulp-recipes uses "[json-normalizer](https://www.npmjs.com/package/json-normalizer)" to normalize json configuration. You can use it to support property alias, type convertion, default values, etc.
-
 #### Development / Production Mode
 
 Configurable recipes don't have to worry about development/production mode. Configurations are resolved for that specific mode already.
+
+#### Reserved Configuration Properties
+
+##### name
+Name of the task. Only required when defining task in an array and you want to run it from CLI.
+
+##### description
+Description of the task.
+
+##### order
+Execution order of the task. Only required when you defining tasks in object and want them be executed in series. The values are used for sort, so don't have to be contiguous.
+
+##### runtime
+Execution time of the task. Valid values are `all`, `production` and `development`. Defaults to `all`.
+
+##### task
+Define a plain, inline or reference task.
+
+##### visibility
+Visibility of the task. Valid values are `normal`, `invisible` and `disabled`.
+
+##### development
+Configuration values for development.
+
+##### production
+Configuration values for production.
+
+##### options
+Additional options to pass to task. Usually used by underling gulp plugins.
+
+##### src
+
+##### dest
 
 ## Task
 
