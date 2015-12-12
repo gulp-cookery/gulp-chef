@@ -28,12 +28,11 @@ function eachdir(done) {
 
 	var verify = require('../../src/core/configuration_verifier');
 
-	var gulp = this.gulp,
-		config = this.config,
-		stream = this.stream,
-		tasks = this.tasks;
+	var context = this,
+		config = context.config,
+		stream = context.stream;
 
-	var cwd, folders, inject, values, dir, context;
+	var cwd, folders, inject, values, dir;
 
 	if (stream) {
 		throw new Error('eachdir', 'eachdir stream-processor do not accept up-stream');
@@ -58,13 +57,7 @@ function eachdir(done) {
 		values: values
 	};
 
-	context = {
-		gulp: gulp,
-		config: inject,
-		stream: stream,
-		tasks: tasks
-	};
-
+	context.config = inject;
 	return each.call(context, done);
 
 	function getFolders(dir) {

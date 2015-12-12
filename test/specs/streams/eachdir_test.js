@@ -92,8 +92,14 @@ var testCases = {
 };
 
 function prepareTask(fn) {
-	var task = function (done) {};
-	task.run = Sinon.spy(fn || function (done) {});
+	fn = Sinon.spy(fn || function (done) {});
+	var run = function (done) {
+		var context = this,
+			config = context.config;
+		return fn.call(this, done);
+	};
+	var task = function (done) { return run.call(this, done); };
+	task.run = run;
 	return task;
 }
 
@@ -177,6 +183,8 @@ describe('Stream Processor', function () {
 				},
 				visits = [],
 				task = prepareTask(function (done) {
+					var context = this,
+						config = context.config;
 					visits.push(config.dir);
 					return through.obj();
 				}),
