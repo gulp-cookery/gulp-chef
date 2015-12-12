@@ -21,10 +21,8 @@ function each(done) {
 
 	var verify = require('../../src/core/configuration_verifier');
 
-	var gulp = this.gulp,
-		config = this.config,
-		stream = this.stream,
-		tasks = this.tasks;
+	var context = this,
+		config = context.config;
 
 	verify(each.schema, config);
 
@@ -36,12 +34,7 @@ function each(done) {
 	return mergeStream(streams);
 
 	function processValue(value) {
-		var context = {
-			gulp: gulp,
-			config: value,
-			stream: stream,
-			tasks: tasks
-		};
+		context.config = value;
 		return merge.call(context, done);
 	}
 }

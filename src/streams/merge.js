@@ -22,10 +22,9 @@ function merge(done) {
 	var _merge = require('merge-stream'),
 		ConfigurableTaskError = require('../core/configurable_task_error.js');
 
-	var gulp = this.gulp,
-		config = this.config,
-		stream = this.stream,
-		tasks = this.tasks;
+	var context = this,
+		stream = context.stream,
+		tasks = context.tasks;
 
 	if (stream) {
 		throw new ConfigurableTaskError('merge', 'merge stream-processor do not accept up-stream');
@@ -42,7 +41,7 @@ function merge(done) {
 	return _merge(tasks.map(runTask));
 
 	function runTask(task) {
-		var stream = task.run(gulp, config, stream, done);
+		var stream = task.run.call(context, done);
 		if (!isStream(stream)) {
 			// TODO: Do not throw errors inside a stream. According to the [Guidelines](https://github.com/gulpjs/gulp/blob/4.0/docs/writing-a-plugin/guidelines.md)
 			throw new ConfigurableTaskError('merge', 'sub task must return a stream');
