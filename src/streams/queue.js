@@ -17,17 +17,20 @@
  * @tasks 傳入的子 tasks 為 configurableTask，是尚未綁定 config 的 task 形式。
  *
  */
-function queue(gulp, config, stream, tasks) {
+function queue() {
 	// lazy loading required modules.
 	var StreamQueue = require('streamqueue'),
-		ConfigurableTaskError = require('../core/configurable_task_error.js');
+		PluginError = require('gulp-util').PluginError;
 
-	if (stream) {
-		throw new ConfigurableTaskError('queue', 'queue stream-processor do not accept up-stream');
+	var context = this,
+		tasks = context.tasks;
+
+	if (context.upstream) {
+		throw new PluginError('queue', 'queue stream-processor do not accept up-stream');
 	}
 
 	if (tasks.length === 0) {
-		throw new ConfigurableTaskError('queue', 'no sub task specified');
+		throw new PluginError('queue', 'no sub task specified');
 	}
 
 	if (tasks.length === 1) {
@@ -41,10 +44,10 @@ function queue(gulp, config, stream, tasks) {
 	return streamQueue.done.apply(streamQueue, streams);
 
 	function runTask(task) {
-		var stream = task.run(gulp, config, stream, done);
+		var stream = task.run.call(context, done);
 		if (!isStream(stream)) {
 			// TODO: Do not throw errors inside a stream. According to the [Guidelines](https://github.com/gulpjs/gulp/blob/4.0/docs/writing-a-plugin/guidelines.md)
-			throw new ConfigurableTaskError('queue', 'sub task must return a stream');
+			throw new PluginError('queue', 'sub task must return a stream');
 		}
 		return stream;
 
