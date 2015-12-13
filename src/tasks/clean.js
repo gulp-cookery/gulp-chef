@@ -8,9 +8,11 @@
  * del
  *
  */
-function cleanTask(gulp, config, stream, done) {
+function cleanTask(done) {
 	// lazy loading required modules.
 	var del = require('del');
+
+	var config = this.config;
 
 	//del(config.dest.path, done);
 	done();
