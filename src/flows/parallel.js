@@ -16,11 +16,11 @@ function parallel(done) {
 	var async = require('async'),
 		asyncDone = require('async-done');
 
-	var ctx = this;
+	var context = this;
 
 	async.map(this.tasks, function (task, itemDone) {
 		asyncDone(function (taskDone) {
-			return task.run.call(ctx, taskDone);
+			return task.run.call(context, taskDone);
 		}, itemDone);
 	}, done);
 }

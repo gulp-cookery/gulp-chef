@@ -16,30 +16,24 @@
  * gulp.watch()
  *
  */
-function watchTask(gulp, config, stream, tasks, done) {
+function watchTask(done) {
 	// lazy loading required modules.
 	var _ = require('lodash');
 
-	var depends, globs;
-
-	if (config.depends) {
-		depends = config.depends;
-	} else if (typeof config.task === 'string') {
-		depends = [config.task];
-	} else if (Array.isArray(config.task)) {
-		depends = config.task;
-	}
+	var context = this,
+		gulp = context.gulp,
+		options = context.config.options || {},
+		tasks = context.tasks;
 
 	// TODO: find all src recursively.
-	globs = depends.map(function (name) {
-		var task = gulp.task(name);
+	tasks.forEach(function (name) {
+		var globs, task = gulp.task(name);
 		if (task) {
 			//task.config
 		}
+		// first run all depends and then watch their sources.
+		gulp.watch(globs, options, task);
 	});
-
-	// first run all depends and then watch their sources.
-	gulp.watch(globs, depends);
 }
 
 watchTask.schema = {
