@@ -9,8 +9,11 @@ var log = require('gulp-util').log;
  * gulp
  *
  */
-function help(gulp, config, stream, done) {
+function help(done) {
 	var tasks;
+
+	var context = this,
+		gulp = context.gulp;
 
 	// NOTE:
 	// in gulp 3.X, tasks can be accessed through gulp.tasks
