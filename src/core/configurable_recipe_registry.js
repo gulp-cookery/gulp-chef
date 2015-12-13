@@ -7,38 +7,38 @@ var Path = require('path'),
 
 var defaults = {
 	camelize: false,
-	pattern: ['gulp-recipe-*'],
-	replaceString: /^gulp[-.]recipe[-.]/g
+	pattern: ['configurable-gulp-recipe-*'],
+	replaceString: /^configurable[-.]gulp[-.]recipe[-.]/g
 };
 
-function ConfigurableRecipeRegistry(runners) {
-	this.runners = runners;
+function ConfigurableRecipeRegistry(recipes) {
+	this.recipes = recipes;
 }
 
 ConfigurableRecipeRegistry.prototype.size = function () {
-	return _.size(this.runners);
+	return _.size(this.recipes);
 };
 
 ConfigurableRecipeRegistry.prototype.lookup = function (name) {
-	return this.runners[name];
+	return this.recipes[name];
 };
 
 ConfigurableRecipeRegistry.builder = function (type) {
-	var runners = {};
+	var recipes = {};
 
 	return {
 		dir: function (base, path) {
-			var recipes = safeRequireDir(Path.join(base, path));
-			_.defaults(runners, recipes);
+			var sources = safeRequireDir(Path.join(base, path));
+			_.defaults(recipes, sources);
 			return this;
 		},
 		npm: function (options) {
-			var recipes = loadPlugins(_.defaults(options || {}, defaults));
-			lazyDefaults(runners, recipes, type);
+			var sources = loadPlugins(_.defaults(options || {}, defaults));
+			lazyDefaults(recipes, sources, type);
 			return this;
 		},
 		build: function() {
-			return new ConfigurableRecipeRegistry(runners);
+			return new ConfigurableRecipeRegistry(recipes);
 		}
 	};
 };
