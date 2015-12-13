@@ -9,19 +9,19 @@
  * gulp.src()
  * gulp.dest()
  *
- * @param gulp
- * @param config
- * @param stream
  * @param done
  * @returns stream
  */
-function copyTask(gulp, config, stream, done) {
+function copyTask(done) {
 	var flatten = require('gulp-flatten');
 
-	if (!stream) {
-		stream = gulp.src(config.src.globs, config.src.options);
-	}
+	var context = this,
+	    gulp = context.gulp,
+		config = context.config,
+		upstream = context.upstream,
+		stream;
 
+	stream = upstream || gulp.src(config.src.globs, config.src.options);
 	if (config.flatten) {
 		stream = stream.pipe(flatten());
 	}
