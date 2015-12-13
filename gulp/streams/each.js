@@ -19,11 +19,15 @@ function each(done) {
 	var mergeStream = require('merge-stream'),
 		merge = require('../../src/streams/merge');
 
-	var verify = require('../../src/core/configuration_verifier');
+	var verify = require('../../src/core/configuration_verifier'),
+		PluginError = require('gulp-util').PluginError;
 
 	var context = this,
 		config = context.config;
 
+	if (context.upstream) {
+		throw new PluginError('each', 'each stream-processor do not accept up-stream');
+	}
 	verify(each.schema, config);
 
 	if (config.values.length === 1) {

@@ -26,7 +26,8 @@ function eachdir(done) {
 		path = require('path'),
 		each = require('./each');
 
-	var verify = require('../../src/core/configuration_verifier');
+	var verify = require('../../src/core/configuration_verifier'),
+		PluginError = require('gulp-util').PluginError;
 
 	var context = this,
 		config = context.config;
@@ -34,7 +35,7 @@ function eachdir(done) {
 	var cwd, folders, inject, values, dir;
 
 	if (context.upstream) {
-		throw new Error('eachdir', 'eachdir stream-processor do not accept up-stream');
+		throw new PluginError('eachdir', 'eachdir stream-processor do not accept up-stream');
 	}
 	verify(eachdir.schema, config);
 
@@ -42,7 +43,7 @@ function eachdir(done) {
 	cwd = process.cwd();
 	folders = getFolders(dir);
 	if (folders.length === 0) {
-		throw new Error('eachdir', 'no sub folders found in ' + dir);
+		throw new PluginError('eachdir', 'no sub folders found in ' + dir);
 	}
 
 	values = folders.map(function (folder) {
