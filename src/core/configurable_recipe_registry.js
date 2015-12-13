@@ -7,8 +7,8 @@ var Path = require('path'),
 
 var defaults = {
 	camelize: false,
-	pattern: ['configurable-gulp-recipe-*'],
-	replaceString: /^configurable[-.]gulp[-.]recipe[-.]/g
+	pattern: ['configurable-gulp-*'],
+	replaceString: /^configurable[-.]gulp[-.]/g
 };
 
 function ConfigurableRecipeRegistry(recipes) {
