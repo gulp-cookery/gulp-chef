@@ -29,12 +29,11 @@ function eachdir(done) {
 	var verify = require('../../src/core/configuration_verifier');
 
 	var context = this,
-		config = context.config,
-		stream = context.stream;
+		config = context.config;
 
 	var cwd, folders, inject, values, dir;
 
-	if (stream) {
+	if (context.upstream) {
 		throw new Error('eachdir', 'eachdir stream-processor do not accept up-stream');
 	}
 	verify(eachdir.schema, config);
