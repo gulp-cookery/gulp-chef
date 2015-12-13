@@ -17,34 +17,34 @@
  * @tasks 傳入的子 tasks 為 configurableTask，是尚未綁定 config 的 task 形式。
  *
  */
-function merge(done) {
+function merge() {
 	// lazy loading required modules.
-	var _merge = require('merge-stream'),
-		ConfigurableTaskError = require('../core/configurable_task_error.js');
+	var mergeStream = require('merge-stream'),
+		PluginError = require('gulp-util').PluginError;
 
 	var context = this,
-		stream = context.stream,
+		upstream = context.upstream,
 		tasks = context.tasks;
 
-	if (stream) {
-		throw new ConfigurableTaskError('merge', 'merge stream-processor do not accept up-stream');
+	if (upstream) {
+		throw new PluginError('merge', 'merge stream-processor do not accept up-stream');
 	}
 
 	if (tasks.length === 0) {
-		throw new ConfigurableTaskError('merge', 'no sub task specified');
+		throw new PluginError('merge', 'no sub task specified');
 	}
 
 	if (tasks.length === 1) {
 		return runTask(tasks[0]);
 	}
 
-	return _merge(tasks.map(runTask));
+	return mergeStream(tasks.map(runTask));
 
 	function runTask(task) {
 		var stream = task.run.call(context, done);
 		if (!isStream(stream)) {
 			// TODO: Do not throw errors inside a stream. According to the [Guidelines](https://github.com/gulpjs/gulp/blob/4.0/docs/writing-a-plugin/guidelines.md)
-			throw new ConfigurableTaskError('merge', 'sub task must return a stream');
+			throw new PluginError('merge', 'sub task must return a stream');
 		}
 		return stream;
 
