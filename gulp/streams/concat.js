@@ -22,16 +22,17 @@ function concat(done) {
 	var verify = require('../../src/core/configuration_verifier'),
 		PluginError = require('gulp-util').PluginError;
 
-	var gulp = this.gulp,
-		config = this.config,
-		upstream = this.upstream,
-		tasks = this.tasks,
+	var context = this,
+		gulp = context.gulp,
+		config = context.config,
+		upstream = context.upstream,
+		tasks = context.tasks,
 		stream;
 
 	verify(concat.schema, config);
 
 	if (tasks.length !== 0) {
-		stream = queue.call(this);
+		stream = queue.call(context);
 	} else {
 		if (!upstream && !config.src) {
 			// TODO: Do not throw errors inside a stream. According to the [Guidelines](https://github.com/gulpjs/gulp/blob/4.0/docs/writing-a-plugin/guidelines.md)
