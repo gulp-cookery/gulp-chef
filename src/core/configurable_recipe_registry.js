@@ -3,7 +3,8 @@
 var Path = require('path'),
 	_ = require('lodash'),
 	loadPlugins = require('gulp-load-plugins'),
-	safeRequireDir = require('../helpers/safe_require_dir');
+	safeRequireDir = require('../helpers/safe_require_dir'),
+	log = require('gulp-util').log;
 
 var defaults = {
 	camelize: false,
@@ -35,6 +36,17 @@ ConfigurableRecipeRegistry.builder = function (type) {
 		npm: function (options) {
 			var sources = loadPlugins(_.defaults(options || {}, defaults));
 			lazyDefaults(recipes, sources, type);
+			return this;
+		},
+		module: function (moduleName) {
+			var name = moduleName.replace(defaults.replaceString, '');
+			if (! (name in recipes)) {
+				try {
+					recipes[name] = require(moduleName);
+				} catch (ex) {
+					log('configurable-gulp-recipes: recipe-registry:', 'error loading module: ' + moduleName);
+				}
+			}
 			return this;
 		},
 		build: function() {

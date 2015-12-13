@@ -14,6 +14,8 @@ module.exports = function (options) {
 		streams: ConfigurableRecipeRegistry.builder()
 			.dir(cwd, 'gulp/streams')
 			.npm(options)
+			.module('configurable-gulp-merge')
+			.module('configurable-gulp-queue')
 			.dir(__dirname, 'streams')
 			.build(),
 		tasks: ConfigurableRecipeRegistry.builder()
