@@ -11,7 +11,7 @@ var _ = require('lodash');
 
 var base = process.cwd();
 
-var bump = require(base + '/gulp/tasks/bump'),
+var bump = require(base + '/gulp/bump'),
 	ConfigurationError = require(base + '/src/core/configuration_error'),
 	ConfigurableTaskError = require(base + '/src/core/configurable_task_error');
 
