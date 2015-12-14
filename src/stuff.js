@@ -13,10 +13,10 @@ module.exports = function (options) {
 			.build(),
 		streams: ConfigurableRecipeRegistry.builder()
 			.module('configurable-gulp-recipe-merge')
+			.module('configurable-gulp-recipe-pipe')
 			.module('configurable-gulp-recipe-queue')
 			.dir(cwd, 'gulp/streams')
 			.npm(options)
-			.dir(__dirname, 'streams')
 			.build(),
 		tasks: ConfigurableRecipeRegistry.builder()
 			.dir(cwd, 'gulp')
