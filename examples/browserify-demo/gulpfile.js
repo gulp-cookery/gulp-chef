@@ -1,26 +1,28 @@
 var gulp = require('gulp'),
-	config = require('configurable-gulp-recipes');
+	configure = require('configurable-gulp-recipes');
 
-var recipes = config({
+var recipes = configure({
 	src: 'app',
 	dest: 'dist',
 	clean: {
 	},
-	scripts: {
-		browserify: {
-			bundle: {
-				entry: 'main.js'
+	make: {
+		scripts: {
+			browserify: {
+				bundle: {
+					entry: 'main.js'
+				}
 			}
+		},
+		markups: {
+			src: '**/*.html'
+		},
+		resources: {
+			src: '**/*.{png,jpeg,gif,webp}'
 		}
 	},
-	markups: {
-		src: '**/*.html'
-	},
-	resources: {
-		src: '**/*.{png,jpeg,gif,webp}'
-	},
 	watch: ['scripts', 'markups', 'resources'],
-	build: ['clean', ['scripts', 'markups', 'resources']],
+	build: ['clean', 'make'],
 	default: 'build'
 });
 
