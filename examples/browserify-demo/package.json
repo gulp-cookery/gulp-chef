@@ -6,7 +6,7 @@
   "author": "Amobiz",
   "license": "MIT",
   "devDependencies": {
-    "configurable-gulp-browserify": "git+https://github.com/amobiz/configurable-gulp-browserify.git",
+    "configurable-gulp-recipe-browserify": "git+https://github.com/amobiz/configurable-gulp-recipe-browserify.git",
     "configurable-gulp-recipes": "git+https://github.com/amobiz/configurable-gulp-recipes.git",
     "gulp": "gulpjs/gulp#4.0"
   }
