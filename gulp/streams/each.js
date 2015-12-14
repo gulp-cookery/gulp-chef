@@ -17,7 +17,7 @@
 function each(done) {
 	// lazy loading required modules.
 	var mergeStream = require('merge-stream'),
-		merge = require('../../src/streams/merge');
+		merge = require('configurable-gulp-recipe-merge');
 
 	var verify = require('../../src/core/configuration_verifier'),
 		PluginError = require('gulp-util').PluginError;

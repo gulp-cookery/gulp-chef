@@ -16,7 +16,7 @@
  */
 function concat(done) {
 	// lazy loading required modules.
-	var queue = require('./queue'),
+	var queue = require('configurable-gulp-recipe-queue'),
 		gulpConcat = require('gulp-concat');
 
 	var verify = require('../../src/core/configuration_verifier'),

@@ -12,10 +12,10 @@ module.exports = function (options) {
 			.dir(__dirname, 'flows')
 			.build(),
 		streams: ConfigurableRecipeRegistry.builder()
+			.module('configurable-gulp-recipe-merge')
+			.module('configurable-gulp-recipe-queue')
 			.dir(cwd, 'gulp/streams')
 			.npm(options)
-			.module('configurable-gulp-merge')
-			.module('configurable-gulp-queue')
 			.dir(__dirname, 'streams')
 			.build(),
 		tasks: ConfigurableRecipeRegistry.builder()
