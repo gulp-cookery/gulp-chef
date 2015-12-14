@@ -1,7 +1,6 @@
 'use strict';
 
-/*jshint node: true */
-/*global process*/
+var helper = require('./stream-helper')('merge');
 
 /**
  * Recipe:
@@ -19,48 +18,24 @@
  */
 function merge() {
 	// lazy loading required modules.
-	var mergeStream = require('merge-stream'),
-		PluginError = require('gulp-util').PluginError;
+	var mergeStream = require('merge-stream');
 
 	var context = this,
-		upstream = context.upstream,
-		tasks = context.tasks;
-
-	if (upstream) {
-		throw new PluginError('merge', 'merge stream-processor do not accept up-stream');
-	}
-
-	if (tasks.length === 0) {
-		throw new PluginError('merge', 'no sub task specified');
-	}
+		tasks = context.tasks,
+		runTask = helper(context);
 
 	if (tasks.length === 1) {
 		return runTask(tasks[0]);
 	}
 
 	return mergeStream(tasks.map(runTask));
-
-	function runTask(task) {
-		var stream = task.run.call(context, done);
-		if (!isStream(stream)) {
-			// TODO: Do not throw errors inside a stream. According to the [Guidelines](https://github.com/gulpjs/gulp/blob/4.0/docs/writing-a-plugin/guidelines.md)
-			throw new PluginError('merge', 'sub task must return a stream');
-		}
-		return stream;
-
-		function done() {}
-	}
-
-	function isStream(target) {
-		return (typeof target.pipe === 'function');
-	}
 }
 
 merge.expose = [];
 
 merge.schema = {
 	"title": "merge",
-	"description": "",
+	"description": "Merge multiple streams into one interleaved stream",
 	"properties": {
 	}
 };
