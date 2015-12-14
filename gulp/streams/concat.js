@@ -19,7 +19,7 @@ function concat(done) {
 	var queue = require('configurable-gulp-recipe-queue'),
 		gulpConcat = require('gulp-concat');
 
-	var verify = require('../../src/core/configuration_verifier'),
+	var verify = require('configurable-gulp-helper').verifyConfiguration,
 		PluginError = require('gulp-util').PluginError;
 
 	var context = this,
@@ -35,7 +35,6 @@ function concat(done) {
 		stream = queue.call(context);
 	} else {
 		if (!upstream && !config.src) {
-			// TODO: Do not throw errors inside a stream. According to the [Guidelines](https://github.com/gulpjs/gulp/blob/4.0/docs/writing-a-plugin/guidelines.md)
 			throw new PluginError('concat', 'configuration property "src" is required, otherwise an up-stream must be provided')
 		}
 		stream = upstream || gulp.src(config.src.globs, config.src.options);

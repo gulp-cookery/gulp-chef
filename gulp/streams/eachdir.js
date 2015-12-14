@@ -26,7 +26,7 @@ function eachdir(done) {
 		path = require('path'),
 		each = require('./each');
 
-	var verify = require('../../src/core/configuration_verifier'),
+	var verify = require('configurable-gulp-helper').verifyConfiguration,
 		PluginError = require('gulp-util').PluginError;
 
 	var context = this,

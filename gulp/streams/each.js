@@ -19,7 +19,7 @@ function each(done) {
 	var mergeStream = require('merge-stream'),
 		merge = require('configurable-gulp-recipe-merge');
 
-	var verify = require('../../src/core/configuration_verifier'),
+	var verify = require('configurable-gulp-helper').verifyConfiguration,
 		PluginError = require('gulp-util').PluginError;
 
 	var context = this,

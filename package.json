@@ -48,6 +48,7 @@
   "dependencies": {
     "async": "^1.5.0",
     "async-done": "^1.2.0",
+    "configurable-gulp-helper": "git+https://github.com/amobiz/configurable-gulp-helper.git",
     "configurable-gulp-recipe-merge": "git+https://github.com/amobiz/configurable-gulp-recipe-merge.git",
     "configurable-gulp-recipe-pipe": "git+https://github.com/amobiz/configurable-gulp-recipe-pipe.git",
     "configurable-gulp-recipe-queue": "git+https://github.com/amobiz/configurable-gulp-recipe-queue.git",
