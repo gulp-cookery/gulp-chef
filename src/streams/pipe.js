@@ -1,5 +1,7 @@
 'use strict';
 
+var helper = require('./stream-helper')('pipe');
+
 /**
  * Recipe:
  * 	Stream Pipe
@@ -12,29 +14,20 @@
  *
  */
 function pipe() {
-	var PluginError = require('gulp-util').PluginError;
+	var helper = require('./stream-helper');
 
 	var i, n, stream;
 
 	var context = this,
-		tasks = context.tasks;
-
-	if (tasks.length === 0) {
-		throw new PluginError('pipe', 'no sub task specified');
-	}
+		tasks = context.tasks,
+		runTask = helper(context, true);
 
 	stream = context.upstream;
 	for (i = 0, n = tasks.length; i < n; ++i) {
 		context.upstream = stream;
-		stream = tasks[i].run.call(context, done);
-		if (!stream) {
-			// TODO: Do not throw errors inside a stream. According to the [Guidelines](https://github.com/gulpjs/gulp/blob/4.0/docs/writing-a-plugin/guidelines.md)
-			throw new PluginError('pipe', 'recipes in pipe stream-processor must return a stream');
-		}
+		stream = runTask(tasks[i]);
 	}
 	return stream;
-
-	function done() {}
 }
 
 pipe.expose = [];
