@@ -1,33 +1,78 @@
 "use strict";
 
-var ConfigurationError = require('./configuration_error');
-
-
+var _ = require('lodash'),
+	PluginError = require('gulp-util').PluginError;
 
 function verify(schema, config) {
-	if (schema && schema.required) {
-		schema.required.forEach(function (name) {
-			var property;
+	var title;
 
-			if (!config.hasOwnProperty(name)) {
-				throw new ConfigurationError(schema.title, 'configuration property "' + name + '" is required');
+	if (schema && config) {
+		title = schema.title;
+		_entry(title, schema, config)
+	}
+
+	function _entry(name, schema, value) {
+		_object() || _array();
+
+		function _array() {
+			if (_strict('array') || _loose('array', Array.isArray)) {
+				if (!Array.isArray(value)) {
+					throw new PluginError(title, 'configuration property "' + name + '" should be an array');
+				}
+
+				if (schema.minItems && value.length < schema.minItems) {
+					throw new PluginError(title, 'configuration property "' + name + '" should at least contains ' + schema.minItems + (schema.minItems > 1 ? ' items' : ' item'));
+				}
+
+				if (schema.maxItems && schema.maxItems < value.length) {
+					throw new PluginError(title, 'configuration property "' + name + '" should at most contains ' + schema.minItems + (schema.minItems > 1 ? ' items' : ' item'));
+				}
+
+				if (schema.items) {
+					value.forEach(function (item) {
+						_entry('item', schema.items, item);
+					});
+				}
+
+				return true;
 			}
+		}
 
-			property = schema.properties[name];
-			if (property.type === 'array') {
-				if (!Array.isArray(config[name])) {
-					throw new ConfigurationError(schema.title, 'configuration property "' + name + '" be an array');
+		function _object() {
+			if (_strict('object') || _loose('object', _.isPlainObject) || _implicit()) {
+				if (!_.isPlainObject(value)) {
+					throw new PluginError(title, 'configuration property "' + name + '" should be an object');
 				}
 
-				if (property.minItems && config[name].length < property.minItems) {
-					throw new ConfigurationError(schema.title, 'configuration property "' + name + '" should at least contains ' + property.minItems + (property.minItems > 1 ? ' items' : ' item'));
+				if (schema.required) {
+					schema.required.forEach(function (property) {
+						if (!value.hasOwnProperty(property)) {
+							throw new PluginError(title, 'configuration property "' + property + '" is required');
+						}
+					});
 				}
 
-				if (property.maxItems && property.maxItems < config[name].length) {
-					throw new ConfigurationError(schema.title, 'configuration property "' + name + '" should at most contains ' + property.minItems + (property.minItems > 1 ? ' items' : ' item'));
+				if (schema.properties) {
+					_.forEach(value, function (item, property) {
+						_entry(property, schema.properties[property], item);
+					});
 				}
+
+				return true;
 			}
-		});
+		}
+
+		function _strict(type) {
+			return schema.type === type;
+		}
+
+		function _loose(type, fn) {
+			return _.includes(schema.type, type) && fn(value);
+		}
+
+		function _implicit() {
+			return _.size(schema.properties) > 0;
+		}
 	}
 }
 
