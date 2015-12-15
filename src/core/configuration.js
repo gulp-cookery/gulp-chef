@@ -462,8 +462,8 @@ function resolveDest(child, parent) {
 }
 
 // TODO: process 'development' / 'product' mode.
-function processRuntimeConfigurations(config) {
-	var promotions, eliminations, mode = getRuntimeMode();
+function processRuntimeConfigurations(config, mode) {
+	var promotions, eliminations;
 	if (mode === 'development') {
 		promotions = ['development', 'dev'];
 		eliminations = ['production', 'prod'];
@@ -475,7 +475,7 @@ function processRuntimeConfigurations(config) {
 }
 
 function getRuntimeMode() {
-	return 'development';
+	return 'production';
 }
 
 /**
@@ -516,7 +516,7 @@ function sort(taskInfo, rawConfig, parentConfig, schema) {
 			taskConfig.dest = value;
 		}
 
-		_.defaultsDeep(taskConfig, processRuntimeConfigurations(rawConfig));
+		_.defaultsDeep(taskConfig, processRuntimeConfigurations(rawConfig, getRuntimeMode()));
 
 		inheritedConfig = _.defaultsDeep(taskConfig, rawConfig, parentConfig);
 	} else {
