@@ -3,6 +3,7 @@
 var _ = require('lodash'),
 	log = require('gulp-util').log,
 	normalize = require('json-normalizer').sync,
+	regulate = require('json-regulator'),
 	globsJoin = require('../helpers/globs').join,
 	from = require('../helpers/dataflow');
 
@@ -461,6 +462,21 @@ function resolveDest(child, parent) {
 }
 
 // TODO: process 'development' / 'product' mode.
+function processRuntimeConfigurations(config) {
+	var promotions, eliminations, mode = getRuntimeMode();
+	if (mode === 'development') {
+		promotions = ['development', 'dev'];
+		eliminations = ['production', 'prod'];
+	} else {
+		promotions = ['production', 'prod'];
+		eliminations = ['development', 'dev'];
+	}
+	return regulate(config, promotions, eliminations);
+}
+
+function getRuntimeMode() {
+	return 'development';
+}
 
 /**
  * If both parentConfig and taskConfig specified src property
@@ -500,10 +516,13 @@ function sort(taskInfo, rawConfig, parentConfig, schema) {
 			taskConfig.dest = value;
 		}
 
+		_.defaultsDeep(taskConfig, processRuntimeConfigurations(rawConfig));
+
 		inheritedConfig = _.defaultsDeep(taskConfig, rawConfig, parentConfig);
 	} else {
 		inheritedConfig = rawConfig;
 	}
+
 	value = normalize(schema, inheritedConfig, { ignoreUnknownProperties: true });
 	taskConfig = value.values;
 	if (_.isPlainObject(taskConfig)) {
