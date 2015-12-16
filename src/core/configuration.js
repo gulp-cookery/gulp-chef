@@ -335,7 +335,7 @@ function getOptions() {
 
 function setOptions(options) {
 	_options = _.defaults(options || {}, _defaultOptions);
-	_regulator = new ConfigurationRegulator(ConfigurationRegulator.mode(), options.modes);
+	_regulator = new ConfigurationRegulator();
 }
 
 function getTaskRuntimeInfo(name) {
