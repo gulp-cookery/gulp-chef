@@ -18,7 +18,9 @@ function configure(rawConfigs, options) {
 
 	taskFactory.multiple('', configs.subTaskConfigs, configs.taskConfig);
 	registry.set('help', taskFactory.create('', {}, {}, helpRecipe));
-	// TODO: add 'generate' task that write gulefile.js with transformed confgurations?
+	// TODO: add '--man' task that display task detail information?
+	// TODO: add '--regulate' task that write gulefile.js with regulated confgurations?
+	// TODO: add '--generate' task that write gulefile.js with transformed and flattened confgurations?
 
 	// export recipes registry
 	return registry;
