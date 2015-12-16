@@ -22,6 +22,8 @@ var SOURCES = [
 	}
 ];
 
+// TODO: json-normalize modes.
+// TODO: let json-regulator use example in the "Conditional Configurations" section in readme.
 function ConfigurationRegulator(modes, modeProvider) {
 	var keys, mode;
 

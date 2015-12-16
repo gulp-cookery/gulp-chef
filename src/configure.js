@@ -18,6 +18,7 @@ function configure(rawConfigs, options) {
 
 	taskFactory.multiple('', configs.subTaskConfigs, configs.taskConfig);
 	registry.set('help', taskFactory.create('', {}, {}, helpRecipe));
+	// TODO: add 'generate' task that write gulefile.js with transformed confgurations?
 
 	// export recipes registry
 	return registry;
