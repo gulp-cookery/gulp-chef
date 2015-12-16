@@ -11,27 +11,27 @@ $ npm install --save-dev https://github.com/amobiz/configurable-gulp-recipes.git
 
 ### Gulp Task
 
-Starting from gulp 4.0, a gulp task takes `undefined` as context, and returns stream / promise, or call `done()` callback when finished.
+A gulp task is a function you register using `gulp.task()` method, and then run it from CLI.
+
+Starting from gulp 4.0, a gulp task takes `undefined` as context, and returns promises, observables, child processes or streams, or call `done()` callback when finished.
 ``` javascript
 function gulpTask(done) {
-}
-```
-
-Normally, you define a task by calling `gulp.task()`:
-``` javascript
-function myTask(done) {
+    assert(this === null);
     // do things ...
     done();
 }
 
-gulp.task(myTask);
+gulp.task(gulpTask);
 ```
 
 ### Configurable Task
 
 A configurable task has signature same as normal gulp task, and can be used just as a normal gulp task. But, were called with an object: `{ gulp, config, upstream }` as context.
 ``` javascript
+// You don't write configurable task but configuration.
+// The plugin generates configurable task for you.
 function configurableTask(done) {
+    done();
 }
 ```
 
@@ -60,7 +60,22 @@ scripts.call({
 
 Note the `configure()` function returns a registry, you can call `gulp.registry()` to register all available tasks in the registry.
 
-#### Nesting Task
+### Configurable Recipe
+
+A configurable recipe is the actual function that do things, and also has signature same as normal gulp task. A configurable recipe is the actual __recipe__ you want to write and reuse. In fact, "configurable task" is simply a wrapper that calls "configurable recipe" with exactly the same name.
+``` javascript
+function configurableRecipe(done) {
+    var context = this,
+        gulp = context.gulp,
+        config = context.config;
+    // do things ...
+    done();
+}
+```
+
+## Writing Configurations
+
+### Nesting Task
 
 Tasks can be nested. Sub tasks lexically inherits its parent's configurations. And even better, for some predefined properties, e.g. `src`, `dest`, paths are joined automatically.
 ``` javascript
@@ -79,7 +94,7 @@ var recipes = configure({
 ```
 This creates __3__ configurable tasks for you: "`build`", "`build:scripts`" and "`build:styles`".
 
-#### Parallel Tasks
+### Parallel Tasks
 
 In the above example, when you run `build`, its sub tasks `scripts` and `styles` will be executed in __parallel__, and be called with configurations like this:
 ``` javascript
@@ -94,7 +109,7 @@ styles: {
 }
 ```
 
-#### Series Tasks
+### Series Tasks
 
 If you want sub tasks be executed in __series__, you can use `series` "flow controller", and add `order` property to them:
 ``` javascript
@@ -130,7 +145,7 @@ var recipes = configure({
 };
 ```
 
-#### Referencing Task
+### Referencing Task
 
 You can reference other task by its name.
 ``` javascript
@@ -211,7 +226,7 @@ var recipes = configure({
 };
 ```
 
-#### Plain / Inline Function
+### Plain / Inline Function
 Tasks can be plain Javascript functions and be referenced directly, or can be defined inline and be referenced by name.
 ``` javascript
 function clean(done) {
@@ -260,7 +275,7 @@ var recipes = configure({
 };
 ```
 
-#### Invisible Task
+### Invisible Task
 Do not expose a task to CLI and can't be referenced, without affacting its sub tasks. Since it's invisible, its sub tasks won't prefix it's name, but still inherit its configuration. A invisible task is still functional if invoked from its parent task.
 ``` javascript
 var recipes = configure({
@@ -284,11 +299,11 @@ var recipes = configure({
 ```
 In this example the `concat` task is invisible.
 
-#### Disabled Task
+### Disabled Task
 Disable a task and all its sub tasks. Not defined at all.
 
 
-#### Conditional Configurations
+### Conditional Configurations
 Configurable-gulp-recipes supports conditional configurations via rumtime environment modes.
 By default, `development`, `production` and `staging` modes are supported. You can write your configurations for each specific mode under sections with keys `development`/`dev`, `production`/`prod` and `staging` respectively.
 
@@ -303,31 +318,31 @@ For example, with the following configuration:
             // common options
 
             dev: {
-				// development options
-				description: 'development mode',
+                // development options
+                description: 'development mode',
                 sourcemap: false
             },
 
             prod: {
-				// production options
-				description: 'production mode',
+                // production options
+                description: 'production mode',
                 sourcemap: 'external'
             }
         },
 
         development: {
             // development configs
-			description: 'development mode',
-			dest: 'build',
+            description: 'development mode',
+            dest: 'build',
 
             options: {
-            	// development options
+                // development options
                 debug: true
             },
 
-        	// sub tasks for development mode
-			lint: {
-			}
+            // sub tasks for development mode
+            lint: {
+            }
         },
 
         // sub tasks
@@ -342,16 +357,16 @@ For example, with the following configuration:
 
         production: {
             // production configs
-			description: 'production mode',
-			dest: 'dist',
+            description: 'production mode',
+            dest: 'dist',
 
             options: {
-            	// production options
+                // production options
                 debug: false
             },
 
-        	// sub tasks for production mode
-			all: [ 'uglify', 'concat' ]
+            // sub tasks for production mode
+            all: [ 'uglify', 'concat' ]
         }
     }
 }
@@ -362,14 +377,14 @@ In `development` mode will becomes:
 {
     scripts: {
         src: 'src',
-		dest: 'build',
+        dest: 'build',
         options: {
-			description: 'development mode',
-			sourcemap: false,
-			debug: true
+            description: 'development mode',
+            sourcemap: false,
+            debug: true
         },
-		description: 'development mode',
-		lint: {
+        description: 'development mode',
+        lint: {
         },
         typescript: {
             src: '**/*.ts'
@@ -386,9 +401,9 @@ And in `production` mode will becomes:
 {
     scripts: {
         src: 'src',
-		dest: 'dist',
+        dest: 'dist',
         options: {
-			description: 'production mode',
+            description: 'production mode',
             sourcemap: 'external',
             debug: false
         },
@@ -398,16 +413,16 @@ And in `production` mode will becomes:
         js: {
             src: '**/*.js'
         },
-		description: 'production mode',
-		all: [ 'uglify', 'concat' ]
+        description: 'production mode',
+        all: [ 'uglify', 'concat' ]
     }
 }
 ```
 Super!
 
-##### Run Gulp in Specific Runtime Environment Mode
+#### Run Gulp in Specific Runtime Environment Mode
 
-###### Via CLI Argument
+##### Via CLI Argument
 ``` bash
 $ gulp --development build
 ```
@@ -416,7 +431,7 @@ Or, for short:
 $ gulp --dev build
 ```
 
-###### Via Environment Variable
+##### Via Environment Variable
 In Linux/Unix:
 ``` bash
 $ NODE_ENV=development gulp build
@@ -426,35 +441,35 @@ Or, for short:
 $ NODE_ENV=dev gulp build
 ```
 
-##### Customizing Rumtime Environment Modes
+#### Customizing Rumtime Environment Modes
 Rumtime environment modes are totally configurable too. If you are a minimalist, you can even use `d`, `p` and `s` for `development`, `production` and `staging` respectively, just remember that your configurations and rumtime environment modes are in sync.
 ``` javascript
 var config = {
-	scripts: {
-		src: 'src',
-		lint: {
-		},
-		d: {
-			debug: true
-		},
-		p: {
-			debug: false,
-			sourcemap: 'external',
-			uglify: {
-			},
-			concat: {
-			}
-		}
-	}
+    scripts: {
+        src: 'src',
+        lint: {
+        },
+        d: {
+            debug: true
+        },
+        p: {
+            debug: false,
+            sourcemap: 'external',
+            uglify: {
+            },
+            concat: {
+            }
+        }
+    }
 };
 var options = {
-	modes: {
-		production: 'p',
-		development: 'd',
-		staging: 's',
-		default: 'production'
-	},
-	defaultMode: 'production'
+    modes: {
+        production: 'p',
+        development: 'd',
+        staging: 's',
+        default: 'production'
+    },
+    defaultMode: 'production'
 };
 var recipes = configure(config, options);
 ```
@@ -464,23 +479,17 @@ Moreover, you can design any modes you want, with alias supported.
 ``` javascript
 var config = {};
 var modes = {
-	build: ['b', 'build'],
-	compile: ['c', 'compile'],
-	deploy: ['d', 'deploy', 'deployment'],
-	review: ['r', 'review']
-	default: 'build'
+    build: ['b', 'build'],
+    compile: ['c', 'compile'],
+    deploy: ['d', 'deploy', 'deployment'],
+    review: ['r', 'review']
+    default: 'build'
 };
 ```
 
 However, you can't use [keywords] reserved for task information, of course.
 
-### Configurable Recipe
-
-A configurable recipe is the actual function that do things, and also has signature same as normal gulp task. A configurable recipe is the actual __recipe__ you want to write and reuse. In fact, "configurable task" is simply a wrapper that calls "configurable recipe" with exactly the same name.
-``` javascript
-function configurableRecipe(done) {
-}
-```
+## Writing Recipes
 
 There are 3 kinds of recipes: "task", "stream processor" and "flow controller".
 
@@ -532,91 +541,91 @@ var recipes = configure({
 });
 ```
 
-#### Dynamic Configuration / Template Variable Realizing
+### Dynamic Configuration / Template Variable Realizing
 
 Some stream processors (e.g., "gulp-recipe-eachdir") programmatically modify and/or generate new configurations. The new configuratuin are injected to recipe's configuration at runtime. And templates with `${var}` syntax are realized with resolved variables.
 
-#### Development / Production Mode
+### Development / Production Mode
 
 Configurable recipes don't have to worry about development/production mode. Configurations are resolved for that specific mode already.
 
-#### Reserved Configuration Properties
+### Reserved Configuration Properties
 
-##### name
+#### name
 Name of the task. Only required when defining task in an array and you want to run it from CLI.
 
-##### description
+#### description
 Description of the task.
 
-##### order
+#### order
 Execution order of the task. Only required when you defining tasks in object and want them be executed in series. The values are used for sort, so don't have to be contiguous.
 
-##### runtime
+#### runtime
 Execution time of the task. Valid values are `all`, `production` and `development`. Defaults to `all`.
 
-##### task
+#### task
 Define a plain, inline or reference task.
 
-##### visibility
+#### visibility
 Visibility of the task. Valid values are `normal`, `invisible` and `disabled`.
 
-##### development
-Configuration values for development.
-
-##### production
-Configuration values for production.
-
-##### options
+#### options
 Additional options to pass to task. Usually used by underling gulp plugins.
 
-##### src
+#### src
 
-##### dest
+#### dest
 
-## Task
+## Building Recipes
 
-### clean
+### Task
 
-### copy
+#### clean
 
-### help
+#### copy
+
+#### help
 
 
 
 
-## Stream Processor
+### Stream Processor
 A stream processor manipulates its sub tasks' input and/or output streams.
 
 In the "Configurable Recipe" section, that said "configurable task" is simply a wrapper that calls "configurable recipe" with exactly the same name. That's not entirely true. Stream processor may not has the same name as "configurable task".
 
-### merge
+#### merge
 A merge stream processor creates a new stream, that ends only when all its sub tasks' stream ends.
 See [merge-stream](https://www.npmjs.com/package/merge-stream) for details.
 
-### queue
+#### queue
 A queue stream processor creates a new stream, that pipe queued streams of its sub tasks progressively, keeping datas order.
 See [streamqueue](https://www.npmjs.com/package/streamqueue) for details.
 
-### pipe
+#### pipe
 Provides the same functionality of `gulp.pipe()`. Pipe streams from one sub task to another.
 
 
 
-## Flow Controller
+### Flow Controller
 A flow controller takes care of when to execute, and execution order of its sub tasks and don't care their input and/or output streams.
 
-### parallel
+#### parallel
 
-### series
+#### series
 
-### watch
+#### watch
 
 
 ## Writing Plugins
 
-#### Configuration Schema
+### Configuration Schema
 
 Configurable-gulp-recipes uses "[json-normalizer](https://www.npmjs.com/package/json-normalizer)" to normalize json configurations. You can define your configuration schema to support property alias, type convertion and default values, etc.
+
+### Test Plugin
+
+
 
 ## List of Recipe Plugins
 
