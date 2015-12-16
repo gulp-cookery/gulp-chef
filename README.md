@@ -47,7 +47,7 @@ var recipes = configure({
 });
 gulp.registry(recipes);
 ```
-This generates a configurable task called "`scripts`" for you, and can be accessed via`recipes.get('scripts')`. The configurable task will be called with the configuration defined with it, some kind of like this:
+This generates a configurable task called "`scripts`" for you, and can be accessed via `recipes.get('scripts')`. The configurable task will be called with the configuration defined with it, some kind of like this:
 ``` javascript
 scripts.call({
     gulp: gulp,
@@ -241,12 +241,12 @@ var recipes = configure({
     dest: 'dist',
     make: {
         scripts: {
-            src: '**/*.js,
+            src: '**/*.js',
             task: function (done) {
             }
         },
         styles: {
-            src: '**/*.css,
+            src: '**/*.css',
             task: function (done) {
             }
         }
@@ -272,10 +272,10 @@ var recipes = configure({
             file: 'bundle.js',
             src: 'lib',
             coffee: {
-                src: '**/*.coffee
+                src: '**/*.coffee'
             },
             js: {
-                src: '**/*.js
+                src: '**/*.js'
             }
         }
     }
@@ -288,65 +288,126 @@ In this example the `concat` task is invisible.
 Disable a task and all its sub tasks. Not defined at all.
 
 
-#### Development / Production Mode
+#### Conditional Configurations
+Configurable-gulp-recipes supports conditional configurations via rumtime environment modes.
+By default, `development`, `production` and `staging` modes are supported. You can write your configurations for each specific mode under sections with keys `development`/`dev`, `production`/`prod` and `staging` respectively.
+
+For example, with the following configuration:
 ``` javascript
-var recipes = configure({
-    "scripts": {
-
+{
+    scripts: {
         // common configs
-        "src": "src",
+        src: 'src',
 
-        // common options
-        "options": {
-
+        options: {
             // common options
 
-            // production options
-            "production": {
-                "uglify": true,
-                "sourcemap": "external"
+            dev: {
+				// development options
+				description: 'development mode',
+                sourcemap: false
             },
 
-            // development options
-            "development": {
-                "uglify": false,
-                "sourcemap": false
+            prod: {
+				// production options
+				description: 'production mode',
+                sourcemap: 'external'
             }
         },
 
-        // production configs
-        "production": {
-            // production configs
-
-            // production options
-            "options": {
-            }
-        },
-
-        // development configs
-        "development": {
+        development: {
             // development configs
+			description: 'development mode',
+			dest: 'build',
 
-            // development options
-            "options": {
-            }
+            options: {
+            	// development options
+                debug: true
+            },
+
+        	// sub tasks for development mode
+			lint: {
+			}
         },
 
         // sub tasks
 
-        "typescript": {
-            "src": "**/*.ts"
+        typescript: {
+            src: '**/*.ts'
         },
 
-        "js": {
-            "src": "**/*.js"
+        js: {
+            src: '**/*.js'
+        },
+
+        production: {
+            // production configs
+			description: 'production mode',
+			dest: 'dist',
+
+            options: {
+            	// production options
+                debug: false
+            },
+
+        	// sub tasks for production mode
+			all: [ 'uglify', 'concat' ]
         }
     }
-});
+}
 ```
-#### Run Gulp in Specific Environment Mode
 
-##### Via. CLI Argument
+In `development` mode will becomes:
+``` javascript
+{
+    scripts: {
+        src: 'src',
+		dest: 'build',
+        options: {
+			description: 'development mode',
+			sourcemap: false,
+			debug: true
+        },
+		description: 'development mode',
+		lint: {
+        },
+        typescript: {
+            src: '**/*.ts'
+        },
+        js: {
+            src: '**/*.js'
+        }
+    }
+}
+```
+
+And in `production` mode will becomes:
+``` javascript
+{
+    scripts: {
+        src: 'src',
+		dest: 'dist',
+        options: {
+			description: 'production mode',
+            sourcemap: 'external',
+            debug: false
+        },
+        typescript: {
+            src: '**/*.ts'
+        },
+        js: {
+            src: '**/*.js'
+        },
+		description: 'production mode',
+		all: [ 'uglify', 'concat' ]
+    }
+}
+```
+Super!
+
+##### Run Gulp in Specific Runtime Environment Mode
+
+###### Via CLI Argument
 ``` bash
 $ gulp --development build
 ```
@@ -355,7 +416,7 @@ Or, for short:
 $ gulp --dev build
 ```
 
-##### Via. Environment Variable
+###### Via Environment Variable
 In Linux/Unix:
 ``` bash
 $ NODE_ENV=development gulp build
@@ -364,6 +425,54 @@ Or, for short:
 ``` bash
 $ NODE_ENV=dev gulp build
 ```
+
+##### Customizing Rumtime Environment Modes
+Rumtime environment modes are totally configurable too. If you are a minimalist, you can even use `d`, `p` and `s` for `development`, `production` and `staging` respectively, just remember that your configurations and rumtime environment modes are in sync.
+``` javascript
+var config = {
+	scripts: {
+		src: 'src',
+		lint: {
+		},
+		d: {
+			debug: true
+		},
+		p: {
+			debug: false,
+			sourcemap: 'external',
+			uglify: {
+			},
+			concat: {
+			}
+		}
+	}
+};
+var options = {
+	modes: {
+		production: 'p',
+		development: 'd',
+		staging: 's',
+		default: 'production'
+	},
+	defaultMode: 'production'
+};
+var recipes = configure(config, options);
+```
+If `options.modes.default` is not specified, first mode will becomes default. However, it's recommended not to skip.
+
+Moreover, you can design any modes you want, with alias supported.
+``` javascript
+var config = {};
+var modes = {
+	build: ['b', 'build'],
+	compile: ['c', 'compile'],
+	deploy: ['d', 'deploy', 'deployment'],
+	review: ['r', 'review']
+	default: 'build'
+};
+```
+
+However, you can't use [keywords] reserved for task information, of course.
 
 ### Configurable Recipe
 
