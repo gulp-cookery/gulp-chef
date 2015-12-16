@@ -346,28 +346,29 @@ For example, with the following configuration:
         },
 
         // sub tasks
-
-        typescript: {
-            src: '**/*.ts'
-        },
-
-        js: {
-            src: '**/*.js'
-        },
-
-        production: {
-            // production configs
-            description: 'production mode',
-            dest: 'dist',
-
-            options: {
-                // production options
-                debug: false
+		transform: [{
+            typescript: {
+                src: '**/*.ts'
             },
 
-            // sub tasks for production mode
-            all: [ 'uglify', 'concat' ]
-        }
+            js: {
+                src: '**/*.js'
+            }
+        }, {
+			production: {
+				// production configs
+				description: 'production mode',
+				dest: 'dist',
+
+				options: {
+					// production options
+					debug: false
+				},
+
+				// sub tasks for production mode
+				task: [ 'uglify', 'concat' ]
+			}
+		}
     }
 }
 ```
@@ -386,12 +387,15 @@ In `development` mode will becomes:
         description: 'development mode',
         lint: {
         },
-        typescript: {
-            src: '**/*.ts'
-        },
-        js: {
-            src: '**/*.js'
-        }
+		transform: [{
+			typescript: {
+				src: '**/*.ts'
+			},
+			js: {
+				src: '**/*.js'
+			}
+		}, {
+		}]
     }
 }
 ```
@@ -407,14 +411,17 @@ And in `production` mode will becomes:
             sourcemap: 'external',
             debug: false
         },
-        typescript: {
-            src: '**/*.ts'
-        },
-        js: {
-            src: '**/*.js'
-        },
-        description: 'production mode',
-        all: [ 'uglify', 'concat' ]
+		transform: [{
+			typescript: {
+				src: '**/*.ts'
+			},
+			js: {
+				src: '**/*.js'
+			}
+		}, {
+        	description: 'production mode',
+        	task: [ 'uglify', 'concat' ]
+		}]
     }
 }
 ```
@@ -464,18 +471,18 @@ var config = {
 };
 var options = {
     modes: {
-        production: 'p',
-        development: 'd',
-        staging: 's',
+        production: ['p'],
+        development: ['d'],
+        staging: ['s'],
         default: 'production'
     },
     defaultMode: 'production'
 };
 var recipes = configure(config, options);
 ```
-If `options.modes.default` is not specified, first mode will becomes default. However, it's recommended not to skip.
+Note the `default` in `options.modes`. It won't define a mode. Instead, it define which other mode being default. If `options.modes.default` is not specified, first mode will becomes default. However, it's recommended not to skip.
 
-Moreover, you can design any modes you want, with alias supported.
+Moreover, you can design any modes you want, with alias support.
 ``` javascript
 var config = {};
 var modes = {
