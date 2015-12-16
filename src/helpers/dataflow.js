@@ -4,6 +4,7 @@ function from(source) {
 	return {
 		to: function (target) {
 			return {
+				// TODO: support multiple source mapping to one target?
 				imply: function(mappings, overwrite) {
 					Object.keys(mappings).forEach(function (sourceProperty) {
 						var targetProperty;

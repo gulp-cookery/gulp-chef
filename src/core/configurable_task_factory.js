@@ -188,6 +188,7 @@ ConfigurableTaskFactory.prototype.create = function (prefix, taskInfo, taskConfi
 	configurableTask.recipe = recipe;
 	configurableTask.run = run;
 	configurableTask.config = taskConfig;
+	// TODO: also keep raw config?
 	if (Configuration.isVisible(configurableTask)) {
 		this.registry.set(configurableTask.displayName, configurableTask);
 		metadata.set(configurableTask, configurableTask.displayName);
