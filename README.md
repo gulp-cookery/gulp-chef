@@ -475,8 +475,7 @@ var options = {
         development: ['d'],
         staging: ['s'],
         default: 'production'
-    },
-    defaultMode: 'production'
+    }
 };
 var recipes = configure(config, options);
 ```
