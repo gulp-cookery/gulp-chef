@@ -3,11 +3,11 @@
 var _ = require('lodash'),
 	log = require('gulp-util').log,
 	normalize = require('json-normalizer').sync,
-	regulate = require('json-regulator'),
 	globsJoin = require('../helpers/globs').join,
 	from = require('../helpers/dataflow');
 
-var ConfigurationError = require('./configuration_error');
+var ConfigurationRegulator = require('./configuration_regulator'),
+	ConfigurationError = require('./configuration_error');
 
 var INTERPOLATE = /{{([\s\S]+?)}}/g,
 	SCHEMA_SRC = {
@@ -326,6 +326,7 @@ var _defaultOptions = {
 	exposeStockComposeTasks: false
 };
 
+var _regulator;
 var _options = _defaultOptions;
 
 function getOptions() {
@@ -334,6 +335,7 @@ function getOptions() {
 
 function setOptions(options) {
 	_options = _.defaults(options || {}, _defaultOptions);
+	_regulator = new ConfigurationRegulator(ConfigurationRegulator.mode(), options.modes);
 }
 
 function getTaskRuntimeInfo(name) {
@@ -461,23 +463,6 @@ function resolveDest(child, parent) {
 	}
 }
 
-// TODO: process 'development' / 'product' mode.
-function processRuntimeConfigurations(config, mode) {
-	var promotions, eliminations;
-	if (mode === 'development') {
-		promotions = ['development', 'dev'];
-		eliminations = ['production', 'prod'];
-	} else {
-		promotions = ['production', 'prod'];
-		eliminations = ['development', 'dev'];
-	}
-	return regulate(config, promotions, eliminations);
-}
-
-function getRuntimeMode() {
-	return 'production';
-}
-
 /**
  * If both parentConfig and taskConfig specified src property
  * then try to join paths.
@@ -516,7 +501,7 @@ function sort(taskInfo, rawConfig, parentConfig, schema) {
 			taskConfig.dest = value;
 		}
 
-		_.defaultsDeep(taskConfig, processRuntimeConfigurations(rawConfig, getRuntimeMode()));
+		_.defaultsDeep(taskConfig, _regulator.regulate(rawConfig));
 
 		inheritedConfig = _.defaultsDeep(taskConfig, rawConfig, parentConfig);
 	} else {

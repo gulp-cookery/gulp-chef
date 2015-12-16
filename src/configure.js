@@ -8,21 +8,21 @@ var ConfigurableRecipeFactory = require('./core/configurable_recipe_factory'),
 	Registry = require('./core/registry');
 
 function configure(rawConfigs, options) {
-	var registry = new Registry(onInitGulp),
+	Configuration.setOptions(options);
+	var registry = new Registry(postConfigure),
 		stuff = require('./stuff')(options),
 		recipeFactory = new ConfigurableRecipeFactory(stuff, registry),
 		taskFactory = new ConfigurableTaskFactory(stuff, recipeFactory, registry),
 		configs = Configuration.sort({}, rawConfigs, {}, Configuration.SCHEMA_COMMONS),
 		helpRecipe = stuff.tasks.lookup('help');
 
-	Configuration.setOptions(options);
 	taskFactory.multiple('', configs.subTaskConfigs, configs.taskConfig);
 	registry.set('help', taskFactory.create('', {}, {}, helpRecipe));
 
 	// export recipes registry
 	return registry;
 
-	function onInitGulp(gulp) {
+	function postConfigure(gulp) {
 		var missing = registry.missing(gulp);
 		if (missing) {
 			console.log('Warning: missing task reference: ' + missing.join(', '));
