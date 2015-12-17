@@ -314,6 +314,32 @@ For example, with the following configuration:
         // common configs
         src: 'src',
 
+        development: {
+            // development configs
+            description: 'development mode',
+            dest: 'build',
+
+            options: {
+                // development options
+                debug: true
+            },
+
+            // sub tasks for development mode
+            lint: {
+            }
+        },
+
+		production: {
+			// production configs
+			description: 'production mode',
+			dest: 'dist',
+
+			options: {
+				// production options
+				debug: false
+			}
+		},
+
         options: {
             // common options
 
@@ -330,23 +356,8 @@ For example, with the following configuration:
             }
         },
 
-        development: {
-            // development configs
-            description: 'development mode',
-            dest: 'build',
-
-            options: {
-                // development options
-                debug: true
-            },
-
-            // sub tasks for development mode
-            lint: {
-            }
-        },
-
         // sub tasks
-		transform: [{
+		pipe: [{
             typescript: {
                 src: '**/*.ts'
             },
@@ -358,17 +369,21 @@ For example, with the following configuration:
 			production: {
 				// production configs
 				description: 'production mode',
-				dest: 'dist',
-
-				options: {
-					// production options
-					debug: false
-				},
 
 				// sub tasks for production mode
-				task: [ 'uglify', 'concat' ]
+				uglify: {
+				}
 			}
-		}
+        }, {
+			production: {
+				// production configs
+				description: 'production mode',
+
+				// sub tasks for production mode
+				concat: {
+				}
+			}
+		}]
     }
 }
 ```
@@ -378,23 +393,22 @@ In `development` mode will becomes:
 {
     scripts: {
         src: 'src',
+        description: 'development mode',
         dest: 'build',
         options: {
             description: 'development mode',
             sourcemap: false,
             debug: true
         },
-        description: 'development mode',
         lint: {
         },
-		transform: [{
+		pipe: [{
 			typescript: {
 				src: '**/*.ts'
 			},
 			js: {
 				src: '**/*.js'
 			}
-		}, {
 		}]
     }
 }
@@ -405,13 +419,14 @@ And in `production` mode will becomes:
 {
     scripts: {
         src: 'src',
+		description: 'production mode',
         dest: 'dist',
         options: {
             description: 'production mode',
             sourcemap: 'external',
             debug: false
         },
-		transform: [{
+		pipe: [{
 			typescript: {
 				src: '**/*.ts'
 			},
@@ -420,7 +435,12 @@ And in `production` mode will becomes:
 			}
 		}, {
         	description: 'production mode',
-        	task: [ 'uglify', 'concat' ]
+        	uglify: {
+			}
+		}, {
+        	description: 'production mode',
+        	concat: {
+			}
 		}]
     }
 }
