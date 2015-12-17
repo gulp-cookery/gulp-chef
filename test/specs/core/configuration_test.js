@@ -10,6 +10,7 @@ var _ = require('lodash');
 var base = process.cwd();
 
 var Configuration = require(base + '/src/core/configuration'),
+	ConfigurationRegulator = require(base + '/src/core/configuration_regulator'),
 	ConfigurationError = require(base + '/src/core/configuration_error');
 
 describe('Core', function () {
@@ -551,6 +552,9 @@ describe('Core', function () {
 				});
 			});
 			it('should regulate config with given runtime mode', function () {
+				var regulator = Configuration._regulator;
+				Configuration._regulator = new ConfigurationRegulator(null, function () { return 'production'; });
+
 				var config = {
 					src: 'src',
 					dest: 'dist',
@@ -623,6 +627,7 @@ describe('Core', function () {
 					subTaskConfigs: {
 					}
 				});
+				Configuration._regulator = regulator
 			});
 		});
 		describe('.realize()', function () {
