@@ -326,7 +326,6 @@ var _defaultOptions = {
 	exposeStockComposeTasks: false
 };
 
-var _regulator;
 var _options = _defaultOptions;
 
 function getOptions() {
@@ -335,7 +334,7 @@ function getOptions() {
 
 function setOptions(options) {
 	_options = _.defaults(options || {}, _defaultOptions);
-	_regulator = new ConfigurationRegulator();
+	module.exports._regulator = new ConfigurationRegulator(options.modes);
 }
 
 function getTaskRuntimeInfo(name) {
@@ -468,7 +467,9 @@ function resolveDest(child, parent) {
  * then try to join paths.
  */
 function sort(taskInfo, rawConfig, parentConfig, schema) {
-	var inheritedConfig, taskConfig, subTaskConfigs, value;
+	var inheritedConfig, taskConfig, subTaskConfigs, value, regulator;
+
+	regulator = module.exports._regulator;
 
 	if (_.isPlainObject(rawConfig)) {
 		from(rawConfig).to(taskInfo).move(TASK_METADATAS);
@@ -501,11 +502,10 @@ function sort(taskInfo, rawConfig, parentConfig, schema) {
 			taskConfig.dest = value;
 		}
 
-		_.defaultsDeep(taskConfig, _regulator.regulate(rawConfig));
-
+		rawConfig = regulator.regulate(rawConfig);
 		inheritedConfig = _.defaultsDeep(taskConfig, rawConfig, parentConfig);
 	} else {
-		inheritedConfig = rawConfig;
+		inheritedConfig = regulator.regulate(rawConfig);
 	}
 
 	value = normalize(schema, inheritedConfig, { ignoreUnknownProperties: true });
