@@ -1,3 +1,4 @@
+/* eslint consistent-this: 0 */
 'use strict';
 
 /**
@@ -13,11 +14,11 @@
  * gulp.watch()
  *
  */
-function watch(done) {
-	var context = this,
-		gulp = context.gulp,
-		options = context.config.options || {},
-		tasks = context.tasks;
+function watch() {
+	var context = this;
+	var gulp = context.gulp;
+	var options = context.config.options || {};
+	var tasks = context.tasks;
 
 	// watch tasks' sources
 	tasks.forEach(function (task) {
@@ -28,26 +29,26 @@ function watch(done) {
 }
 
 watch.schema = {
-	"title": "watch",
-	"description": "see https://github.com/paulmillr/chokidar for options",
-	"type": "object",
-	"properties": {
-		"options": {
-			"properties": {
-				"persistent": {},
-				"ignored": {},
-				"ignoreInitial": {},
-				"followSymlinks": {},
-				"cwd": {},
-				"usePolling": {},
-					"interval": {},
-					"binaryInterval": {},
-				"useFsEvents": {},
-				"alwaysStat": {},
-				"depth": {},
-				"awaitWriteFinish": {},
-				"ignorePermissionErrors": {},
-				"atomic": {}
+	title: 'watch',
+	description: 'see https://github.com/paulmillr/chokidar for options',
+	type: 'object',
+	properties: {
+		options: {
+			properties: {
+				persistent: {},
+				ignored: {},
+				ignoreInitial: {},
+				followSymlinks: {},
+				cwd: {},
+				usePolling: {},
+				interval: {},
+				binaryInterval: {},
+				useFsEvents: {},
+				alwaysStat: {},
+				depth: {},
+				awaitWriteFinish: {},
+				ignorePermissionErrors: {},
+				atomic: {}
 			}
 		}
 	}

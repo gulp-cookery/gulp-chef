@@ -1,9 +1,0 @@
-{
-	"env": {
-		"node": true
-	},
-	"rules": {
-		"eqeqeq": 1,
-		"no-eq-null": 2
-	}
-}

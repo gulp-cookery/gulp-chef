@@ -14,19 +14,19 @@ function cleanTask(done) {
 
 	var config = this.config;
 
-	//del(config.dest.path, done);
+	del(config.dest.path, done);
 	done();
 }
 
 cleanTask.schema = {
-	"title": "clean",
-	"description": "",
-	"properties": {
-		"dest": {
-			"description": ""
+	title: 'clean',
+	description: '',
+	properties: {
+		dest: {
+			description: ''
 		}
 	},
-	"required": ["dest"]
+	required: ['dest']
 };
 
 cleanTask.type = 'task';

@@ -11,11 +11,11 @@
 //
 // Issue 228909: custom Errors are reported as "Uncaught [object Object]"
 // https://code.google.com/p/chromium/issues/detail?id=228909
-var inherits = require('util').inherits,
-	PluginError = require('gulp-util').PluginError;
+var inherits = require('util').inherits;
+var PluginError = require('gulp-util').PluginError;
 
 function ConfigurationError(plugin, message, options) {
-	PluginError.call(this, plugin, message, options);
+	PluginError.call(this, plugin, message, Object.assign({ showStack: true }, options || {}));
 }
 
 inherits(ConfigurationError, PluginError);

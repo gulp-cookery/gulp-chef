@@ -1,7 +1,7 @@
 'use strict';
 
-var inherits = require('util').inherits,
-	PluginError = require('gulp-util').PluginError;
+var inherits = require('util').inherits;
+var PluginError = require('gulp-util').PluginError;
 
 function ConfigurableTaskError(plugin, message, options) {
 	PluginError.call(this, plugin, message, options);

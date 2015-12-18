@@ -1,9 +1,7 @@
 'use strict';
 
-var Chai = require('chai'),
-	expect = Chai.expect;
-
-var _ = require('lodash');
+var Chai = require('chai');
+var expect = Chai.expect;
 
 var base = process.cwd();
 
@@ -13,7 +11,9 @@ describe('Core', function () {
 	describe('ConfigurableRecipeRegistry', function () {
 		describe('constructor()', function () {
 			it('should take a hash object of tasks', function () {
-				var actual = new ConfigurableRecipeRegistry({
+				var actual;
+
+				actual = new ConfigurableRecipeRegistry({
 					task: function () {}
 				});
 				expect(actual).to.be.instanceof(ConfigurableRecipeRegistry);
@@ -22,7 +22,9 @@ describe('Core', function () {
 		});
 		describe('#lookup()', function () {
 			it('should return a function if found, otherwise, undefined', function () {
-				var actual = new ConfigurableRecipeRegistry({
+				var actual;
+
+				actual = new ConfigurableRecipeRegistry({
 					task: function () {}
 				});
 				expect(actual.lookup('task')).to.be.a('function');

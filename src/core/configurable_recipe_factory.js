@@ -1,10 +1,11 @@
+/* eslint consistent-this: 0 */
 'use strict';
 
-var _ = require('lodash'),
-	log = require('gulp-util').log;
+var _ = require('lodash');
+var log = require('gulp-util').log;
 
-var Configuration = require('./configuration'),
-	ConfigurationError = require('./configuration_error');
+var Configuration = require('./configuration');
+var ConfigurationError = require('./configuration_error');
 
 function hasSubTasks(config) {
 	return _.size(config.subTaskConfigs) > 0;
@@ -24,7 +25,9 @@ function ConfigurableRecipeFactory(stuff, registry) {
 }
 
 ConfigurableRecipeFactory.prototype.create = function (prefix, configs, createConfigurableTasks) {
-	var self = this;
+	var self;
+
+	self = this;
 	return taskRecipe() || flowRecipe() || streamRecipe() || indirectRecipe() || defaultRecipe();
 
 	function taskRecipe() {
@@ -40,7 +43,9 @@ ConfigurableRecipeFactory.prototype.create = function (prefix, configs, createCo
 	}
 
 	function indirectRecipe() {
-		var task = configs.taskInfo.task;
+		var task;
+
+		task = configs.taskInfo.task;
 		return inlineRecipe() || referenceRecipe();
 
 		function inlineRecipe() {
@@ -69,7 +74,7 @@ ConfigurableRecipeFactory.prototype.create = function (prefix, configs, createCo
 ConfigurableRecipeFactory.prototype.task = function (name, configs) {
 	var self = this;
 
-	if (isRecipeTask(name)) {
+	if (isRecipeTask()) {
 		if (hasSubTasks(configs)) {
 			// warn about ignoring sub-configs.
 			log('ConfigurableRecipeFactory', 'Warning: sub-configs ignored for recipe task: ' + name + ', sub-configs: ' + Object.keys(configs.subTaskConfigs));
@@ -77,7 +82,7 @@ ConfigurableRecipeFactory.prototype.task = function (name, configs) {
 		return this.stuff.tasks.lookup(name);
 	}
 
-	function isRecipeTask(name) {
+	function isRecipeTask() {
 		return !!self.stuff.tasks.lookup(name);
 	}
 };
@@ -107,19 +112,23 @@ function compositeCreator(stockName, implicitName, validate) {
 		}
 
 		function createSubTasks() {
+			var prefixSub;
+
 			if (Configuration.shouldExpose(stock, configs.taskInfo)) {
-				prefix = prefix + configs.taskInfo.name + ':';
+				prefixSub = prefix + configs.taskInfo.name + ':';
+			} else {
+				prefixSub = prefix;
 			}
-			return createConfigurableTasks(prefix, configs.subTaskConfigs, configs.taskConfig);
+			return createConfigurableTasks(prefixSub, configs.subTaskConfigs, configs.taskConfig);
 		}
-	}
+	};
 }
 
-ConfigurableRecipeFactory.prototype.flow = compositeCreator('flows', 'parallel', function (isStock, hasSubTasks) {
+ConfigurableRecipeFactory.prototype.flow = compositeCreator('flows', 'parallel', function (isStock, ownSubTasks) {
 	if (!isStock) {
 		return false;
 	}
-	if (!hasSubTasks) {
+	if (!ownSubTasks) {
 		log('ConfigurableRecipeFactory', 'Warning: a flow processor without sub-tasks is useless');
 	}
 	return true;
@@ -128,38 +137,50 @@ ConfigurableRecipeFactory.prototype.flow = compositeCreator('flows', 'parallel',
 /**
  * if there is configurations not being consumed, then treat them as sub-tasks.
  */
-ConfigurableRecipeFactory.prototype.stream = compositeCreator('streams', 'merge', function (isStock, hasSubTasks) {
-	return (isStock || hasSubTasks);
+ConfigurableRecipeFactory.prototype.stream = compositeCreator('streams', 'merge', function (isStock, ownSubTasks) {
+	return isStock || ownSubTasks;
 });
 
 ConfigurableRecipeFactory.prototype.composite = function (recipe, tasks) {
 	return function (done) {
-		var ctx = this;
-		ctx.tasks = tasks;
-		return recipe.call(ctx, done);
+		var context;
+
+		context = this;
+		context.tasks = tasks;
+		return recipe.call(context, done);
 	};
 };
 
 ConfigurableRecipeFactory.prototype.reference = function (taskName) {
-	var task, recipe;
+	var registry;
 
+	registry = this.registry;
 	if (typeof taskName === 'string') {
-		task = this.registry.refer(taskName);
+		return resolved() || pending();
+	}
+
+	function resolved() {
+		var task;
+
+		task = registry.refer(taskName);
 		if (task) {
 			return task.run || task;
 		}
-		recipe = function (done) {
-			var ctx = this;
-			var task = ctx.gulp.task(taskName);
+	}
+
+	function pending() {
+		return function (done) {
+			var context, task;
+
+			context = this;
+			task = context.gulp.task(taskName);
 			if (typeof task !== 'function') {
 				throw new ConfigurationError(__filename, 'referring task not found: ' + taskName);
 			}
-			// support for configurable task,
-			// or tasks registered directly via gulp.task().
+			// support for configurable task, or tasks registered directly via gulp.task().
 			task = task.run || task;
-			return task.call(ctx, done);
+			return task.call(context, done);
 		};
-		return recipe;
 	}
 };
 

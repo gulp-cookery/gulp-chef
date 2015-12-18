@@ -38,37 +38,37 @@ function jshintTask(gulp, config, stream, done) {
 }
 
 jshintTask.schema = {
-	"title": "jshint",
-	"description": "",
-	"properties": {
-		"src": {
-			"description": ""
+	'title': 'jshint',
+	'description': '',
+	'properties': {
+		'src': {
+			'description': ''
 		},
-		"options": {
-			"description": "",
-			"properties": {
-				"jshintrc": {
-					"description": "",
-					"type": "string",
-					"default": ".jshintrc"
+		'options': {
+			'description': '',
+			'properties': {
+				'jshintrc': {
+					'description': '',
+					'type': 'string',
+					'default': '.jshintrc'
 				},
 				reporter: {
-					"type": ["object", "array"],
-					"default": {
-						"default": {
+					'type': ['object', 'array'],
+					'default': {
+						'default': {
 							verbose: true
 						}
 					},
-					"samples": [{
-						"jshint-stylish": {},
+					'samples': [{
+						'jshint-stylish': {},
 					}, [
-						"default", "jshint-stylish", "fail"
+						'default', 'jshint-stylish', 'fail'
 					]]
 				}
 			}
 		}
 	},
-	"required": ["src"]
+	'required': ['src']
 };
 
 jshintTask.type = 'task';

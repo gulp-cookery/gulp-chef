@@ -17,29 +17,29 @@ function jscsTask(gulp, config, stream, done) {
 }
 
 jscsTask.schema = {
-	"title": "jscs",
-	"description": "",
-	"properties": {
-		"src": {
-			"description": ""
+	'title': 'jscs',
+	'description': '',
+	'properties': {
+		'src': {
+			'description': ''
 		},
-		"options": {
-			"description": "",
-			"properties": {
-				"esnext": {
-					"description": "",
-					"type": "boolean",
-					"default": true
+		'options': {
+			'description': '',
+			'properties': {
+				'esnext': {
+					'description': '',
+					'type': 'boolean',
+					'default': true
 				},
-				"reporter": {
-					"description": "",
-					"type": "string",
-					"default": "console"
+				'reporter': {
+					'description': '',
+					'type': 'string',
+					'default': 'console'
 				}
 			}
 		}
 	},
-	"required": ["src"]
+	'required': ['src']
 };
 
 jscsTask.type = 'task';

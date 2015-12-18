@@ -1,15 +1,13 @@
-/*global describe, it, process */
-/*jshint expr: true*/
 'use strict';
 
 var async = require('async');
 
-var Chai = require('chai'),
-	expect = Chai.expect;
+var Chai = require('chai');
+var expect = Chai.expect;
 
-var base = process.cwd()
-var series = require(base + '/src/flows/series'),
-	cases = require('./flow_test_cases');
+var base = process.cwd();
+var series = require(base + '/src/flows/series');
+var cases = require('./flow_test_cases');
 
 var FakeGulp = require(base + '/test/fake/gulp');
 var gulp = new FakeGulp();
@@ -22,13 +20,15 @@ describe('Flow Processor', function () {
 				['async', 'stream', 'async', 'promise', 'stream', 'done'],
 				['promise', 'stream', 'async', 'done', 'stream', 'promise']
 			];
-			async.each(sequences, function(sequence, eachDone) {
+
+			async.each(sequences, function (sequence, eachDone) {
 				var test = cases.prepare(gulp, sequence);
 				var ctx = {
 					gulp: gulp,
 					config: {},
 					tasks: test.tasks
 				};
+
 				series.call(ctx, function (err, actual) {
 					expect(actual).to.deep.equal(test.expects);
 					expect(test.logs).to.deep.equal(sequence);
@@ -40,4 +40,3 @@ describe('Flow Processor', function () {
 		cases.commons(gulp, series);
 	});
 });
-

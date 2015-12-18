@@ -44,37 +44,37 @@ function markupsTask(gulp, config, stream, done) {
 }
 
 markupsTask.schema = {
-	"title": "markups",
-	"description": "",
-	"properties": {
-		"src": {
-			"description": ""
+	'title': 'markups',
+	'description': '',
+	'properties': {
+		'src': {
+			'description': ''
 		},
-		"dest": {
-			"description": ""
+		'dest': {
+			'description': ''
 		},
-		"flatten": {
-			"description": "",
-			"type": "boolean",
-			"default": false
+		'flatten': {
+			'description': '',
+			'type': 'boolean',
+			'default': false
 		},
-		"options": {
-			"description": "",
-			"properties": {
-				"collapseWhitespace": {
-					"description": "",
-					"type": "boolean",
-					"default": true
+		'options': {
+			'description': '',
+			'properties': {
+				'collapseWhitespace': {
+					'description': '',
+					'type': 'boolean',
+					'default': true
 				},
-				"collapseBooleanAttributes": {
-					"description": "",
-					"type": "boolean",
-					"default": true
+				'collapseBooleanAttributes': {
+					'description': '',
+					'type': 'boolean',
+					'default': true
 				}
 			}
 		}
 	},
-	"required": ["src", "dest"]
+	'required': ['src', 'dest']
 };
 
 markupsTask.type = 'task';

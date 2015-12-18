@@ -1,7 +1,7 @@
 'use strict';
-var Sinon = require('sinon'),
-	_ = require('lodash'),
-	base = process.cwd();
+
+var Sinon = require('sinon');
+var base = process.cwd();
 
 var ConfigurableRecipeRegistry = require(base + '/src/core/configurable_recipe_registry');
 

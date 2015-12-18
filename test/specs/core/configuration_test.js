@@ -1,17 +1,29 @@
 'use strict';
 
-var Sinon = require('sinon'),
-	Chai = require('chai'),
-	expect = Chai.expect,
-	test = require('mocha-cases');
-
-var _ = require('lodash');
+var Sinon = require('sinon');
+var expect = require('chai').expect;
+var test = require('mocha-cases');
 
 var base = process.cwd();
 
-var Configuration = require(base + '/src/core/configuration'),
-	ConfigurationRegulator = require(base + '/src/core/configuration_regulator'),
-	ConfigurationError = require(base + '/src/core/configuration_error');
+var Configuration = require(base + '/src/core/configuration');
+var ConfigurationRegulator = require(base + '/src/core/configuration_regulator');
+var ConfigurationError = require(base + '/src/core/configuration_error');
+
+var regulator;
+
+beforeEach(function (done) {
+	regulator = Configuration._regulator;
+	Configuration._regulator = new ConfigurationRegulator(null, function () {
+		return 'production';
+	});
+	done();
+});
+
+afterEach(function (done) {
+	Configuration._regulator = regulator;
+	done();
+});
 
 describe('Core', function () {
 	describe('Configuration', function () {
@@ -65,99 +77,120 @@ describe('Core', function () {
 				value: '?build',
 				error: ConfigurationError
 			}];
+
 			test(testCases, Configuration.getTaskRuntimeInfo);
 		});
 		describe('.src()', function () {
 			it('should accept path string', function () {
-				var actual = Configuration.src('src');
+				var actual;
+
+				actual = Configuration.src('src');
 				expect(actual).to.deep.equal({
-					globs: ["src"]
+					globs: ['src']
 				});
 			});
 			it('should accept globs', function () {
-				var actual = Configuration.src('src/**/*.js');
+				var actual;
+
+				actual = Configuration.src('src/**/*.js');
 				expect(actual).to.deep.equal({
-					globs: ["src/**/*.js"]
+					globs: ['src/**/*.js']
 				});
 			});
 			it('should accept globs array', function () {
-				var actual = Configuration.src(['src/**/*.js', 'lib/**/*.js']);
+				var actual;
+
+				actual = Configuration.src(['src/**/*.js', 'lib/**/*.js']);
 				expect(actual).to.deep.equal({
 					globs: ['src/**/*.js', 'lib/**/*.js']
 				});
 			});
 			it('should accept globs object with options', function () {
-				var actual = Configuration.src({
+				var actual;
+
+				actual = Configuration.src({
 					globs: '**/*.js',
 					options: {
 						base: 'src'
 					}
 				});
 				expect(actual).to.deep.equal({
-					globs: ["**/*.js"],
+					globs: ['**/*.js'],
 					options: {
-						base: "src"
+						base: 'src'
 					}
 				});
 			});
 			it('should accept globs object with flat options', function () {
-				var actual = Configuration.src({
+				var actual;
+
+				actual = Configuration.src({
 					globs: '**/*.js',
 					base: 'src'
 				});
 				expect(actual).to.deep.equal({
-					globs: ["**/*.js"],
+					globs: ['**/*.js'],
 					options: {
-						base: "src"
+						base: 'src'
 					}
 				});
 			});
 		});
 		describe('.dest()', function () {
 			it('should accept path string', function () {
-				var actual = Configuration.dest('dist');
+				var actual;
+
+				actual = Configuration.dest('dist');
 				expect(actual).to.deep.equal({
-					path: "dist"
+					path: 'dist'
 				});
 			});
 			it('should accept path object', function () {
-				var actual = Configuration.dest({
+				var actual;
+
+				actual = Configuration.dest({
 					path: 'dist'
 				});
 				expect(actual).to.deep.equal({
-					path: "dist"
+					path: 'dist'
 				});
 			});
 			it('should accept path object with options', function () {
-				var actual = Configuration.dest({
+				var actual;
+
+				actual = Configuration.dest({
 					path: 'dist',
 					options: {
 						cwd: '.'
 					}
 				});
 				expect(actual).to.deep.equal({
-					path: "dist",
+					path: 'dist',
 					options: {
-						cwd: "."
+						cwd: '.'
 					}
 				});
 			});
 			it('should accept path object with flat options', function () {
-				var actual = Configuration.dest({
+				var actual;
+
+				actual = Configuration.dest({
 					path: 'dist',
 					cwd: '.'
 				});
 				expect(actual).to.deep.equal({
-					path: "dist",
+					path: 'dist',
 					options: {
-						cwd: "."
+						cwd: '.'
 					}
 				});
 			});
 		});
 		describe('.sort()', function () {
 			it('should accept empty config', function () {
-				var actual = Configuration.sort({}, {}, {}, {});
+				var actual;
+
+				actual = Configuration.sort({}, {}, {}, {});
 				expect(actual).to.deep.equal({
 					taskInfo: {},
 					taskConfig: {},
@@ -165,7 +198,9 @@ describe('Core', function () {
 				});
 			});
 			it('should always accept src and dest property even schema not defined', function () {
-				var actual = Configuration.sort({}, {
+				var actual;
+
+				actual = Configuration.sort({}, {
 					src: 'src',
 					dest: 'dist'
 				}, {}, {});
@@ -173,17 +208,19 @@ describe('Core', function () {
 					taskInfo: {},
 					taskConfig: {
 						src: {
-							globs: ["src"]
+							globs: ['src']
 						},
 						dest: {
-							path: "dist"
+							path: 'dist'
 						}
 					},
 					subTaskConfigs: {}
 				});
 			});
 			it('should accept all properties if schema not defined', function () {
-				var actual = Configuration.sort({}, {
+				var actual;
+
+				actual = Configuration.sort({}, {
 					src: 'src',
 					dest: 'dist',
 					blabla: ['bla', 'bla'],
@@ -209,8 +246,10 @@ describe('Core', function () {
 				});
 			});
 			it('should honor schema.type, i.e. accept non-object (array)', function () {
-				var config = [true, 2, '4', function () {}, {}];
-				var actual = Configuration.sort({}, config, {}, {
+				var actual, config;
+
+				config = [true, 2, '4', function () {}, {}];
+				actual = Configuration.sort({}, config, {}, {
 					type: 'array'
 				});
 				expect(actual).to.deep.equal({
@@ -220,8 +259,10 @@ describe('Core', function () {
 				});
 			});
 			it('should be able to gather non-object (array) to subTaskConfigs', function () {
-				var config = [true, 2, '4', function () {}, {}];
-				var actual = Configuration.sort({}, config, {}, {
+				var actual, config;
+
+				config = [true, 2, '4', function () {}, {}];
+				actual = Configuration.sort({}, config, {}, {
 					properties: {}
 				});
 				expect(actual).to.deep.equal({
@@ -243,7 +284,9 @@ describe('Core', function () {
 				}).to.throw(TypeError);
 			});
 			it('should inherit parent config', function () {
-				var actual = Configuration.sort({}, {}, {
+				var actual;
+
+				actual = Configuration.sort({}, {}, {
 					src: {
 						globs: ['src']
 					},
@@ -265,7 +308,9 @@ describe('Core', function () {
 				});
 			});
 			it('should join parent path config', function () {
-				var actual = Configuration.sort({}, {
+				var actual;
+
+				actual = Configuration.sort({}, {
 					src: ['services/**/*.js', 'views/**/*.js'],
 					dest: 'lib'
 				}, {
@@ -280,17 +325,19 @@ describe('Core', function () {
 					taskInfo: {},
 					taskConfig: {
 						src: {
-							globs: ['src/services/**/*.js', 'src/views/**/*.js'],
+							globs: ['src/services/**/*.js', 'src/views/**/*.js']
 						},
 						dest: {
-							path: "dist/lib"
+							path: 'dist/lib'
 						}
 					},
 					subTaskConfigs: {}
 				});
 			});
 			it('should be able to specify runtime info in config', function () {
-				var actual = Configuration.sort({
+				var actual;
+
+				actual = Configuration.sort({
 					name: 'define-runtime-info'
 				}, {
 					visibility: '.',
@@ -309,7 +356,9 @@ describe('Core', function () {
 				});
 			});
 			it('should put unknown properties to subTaskConfigs', function () {
-				var actual = Configuration.sort({}, {
+				var actual;
+
+				actual = Configuration.sort({}, {
 					src: ['services/**/*.js', 'views/**/*.js'],
 					dest: 'lib',
 					bundles: {
@@ -327,13 +376,13 @@ describe('Core', function () {
 						path: 'dist'
 					}
 				}, {
-					"properties": {
-						"bundles": {
-							"properties": {
-								"entries": {}
+					'properties': {
+						'bundles': {
+							'properties': {
+								'entries': {}
 							}
 						},
-						"options": {
+						'options': {
 						}
 					}
 				});
@@ -341,10 +390,10 @@ describe('Core', function () {
 					taskInfo: {},
 					taskConfig: {
 						src: {
-							globs: ['src/services/**/*.js', 'src/views/**/*.js'],
+							globs: ['src/services/**/*.js', 'src/views/**/*.js']
 						},
 						dest: {
-							path: "dist/lib"
+							path: 'dist/lib'
 						},
 						bundles: {
 							entries: ['a', 'b', 'c']
@@ -360,13 +409,14 @@ describe('Core', function () {
 			});
 			it('should extract title and description from schema if available', function () {
 				var schema = {
-					"title": "schema-extractor",
-					"description": "extract title and description from schema if available"
+					'title': 'schema-extractor',
+					'description': 'extract title and description from schema if available'
 				};
+
 				expect(Configuration.sort({}, {}, {}, schema)).to.deep.equal({
 					taskInfo: {
-						"name": "schema-extractor",
-						"description": "extract title and description from schema if available"
+						'name': 'schema-extractor',
+						'description': 'extract title and description from schema if available'
 					},
 					taskConfig: {},
 					subTaskConfigs: {}
@@ -374,176 +424,177 @@ describe('Core', function () {
 			});
 			it('should normalize config using the given schema', function () {
 				var schema = {
-					"definitions": {
-						"io": {
-							"properties": {
-								"src": {
-									"description": "",
-									"type": "array"
+					'definitions': {
+						'io': {
+							'properties': {
+								'src': {
+									'description': '',
+									'type': 'array'
 								},
-								"dest": {
-									"description": "",
-									"type": "string"
+								'dest': {
+									'description': '',
+									'type': 'string'
 								}
 							}
 						},
-						"options": {
-							"properties": {
-								"extensions": {
-									"description": "",
-									"type": "array",
-									"alias": ["extension"]
+						'options': {
+							'properties': {
+								'extensions': {
+									'description': '',
+									'type': 'array',
+									'alias': ['extension']
 								},
-								"require": {
-									"description": "",
-									"type": "array",
-									"alias": ["requires"]
+								'require': {
+									'description': '',
+									'type': 'array',
+									'alias': ['requires']
 								},
-								"external": {
-									"description": "",
-									"type": "array",
-									"alias": ["externals"]
+								'external': {
+									'description': '',
+									'type': 'array',
+									'alias': ['externals']
 								},
-								"plugin": {
-									"description": "",
-									"type": "array",
-									"alias": ["plugins"]
+								'plugin': {
+									'description': '',
+									'type': 'array',
+									'alias': ['plugins']
 								},
-								"transform": {
-									"description": "",
-									"type": "array",
-									"alias": ["transforms"]
+								'transform': {
+									'description': '',
+									'type': 'array',
+									'alias': ['transforms']
 								},
-								"exclude": {
-									"description": "",
-									"type": "array",
-									"alias": ["excludes"]
+								'exclude': {
+									'description': '',
+									'type': 'array',
+									'alias': ['excludes']
 								},
-								"ignore": {
-									"description": "",
-									"type": "array",
-									"alias": ["ignores"]
+								'ignore': {
+									'description': '',
+									'type': 'array',
+									'alias': ['ignores']
 								},
-								"shim": {
-									"description": "",
-									"type": "array",
-									"alias": ["shims", "browserify-shim", "browserify-shims"]
+								'shim': {
+									'description': '',
+									'type': 'array',
+									'alias': ['shims', 'browserify-shim', 'browserify-shims']
 								}
 							}
 						}
 					},
-					"extends": { "$ref": "#/definitions/io" },
-					"properties": {
-						"options": {
-							"description": "common options for all bundles",
-							"extends": { "$ref": "#/definitions/options" },
-							"type": "object"
+					'extends': { '$ref': '#/definitions/io' },
+					'properties': {
+						'options': {
+							'description': 'common options for all bundles',
+							'extends': { '$ref': '#/definitions/options' },
+							'type': 'object'
 						},
-						"bundles": {
-							"description": "",
-							"alias": ["bundle"],
-							"type": "array",
-							"extends": [
-								{ "$ref": "#/definitions/io" },
-								{ "$ref": "#/definitions/options" }
+						'bundles': {
+							'description': '',
+							'alias': ['bundle'],
+							'type': 'array',
+							'extends': [
+								{ '$ref': '#/definitions/io' },
+								{ '$ref': '#/definitions/options' }
 							],
-							"properties": {
-								"file": {
-									"description": "",
-									"type": "string"
+							'properties': {
+								'file': {
+									'description': '',
+									'type': 'string'
 								},
-								"entries": {
-									"description": "",
-									"alias": ["entry"],
-									"type": "array"
+								'entries': {
+									'description': '',
+									'alias': ['entry'],
+									'type': 'array'
 								},
-								"options": {
-									"extends": { "$ref": "#/definitions/options" }
+								'options': {
+									'extends': { '$ref': '#/definitions/options' }
 								}
 							},
-							"required": ["file", "entries"]
+							'required': ['file', 'entries']
 						}
 					},
-					"required": ["bundles"],
-					"default": {
-						"options": {}
+					'required': ['bundles'],
+					'default': {
+						'options': {}
 					}
 				};
 				var options = {
-					"extensions": [".js", ".json", ".jsx", ".es6", ".ts"],
-					"plugin": ["tsify"],
-					"transform": ["brfs"]
+					'extensions': ['.js', '.json', '.jsx', '.es6', '.ts'],
+					'plugin': ['tsify'],
+					'transform': ['brfs']
 				};
 				var config = {
-					"bundles": [{
-					"file": "deps.js",
-					"entries": [{
-						"file": "traceur/bin/traceur-runtime"
-					}, {
-						"file": "rtts_assert/rtts_assert"
-					}, {
-						"file": "reflect-propertydata"
-					}, {
-						"file": "zone.js"
-					}],
-					"require": ["angular2/angular2", "angular2/router"]
-				}, {
-					"file": "services.js",
-					"entry": "services/*/index.js",
-					"external": ["angular2/angular2", "angular2/router"],
-					"options": options
-				}, {
-					"file": "index.js",
-					"entry": "index.js",
-					"external": "./services",
-					"options": options
-				}, {
-					"file": "auth.js",
-					"entry": "auth/index.js",
-					"external": "./services",
-					"options": options
-				}, {
-					"file": "dashboard.js",
-					"entry": "dashboard/index.js",
-					"external": "./services",
-					"options": options
-				}]
-				};
-				var expected = {
-					"bundles": [{
-						"file": "deps.js",
-						"entries": [{
-							"file": "traceur/bin/traceur-runtime"
+					'bundles': [{
+						'file': 'deps.js',
+						'entries': [{
+							'file': 'traceur/bin/traceur-runtime'
 						}, {
-							"file": "rtts_assert/rtts_assert"
+							'file': 'rtts_assert/rtts_assert'
 						}, {
-							"file": "reflect-propertydata"
+							'file': 'reflect-propertydata'
 						}, {
-							"file": "zone.js"
+							'file': 'zone.js'
 						}],
-						"require": ["angular2/angular2", "angular2/router"]
+						'require': ['angular2/angular2', 'angular2/router']
 					}, {
-						"file": "services.js",
-						"entries": ["services/*/index.js"],
-						"external": ["angular2/angular2", "angular2/router"],
-						"options": options
+						'file': 'services.js',
+						'entry': 'services/*/index.js',
+						'external': ['angular2/angular2', 'angular2/router'],
+						'options': options
 					}, {
-						"file": "index.js",
-						"entries": ["index.js"],
-						"external": ["./services"],
-						"options": options
+						'file': 'index.js',
+						'entry': 'index.js',
+						'external': './services',
+						'options': options
 					}, {
-						"file": "auth.js",
-						"entries": ["auth/index.js"],
-						"external": ["./services"],
-						"options": options
+						'file': 'auth.js',
+						'entry': 'auth/index.js',
+						'external': './services',
+						'options': options
 					}, {
-						"file": "dashboard.js",
-						"entries": ["dashboard/index.js"],
-						"external": ["./services"],
-						"options": options
+						'file': 'dashboard.js',
+						'entry': 'dashboard/index.js',
+						'external': './services',
+						'options': options
 					}]
 				};
+				var expected = {
+					'bundles': [{
+						'file': 'deps.js',
+						'entries': [{
+							'file': 'traceur/bin/traceur-runtime'
+						}, {
+							'file': 'rtts_assert/rtts_assert'
+						}, {
+							'file': 'reflect-propertydata'
+						}, {
+							'file': 'zone.js'
+						}],
+						'require': ['angular2/angular2', 'angular2/router']
+					}, {
+						'file': 'services.js',
+						'entries': ['services/*/index.js'],
+						'external': ['angular2/angular2', 'angular2/router'],
+						'options': options
+					}, {
+						'file': 'index.js',
+						'entries': ['index.js'],
+						'external': ['./services'],
+						'options': options
+					}, {
+						'file': 'auth.js',
+						'entries': ['auth/index.js'],
+						'external': ['./services'],
+						'options': options
+					}, {
+						'file': 'dashboard.js',
+						'entries': ['dashboard/index.js'],
+						'external': ['./services'],
+						'options': options
+					}]
+				};
+
 				expect(Configuration.sort({}, config, {}, schema)).to.deep.equal({
 					taskInfo: {},
 					taskConfig: expected,
@@ -552,9 +603,6 @@ describe('Core', function () {
 				});
 			});
 			it('should regulate config with given runtime mode', function () {
-				var regulator = Configuration._regulator;
-				Configuration._regulator = new ConfigurationRegulator(null, function () { return 'production'; });
-
 				var config = {
 					src: 'src',
 					dest: 'dist',
@@ -621,59 +669,64 @@ describe('Core', function () {
 						expose: 'regulator-release'
 					}
 				};
+
 				expect(Configuration.sort({}, config, {}, {})).to.deep.equal({
 					taskInfo: {},
 					taskConfig: expected,
 					subTaskConfigs: {
 					}
 				});
-				Configuration._regulator = regulator
 			});
 		});
 		describe('.realize()', function () {
 			it('should call resolver function', function () {
-				var resolved = 'resolver called',
-					values = {
-						runtime: Sinon.spy(function () {
-							return resolved;
-						})
-					},
-					expected = {
-						runtime: resolved
-					};
+				var resolved, values, expected;
+
+				resolved = 'resolver called';
+				values = {
+					runtime: Sinon.spy(function () {
+						return resolved;
+					})
+				};
+				expected = {
+					runtime: resolved
+				};
+
 				expect(Configuration.realize(values)).to.deep.equal(expected);
 				expect(values.runtime.calledWith(values)).to.be.true;
 			});
 			it('should render template using given values', function () {
 				var rootResolver = function () {
-						return 'value from rootResolver()'
-					},
-					nestResolver = function () {
-						return 'value from nestedResolver()'
-					},
-					template = "Hello {{plainValue}}! {{nested.plainValue}}, {{resolver}} and {{nested.resolver}}.",
-					realized = "Hello World! Inner World, value from rootResolver() and value from nestedResolver().",
-					values = {
+					return 'value from rootResolver()';
+				};
+				var nestResolver = function () {
+					return 'value from nestedResolver()';
+				};
+				var template = 'Hello {{plainValue}}! {{nested.plainValue}}, {{resolver}} and {{nested.resolver}}.';
+				var realized = 'Hello World! Inner World, value from rootResolver() and value from nestedResolver().';
+				var values = {
+					message: template,
+					nested: {
 						message: template,
-						nested: {
-							message: template,
-							resolver: nestResolver,
-							plainValue: "Inner World"
-						},
-						resolver: rootResolver,
-						plainValue: "World"
+						resolver: nestResolver,
+						plainValue: 'Inner World'
 					},
-					expected = {
+					resolver: rootResolver,
+					plainValue: 'World'
+				};
+				var expected = {
+					message: realized,
+					nested: {
 						message: realized,
-						nested: {
-							message: realized,
-							resolver: nestResolver(),
-							plainValue: "Inner World"
-						},
-						resolver: rootResolver(),
-						plainValue: "World"
-					};
-				var actual = Configuration.realize(values);
+						resolver: nestResolver(),
+						plainValue: 'Inner World'
+					},
+					resolver: rootResolver(),
+					plainValue: 'World'
+				};
+				var actual;
+
+				actual = Configuration.realize(values);
 				expect(actual).to.deep.equal(expected);
 			});
 		});

@@ -1,3 +1,4 @@
+/* eslint consistent-this: 0 */
 'use strict';
 
 /**
@@ -12,14 +13,15 @@
  * @param done
  * @returns stream
  */
-function copyTask(done) {
+function copyTask() {
 	var flatten = require('gulp-flatten');
 
-	var context = this,
-	    gulp = context.gulp,
-		config = context.config,
-		upstream = context.upstream,
-		stream;
+	var context = this;
+	var gulp = context.gulp;
+	var config = context.config;
+	var upstream = context.upstream;
+
+	var stream;
 
 	stream = upstream || gulp.src(config.src.globs, config.src.options);
 	if (config.flatten) {
@@ -29,21 +31,21 @@ function copyTask(done) {
 }
 
 copyTask.schema = {
-	"title": "copy",
-	"description": "",
-	"properties": {
-		"src": {
-			"description": ""
+	title: 'copy',
+	description: '',
+	properties: {
+		src: {
+			description: ''
 		},
-		"dest": {
-			"description": ""
+		dest: {
+			description: ''
 		},
-		"flatten": {
-			"description": "",
-			"type": "boolean",
+		flatten: {
+			description: '',
+			type: 'boolean'
 		}
 	},
-	"required": ["src", "dest"]
+	required: ['src', 'dest']
 };
 
 copyTask.type = 'task';

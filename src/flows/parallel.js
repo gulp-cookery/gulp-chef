@@ -1,4 +1,5 @@
-"use strict";
+/* eslint consistent-this: 0 */
+'use strict';
 
 /**
  * Recipe:
@@ -13,11 +14,12 @@
  * @param done
  */
 function parallel(done) {
-	var async = require('async'),
-		asyncDone = require('async-done');
+	var context;
 
-	var context = this;
+	var async = require('async');
+	var asyncDone = require('async-done');
 
+	context = this;
 	async.map(this.tasks, function (task, itemDone) {
 		asyncDone(function (taskDone) {
 			return task.run.call(context, taskDone);
@@ -26,10 +28,10 @@ function parallel(done) {
 }
 
 parallel.schema = {
-	"title": "parallel",
-	"description": "Run the tasks array of functions in parallel, without waiting until the previous function has completed.",
-	"type": "object",
-	"properties": {}
+	title: 'parallel',
+	description: 'Run the tasks array of functions in parallel, without waiting until the previous function has completed.',
+	type: 'object',
+	properties: {}
 };
 
 parallel.type = 'flow';

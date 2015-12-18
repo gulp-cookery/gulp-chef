@@ -2,19 +2,23 @@
 
 // TODO: use ESLint
 
-var ConfigurableRecipeFactory = require('./core/configurable_recipe_factory'),
-	ConfigurableTaskFactory = require('./core/configurable_task_factory'),
-	Configuration = require('./core/configuration'),
-	Registry = require('./core/registry');
+var ConfigurableRecipeFactory = require('./core/configurable_recipe_factory');
+var ConfigurableTaskFactory = require('./core/configurable_task_factory');
+var Configuration = require('./core/configuration');
+var Registry = require('./core/registry');
+var log = require('gulp-util').log;
 
 function configure(rawConfigs, options) {
+	var stuff, registry, recipeFactory, taskFactory, configs, helpRecipe;
+
 	Configuration.setOptions(options);
-	var registry = new Registry(postConfigure),
-		stuff = require('./stuff')(options),
-		recipeFactory = new ConfigurableRecipeFactory(stuff, registry),
-		taskFactory = new ConfigurableTaskFactory(stuff, recipeFactory, registry),
-		configs = Configuration.sort({}, rawConfigs, {}, Configuration.SCHEMA_COMMONS),
-		helpRecipe = stuff.tasks.lookup('help');
+
+	stuff = require('./stuff')(options);
+	registry = new Registry(postConfigure);
+	recipeFactory = new ConfigurableRecipeFactory(stuff, registry);
+	taskFactory = new ConfigurableTaskFactory(stuff, recipeFactory, registry);
+	configs = Configuration.sort({}, rawConfigs, {}, Configuration.SCHEMA_COMMONS);
+	helpRecipe = stuff.tasks.lookup('help');
 
 	taskFactory.multiple('', configs.subTaskConfigs, configs.taskConfig);
 	registry.set('help', taskFactory.create('', {}, {}, helpRecipe));
@@ -26,9 +30,11 @@ function configure(rawConfigs, options) {
 	return registry;
 
 	function postConfigure(gulp) {
-		var missing = registry.missing(gulp);
+		var missing;
+
+		missing = registry.missing(gulp);
 		if (missing) {
-			console.log('Warning: missing task reference: ' + missing.join(', '));
+			log('Warning: missing task reference: ' + missing.join(', '));
 		}
 	}
 }

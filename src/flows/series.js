@@ -1,4 +1,5 @@
-"use strict";
+/* eslint consistent-this: 0 */
+'use strict';
 
 /**
  * Note:
@@ -7,8 +8,8 @@
  * @param done
  */
 function series(done) {
-	var async = require('async'),
-		asyncDone = require('async-done');
+	var async = require('async');
+	var asyncDone = require('async-done');
 
 	var context = this;
 
@@ -20,10 +21,10 @@ function series(done) {
 }
 
 series.schema = {
-	"title": "series",
-	"description": "Run the functions in the tasks array in series, each one running once the previous function has completed.",
-	"type": "object",
-	"properties": {}
+	title: 'series',
+	description: 'Run the functions in the tasks array in series, each one running once the previous function has completed.',
+	type: 'object',
+	properties: {}
 };
 
 series.type = 'flow';

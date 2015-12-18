@@ -59,50 +59,50 @@ function stylusTask(gulp, config, stream, done) {
 }
 
 stylusTask.schema = {
-	"title": "stylus",
-	"description": "",
-	"properties": {
-		"src": {
-			"description": ""
+	'title': 'stylus',
+	'description': '',
+	'properties': {
+		'src': {
+			'description': ''
 		},
-		"dest": {
-			"description": ""
+		'dest': {
+			'description': ''
 		},
-		"flatten": {
-			"description": "",
-			"type": "boolean",
-			"default": false
+		'flatten': {
+			'description': '',
+			'type': 'boolean',
+			'default': false
 		},
-		"sourcemap": {
-			"description": "generate sourcemap file or not?",
-			"enum": [
-				"inline", "external", false
+		'sourcemap': {
+			'description': 'generate sourcemap file or not?',
+			'enum': [
+				'inline', 'external', false
 			],
-			"alias": ["sourcemaps"],
-			"default": false
+			'alias': ['sourcemaps'],
+			'default': false
 		},
-		"options": {
-			"description": "",
-			"properties": {
-				"include css": {
-					"description": "",
-					"type": "boolean",
-					"default": true
+		'options': {
+			'description': '',
+			'properties': {
+				'include css': {
+					'description': '',
+					'type': 'boolean',
+					'default': true
 				},
-				"resolve url": {
-					"description": "",
-					"type": "boolean",
-					"default": true
+				'resolve url': {
+					'description': '',
+					'type': 'boolean',
+					'default': true
 				},
-				"urlfunc": {
-					"description": "",
-					"type": "string",
-					"default": "url"
+				'urlfunc': {
+					'description': '',
+					'type': 'string',
+					'default': 'url'
 				}
 			}
 		}
 	},
-	"required": ["src", "dest"]
+	'required': ['src', 'dest']
 };
 
 stylusTask.type = 'task';

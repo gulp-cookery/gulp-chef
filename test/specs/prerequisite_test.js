@@ -1,7 +1,7 @@
 'use strict';
 
-var Chai = require('chai'),
-	expect = Chai.expect;
+var Chai = require('chai');
+var expect = Chai.expect;
 
 var Stream = require('stream');
 
@@ -21,7 +21,9 @@ describe('Prerequisite', function () {
 		describe('Gulp 3.X', function () {
 			describe('.src()', function () {
 				it('should always return a stream', function () {
-					var stream = gulp.src('non-existent');
+					var stream;
+
+					stream = gulp.src('non-existent');
 					expect(stream).to.be.an.instanceof(Stream);
 					expect(stream).to.have.property('on');
 				});

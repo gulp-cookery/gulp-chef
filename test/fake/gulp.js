@@ -9,10 +9,15 @@ function FakeGulp() {
 	this._registry = new Registry();
 }
 
-FakeGulp.prototype.task = function (name, task) {
-	if (typeof name === 'function') {
-		task = name;
+FakeGulp.prototype.task = function (optionalName, taskFn) {
+	var name, task;
+
+	if (typeof optionalName === 'function') {
+		task = optionalName;
 		name = task.displayName || task.name;
+	} else {
+		task = taskFn;
+		name = optionalName;
 	}
 	if (typeof name === 'string' && typeof task === 'function') {
 		this._registry.set(name, task);
@@ -26,13 +31,14 @@ FakeGulp.prototype.registry = function (registry) {
 	if (!registry) {
 		return this._registry;
 	}
+
 	tasks = this._registry.tasks();
 	this._registry = _.reduce(tasks, setTasks, registry);
 	this._registry.init(this);
 
-	function setTasks(registry, task, name) {
-		registry.set(name, task);
-		return registry;
+	function setTasks(result, task, name) {
+		result.set(name, task);
+		return result;
 	}
 };
 

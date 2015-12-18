@@ -37,31 +37,31 @@ function uglifyTask(gulp, config, stream) {
 }
 
 uglifyTask.schema = {
-	"title": "uglify",
-	"description": "",
-	"properties": {
-		"src": {
-			"description": ""
+	'title': 'uglify',
+	'description': '',
+	'properties': {
+		'src': {
+			'description': ''
 		},
-		"dest": {
-			"description": ""
+		'dest': {
+			'description': ''
 		},
-		"file": {
-			"description": "",
-			"type": "string"
+		'file': {
+			'description': '',
+			'type': 'string'
 		},
-		"options": {
-			"description": "",
-			"properties": {
-				"preserveComments": {
-					"description": "",
-					"type": "string",
-					"default": "some"
+		'options': {
+			'description': '',
+			'properties': {
+				'preserveComments': {
+					'description': '',
+					'type': 'string',
+					'default': 'some'
 				}
 			}
 		}
 	},
-	"required": ["src", "dest", "file"]
+	'required': ['src', 'dest', 'file']
 };
 
 uglifyTask.type = 'task';

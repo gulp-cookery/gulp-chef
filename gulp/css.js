@@ -78,68 +78,68 @@ function cssTask(gulp, config, stream, done) {
 }
 
 cssTask.schema = {
-	"title": "css",
-	"description": "",
-	"properties": {
-		"src": {
-			"description": ""
+	'title': 'css',
+	'description': '',
+	'properties': {
+		'src': {
+			'description': ''
 		},
-		"dest": {
-			"description": ""
+		'dest': {
+			'description': ''
 		},
-		"flatten": {
-			"description": "",
-			"type": "boolean",
-			"default": false
+		'flatten': {
+			'description': '',
+			'type': 'boolean',
+			'default': false
 		},
-		"sourcemap": {
-			"description": "generate sourcemap file or not?",
-			"enum": [
-				"inline", "external", false
+		'sourcemap': {
+			'description': 'generate sourcemap file or not?',
+			'enum': [
+				'inline', 'external', false
 			],
-			"alias": ["sourcemaps"],
-			"default": false
+			'alias': ['sourcemaps'],
+			'default': false
 		},
-		"min.css": {
-			"description": "",
-			"type": "boolean",
-			"default": true
+		'min.css': {
+			'description': '',
+			'type': 'boolean',
+			'default': true
 		},
-		"options": {
-			"description": "",
-			"properties": {
-				"autoprefixer": {
-					"properties": {
+		'options': {
+			'description': '',
+			'properties': {
+				'autoprefixer': {
+					'properties': {
 						browsers: {
-							"description": "",
-							"type": "array",
-							"default": ['> 1%', 'last 2 versions', 'Firefox ESR', 'Opera 12.1', 'safari 5', 'ie 9', 'ios 6', 'android 4']
+							'description': '',
+							'type': 'array',
+							'default': ['> 1%', 'last 2 versions', 'Firefox ESR', 'Opera 12.1', 'safari 5', 'ie 9', 'ios 6', 'android 4']
 						},
 						cascade: {
-							"description": "",
-							"type": "boolean",
-							"default": true
+							'description': '',
+							'type': 'boolean',
+							'default': true
 						},
 						remove: {
-							"description": "",
-							"type": "boolean",
-							"default": true
+							'description': '',
+							'type': 'boolean',
+							'default': true
 						}
 					}
 				},
-				"minify": {
-					"properties": {
+				'minify': {
+					'properties': {
 						processImport: {
-							"description": "",
-							"type": "boolean",
-							"default": true
+							'description': '',
+							'type': 'boolean',
+							'default': true
 						}
 					}
 				}
 			}
 		}
 	},
-	"required": ["src", "dest"]
+	'required': ['src', 'dest']
 };
 
 cssTask.type = 'task';

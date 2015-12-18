@@ -1,0 +1,43 @@
+{
+	"properties": {
+		"path": {
+			"description": "The path (output folder) to write files to.",
+			"type": "string"
+		},
+		"options": {
+			"description": "",
+			"properties": {
+				"cwd": {
+					"description": "cwd for the output folder, only has an effect if provided output folder is relative.",
+					"type": "string"
+				},
+				"mode": {
+					"description": "Octal permission specifying the mode the files should be created with: e.g. \"0744\", 0744 or 484 (0744 in base 10). Default: the mode of the input file (file.stat.mode) or the process mode if the input file has no mode property.",
+					"type": ["string", "integer"]
+				},
+				"dirMode": {
+					"description": "Octal permission specifying the mode the directory should be created with: e.g. \"0755\", 0755 or 493 (0755 in base 10). Default is the process mode. Since Gulp 4.0.",
+					"type": ["string", "integer"]
+				},
+				"overwrite": {
+					"description": "Specify if existing files with the same path should be overwritten or not. Since Gulp 4.0.",
+					"type": "boolean",
+					"default": true
+				},
+				"flatten": {
+					"description": "Remove or replace relative path for files. Since configurable-gulp-recipes 0.1.0.",
+					"type": "boolean",
+					"default": false
+				},
+				"override": {
+					"description": "Override parent's dest settings, not join it. Since configurable-gulp-recipes 0.1.0.",
+					"type": "boolean",
+					"default": false
+				}
+			}
+		},
+		"required": ["path"]
+	},
+	"primary": "path",
+	"gathering": "options"
+}

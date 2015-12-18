@@ -94,42 +94,42 @@ function imagesTaskV2(gulp, config, stream, done) {
 }
 
 imagesTaskV2.schema = {
-	"title": "images",
-	"description": "",
-	"properties": {
-		"src": {
-			"description": ""
+	'title': 'images',
+	'description': '',
+	'properties': {
+		'src': {
+			'description': ''
 		},
-		"dest": {
-			"description": ""
+		'dest': {
+			'description': ''
 		},
-		"flatten": {
-			"description": "",
-			"type": "boolean",
-			"default": false
+		'flatten': {
+			'description': '',
+			'type': 'boolean',
+			'default': false
 		},
-		"options": {
-			"description": "",
-			"properties": {
-				"optimizationLevel": {
-					"description": "",
-					"type": "integer",
-					"default": 3
+		'options': {
+			'description': '',
+			'properties': {
+				'optimizationLevel': {
+					'description': '',
+					'type': 'integer',
+					'default': 3
 				},
-				"progressive": {
-					"description": "",
-					"type": "boolean",
-					"default": true
+				'progressive': {
+					'description': '',
+					'type': 'boolean',
+					'default': true
 				},
-				"interlaced": {
-					"description": "",
-					"type": "boolean",
-					"default": true
+				'interlaced': {
+					'description': '',
+					'type': 'boolean',
+					'default': true
 				}
 			}
 		}
 	},
-	"required": ["src", "dest"]
+	'required': ['src', 'dest']
 };
 
 imagesTaskV2.type = 'task';

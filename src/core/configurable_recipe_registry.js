@@ -1,10 +1,10 @@
 'use strict';
 
-var Path = require('path'),
-	_ = require('lodash'),
-	loadPlugins = require('gulp-load-plugins'),
-	safeRequireDir = require('../helpers/safe_require_dir'),
-	log = require('gulp-util').log;
+var Path = require('path');
+var _ = require('lodash');
+var loadPlugins = require('gulp-load-plugins');
+var safeRequireDir = require('../helpers/safe_require_dir');
+var log = require('gulp-util').log;
 
 var defaults = {
 	camelize: false,
@@ -29,18 +29,24 @@ ConfigurableRecipeRegistry.builder = function (type) {
 
 	return {
 		dir: function (base, path) {
-			var sources = safeRequireDir(Path.join(base, path));
+			var sources;
+
+			sources = safeRequireDir(Path.join(base, path));
 			_.defaults(recipes, sources);
 			return this;
 		},
 		npm: function (options) {
-			var sources = loadPlugins(_.defaults(options || {}, defaults));
+			var sources;
+
+			sources = loadPlugins(_.defaults(options || {}, defaults));
 			lazyDefaults(recipes, sources, type);
 			return this;
 		},
 		module: function (moduleName) {
-			var name = moduleName.replace(defaults.replaceString, '');
-			if (! (name in recipes)) {
+			var name;
+
+			name = moduleName.replace(defaults.replaceString, '');
+			if (!(name in recipes)) {
 				try {
 					recipes[name] = require(moduleName);
 				} catch (ex) {
@@ -49,14 +55,16 @@ ConfigurableRecipeRegistry.builder = function (type) {
 			}
 			return this;
 		},
-		build: function() {
+		build: function () {
 			return new ConfigurableRecipeRegistry(recipes);
 		}
 	};
 };
 
 function lazyDefaults(target, source, type) {
-	var properties = Object.getOwnPropertyNames(source);
+	var properties;
+
+	properties = Object.getOwnPropertyNames(source);
 	properties.forEach(function (property) {
 		if (!target.hasOwnProperty(property)) {
 			assign(property);
@@ -64,11 +72,15 @@ function lazyDefaults(target, source, type) {
 	});
 
 	function assign(property) {
-		var descriptor = Object.getOwnPropertyDescriptor(source, property);
+		var descriptor;
+
+		descriptor = Object.getOwnPropertyDescriptor(source, property);
 		if (descriptor.get) {
 			Object.defineProperty(target, property, {
 				get: function () {
-					var inst = descriptor.get();
+					var inst;
+
+					inst = descriptor.get();
 					if (inst.type === type) {
 						return inst;
 					}

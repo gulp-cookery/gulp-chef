@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var _ = require('lodash');
 
@@ -25,7 +25,8 @@ Registry.prototype.get = function (name) {
 };
 
 Registry.prototype.set = function (name, task) {
-	return (this._tasks[name] = task);
+	this._tasks[name] = task;
+	return task;
 };
 
 Registry.prototype.tasks = function () {
@@ -33,17 +34,19 @@ Registry.prototype.tasks = function () {
 };
 
 Registry.prototype.refer = function (name) {
-	var task = this._tasks[name];
+	var task;
+
+	task = this._tasks[name];
 	if (!task) {
 		this._refers.push(name);
 	}
 	return task;
-}
+};
 
 Registry.prototype.missing = function (gulp) {
 	return this._refers.filter(function (ref) {
 		return !gulp.task(ref);
 	});
-}
+};
 
 module.exports = Registry;

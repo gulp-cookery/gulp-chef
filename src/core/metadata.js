@@ -1,13 +1,22 @@
-"use strict";
+'use strict';
 
 /**
  * WeakMap for storing metadata.
+ *
  * Add metadata to make gulp.tree() happy.
  *
  * Note: we need the very metadata instance that gulp uses.
  * So, we have 2 options:
+ *
  * 1. A hack: require that very module instance, as here we do.
  * 2. A override: override gulp.tree() method.
+ *
+ * Reference:
+ *
+ * https://github.com/gulpjs/undertaker/blob/master/lib/set-task.js
+ * https://github.com/gulpjs/undertaker/blob/master/lib/parallel.js
+ * https://github.com/gulpjs/undertaker/blob/master/lib/helpers/buildTree.js
+ *
  */
 var _metadata;
 
@@ -17,21 +26,17 @@ try {
 	_metadata = require('undertaker/lib/helpers/metadata');
 }
 
-// Reference:
-// https://github.com/gulpjs/undertaker/blob/master/lib/set-task.js
-// https://github.com/gulpjs/undertaker/blob/master/lib/parallel.js
-// https://github.com/gulpjs/undertaker/blob/master/lib/helpers/buildTree.js
-function set(target, label, nodes) {
-	var name, meta;
+function set(target, label, optionalNodes) {
+	var meta, name, nodes;
 
+	nodes = optionalNodes || [];
 	meta = _metadata.get(target);
 	if (meta) {
-		if (nodes && nodes.length) {
+		if (nodes.length) {
 			meta.tree.nodes = meta.tree.nodes.concat(nodes);
 		}
 	} else {
 		name = target.displayName || target.name || '<anonymous>';
-		nodes = nodes || [];
 		meta = {
 			name: name,
 			// Note: undertaker use taskWrapper function in set-task to allow for aliases.
@@ -56,7 +61,7 @@ function set(target, label, nodes) {
 
 function get(target) {
 	return _metadata.get(target);
-};
+}
 
 module.exports = {
 	get: get,

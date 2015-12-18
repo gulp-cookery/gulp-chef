@@ -1,3 +1,4 @@
+/* eslint consistent-this: 0 */
 'use strict';
 
 var Sinon = require('sinon');
@@ -6,23 +7,30 @@ var _ = require('lodash');
 var FakeGulp = require('./gulp');
 
 function createSpyGulpTask(name, gulpTask) {
-	var task = Sinon.spy(gulpTask);
+	var task;
+
+	task = Sinon.spy(gulpTask);
 	task.displayName = name;
 	return task;
 }
 
-function createSpyConfigurableTask(name, recipe, taskConfig) {
-	var run, task;
-	recipe = recipe || Sinon.spy();
-	taskConfig = taskConfig || {};
+function createSpyConfigurableTask(name, optionalRecipe, optionalTaskConfig) {
+	var run, task, recipe, taskConfig;
+
+	recipe = optionalRecipe || Sinon.spy();
+	taskConfig = optionalTaskConfig || {};
 	run = Sinon.spy(function (done) {
-		var ctx = this;
-		ctx.config = _.defaultsDeep({}, taskConfig, ctx.config);
-		return recipe.call(ctx, done);
+		var context;
+
+		context = this;
+		context.config = _.defaultsDeep({}, taskConfig, context.config);
+		return recipe.call(context, done);
 	});
 	task = createSpyGulpTask(name, function (done) {
-		var ctx = this;
-		run.call(ctx, done);
+		var context;
+
+		context = this;
+		run.call(context, done);
 	});
 	task.displayName = name;
 	task.run = run;

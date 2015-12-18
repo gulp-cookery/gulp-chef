@@ -1,23 +1,22 @@
 'use strict';
 
-var path = require('path'),
-	requireDir = require('require-dir'),
-	_ = require('lodash');
+var path = require('path');
+var requireDir = require('require-dir');
+var _ = require('lodash');
 
 function safeRequireDir() {
-	var parent = module.parent,
-		parentFile = parent.filename,
-		parentDir = path.dirname(parentFile),
-		dirs,
-		modules;
+	var dirs, modules;
+
+	var parent = module.parent;
+	var parentFile = parent.filename;
+	var parentDir = path.dirname(parentFile);
 
 	dirs = Array.prototype.slice.call(arguments, 0);
 	modules = dirs.map(function (dir) {
-		dir = path.resolve(parentDir, dir || '.');
 		try {
-			return requireDir(dir);
+			return requireDir(path.resolve(parentDir, dir || '.'));
 		} catch (ex) {
-			if (ex.code !== "ENOENT") {
+			if (ex.code !== 'ENOENT') {
 				throw ex;
 			}
 		}
