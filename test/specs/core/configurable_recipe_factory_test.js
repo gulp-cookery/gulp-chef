@@ -8,9 +8,9 @@ var _ = require('lodash');
 
 var base = process.cwd();
 
-var ConfigurableRecipeFactory = require(base + '/src/core/configurable_recipe_factory');
-var ConfigurationError = require(base + '/src/core/configuration_error');
-var Registry = require(base + '/src/core/registry');
+var ConfigurableRecipeFactory = require(base + '/lib/core/configurable_recipe_factory');
+var ConfigurationError = require(base + '/lib/core/configuration_error');
+var Registry = require(base + '/lib/core/registry');
 
 var FakeFactory = require(base + '/test/fake/factory');
 var createFakeStuff = require(base + '/test/fake/stuff');

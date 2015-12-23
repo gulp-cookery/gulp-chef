@@ -1,3 +1,3 @@
 'use strict';
 
-module.exports = require('./src/configure');
+module.exports = require('./lib/configure');

@@ -3,7 +3,7 @@
 var _ = require('lodash');
 
 var base = process.cwd();
-var Registry = require(base + '/src/core/registry');
+var Registry = require(base + '/lib/core/registry');
 
 function FakeGulp() {
 	this._registry = new Registry();

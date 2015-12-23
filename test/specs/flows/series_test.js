@@ -6,7 +6,7 @@ var Chai = require('chai');
 var expect = Chai.expect;
 
 var base = process.cwd();
-var series = require(base + '/src/flows/series');
+var series = require(base + '/lib/flows/series');
 var cases = require('./flow_test_cases');
 
 var FakeGulp = require(base + '/test/fake/gulp');

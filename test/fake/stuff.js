@@ -3,7 +3,7 @@
 var Sinon = require('sinon');
 var base = process.cwd();
 
-var ConfigurableRecipeRegistry = require(base + '/src/core/configurable_recipe_registry');
+var ConfigurableRecipeRegistry = require(base + '/lib/core/configurable_recipe_registry');
 
 module.exports = function () {
 	return {

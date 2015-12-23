@@ -6,9 +6,9 @@ var test = require('mocha-cases');
 
 var base = process.cwd();
 
-var Configuration = require(base + '/src/core/configuration');
-var ConfigurationRegulator = require(base + '/src/core/configuration_regulator');
-var ConfigurationError = require(base + '/src/core/configuration_error');
+var Configuration = require(base + '/lib/core/configuration');
+var ConfigurationRegulator = require(base + '/lib/core/configuration_regulator');
+var ConfigurationError = require(base + '/lib/core/configuration_error');
 
 var regulator;
 
