@@ -226,17 +226,27 @@ describe('Core', function () {
 					expect(actual[0].displayName).to.equal('task-2');
 					expect(actual[1].displayName).to.equal('task-1');
 				});
-				it('should throw if not all tasks defined "order" property', function () {
+				it('should be order-stable: tasks not defined "order" property defaults to 0', function () {
 					var subTaskConfigs = {
 						'task-1': {},
-						'task-2': { order: 1 }
+						'task-2': { order: 1 },
+						'task-3': { order: 2 },
+						'task-4': { order: 1 },
+						'task-5': 'gulp-task',
+						'task-6': {
+							order: 0,
+							task: 'configurable-task'
+						}
 					};
 
-					function call() {
-						factory.multiple('', subTaskConfigs, {});
-					}
+					var actual = factory.multiple('', subTaskConfigs, {});
 
-					expect(call).to.throw(ConfigurationError);
+					expect(actual[0].displayName).to.equal('task-1');
+					expect(actual[1].displayName).to.equal('task-5');
+					expect(actual[2].displayName).to.equal('task-6');
+					expect(actual[3].displayName).to.equal('task-2');
+					expect(actual[4].displayName).to.equal('task-4');
+					expect(actual[5].displayName).to.equal('task-3');
 				});
 				it('should dereference task references', function () {
 					var subTaskConfigs = {
@@ -251,11 +261,11 @@ describe('Core', function () {
 
 					expect(actual.length).to.equal(6);
 					expect(actual[0].displayName).to.equal('task1');
-					expect(actual[1].displayName).to.equal('gulp-task-by-ref');
-					expect(actual[2].displayName).to.equal('configurable-task-by-ref');
-					expect(actual[3].displayName).to.equal('gulp-task');
-					expect(actual[4].displayName).to.equal('configurable-task');
-					expect(actual[5].displayName).to.be.a('string');
+					expect(actual[1].displayName).to.equal('task2');
+					expect(actual[2].displayName).to.equal('task3');
+					expect(actual[3].displayName).to.equal('task4');
+					expect(actual[4].displayName).to.equal('task5');
+					expect(actual[5].displayName).to.equal('task6');
 				});
 			});
 		});
