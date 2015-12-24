@@ -31,7 +31,7 @@ var recipes = configure({
 			src: '**/*.{png,jpeg,gif,webp}'
 		}
 	},
-	watch: ['scripts', 'markups', 'resources'],
+	watch: ['make:scripts', 'make:markups', 'make:resources'],
 	build: ['clean', 'make'],
 	default: 'build'
 });
