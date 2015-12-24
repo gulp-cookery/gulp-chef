@@ -245,32 +245,6 @@ describe('Core', function () {
 					subTaskConfigs: {}
 				});
 			});
-			it('should honor schema.type, i.e. accept non-object (array)', function () {
-				var actual, config;
-
-				config = [true, 2, '4', function () {}, {}];
-				actual = Configuration.sort({}, config, {}, {
-					type: 'array'
-				});
-				expect(actual).to.deep.equal({
-					taskInfo: {},
-					taskConfig: config,
-					subTaskConfigs: {}
-				});
-			});
-			it('should be able to gather non-object (array) to subTaskConfigs', function () {
-				var actual, config;
-
-				config = [true, 2, '4', function () {}, {}];
-				actual = Configuration.sort({}, config, {}, {
-					properties: {}
-				});
-				expect(actual).to.deep.equal({
-					taskInfo: {},
-					taskConfig: {},
-					subTaskConfigs: config
-				});
-			});
 			it('should throw if parent config not normalized', function () {
 				expect(function () {
 					Configuration.sort({}, {}, {
@@ -425,99 +399,120 @@ describe('Core', function () {
 			it('should normalize config using the given schema', function () {
 				var schema = {
 					definitions: {
-						io: {
-							properties: {
-								src: {
-									description: '',
-									type: 'array'
-								},
-								dest: {
-									description: '',
-									type: 'string'
-								}
-							}
-						},
 						options: {
 							properties: {
 								extensions: {
 									description: '',
+									alias: ['extension'],
 									type: 'array',
-									alias: ['extension']
+									items: {
+										type: 'string'
+									}
 								},
 								require: {
 									description: '',
+									alias: ['requires'],
 									type: 'array',
-									alias: ['requires']
+									items: {
+										type: 'string'
+									}
 								},
 								external: {
 									description: '',
+									alias: ['externals'],
 									type: 'array',
-									alias: ['externals']
+									items: {
+										type: 'string'
+									}
 								},
 								plugin: {
 									description: '',
+									alias: ['plugins'],
 									type: 'array',
-									alias: ['plugins']
+									items: {
+										type: 'string'
+									}
 								},
 								transform: {
 									description: '',
+									alias: ['transforms'],
 									type: 'array',
-									alias: ['transforms']
+									items: {
+										type: 'string'
+									}
 								},
 								exclude: {
 									description: '',
+									alias: ['excludes'],
 									type: 'array',
-									alias: ['excludes']
+									items: {
+										type: 'string'
+									}
 								},
 								ignore: {
 									description: '',
+									alias: ['ignores'],
 									type: 'array',
-									alias: ['ignores']
+									items: {
+										type: 'string'
+									}
 								},
 								shim: {
-									description: '',
+									description: 'which library to shim?',
+									alias: ['shims', 'browserify-shim', 'browserify-shims'],
 									type: 'array',
-									alias: ['shims', 'browserify-shim', 'browserify-shims']
+									items: {
+										type: 'string'
+									}
+								},
+								sourcemap: {
+									description: 'generate sourcemap file or not?',
+									alias: ['sourcemaps'],
+									enum: [
+										'inline', 'external', false
+									],
+									default: false
 								}
 							}
 						}
 					},
-					extends: { $ref: '#/definitions/io' },
 					properties: {
 						options: {
 							description: 'common options for all bundles',
-							extends: { $ref: '#/definitions/options' },
-							type: 'object'
+							type: 'object',
+							extends: { $ref: '#/definitions/options' }
 						},
 						bundles: {
 							description: '',
 							alias: ['bundle'],
 							type: 'array',
-							extends: [
-								{ $ref: '#/definitions/io' },
-								{ $ref: '#/definitions/options' }
-							],
-							properties: {
-								file: {
-									description: '',
-									type: 'string'
+							items: {
+								type: 'object',
+								extends: { $ref: '#/definitions/options' },
+								properties: {
+									file: {
+										description: '',
+										type: 'string'
+									},
+									entries: {
+										description: '',
+										alias: ['entry'],
+										type: 'array',
+										items: {
+											type: 'string'
+										}
+									},
+									options: {
+										description: 'options for this bundle',
+										type: 'object',
+										extends: { $ref: '#/definitions/options' }
+									}
 								},
-								entries: {
-									description: '',
-									alias: ['entry'],
-									type: 'array'
-								},
-								options: {
-									extends: { $ref: '#/definitions/options' }
-								}
-							},
-							required: ['file', 'entries']
+								required: ['file', 'entries']
+							}
 						}
 					},
-					required: ['bundles'],
-					default: {
-						options: {}
-					}
+					required: ['bundles']
 				};
 				var options = {
 					extensions: ['.js', '.json', '.jsx', '.es6', '.ts'],
@@ -595,7 +590,9 @@ describe('Core', function () {
 					}]
 				};
 
-				expect(Configuration.sort({}, config, {}, schema)).to.deep.equal({
+				var actual = Configuration.sort({}, config, {}, schema);
+
+				expect(actual).to.deep.equal({
 					taskInfo: {},
 					taskConfig: expected,
 					subTaskConfigs: {
