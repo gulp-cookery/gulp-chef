@@ -1,4 +1,5 @@
 {
+	"type": "object",
 	"properties": {
 		"globs": {
 			"description": "Glob or array of globs to read.",
