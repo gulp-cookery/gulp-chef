@@ -376,13 +376,13 @@ describe('Core', function () {
 						path: 'dist'
 					}
 				}, {
-					'properties': {
-						'bundles': {
-							'properties': {
-								'entries': {}
+					properties: {
+						bundles: {
+							properties: {
+								entries: {}
 							}
 						},
-						'options': {
+						options: {
 						}
 					}
 				});
@@ -409,14 +409,14 @@ describe('Core', function () {
 			});
 			it('should extract title and description from schema if available', function () {
 				var schema = {
-					'title': 'schema-extractor',
-					'description': 'extract title and description from schema if available'
+					title: 'schema-extractor',
+					description: 'extract title and description from schema if available'
 				};
 
 				expect(Configuration.sort({}, {}, {}, schema)).to.deep.equal({
 					taskInfo: {
-						'name': 'schema-extractor',
-						'description': 'extract title and description from schema if available'
+						name: 'schema-extractor',
+						description: 'extract title and description from schema if available'
 					},
 					taskConfig: {},
 					subTaskConfigs: {}
@@ -424,174 +424,174 @@ describe('Core', function () {
 			});
 			it('should normalize config using the given schema', function () {
 				var schema = {
-					'definitions': {
-						'io': {
-							'properties': {
-								'src': {
-									'description': '',
-									'type': 'array'
+					definitions: {
+						io: {
+							properties: {
+								src: {
+									description: '',
+									type: 'array'
 								},
-								'dest': {
-									'description': '',
-									'type': 'string'
+								dest: {
+									description: '',
+									type: 'string'
 								}
 							}
 						},
-						'options': {
-							'properties': {
-								'extensions': {
-									'description': '',
-									'type': 'array',
-									'alias': ['extension']
+						options: {
+							properties: {
+								extensions: {
+									description: '',
+									type: 'array',
+									alias: ['extension']
 								},
-								'require': {
-									'description': '',
-									'type': 'array',
-									'alias': ['requires']
+								require: {
+									description: '',
+									type: 'array',
+									alias: ['requires']
 								},
-								'external': {
-									'description': '',
-									'type': 'array',
-									'alias': ['externals']
+								external: {
+									description: '',
+									type: 'array',
+									alias: ['externals']
 								},
-								'plugin': {
-									'description': '',
-									'type': 'array',
-									'alias': ['plugins']
+								plugin: {
+									description: '',
+									type: 'array',
+									alias: ['plugins']
 								},
-								'transform': {
-									'description': '',
-									'type': 'array',
-									'alias': ['transforms']
+								transform: {
+									description: '',
+									type: 'array',
+									alias: ['transforms']
 								},
-								'exclude': {
-									'description': '',
-									'type': 'array',
-									'alias': ['excludes']
+								exclude: {
+									description: '',
+									type: 'array',
+									alias: ['excludes']
 								},
-								'ignore': {
-									'description': '',
-									'type': 'array',
-									'alias': ['ignores']
+								ignore: {
+									description: '',
+									type: 'array',
+									alias: ['ignores']
 								},
-								'shim': {
-									'description': '',
-									'type': 'array',
-									'alias': ['shims', 'browserify-shim', 'browserify-shims']
+								shim: {
+									description: '',
+									type: 'array',
+									alias: ['shims', 'browserify-shim', 'browserify-shims']
 								}
 							}
 						}
 					},
-					'extends': { '$ref': '#/definitions/io' },
-					'properties': {
-						'options': {
-							'description': 'common options for all bundles',
-							'extends': { '$ref': '#/definitions/options' },
-							'type': 'object'
+					extends: { $ref: '#/definitions/io' },
+					properties: {
+						options: {
+							description: 'common options for all bundles',
+							extends: { $ref: '#/definitions/options' },
+							type: 'object'
 						},
-						'bundles': {
-							'description': '',
-							'alias': ['bundle'],
-							'type': 'array',
-							'extends': [
-								{ '$ref': '#/definitions/io' },
-								{ '$ref': '#/definitions/options' }
+						bundles: {
+							description: '',
+							alias: ['bundle'],
+							type: 'array',
+							extends: [
+								{ $ref: '#/definitions/io' },
+								{ $ref: '#/definitions/options' }
 							],
-							'properties': {
-								'file': {
-									'description': '',
-									'type': 'string'
+							properties: {
+								file: {
+									description: '',
+									type: 'string'
 								},
-								'entries': {
-									'description': '',
-									'alias': ['entry'],
-									'type': 'array'
+								entries: {
+									description: '',
+									alias: ['entry'],
+									type: 'array'
 								},
-								'options': {
-									'extends': { '$ref': '#/definitions/options' }
+								options: {
+									extends: { $ref: '#/definitions/options' }
 								}
 							},
-							'required': ['file', 'entries']
+							required: ['file', 'entries']
 						}
 					},
-					'required': ['bundles'],
-					'default': {
-						'options': {}
+					required: ['bundles'],
+					default: {
+						options: {}
 					}
 				};
 				var options = {
-					'extensions': ['.js', '.json', '.jsx', '.es6', '.ts'],
-					'plugin': ['tsify'],
-					'transform': ['brfs']
+					extensions: ['.js', '.json', '.jsx', '.es6', '.ts'],
+					plugin: ['tsify'],
+					transform: ['brfs']
 				};
 				var config = {
-					'bundles': [{
-						'file': 'deps.js',
-						'entries': [{
-							'file': 'traceur/bin/traceur-runtime'
+					bundles: [{
+						file: 'deps.js',
+						entries: [{
+							file: 'traceur/bin/traceur-runtime'
 						}, {
-							'file': 'rtts_assert/rtts_assert'
+							file: 'rtts_assert/rtts_assert'
 						}, {
-							'file': 'reflect-propertydata'
+							file: 'reflect-propertydata'
 						}, {
-							'file': 'zone.js'
+							file: 'zone.js'
 						}],
-						'require': ['angular2/angular2', 'angular2/router']
+						require: ['angular2/angular2', 'angular2/router']
 					}, {
-						'file': 'services.js',
-						'entry': 'services/*/index.js',
-						'external': ['angular2/angular2', 'angular2/router'],
-						'options': options
+						file: 'services.js',
+						entry: 'services/*/index.js',
+						external: ['angular2/angular2', 'angular2/router'],
+						options: options
 					}, {
-						'file': 'index.js',
-						'entry': 'index.js',
-						'external': './services',
-						'options': options
+						file: 'index.js',
+						entry: 'index.js',
+						external: './services',
+						options: options
 					}, {
-						'file': 'auth.js',
-						'entry': 'auth/index.js',
-						'external': './services',
-						'options': options
+						file: 'auth.js',
+						entry: 'auth/index.js',
+						external: './services',
+						options: options
 					}, {
-						'file': 'dashboard.js',
-						'entry': 'dashboard/index.js',
-						'external': './services',
-						'options': options
+						file: 'dashboard.js',
+						entry: 'dashboard/index.js',
+						external: './services',
+						options: options
 					}]
 				};
 				var expected = {
-					'bundles': [{
-						'file': 'deps.js',
-						'entries': [{
-							'file': 'traceur/bin/traceur-runtime'
+					bundles: [{
+						file: 'deps.js',
+						entries: [{
+							file: 'traceur/bin/traceur-runtime'
 						}, {
-							'file': 'rtts_assert/rtts_assert'
+							file: 'rtts_assert/rtts_assert'
 						}, {
-							'file': 'reflect-propertydata'
+							file: 'reflect-propertydata'
 						}, {
-							'file': 'zone.js'
+							file: 'zone.js'
 						}],
-						'require': ['angular2/angular2', 'angular2/router']
+						require: ['angular2/angular2', 'angular2/router']
 					}, {
-						'file': 'services.js',
-						'entries': ['services/*/index.js'],
-						'external': ['angular2/angular2', 'angular2/router'],
-						'options': options
+						file: 'services.js',
+						entries: ['services/*/index.js'],
+						external: ['angular2/angular2', 'angular2/router'],
+						options: options
 					}, {
-						'file': 'index.js',
-						'entries': ['index.js'],
-						'external': ['./services'],
-						'options': options
+						file: 'index.js',
+						entries: ['index.js'],
+						external: ['./services'],
+						options: options
 					}, {
-						'file': 'auth.js',
-						'entries': ['auth/index.js'],
-						'external': ['./services'],
-						'options': options
+						file: 'auth.js',
+						entries: ['auth/index.js'],
+						external: ['./services'],
+						options: options
 					}, {
-						'file': 'dashboard.js',
-						'entries': ['dashboard/index.js'],
-						'external': ['./services'],
-						'options': options
+						file: 'dashboard.js',
+						entries: ['dashboard/index.js'],
+						external: ['./services'],
+						options: options
 					}]
 				};
 
