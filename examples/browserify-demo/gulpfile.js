@@ -1,5 +1,7 @@
-var gulp = require('gulp'),
-	configure = require('configurable-gulp-recipes');
+'use strict';
+
+var gulp = require('gulp');
+var configure = require('configurable-gulp-recipes');
 
 var recipes = configure({
 	src: 'app',
@@ -9,6 +11,14 @@ var recipes = configure({
 	make: {
 		scripts: {
 			browserify: {
+				options: {
+					development: {
+						sourcemap: 'internal'
+					},
+					production: {
+						sourcemap: 'external'
+					}
+				},
 				bundle: {
 					entry: 'main.js'
 				}

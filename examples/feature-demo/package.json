@@ -1,11 +1,11 @@
 {
-  "name": "browserify-demo",
+  "name": "feature-demo",
   "version": "0.1.0",
-  "description": "gulp-recipe-browserify example",
+  "description": "feature demo ",
+  "main": "index.js",
   "author": "Amobiz",
   "license": "MIT",
   "devDependencies": {
-    "configurable-gulp-recipe-browserify": "git+https://github.com/amobiz/configurable-gulp-recipe-browserify.git",
     "configurable-gulp-recipes": "git+https://github.com/amobiz/configurable-gulp-recipes.git",
     "gulp": "gulpjs/gulp#4.0"
   }

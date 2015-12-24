@@ -592,7 +592,6 @@ var SampleUsageConfigs = {
 	},
 	build: ['clean', ['scripts', 'styles', 'markups', 'images']],
 	watch: ['scripts', 'styles', 'markups', 'images'],
-	test: test,
 	default: {
 		task: ['build']
 	}
@@ -601,17 +600,3 @@ var SampleUsageConfigs = {
 var recipes = configure(SampleUsageConfigs, settings);
 
 gulp.registry(recipes);
-gulp.task(test);
-
-function test() {
-	var mocha;
-
-	mocha = require('gulp-mocha');
-	return gulp.src(['test/**/*-test.js'], {
-		read: false
-	})
-	.pipe(mocha({
-		reporter: 'spec',
-		timeout: Infinity
-	}));
-}
