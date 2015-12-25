@@ -9,24 +9,16 @@ module.exports = function () {
 	return {
 		flows: new ConfigurableRecipeRegistry({
 			parallel: Sinon.spy(),
-			series: Sinon.spy()
+			series: Sinon.spy(),
+			'flow-task': Sinon.spy()
 		}),
 		streams: new ConfigurableRecipeRegistry({
-			merge: fakeStreamRunner,
-			'stream-task': fakeStreamRunner
+			merge: Sinon.spy(),
+			'stream-task': Sinon.spy()
 		}),
 		tasks: new ConfigurableRecipeRegistry({
 			copy: Sinon.spy(),
-			'recipe-task': Sinon.spy()
+			'task-task': Sinon.spy()
 		})
 	};
-
-	function fakeStreamRunner(gulp, config, stream, tasks) {
-		tasks.forEach(function (task) {
-			task.run(gulp, config, stream, done);
-		});
-	}
-
-	function done() {
-	}
 };
