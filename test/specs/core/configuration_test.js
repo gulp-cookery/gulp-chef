@@ -30,55 +30,123 @@ describe('Core', function () {
 		describe('.getTaskRuntimeInfo()', function () {
 			var testCases = [{
 				name: 'should accept normal task name',
-				value: 'build',
+				value: {
+					name: 'build',
+					config: {}
+				},
 				expected: {
 					name: 'build'
 				}
 			}, {
 				name: 'should accept task name with space, underscore, dash',
-				value: '_build the-project',
+				value: {
+					name: '_build the-project',
+					config: {}
+				},
 				expected: {
 					name: '_build the-project'
 				}
 			}, {
 				name: 'should accept . prefix and mark task hidden',
-				value: '.build',
+				value: {
+					name: '.build',
+					config: {}
+				},
 				expected: {
 					name: 'build',
 					visibility: '.'
 				}
 			}, {
 				name: 'should accept # prefix and mark task undefined',
-				value: '#build',
+				value: {
+					name: '#build',
+					config: {}
+				},
 				expected: {
 					name: 'build',
 					visibility: '#'
 				}
 			}, {
 				name: 'should accept ! postfix and mark task available in production mode only',
-				value: 'build!',
+				value: {
+					name: 'build!',
+					config: {}
+				},
 				expected: {
 					name: 'build',
 					runtime: '!'
 				}
 			}, {
 				name: 'should accept ? postfix and mark task available in development mode only',
-				value: 'build?',
+				value: {
+					name: 'build?',
+					config: {}
+				},
 				expected: {
 					name: 'build',
 					runtime: '?'
 				}
 			}, {
 				name: 'should throw if invalid name',
-				value: 'build?!',
+				value: {
+					name: 'build?!',
+					config: {}
+				},
 				error: ConfigurationError
 			}, {
 				name: 'should throw if invalid name',
-				value: '?build',
+				value: {
+					name: '?build',
+					config: {}
+				},
 				error: ConfigurationError
+			}, {
+				name: 'should also accept properties from config',
+				value: {
+					name: 'build',
+					config: {
+						name: 'hidden',
+						description: 'description',
+						order: 999,
+						runtime: '!',
+						task: 'task',
+						visibility: '.'
+					}
+				},
+				expected: {
+					name: 'build',
+					description: 'description',
+					order: 999,
+					runtime: '!',
+					task: 'task',
+					visibility: '.'
+				}
+			}, {
+				name: 'should properties from raw-name override properties from config',
+				value: {
+					name: '#build?',
+					config: {
+						name: 'hidden',
+						description: 'description',
+						order: 999,
+						runtime: '!',
+						task: 'task',
+						visibility: '.'
+					}
+				},
+				expected: {
+					name: 'build',
+					description: 'description',
+					order: 999,
+					runtime: '?',
+					task: 'task',
+					visibility: '#'
+				}
 			}];
 
-			test(testCases, Configuration.getTaskRuntimeInfo);
+			test(testCases, function (value) {
+				return Configuration.getTaskRuntimeInfo(value.name, value.config);
+			});
 		});
 		describe('.src()', function () {
 			it('should accept path string', function () {
@@ -307,27 +375,6 @@ describe('Core', function () {
 						}
 					},
 					subTaskConfigs: {}
-				});
-			});
-			it('should be able to specify runtime info in config', function () {
-				var actual;
-
-				actual = Configuration.sort({
-					name: 'define-runtime-info'
-				}, {
-					visibility: '.',
-					runtime: '!'
-				}, {}, {});
-				expect(actual).to.deep.equal({
-					taskInfo: {
-						name: 'define-runtime-info',
-						visibility: '.',
-						runtime: '!'
-					},
-					taskConfig: {
-					},
-					subTaskConfigs: {
-					}
 				});
 			});
 			it('should put unknown properties to subTaskConfigs', function () {
