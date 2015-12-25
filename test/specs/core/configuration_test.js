@@ -217,7 +217,7 @@ describe('Core', function () {
 					subTaskConfigs: {}
 				});
 			});
-			it('should accept all properties if schema not defined', function () {
+			it('should only include reservied properties if schema not defined', function () {
 				var actual;
 
 				actual = Configuration.sort({}, {
@@ -235,14 +235,15 @@ describe('Core', function () {
 						},
 						dest: {
 							path: 'dist'
-						},
+						}
+					},
+					subTaskConfigs: {
 						blabla: ['bla', 'bla'],
 						foo: false,
 						bar: {
 							name: 'bar'
 						}
-					},
-					subTaskConfigs: {}
+					}
 				});
 			});
 			it('should throw if parent config not normalized', function () {
@@ -651,28 +652,28 @@ describe('Core', function () {
 					}
 				};
 				var expected = {
-					src: {
-						globs: ['src']
+					taskInfo: {},
+					taskConfig: {
+						src: {
+							globs: ['src']
+						},
+						dest: {
+							path: 'dist'
+						},
+						options: {
+							debug: false,
+							override: 'smart',
+							sourcemap: 'external'
+						}
 					},
-					dest: {
-						path: 'dist'
-					},
-					options: {
-						debug: false,
-						override: 'smart',
-						sourcemap: 'external'
-					},
-					settings: {
-						expose: 'regulator-release'
+					subTaskConfigs: {
+						settings: {
+							expose: 'regulator-release'
+						}
 					}
 				};
 
-				expect(Configuration.sort({}, config, {}, {})).to.deep.equal({
-					taskInfo: {},
-					taskConfig: expected,
-					subTaskConfigs: {
-					}
-				});
+				expect(Configuration.sort({}, config, {}, {})).to.deep.equal(expected);
 			});
 		});
 		describe('.realize()', function () {
