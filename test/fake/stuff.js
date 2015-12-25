@@ -5,20 +5,29 @@ var base = process.cwd();
 
 var ConfigurableRecipeRegistry = require(base + '/lib/core/configurable_recipe_registry');
 
+function create(name, fn) {
+	var recipe = Sinon.spy(fn);
+	recipe.schema = {
+		title: name
+	};
+	return recipe;
+}
+
 module.exports = function () {
+
 	return {
 		flows: new ConfigurableRecipeRegistry({
-			parallel: Sinon.spy(),
-			series: Sinon.spy(),
-			'flow-task': Sinon.spy()
+			parallel: create('parallel'),
+			series: create('series'),
+			'flow-task': create('flow-task')
 		}),
 		streams: new ConfigurableRecipeRegistry({
-			merge: Sinon.spy(),
-			'stream-task': Sinon.spy()
+			merge: create('merge'),
+			'stream-task': create('stream-task')
 		}),
 		tasks: new ConfigurableRecipeRegistry({
-			copy: Sinon.spy(),
-			'task-task': Sinon.spy()
+			copy: create('copy'),
+			'task-task': create('task-task')
 		})
 	};
 };
