@@ -10,107 +10,22 @@ var base = process.cwd();
 
 var ConfigurableRecipeFactory = require(base + '/lib/core/configurable_recipe_factory');
 var ConfigurationError = require(base + '/lib/core/configuration_error');
-var Registry = require(base + '/lib/core/registry');
 
 var FakeFactory = require(base + '/test/fake/factory');
 var createFakeStuff = require(base + '/test/fake/stuff');
 
 describe('Core', function () {
 	describe('ConfigurableRecipeFactory', function () {
-		var gulp, factory, registry, stuff, gulpTask, subTasks, asObject, asArray,
-			configurableTask, createConfigurableTasks;
+		var gulp, stuff, factory;
+
+		gulp = FakeFactory.createFakeGulp();
+		stuff = createFakeStuff();
+		factory = new ConfigurableRecipeFactory(stuff, gulp.registry());
 
 		function done() {
 		}
 
-		beforeEach(function () {
-			registry = new Registry();
-			stuff = createFakeStuff();
-			createConfigurableTasks = Sinon.spy(function (prefix, subTaskConfigs) {
-				subTasks = _.map(subTaskConfigs, function (config, name) {
-					return FakeFactory.createSpyConfigurableTask(name);
-				});
-				return subTasks;
-			});
-			factory = new ConfigurableRecipeFactory(stuff, registry);
-			gulp = FakeFactory.createFakeGulp();
-
-			// task: gulp-task
-			gulpTask = gulp.task('gulp-task');
-
-			// task: configurable-task
-			configurableTask = gulp.task('configurable-task');
-
-			asObject = {
-				task1: {},							// sub-config task
-				task2: 'gulp-task-by-ref',			// reference to registered gulp task
-				task3: 'configurable-task-by-ref',	// reference to registered configurable task
-				task4: gulpTask,					// registered gulp task
-				task5: configurableTask,			// registered configurable task
-				task6: Sinon.spy()					// stand-alone gulp task (not registered to gulp)
-			};
-			asArray = [
-				{ name: 'task1' },					// sub-config task
-				'gulp-task-by-ref',					// reference to registered gulp task
-				'configurable-task-by-ref',			// reference to registered configurable task
-				gulpTask,							// registered gulp task
-				configurableTask,					// registered configurable task
-				Sinon.spy()							// stand-alone gulp task (not registered to gulp)
-			];
-		});
-
-		function flexibleSubTaskTypes(method, recipes) {
-			describe('flexible sub-task types', function () {
-				var prefix;
-
-				prefix = '';
-
-				[{
-					name: 'should be able to take sub-tasks as an object',
-					subTaskConfigs: 'object'
-				}, {
-					name: 'should be able to take sub-tasks as an array',
-					subTaskConfigs: 'array'
-				}].forEach(test);
-
-				function test(testCase) {
-					it(testCase.name, function () {
-						recipes.forEach(function (name) {
-							var configs, actual;
-
-							configs = _configs(name, testCase.subTaskConfigs, testCase.task);
-							actual = factory[method](prefix, configs, createConfigurableTasks);
-							expect(actual).to.be.a('function');
-						});
-					});
-				}
-
-				function _configs(name, subTaskConfigs, task) {
-					var result;
-
-					result = {
-						taskInfo: {
-							name: name
-						},
-						taskConfig: {
-						}
-					};
-					if (subTaskConfigs) {
-						result.subTaskConfigs = (typeof subTaskConfigs === 'string') ? get(subTaskConfigs) : subTaskConfigs;
-					} else if (task) {
-						result.taskInfo.task = (typeof task === 'string') ? get(task) : task;
-					}
-					return result;
-
-					function get(type) {
-						return type === 'object' ? asObject : asArray;
-					}
-				}
-			});
-		}
-
-		describe('#task()', function () {
-			var name = 'recipe-task';
+		function test(name, method) {
 			var configs = {
 				taskInfo: {
 					name: name
@@ -120,86 +35,110 @@ describe('Core', function () {
 				}
 			};
 
-			it('should return a task recipe', function () {
+			it('should return a ' + method + ' recipe', function () {
 				var actual;
 
-				actual = factory.task(name, configs);
+				actual = factory[method](name, configs);
 				expect(actual).to.be.a('function');
 			});
 			it('should refer to correct recipe', function () {
-				var actual;
+				var actual, context, lookup;
 
-				actual = factory.task(name, configs);
-				actual(gulp, configs.taskConfig, null, done);
-				expect(stuff.tasks.lookup(name).called).to.be.true;
-				expect(stuff.tasks.lookup(name).calledWithExactly(gulp, configs.taskConfig, null, done)).to.be.true;
+				lookup = stuff[method + 's'].lookup(name);
+				context = {
+					gulp: gulp,
+					config: configs.taskConfig,
+					upstream: null
+				};
+				actual = factory[method](name, configs);
+				actual.call(context, done);
+				expect(lookup.called).to.be.true;
+				expect(lookup.calledOn(context)).to.be.true;
+				expect(lookup.calledWithExactly(done)).to.be.true;
 			});
-		});
+		}
+
 		describe('#flow()', function () {
-			flexibleSubTaskTypes('flow', ['series', 'parallel']);
-		});
-		describe('#stream()', function () {
-			var prefix = '';
+			var name = 'non-existent';
 			var configs = {
 				taskInfo: {
-					name: 'stream-task'
+					name: name
 				},
 				taskConfig: {
 				},
-				subTaskConfigs: {
-					task1: {},
-					task2: {}
-				}
+				subTaskConfigs: null
+			};
+			var array = ['task-task', function () {}];
+			var object = {
+				'task-task': {},
+				'inline': function () {}
 			};
 
-			it('should return a stream recipe', function () {
+			test('flow-task', 'flow');
+			it('should return series recipe if subTaskConfigs is array', function () {
 				var actual;
 
-				actual = factory.stream(prefix, configs, createConfigurableTasks);
+				configs.subTaskConfigs = array;
+				actual = factory.flow(name, configs);
 				expect(actual).to.be.a('function');
+				expect(actual.schema.title).to.equal('series');
 			});
+			it('should return parallel recipe if subTaskConfigs is object', function () {
+				var actual;
 
-			flexibleSubTaskTypes('stream', ['queue', 'merge']);
+				configs.subTaskConfigs = object;
+				actual = factory.flow(name, configs);
+				expect(actual).to.be.a('function');
+				expect(actual.schema.title).to.equal('parallel');
+			});
 		});
 		describe('#reference()', function () {
 			it('should throw at runtime if the referring task not found', function () {
-				var ctx = {
+				var context = {
 					gulp: gulp,
 					config: {}
 				};
 				var actual = factory.reference('non-existent');
 				var expr = function () {
-					actual.call(ctx, done);
+					actual.call(context, done);
 				};
 
 				expect(expr).to.throw(ConfigurationError);
 			});
 
 			it('should wrap a normal gulp task', function () {
-				var ctx = {
+				var gulpTask = gulp.task('gulp-task');
+				var context = {
 					gulp: gulp,
 					config: {}
 				};
 				var actual = factory.reference(gulpTask.displayName);
 
 				expect(actual).to.be.a('function');
-				actual.call(ctx, done);
-				expect(gulpTask.calledOn(ctx)).to.be.true;
+				actual.call(context, done);
+				expect(gulpTask.calledOn(context)).to.be.true;
 				expect(gulpTask.calledWithExactly(done)).to.be.true;
 			});
 
-			it("should call target's run() at runtime if already a ConfigurableTask", function () {
-				var ctx = {
+			it("should wrap a configurable task and call target's run() at runtime", function () {
+				var configurableTask = gulp.task('configurable-task');
+				var context = {
 					gulp: gulp,
 					config: {}
 				};
 				var actual = factory.reference(configurableTask.displayName);
 
 				expect(actual).to.be.a('function');
-				actual.call(ctx, done);
-				expect(configurableTask.run.calledOn(ctx)).to.be.true;
+				actual.call(context, done);
+				expect(configurableTask.run.calledOn(context)).to.be.true;
 				expect(configurableTask.run.calledWithExactly(done)).to.be.true;
 			});
+		});
+		describe('#stream()', function () {
+			test('stream-task', 'stream');
+		});
+		describe('#task()', function () {
+			test('task-task', 'task');
 		});
 	});
 });
