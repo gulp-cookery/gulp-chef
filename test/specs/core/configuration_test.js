@@ -4,6 +4,8 @@ var Sinon = require('sinon');
 var expect = require('chai').expect;
 var test = require('mocha-cases');
 
+var _ = require('lodash');
+
 var base = process.cwd();
 
 var Configuration = require(base + '/lib/core/configuration');
@@ -266,12 +268,14 @@ describe('Core', function () {
 				});
 			});
 			it('should always accept src and dest property even schema not defined', function () {
-				var actual;
-
-				actual = Configuration.sort({}, {
+				var config = {
 					src: 'src',
 					dest: 'dist'
-				}, {}, {});
+				};
+				var actual, original;
+
+				original = _.cloneDeep(config);
+				actual = Configuration.sort({}, config, {}, {});
 				expect(actual).to.deep.equal({
 					taskInfo: {},
 					taskConfig: {
@@ -284,17 +288,20 @@ describe('Core', function () {
 					},
 					subTaskConfigs: {}
 				});
+				expect(config).to.deep.equal(original);
 			});
 			it('should only include reservied properties if schema not defined', function () {
-				var actual;
-
-				actual = Configuration.sort({}, {
+				var config = {
 					src: 'src',
 					dest: 'dist',
 					blabla: ['bla', 'bla'],
 					foo: false,
 					bar: { name: 'bar' }
-				}, {}, null);
+				};
+				var actual, original;
+
+				original = _.cloneDeep(config);
+				actual = Configuration.sort({}, config, {}, null);
 				expect(actual).to.deep.equal({
 					taskInfo: {},
 					taskConfig: {
@@ -313,6 +320,7 @@ describe('Core', function () {
 						}
 					}
 				});
+				expect(config).to.deep.equal(original);
 			});
 			it('should throw if parent config not normalized', function () {
 				expect(function () {
@@ -327,16 +335,18 @@ describe('Core', function () {
 				}).to.throw(TypeError);
 			});
 			it('should inherit parent config', function () {
-				var actual;
-
-				actual = Configuration.sort({}, {}, {
+				var config = {
 					src: {
 						globs: ['src']
 					},
 					dest: {
 						path: 'dist'
 					}
-				}, {});
+				};
+				var actual, original;
+
+				original = _.cloneDeep(config);
+				actual = Configuration.sort({}, {}, config, {});
 				expect(actual).to.deep.equal({
 					taskInfo: {},
 					taskConfig: {
@@ -349,21 +359,26 @@ describe('Core', function () {
 					},
 					subTaskConfigs: {}
 				});
+				expect(config).to.deep.equal(original);
 			});
 			it('should join parent path config', function () {
-				var actual;
-
-				actual = Configuration.sort({}, {
+				var config = {
 					src: ['services/**/*.js', 'views/**/*.js'],
 					dest: 'lib'
-				}, {
+				};
+				var parent = {
 					src: {
 						globs: ['src']
 					},
 					dest: {
 						path: 'dist'
 					}
-				}, {});
+				};
+				var actual, original, originalParent;
+
+				original = _.cloneDeep(config);
+				originalParent = _.cloneDeep(parent);
+				actual = Configuration.sort({}, config, parent, {});
 				expect(actual).to.deep.equal({
 					taskInfo: {},
 					taskConfig: {
@@ -376,11 +391,11 @@ describe('Core', function () {
 					},
 					subTaskConfigs: {}
 				});
+				expect(config).to.deep.equal(original);
+				expect(parent).to.deep.equal(originalParent);
 			});
 			it('should put unknown properties to subTaskConfigs', function () {
-				var actual;
-
-				actual = Configuration.sort({}, {
+				var config = {
 					src: ['services/**/*.js', 'views/**/*.js'],
 					dest: 'lib',
 					bundles: {
@@ -390,14 +405,16 @@ describe('Core', function () {
 						extensions: ['.js', '.ts', '.coffee']
 					},
 					unknownProperty: 'what?'
-				}, {
+				};
+				var parent = {
 					src: {
 						globs: ['src']
 					},
 					dest: {
 						path: 'dist'
 					}
-				}, {
+				};
+				var schema = {
 					properties: {
 						bundles: {
 							properties: {
@@ -407,7 +424,14 @@ describe('Core', function () {
 						options: {
 						}
 					}
-				});
+				};
+				var actual, original, originalParent;
+
+				original = _.cloneDeep(config);
+				originalParent = _.cloneDeep(parent);
+				actual = Configuration.sort({}, config, parent, schema);
+
+				original = _.cloneDeep(config);
 				expect(actual).to.deep.equal({
 					taskInfo: {},
 					taskConfig: {
@@ -428,6 +452,8 @@ describe('Core', function () {
 						unknownProperty: 'what?'
 					}
 				});
+				expect(config).to.deep.equal(original);
+				expect(parent).to.deep.equal(originalParent);
 			});
 			it('should extract title and description from schema if available', function () {
 				var schema = {
@@ -637,15 +663,17 @@ describe('Core', function () {
 						options: options
 					}]
 				};
+				var actual, original;
 
-				var actual = Configuration.sort({}, config, {}, schema);
-
+				original = _.cloneDeep(config);
+				actual = Configuration.sort({}, config, {}, schema);
 				expect(actual).to.deep.equal({
 					taskInfo: {},
 					taskConfig: expected,
 					subTaskConfigs: {
 					}
 				});
+				expect(config).to.deep.equal(original);
 			});
 			it('should regulate config with given runtime mode', function () {
 				var config = {
@@ -719,8 +747,12 @@ describe('Core', function () {
 						}
 					}
 				};
+				var actual, original;
 
-				expect(Configuration.sort({}, config, {}, {})).to.deep.equal(expected);
+				original = _.cloneDeep(config);
+				actual = Configuration.sort({}, config, {}, {});
+				expect(actual).to.deep.equal(expected);
+				expect(config).to.deep.equal(original);
 			});
 		});
 		describe('.realize()', function () {
