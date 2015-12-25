@@ -17,10 +17,10 @@ var FakeFactory = require(base + '/test/fake/factory');
 
 describe('Core', function () {
 	describe('ConfigurableTaskFactory', function () {
-		var gulp, factory, gulpTask, configurableTask;
+		var gulp, registry, factory, gulpTask, configurableTask;
 
 		beforeEach(function () {
-			var stuff, registry;
+			var stuff;
 
 			stuff = createFakeStuff();
 			registry = new Registry();
@@ -61,12 +61,13 @@ describe('Core', function () {
 				expect(actual.visibility).to.equal(taskInfo.visibility);
 				expect(actual.runtime).to.equal(taskInfo.runtime);
 			});
-			it('should return a ConfigurableTask with the given prefix name', function () {
+			it('should return a ConfigurableTask with the given name, and registry with prefix name', function () {
 				var actual, prefix;
 
 				prefix = 'dev:';
 				actual = factory.create(prefix, taskInfo, taskConfig, configurableRunner);
-				expect(actual.displayName).to.equal(prefix + taskInfo.name);
+				expect(actual.displayName).to.equal(taskInfo.name);
+				expect(registry.get(prefix + taskInfo.name)).to.be.a('function');
 			});
 			it('should invoke configurableRunner() when act as a gulp task: invoked directly', function () {
 				var actual;
