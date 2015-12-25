@@ -26,19 +26,17 @@ describe('Core', function () {
 		}
 
 		function test(name, method) {
-			var configs = {
-				taskInfo: {
-					name: name
-				},
-				taskConfig: {
-					id: 'recipe-config'
-				}
+			var taskInfo = {
+				name: name
+			};
+			var rawConfig = {
+				id: 'recipe-config'
 			};
 
 			it('should return a ' + method + ' recipe', function () {
 				var actual;
 
-				actual = factory[method](name, configs);
+				actual = factory[method](taskInfo, rawConfig);
 				expect(actual).to.be.a('function');
 			});
 			it('should refer to correct recipe', function () {
@@ -47,10 +45,13 @@ describe('Core', function () {
 				lookup = stuff[method + 's'].lookup(name);
 				context = {
 					gulp: gulp,
-					config: configs.taskConfig,
+					config: rawConfig,
 					upstream: null
 				};
-				actual = factory[method](name, configs);
+
+				actual = factory[method](taskInfo, rawConfig);
+				expect(actual.schema.title).to.equal(name);
+
 				actual.call(context, done);
 				expect(lookup.called).to.be.true;
 				expect(lookup.calledOn(context)).to.be.true;
@@ -60,74 +61,99 @@ describe('Core', function () {
 
 		describe('#flow()', function () {
 			var name = 'non-existent';
-			var configs = {
-				taskInfo: {
-					name: name
-				},
-				taskConfig: {
-				},
-				subTaskConfigs: null
-			};
-			var array = ['task-task', function () {}];
+			var array = [
+				'task-task',
+				function () {}
+			];
 			var object = {
 				'task-task': {},
 				'inline': function () {}
 			};
+			var rawConfig = {};
 
 			test('flow-task', 'flow');
-			it('should return series recipe if subTaskConfigs is array', function () {
+			it('should return series recipe if taskInfo.task is an array', function () {
 				var actual;
+				var taskInfo = {
+					name: name,
+					task: array
+				};
 
-				configs.subTaskConfigs = array;
-				actual = factory.flow(name, configs);
+				actual = factory.flow(taskInfo, rawConfig);
 				expect(actual).to.be.a('function');
 				expect(actual.schema.title).to.equal('series');
 			});
-			it('should return parallel recipe if subTaskConfigs is object', function () {
+			it('should return parallel recipe if taskInfo.task is an object', function () {
 				var actual;
+				var taskInfo = {
+					name: name,
+					task: object
+				};
 
-				configs.subTaskConfigs = object;
-				actual = factory.flow(name, configs);
+				actual = factory.flow(taskInfo, rawConfig);
 				expect(actual).to.be.a('function');
 				expect(actual.schema.title).to.equal('parallel');
 			});
 		});
 		describe('#reference()', function () {
+			it('should always return a recipe even if the referring task not found', function () {
+				var taskInfo = {
+					name: 'reference-task',
+					task: 'non-existent'
+				};
+				var actual;
+
+				actual = factory.reference(taskInfo);
+				expect(actual).to.be.a('function');
+			});
 			it('should throw at runtime if the referring task not found', function () {
+				var taskInfo = {
+					name: 'reference-task',
+					task: 'non-existent'
+				};
 				var context = {
 					gulp: gulp,
 					config: {}
 				};
-				var actual = factory.reference('non-existent');
-				var expr = function () {
+				var actual, expr;
+
+				actual = factory.reference(taskInfo);
+				expr = function () {
 					actual.call(context, done);
 				};
-
 				expect(expr).to.throw(ConfigurationError);
 			});
-
 			it('should wrap a normal gulp task', function () {
 				var gulpTask = gulp.task('gulp-task');
+				var taskInfo = {
+					name: 'reference-task',
+					task: gulpTask.displayName
+				};
 				var context = {
 					gulp: gulp,
 					config: {}
 				};
-				var actual = factory.reference(gulpTask.displayName);
+				var actual;
 
+				actual = factory.reference(taskInfo);
 				expect(actual).to.be.a('function');
 				actual.call(context, done);
 				expect(gulpTask.calledOn(context)).to.be.true;
 				expect(gulpTask.calledWithExactly(done)).to.be.true;
 			});
-
 			it("should wrap a configurable task and call target's run() at runtime", function () {
 				var configurableTask = gulp.task('configurable-task');
+				var taskInfo = {
+					name: 'reference-task',
+					task: configurableTask.displayName
+				};
 				var context = {
 					gulp: gulp,
 					config: {}
 				};
-				var actual = factory.reference(configurableTask.displayName);
+				var actual;
 
+				actual = factory.reference(taskInfo);
 				expect(actual).to.be.a('function');
 				actual.call(context, done);
 				expect(configurableTask.run.calledOn(context)).to.be.true;
