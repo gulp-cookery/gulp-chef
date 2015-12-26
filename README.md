@@ -227,7 +227,7 @@ var recipes = configure({
 ```
 
 ### Plain / Inline Function
-Tasks can be plain Javascript functions and be referenced directly, or can be defined inline and be referenced by name.
+Tasks can be plain JavaScript functions and be referenced directly or defined inline anonymously.
 ``` javascript
 function clean(done) {
     del(this.dest.path, done);
@@ -243,7 +243,7 @@ var recipes = configure({
     build: [clean, { parallel: ['scripts', 'styles'] }]
 };
 ```
-Note in this example, since `clean` was never defined in configuration, it is never exposed, i.e., can't be run in CLI. The other thing to note is that even plain functions are called in the `{ gulp, config, upstream }` context.
+Note in this example, since `clean` was never defined in configuration, it is never exposed, i.e., can't run in CLI. The other thing to note is that even plain functions are called in the `{ gulp, config, upstream }` context.
 
 You can use `task` property to specify the plain/inline functions, so referencing tasks can have their own configurations too.
 ``` javascript
@@ -254,6 +254,9 @@ function clean(done) {
 var recipes = configure({
     src: 'src',
     dest: 'dist',
+	clean: {
+		task: clean
+	},
     make: {
         scripts: {
             src: '**/*.js',
@@ -270,10 +273,11 @@ var recipes = configure({
     options: {
         usePolling: true
     },
-    task: [clean, 'make']
+    task: ['clean', 'make']
     }
 };
 ```
+Note in this example, there is a `clean` task in configuration, so it will be exposed and can run in CLI.
 
 ### Invisible Task
 Do not expose a task to CLI and can't be referenced, without affacting its sub tasks. Since it's invisible, its sub tasks won't prefix it's name, but still inherit its configuration. A invisible task is still functional if invoked from its parent task.
