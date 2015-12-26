@@ -33,8 +33,7 @@ describe('Core', function () {
 			var testCases = [{
 				name: 'should accept normal task name',
 				value: {
-					name: 'build',
-					config: {}
+					name: 'build'
 				},
 				expected: {
 					name: 'build'
@@ -42,8 +41,7 @@ describe('Core', function () {
 			}, {
 				name: 'should accept task name with space, underscore, dash',
 				value: {
-					name: '_build the-project',
-					config: {}
+					name: '_build the-project'
 				},
 				expected: {
 					name: '_build the-project'
@@ -51,8 +49,7 @@ describe('Core', function () {
 			}, {
 				name: 'should accept . prefix and mark task hidden',
 				value: {
-					name: '.build',
-					config: {}
+					name: '.build'
 				},
 				expected: {
 					name: 'build',
@@ -61,8 +58,7 @@ describe('Core', function () {
 			}, {
 				name: 'should accept # prefix and mark task undefined',
 				value: {
-					name: '#build',
-					config: {}
+					name: '#build'
 				},
 				expected: {
 					name: 'build',
@@ -71,8 +67,7 @@ describe('Core', function () {
 			}, {
 				name: 'should accept ! postfix and mark task available in production mode only',
 				value: {
-					name: 'build!',
-					config: {}
+					name: 'build!'
 				},
 				expected: {
 					name: 'build',
@@ -81,8 +76,7 @@ describe('Core', function () {
 			}, {
 				name: 'should accept ? postfix and mark task available in development mode only',
 				value: {
-					name: 'build?',
-					config: {}
+					name: 'build?'
 				},
 				expected: {
 					name: 'build',
@@ -91,29 +85,24 @@ describe('Core', function () {
 			}, {
 				name: 'should throw if invalid name',
 				value: {
-					name: 'build?!',
-					config: {}
+					name: 'build?!'
 				},
 				error: ConfigurationError
 			}, {
 				name: 'should throw if invalid name',
 				value: {
-					name: '?build',
-					config: {}
+					name: '?build'
 				},
 				error: ConfigurationError
 			}, {
 				name: 'should also accept properties from config',
 				value: {
 					name: 'build',
-					config: {
-						name: 'hidden',
-						description: 'description',
-						order: 999,
-						runtime: '!',
-						task: 'task',
-						visibility: '.'
-					}
+					description: 'description',
+					order: 999,
+					runtime: '!',
+					task: 'task',
+					visibility: '.'
 				},
 				expected: {
 					name: 'build',
@@ -127,14 +116,11 @@ describe('Core', function () {
 				name: 'should properties from raw-name override properties from config',
 				value: {
 					name: '#build?',
-					config: {
-						name: 'hidden',
-						description: 'description',
-						order: 999,
-						runtime: '!',
-						task: 'task',
-						visibility: '.'
-					}
+					description: 'description',
+					order: 999,
+					runtime: '!',
+					task: 'task',
+					visibility: '.'
 				},
 				expected: {
 					name: 'build',
@@ -146,9 +132,7 @@ describe('Core', function () {
 				}
 			}];
 
-			test(testCases, function (value) {
-				return Configuration.getTaskRuntimeInfo(value.name, value.config);
-			});
+			test(testCases, Configuration.getTaskRuntimeInfo);
 		});
 		describe('.src()', function () {
 			it('should accept path string', function () {
