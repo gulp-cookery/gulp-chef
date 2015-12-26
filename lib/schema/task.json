@@ -6,6 +6,9 @@
 		"description": {
 			"description": ""
 		},
+		"alias": {
+			"description": ""
+		},
 		"order": {
 			"description": "Series execution order of this task. Just used to sort, don't have to be unique or continuous."
 		},
