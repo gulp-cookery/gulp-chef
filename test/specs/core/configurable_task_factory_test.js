@@ -128,7 +128,7 @@ describe('Core', function () {
 				expect(configurableRunner.thisValues[0].config).to.deep.equal(expectedConfig);
 			});
 		});
-		describe.only('#one()', function () {
+		describe('#one()', function () {
 			it('should be able to resolve to a recipe task', function () {
 				var name = 'task-task';
 				var config = {
@@ -220,7 +220,7 @@ describe('Core', function () {
 					expect(actual[0].displayName).to.be.a('string');
 					expect(actual[1].displayName).to.be.a('string');
 				});
-				it('should dereference task references', function () {
+				it.only('should dereference task references', function () {
 					var subTaskConfigs = [
 						{ name: 'task1' },
 						'gulp-task-by-ref',			// reference to registered gulp task
@@ -233,8 +233,8 @@ describe('Core', function () {
 
 					expect(actual.length).to.equal(6);
 					expect(actual[0].displayName).to.equal('task1');
-					expect(actual[1].displayName).to.equal('gulp-task-by-ref');
-					expect(actual[2].displayName).to.equal('configurable-task-by-ref');
+					expect(actual[1].displayName).to.equal('<anonymous>');
+					expect(actual[2].displayName).to.equal('<anonymous>');
 					expect(actual[3].displayName).to.equal('gulp-task');
 					expect(actual[4].displayName).to.equal('configurable-task');
 					expect(actual[5].displayName).to.be.a('string');
