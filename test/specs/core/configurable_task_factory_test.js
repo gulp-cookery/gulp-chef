@@ -15,6 +15,12 @@ var Registry = require(base + '/lib/core/registry');
 var createFakeStuff = require(base + '/test/fake/stuff');
 var FakeFactory = require(base + '/test/fake/factory');
 
+function assertConfigurableTask(task, name) {
+	expect(task).to.be.a('function');
+	expect(task.run).to.be.a('function');
+	expect(task.displayName).to.equal(name);
+};
+
 describe('Core', function () {
 	describe('ConfigurableTaskFactory', function () {
 		var gulp, registry, factory, gulpTask, configurableTask;
@@ -45,7 +51,7 @@ describe('Core', function () {
 				};
 
 				taskConfig = {
-					name: 'taskConfig'
+					id: 'taskConfig'
 				};
 
 				configurableRunner = Sinon.spy();
@@ -55,9 +61,7 @@ describe('Core', function () {
 				var actual;
 
 				actual = factory.create('', taskInfo, taskConfig, configurableRunner);
-				expect(actual).to.be.a('function');
-				expect(actual.run).to.be.a('function');
-				expect(actual.displayName).to.equal(taskInfo.name);
+				assertConfigurableTask(actual, taskInfo.name);
 				expect(actual.visibility).to.equal(taskInfo.visibility);
 				expect(actual.runtime).to.equal(taskInfo.runtime);
 			});
@@ -66,26 +70,37 @@ describe('Core', function () {
 
 				prefix = 'dev:';
 				actual = factory.create(prefix, taskInfo, taskConfig, configurableRunner);
+				assertConfigurableTask(actual, taskInfo.name);
 				expect(actual.displayName).to.equal(taskInfo.name);
 				expect(registry.get(prefix + taskInfo.name)).to.be.a('function');
-			});
-			it('should invoke configurableRunner() when act as a gulp task: invoked directly', function () {
-				var actual;
-
-				actual = factory.create('', taskInfo, taskConfig, configurableRunner);
-				actual(done);
-				expect(configurableRunner.thisValues[0]).to.deep.equal({ gulp: gulp, config: taskConfig });
-				expect(configurableRunner.calledWith(done)).to.be.true;
 			});
 			it('should invoke configurableRunner() method when act as a configurable task: invoked via configurableRunner.run()', function () {
 				var context = {
 					gulp: gulp,
 					config: taskConfig
 				};
-				var actual = factory.create('', taskInfo, taskConfig, configurableRunner);
+				var actual;
+
+				actual = factory.create('', taskInfo, taskConfig, configurableRunner);
+				assertConfigurableTask(actual, taskInfo.name);
 
 				actual.run.call(context, done);
 				expect(configurableRunner.calledOn(context)).to.be.true;
+				expect(configurableRunner.calledWith(done)).to.be.true;
+			});
+			it('should invoke configurableRunner() when act as a gulp task: invoked directly', function () {
+				var context = {
+					gulp: gulp,
+					config: taskConfig,
+					helper: Configuration
+				};
+				var actual;
+
+				actual = factory.create('', taskInfo, taskConfig, configurableRunner);
+				assertConfigurableTask(actual, taskInfo.name);
+
+				actual(done);
+				expect(configurableRunner.thisValues[0]).to.deep.equal(context);
 				expect(configurableRunner.calledWith(done)).to.be.true;
 			});
 			it('should be able to inject value and resolve config at runtime when act as a configurable task', function () {
@@ -101,45 +116,75 @@ describe('Core', function () {
 				};
 				var context = {
 					gulp: gulp,
-					config: injectConfig
+					config: injectConfig,
+					helper: Configuration
 				};
-				var actual = factory.create('', taskInfo, templateConfig, configurableRunner);
+				var actual;
+
+				actual = factory.create('', taskInfo, templateConfig, configurableRunner);
+				assertConfigurableTask(actual, taskInfo.name);
 
 				actual.run.call(context, done);
 				expect(configurableRunner.thisValues[0].config).to.deep.equal(expectedConfig);
 			});
 		});
-		describe('#one()', function () {
-			it('should resolve to a recipe task', function () {
+		describe.only('#one()', function () {
+			it('should be able to resolve to a recipe task', function () {
+				var name = 'task-task';
+				var config = {
+					name: name
+				};
 				var actual;
 
-				actual = factory.one('', 'recipe-task', {}, {});
-				expect(actual).to.be.a('function');
+				actual = factory.one('', config, {});
+				assertConfigurableTask(actual, name);
 			});
-			it('should resolve to a stream task', function () {
+			it('should be able to resolve to a flow task', function () {
+				var name = 'flow-task';
+				var config = {
+					name: name
+				};
 				var actual;
 
-				actual = factory.one('', 'stream-task', {}, {});
-				expect(actual).to.be.a('function');
+				actual = factory.one('', config, {});
+				assertConfigurableTask(actual, name);
 			});
-			it('should resolve to a non-existent task with sub-task configs to a merge stream task', function () {
+			it('should be able to resolve to a stream task', function () {
+				var name = 'stream-task';
+				var config = {
+					name: name
+				};
 				var actual;
 
-				actual = factory.one('', 'non-existent-stream-task-with-sub-task-configs', {
+				actual = factory.one('', config, {});
+				assertConfigurableTask(actual, name);
+			});
+			it('should resolve a non-existent-recipe-with-sub-task-configs to a parallel flow task', function () {
+				var name = 'non-existent-recipe-with-sub-task-configs';
+				var config = {
+					name: name,
 					'recipe-task': {},
 					'stream-task': {},
 					'non-existent-but-with-src-and-dest-defined': {
 						src: 'src',
 						dest: 'dist'
 					}
-				}, {});
-				expect(actual).to.be.a('function');
-			});
-			it('should not throw even can not resolve to a task', function () {
+				};
 				var actual;
 
-				actual = factory.one('', 'non-existent', {}, {});
-				expect(actual).to.be.a('function');
+				actual = factory.one('', config, {});
+				assertConfigurableTask(actual, name);
+				expect(actual.recipe.schema.title).to.equal('parallel');
+			});
+			it('should not throw even can not resolve to a task', function () {
+				var name = 'non-existent';
+				var config = {
+					name: name
+				};
+				var actual;
+
+				actual = factory.one('', config, {});
+				assertConfigurableTask(actual, name);
 			});
 		});
 		describe('#multiple()', function () {
