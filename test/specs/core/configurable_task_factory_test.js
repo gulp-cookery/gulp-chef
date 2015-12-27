@@ -220,7 +220,7 @@ describe('Core', function () {
 					expect(actual[0].displayName).to.be.a('string');
 					expect(actual[1].displayName).to.be.a('string');
 				});
-				it.only('should dereference task references', function () {
+				it('should dereference task references', function () {
 					var subTaskConfigs = [
 						{ name: 'task1' },
 						'gulp-task-by-ref',			// reference to registered gulp task
