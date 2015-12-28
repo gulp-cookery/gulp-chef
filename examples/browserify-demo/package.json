@@ -1,12 +1,12 @@
 {
   "name": "browserify-demo",
   "version": "0.1.0",
-  "description": "gulp-recipe-browserify example",
+  "description": "gulp-ccr-browserify example",
   "author": "Amobiz",
   "license": "MIT",
   "devDependencies": {
-    "configurable-gulp-recipe-browserify": "git+https://github.com/amobiz/configurable-gulp-recipe-browserify.git",
-    "configurable-gulp-recipes": "git+https://github.com/amobiz/configurable-gulp-recipes.git",
+    "gulp-ccr-browserify": "git+https://github.com/gulp-ccr/gulp-ccr-browserify.git",
+    "gulp-ccr": "git+https://github.com/gulp-ccr/gulp-ccr.git",
     "gulp": "gulpjs/gulp#4.0"
   },
   "dependencies": {

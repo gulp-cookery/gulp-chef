@@ -1,7 +1,7 @@
 {
-  "name": "configurable-gulp-recipes",
+  "name": "gulp-ccr",
   "version": "0.1.0",
-  "description": "Gulp 4.0 recipes ready to use and configurable. An elegant, intuition way to reuse gulp tasks.",
+  "description": "Configurable cascading recipes for Gulp 4.0. An elegant, intuition way to reuse gulp tasks.",
   "main": "index.js",
   "scripts": {
     "test": "mocha ./test/specs/**/*_test.js",
@@ -20,6 +20,7 @@
     "globs",
     "gulp",
     "gulp 4.0",
+	"gulp-ccr",
     "json",
     "json-normalizer",
     "json-schema",
@@ -41,7 +42,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/amobiz/configurable-gulp-recipes.git"
+    "url": "git+https://github.com/gulp-ccr/gulp-ccr.git"
   },
   "author": "Amobiz",
   "license": "MIT",
@@ -63,10 +64,10 @@
   "dependencies": {
     "async": "^1.5.0",
     "async-done": "^1.2.0",
-    "configurable-gulp-helper": "git+https://github.com/amobiz/configurable-gulp-helper.git",
-    "configurable-gulp-recipe-merge": "git+https://github.com/amobiz/configurable-gulp-recipe-merge.git",
-    "configurable-gulp-recipe-pipe": "git+https://github.com/amobiz/configurable-gulp-recipe-pipe.git",
-    "configurable-gulp-recipe-queue": "git+https://github.com/amobiz/configurable-gulp-recipe-queue.git",
+    "gulp-ccr-helper": "git+https://github.com/gulp-ccr/gulp-ccr-helper.git",
+    "gulp-ccr-merge": "git+https://github.com/gulp-ccr/gulp-ccr-merge.git",
+    "gulp-ccr-pipe": "git+https://github.com/gulp-ccr/gulp-ccr-pipe.git",
+    "gulp-ccr-queue": "git+https://github.com/gulp-ccr/gulp-ccr-queue.git",
     "del": "^1.2.0",
     "glob": "^6.0.1",
     "globby": "^2.1.0",

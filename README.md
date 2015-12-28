@@ -1,27 +1,31 @@
-# configurable-gulp-recipes (Alpha)
+# gulp-ccr
 
-Gulp 4.0 recipes ready to use and configurable. An elegant, intuition way to reuse gulp tasks.
+Configurable cascading recipes for Gulp 4.0. An elegant, intuition way to reuse gulp tasks.
 
 ## Install
 ``` bash
-$ npm install --save-dev https://github.com/amobiz/configurable-gulp-recipes.git
+$ npm install --save-dev https://github.com/gulp-ccr/gulp-ccr.git
 ```
 
 ## Terminology
 
 ### Gulp Task
-
-A gulp task is a function you register using `gulp.task()` method, and then run it from CLI.
-
-Starting from gulp 4.0, a gulp task takes `undefined` as context, and returns promises, observables, child processes or streams, or call `done()` callback when finished.
+A gulp task is a plain JavaScript function that returns promises, observables, child processes or streams, or call `done()` callback when finished. Starting from gulp 4.0, a gulp task takes `undefined` as context.
 ``` javascript
 function gulpTask(done) {
     assert(this === null);
     // do things ...
     done();
 }
+```
 
+You register a gulp task using `gulp.task()` method, and then run it from CLI.
+``` javascript
 gulp.task(gulpTask);
+```
+
+``` bash
+$ gulp gulpTask
 ```
 
 ### Configurable Task
@@ -38,7 +42,7 @@ function configurableTask(done) {
 You don't write configurable tasks, instead, you create a configurable task by defining a configuration, and call `configure()` function.
 ``` javascript
 var gulp = require('gulp');
-var configure = require('configurable-gulp-recipes');
+var configure = require('gulp-ccr');
 var recipes = configure({
     scripts: {
         src: 'src/**/*.js',
@@ -308,7 +312,7 @@ Disable a task and all its sub tasks. Not defined at all.
 
 
 ### Conditional Configurations
-Configurable-gulp-recipes supports conditional configurations via rumtime environment modes.
+Gulp-ccr supports conditional configurations via rumtime environment modes.
 By default, `development`, `production` and `staging` modes are supported. You can write your configurations for each specific mode under sections with keys `development`/`dev`, `production`/`prod` and `staging` respectively.
 
 For example, with the following configuration:
@@ -651,7 +655,7 @@ A flow controller takes care of when to execute, and execution order of its sub 
 
 ### Configuration Schema
 
-Configurable-gulp-recipes uses "[json-normalizer](https://www.npmjs.com/package/json-normalizer)" to normalize json configurations. You can define your configuration schema to support property alias, type convertion and default values, etc.
+Gulp-ccr uses "[json-normalizer](https://www.npmjs.com/package/json-normalizer)" to normalize json configurations. You can define your configuration schema to support property alias, type convertion and default values, etc.
 
 ### Test Plugin
 
@@ -661,31 +665,31 @@ Configurable-gulp-recipes uses "[json-normalizer](https://www.npmjs.com/package/
 
 ### Task
 
-#### configurable-gulp-recipe-atomify
-#### configurable-gulp-recipe-babel
-#### configurable-gulp-recipe-browserify
-#### configurable-gulp-recipe-bump
-#### configurable-gulp-recipe-css
-#### configurable-gulp-recipe-eslint
-#### configurable-gulp-recipe-images
-#### configurable-gulp-recipe-jscs
-#### configurable-gulp-recipe-jshint
-#### configurable-gulp-recipe-markups
-#### configurable-gulp-recipe-stylus
-#### configurable-gulp-recipe-uglify
-#### configurable-gulp-recipe-webpack
+#### gulp-ccr-atomify
+#### gulp-ccr-babel
+#### gulp-ccr-browserify
+#### gulp-ccr-bump
+#### gulp-ccr-css
+#### gulp-ccr-eslint
+#### gulp-ccr-images
+#### gulp-ccr-jscs
+#### gulp-ccr-jshint
+#### gulp-ccr-markups
+#### gulp-ccr-stylus
+#### gulp-ccr-uglify
+#### gulp-ccr-webpack
 
 ### Stream Processor
 
-#### configurable-gulp-recipe-concat
-#### configurable-gulp-recipe-each
-#### configurable-gulp-recipe-each-dir
+#### gulp-ccr-concat
+#### gulp-ccr-each
+#### gulp-ccr-each-dir
 
 ### Flow Controller
 
-#### configurable-gulp-recipe-if
+#### gulp-ccr-if
 
 ### Filter
 
-#### configurable-gulp-recipe-newer
-#### configurable-gulp-recipe-changed
+#### gulp-ccr-newer
+#### gulp-ccr-changed

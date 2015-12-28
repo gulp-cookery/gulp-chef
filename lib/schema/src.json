@@ -160,7 +160,7 @@
 					"type": "object"
 				},
 				"override": {
-					"description": "Override parent's src settings, not join it. Since configurable-gulp-recipes 0.1.0.",
+					"description": "Override parent's src settings, not join it. Since gulp-ccr 0.1.0.",
 					"type": "boolean",
 					"default": false
 				}

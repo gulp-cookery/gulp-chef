@@ -1,7 +1,7 @@
 'use strict';
 
 var gulp = require('gulp');
-var configure = require('configurable-gulp-recipes');
+var configure = require('gulp-ccr');
 
 var normalGulpTask = function () {
 };
