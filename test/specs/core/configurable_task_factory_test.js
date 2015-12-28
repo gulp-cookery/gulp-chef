@@ -65,13 +65,13 @@ describe('Core', function () {
 				expect(actual.visibility).to.equal(taskInfo.visibility);
 				expect(actual.runtime).to.equal(taskInfo.runtime);
 			});
-			it('should return a ConfigurableTask with the given name, and registry with prefix name', function () {
+			it('should return a ConfigurableTask with the given name with prefix', function () {
 				var actual, prefix;
 
 				prefix = 'dev:';
 				actual = factory.create(prefix, taskInfo, taskConfig, configurableRunner);
-				assertConfigurableTask(actual, taskInfo.name);
-				expect(actual.displayName).to.equal(taskInfo.name);
+				assertConfigurableTask(actual, prefix + taskInfo.name);
+				expect(actual.displayName).to.equal(prefix + taskInfo.name);
 				expect(registry.get(prefix + taskInfo.name)).to.be.a('function');
 			});
 			it('should invoke configurableRunner() method when act as a configurable task: invoked via configurableRunner.run()', function () {
@@ -233,8 +233,8 @@ describe('Core', function () {
 
 					expect(actual.length).to.equal(6);
 					expect(actual[0].displayName).to.equal('task1');
-					expect(actual[1].displayName).to.equal('<anonymous>');
-					expect(actual[2].displayName).to.equal('<anonymous>');
+					expect(actual[1].displayName).to.equal('gulp-task-by-ref');
+					expect(actual[2].displayName).to.equal('configurable-task-by-ref');
 					expect(actual[3].displayName).to.equal('gulp-task');
 					expect(actual[4].displayName).to.equal('configurable-task');
 					expect(actual[5].displayName).to.be.a('string');
