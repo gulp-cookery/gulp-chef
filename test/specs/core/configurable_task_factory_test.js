@@ -9,7 +9,6 @@ var base = process.cwd();
 var ConfigurableRecipeFactory = require(base + '/lib/core/configurable_recipe_factory');
 var ConfigurableTaskFactory = require(base + '/lib/core/configurable_task_factory');
 var Configuration = require(base + '/lib/core/configuration');
-var ConfigurationError = require(base + '/lib/core/configuration_error');
 var Registry = require(base + '/lib/core/registry');
 
 var createFakeStuff = require(base + '/test/fake/stuff');

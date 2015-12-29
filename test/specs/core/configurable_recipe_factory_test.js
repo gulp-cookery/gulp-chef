@@ -9,7 +9,6 @@ var _ = require('lodash');
 var base = process.cwd();
 
 var ConfigurableRecipeFactory = require(base + '/lib/core/configurable_recipe_factory');
-var ConfigurationError = require(base + '/lib/core/configuration_error');
 
 var FakeFactory = require(base + '/test/fake/factory');
 var createFakeStuff = require(base + '/test/fake/stuff');
@@ -121,7 +120,7 @@ describe('Core', function () {
 				expr = function () {
 					actual.call(context, done);
 				};
-				expect(expr).to.throw(ConfigurationError);
+				expect(expr).to.throw(Error);
 			});
 			it('should wrap a normal gulp task', function () {
 				var gulpTask = gulp.task('gulp-task');

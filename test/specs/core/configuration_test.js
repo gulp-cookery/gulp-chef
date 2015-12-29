@@ -10,7 +10,6 @@ var base = process.cwd();
 
 var Configuration = require(base + '/lib/core/configuration');
 var ConfigurationRegulator = require(base + '/lib/core/configuration_regulator');
-var ConfigurationError = require(base + '/lib/core/configuration_error');
 
 var regulator;
 
@@ -87,13 +86,13 @@ describe('Core', function () {
 				value: {
 					name: 'build?!'
 				},
-				error: ConfigurationError
+				error: Error
 			}, {
 				name: 'should throw if invalid name',
 				value: {
 					name: '?build'
 				},
-				error: ConfigurationError
+				error: Error
 			}, {
 				name: 'should also accept properties from config',
 				value: {
