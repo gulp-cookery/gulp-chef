@@ -8,23 +8,7 @@ var _ = require('lodash');
 
 var base = process.cwd();
 
-var Configuration = require(base + '/lib/core/configuration');
-var ConfigurationRegulator = require(base + '/lib/core/configuration_regulator');
-
-var regulator;
-
-beforeEach(function (done) {
-	regulator = Configuration._regulator;
-	Configuration._regulator = new ConfigurationRegulator(null, function () {
-		return 'production';
-	});
-	done();
-});
-
-afterEach(function (done) {
-	Configuration._regulator = regulator;
-	done();
-});
+var Configuration = require(base + '/lib/configuration');
 
 describe('Core', function () {
 	describe('Configuration', function () {
