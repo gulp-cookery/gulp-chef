@@ -3,7 +3,7 @@
 var Sinon = require('sinon');
 var base = process.cwd();
 
-var ConfigurableRecipeRegistry = require(base + '/lib/core/configurable_recipe_registry');
+var ConfigurableRecipeRegistry = require(base + '/lib/recipe/registry');
 
 function create(name, fn) {
 	var recipe = Sinon.spy(fn);
