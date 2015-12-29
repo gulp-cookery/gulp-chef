@@ -7,9 +7,9 @@ var expect = Chai.expect;
 var base = process.cwd();
 
 var ConfigurableRecipeFactory = require(base + '/lib/recipe/factory');
-var ConfigurableTaskFactory = require(base + '/lib/core/configurable_task_factory');
+var ConfigurableTaskFactory = require(base + '/lib/task/factory');
 var Configuration = require(base + '/lib/core/configuration');
-var Registry = require(base + '/lib/core/registry');
+var Registry = require(base + '/lib/task/registry');
 
 var createFakeStuff = require(base + '/test/fake/stuff');
 var FakeFactory = require(base + '/test/fake/factory');
