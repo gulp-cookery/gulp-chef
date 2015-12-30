@@ -1,24 +1,30 @@
 {
 	"properties": {
-		"name": {
-			"description": "Name of this task."
+		"alias": {
+			"description": ""
 		},
 		"description": {
 			"description": ""
 		},
-		"alias": {
-			"description": ""
+		"name": {
+			"description": "Name of this task."
 		},
 		"order": {
 			"description": "Series execution order of this task. Just used to sort, don't have to be unique or continuous."
 		},
-		"task": {
-			"description": "Inline task function or reference to other task"
-		},
-		"visibility": {
+		"plugin": {
 			"description": ""
 		},
 		"runtime": {
+			"description": ""
+		},
+		"sprout": {
+			"description": "Force write file(s) out."
+		},
+		"task": {
+			"description": "Inline task function or reference to other task."
+		},
+		"visibility": {
 			"description": ""
 		}
 	}
