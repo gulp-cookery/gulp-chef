@@ -80,6 +80,7 @@
     "json-normalizer": "^0.3.2",
     "json-regulator": "^0.1.10",
     "lodash": "^3.10.1",
+    "minimist": "^1.2.0",
     "require-dir": "^0.3.0"
   }
 }
