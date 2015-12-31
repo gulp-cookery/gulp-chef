@@ -62,6 +62,7 @@
     "streamifier": "^0.1.1"
   },
   "dependencies": {
+    "chalk": "^1.1.1",
     "glob": "^6.0.3",
     "globby": "^2.1.0",
     "globjoin": "^0.1.1",
@@ -80,7 +81,7 @@
     "json-normalizer": "^0.3.2",
     "json-regulator": "^0.1.10",
     "lodash": "^3.10.1",
-    "minimist": "^1.2.0",
-    "require-dir": "^0.3.0"
+    "require-dir": "^0.3.0",
+    "yargs": "^3.31.0"
   }
 }
