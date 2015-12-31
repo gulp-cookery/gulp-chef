@@ -11,7 +11,7 @@
     "browserify": "^9.0.7",
     "browserify-ngannotate": "^0.7.1",
     "del": "^1.1.1",
-    "gulp": "^3.8.11",
+    "gulp": "github:gulpjs/gulp#4.0",
     "gulp-cachebust": "0.0.5",
     "gulp-ccr": "git+https://github.com/gulp-ccr/gulp-ccr.git",
     "gulp-concat": "^2.5.2",
