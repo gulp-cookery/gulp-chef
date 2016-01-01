@@ -4,6 +4,7 @@ var gulp = require('gulp');
 var sass = require('gulp-sass');
 var karma = require('gulp-karma');
 var jshint = require('gulp-jshint');
+var merge = require('merge-stream');
 var sourcemaps = require('gulp-sourcemaps');
 var spritesmith = require('gulp.spritesmith');
 var browserify = require('browserify');
@@ -165,17 +166,20 @@ var recipes = configure({
 	sprite: {
 		description: 'Generates a sprite png and the corresponding sass sprite map. This is not included in the recurring development build and needs to be run separately',
 		src: './images/*.png',
+		$spritesmith: {
+			imgName: 'todo-sprite.png',
+			cssName: '_todo-sprite.scss',
+			algorithm: 'top-down',
+			padding: 5
+		},
 		task: function () {
 			var spriteData = gulp.src(this.config.src.globs)
-				.pipe(spritesmith({
-					imgName: 'todo-sprite.png',
-					cssName: '_todo-sprite.scss',
-					algorithm: 'top-down',
-					padding: 5
-				}));
+				.pipe(spritesmith(this.config.$spritesmith));
 
-			spriteData.css.pipe(gulp.dest(this.config.dest.path));
-			spriteData.img.pipe(gulp.dest(this.config.dest.path));
+			return merge(
+				spriteData.css.pipe(gulp.dest(this.config.dest.path)),
+				spriteData.img.pipe(gulp.dest(this.config.dest.path))
+				);
 		}
 	},
 	default: {
