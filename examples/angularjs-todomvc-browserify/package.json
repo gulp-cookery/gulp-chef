@@ -14,6 +14,7 @@
     "gulp": "github:gulpjs/gulp#4.0",
     "gulp-cachebust": "0.0.5",
     "gulp-ccr": "git+https://github.com/gulp-ccr/gulp-ccr.git",
+    "gulp-ccr-browserify": "git+https://github.com/gulp-ccr/gulp-ccr-browserify.git",
     "gulp-concat": "^2.5.2",
     "gulp-install": "^0.4.0",
     "gulp-jshint": "^1.10.0",
