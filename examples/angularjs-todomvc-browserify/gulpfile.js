@@ -20,7 +20,7 @@ var cachebust = new CacheBuster();
 var configure = require('gulp-ccr');
 
 var recipes = configure({
-	dest: 'dist',
+	dest: './dist/',
 	clean: {
 		description: 'cleans the build output'
 	},
@@ -31,43 +31,33 @@ var recipes = configure({
 	},
 	'build-css': {
 		description: 'runs sass, creates css source maps',
-		task: [
-			'clean',
-			{
-				src: './styles/*',
-				$maps: './maps',
-				task: function () {
-					return gulp.src(this.config.src.globs)
-						.pipe(sourcemaps.init())
-						.pipe(sass())
-						.pipe(cachebust.resources())
-						.pipe(sourcemaps.write(this.config.$maps))
-						.pipe(gulp.dest(this.config.dest.path));
-				}
-			}
-		]
+		src: './styles/*',
+		$maps: './maps/',
+		task: function () {
+			return gulp.src(this.config.src.globs)
+				.pipe(sourcemaps.init())
+				.pipe(sass())
+				.pipe(cachebust.resources())
+				.pipe(sourcemaps.write(this.config.$maps))
+				.pipe(gulp.dest(this.config.dest.path));
+		}
 	},
 	'build-template-cache': {
 		description: 'fills in the Angular template cache, to prevent loading the html templates via separate http requests',
-		task: [
-			'clean',
-			{
-				src: './partials/*.html',
-				$file: 'templateCachePartials.js',
-				task: function () {
-					var ngHtml2Js = require('gulp-ng-html2js');
-					var concat = require('gulp-concat');
+		src: './partials/*.html',
+		$file: 'templateCachePartials.js',
+		task: function () {
+			var ngHtml2Js = require('gulp-ng-html2js');
+			var concat = require('gulp-concat');
 
-					return gulp.src(this.config.src.globs)
-						.pipe(ngHtml2Js({
-							moduleName: 'todoPartials',
-							prefix: '/partials/'
-						}))
-						.pipe(concat(this.config.file))
-						.pipe(gulp.dest(this.config.dest.path));
-				}
-			}
-		]
+			return gulp.src(this.config.src.globs)
+				.pipe(ngHtml2Js({
+					moduleName: 'todoPartials',
+					prefix: '/partials/'
+				}))
+				.pipe(concat(this.config.file))
+				.pipe(gulp.dest(this.config.dest.path));
+		}
 	},
 	jshint: {
 		description: 'runs jshint',
@@ -100,34 +90,29 @@ var recipes = configure({
 	},
 	'build-js': {
 		description: 'Build a minified Javascript bundle - the order of the js files is determined by browserify',
-		task: [
-			'clean',
-			{
-				task: function () {
-					var b = browserify({
-						entries: './js/app.js',
-						debug: true,
-						paths: ['./js/controllers', './js/services', './js/directives'],
-						transform: [ngAnnotate]
-					});
+		task: function () {
+			var b = browserify({
+				entries: './js/app.js',
+				debug: true,
+				paths: ['./js/controllers', './js/services', './js/directives'],
+				transform: [ngAnnotate]
+			});
 
-					return b.bundle()
-						.pipe(source('bundle.js'))
-						.pipe(buffer())
-						.pipe(cachebust.resources())
-						.pipe(sourcemaps.init({ loadMaps: true }))
-						.pipe(uglify())
-						.on('error', gutil.log)
-						.pipe(sourcemaps.write('./'))
-						.pipe(gulp.dest('./dist/js/'));
-				}
-			}
-		]
+			return b.bundle()
+				.pipe(source('bundle.js'))
+				.pipe(buffer())
+				.pipe(cachebust.resources())
+				.pipe(sourcemaps.init({ loadMaps: true }))
+				.pipe(uglify())
+				.on('error', gutil.log)
+				.pipe(sourcemaps.write('./'))
+				.pipe(gulp.dest('./dist/js/'));
+		}
 	},
 	build: {
 		description: 'full build (except sprites), applies cache busting to the main page css and js bundles',
 		task: [
-			'clean', 'bower', 'build-css', 'build-template-cache', 'jshint', 'build-js',
+			'clean', 'build-css', 'build-template-cache', 'jshint', 'build-js',
 			{
 				src: 'index.html',
 				task: function () {
