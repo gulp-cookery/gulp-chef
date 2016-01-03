@@ -37,7 +37,7 @@ describe('Core', function () {
 		});
 
 		describe('#create()', function () {
-			var taskInfo, taskConfig, configurableRunner;
+			var taskInfo, taskConfig, recipe;
 
 			function done() {
 			}
@@ -53,13 +53,13 @@ describe('Core', function () {
 					id: 'taskConfig'
 				};
 
-				configurableRunner = Sinon.spy();
+				recipe = Sinon.spy();
 			});
 
 			it('should return a ConfigurableTask (i.e. a function with run() method)', function () {
 				var actual;
 
-				actual = factory.create('', taskInfo, taskConfig, configurableRunner);
+				actual = factory.create('', taskInfo, taskConfig, recipe);
 				assertConfigurableTask(actual, taskInfo.name);
 				expect(actual.visibility).to.equal(taskInfo.visibility);
 				expect(actual.runtime).to.equal(taskInfo.runtime);
@@ -68,10 +68,17 @@ describe('Core', function () {
 				var actual, prefix;
 
 				prefix = 'dev:';
-				actual = factory.create(prefix, taskInfo, taskConfig, configurableRunner);
+				actual = factory.create(prefix, taskInfo, taskConfig, recipe);
 				assertConfigurableTask(actual, prefix + taskInfo.name);
 				expect(actual.displayName).to.equal(prefix + taskInfo.name);
 				expect(registry.get(prefix + taskInfo.name)).to.be.a('function');
+			});
+			it('should accept sub-tasks', function () {
+				var actual, tasks;
+
+				tasks = [];
+				actual = factory.create('', taskInfo, taskConfig, recipe, tasks);
+				expect(actual.tasks).to.be.an('array');
 			});
 			it('should invoke configurableRunner() method when act as a configurable task: invoked via configurableRunner.run()', function () {
 				var context = {
@@ -80,12 +87,12 @@ describe('Core', function () {
 				};
 				var actual;
 
-				actual = factory.create('', taskInfo, taskConfig, configurableRunner);
+				actual = factory.create('', taskInfo, taskConfig, recipe);
 				assertConfigurableTask(actual, taskInfo.name);
 
 				actual.run.call(context, done);
-				expect(configurableRunner.calledOn(context)).to.be.true;
-				expect(configurableRunner.calledWith(done)).to.be.true;
+				expect(recipe.calledOn(context)).to.be.true;
+				expect(recipe.calledWith(done)).to.be.true;
 			});
 			it('should invoke configurableRunner() when act as a gulp task: invoked directly', function () {
 				var context = {
@@ -95,12 +102,12 @@ describe('Core', function () {
 				};
 				var actual;
 
-				actual = factory.create('', taskInfo, taskConfig, configurableRunner);
+				actual = factory.create('', taskInfo, taskConfig, recipe);
 				assertConfigurableTask(actual, taskInfo.name);
 
 				actual(done);
-				expect(configurableRunner.thisValues[0]).to.deep.equal(context);
-				expect(configurableRunner.calledWith(done)).to.be.true;
+				expect(recipe.thisValues[0]).to.deep.equal(context);
+				expect(recipe.calledWith(done)).to.be.true;
 			});
 			it('should be able to inject value and resolve config at runtime when act as a configurable task', function () {
 				var templateConfig = {
@@ -120,11 +127,11 @@ describe('Core', function () {
 				};
 				var actual;
 
-				actual = factory.create('', taskInfo, templateConfig, configurableRunner);
+				actual = factory.create('', taskInfo, templateConfig, recipe);
 				assertConfigurableTask(actual, taskInfo.name);
 
 				actual.run.call(context, done);
-				expect(configurableRunner.thisValues[0].config).to.deep.equal(expectedConfig);
+				expect(recipe.thisValues[0].config).to.deep.equal(expectedConfig);
 			});
 		});
 		describe('#one()', function () {
