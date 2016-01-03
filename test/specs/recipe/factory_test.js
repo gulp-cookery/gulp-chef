@@ -71,7 +71,7 @@ describe('Core', function () {
 			var rawConfig = {};
 
 			test('flow-task', 'flow');
-			it('should return series recipe if taskInfo.task is an array', function () {
+			it.skip('should return series recipe if taskInfo.task is an array', function () {
 				var actual;
 				var taskInfo = {
 					name: name,
@@ -82,7 +82,7 @@ describe('Core', function () {
 				expect(actual).to.be.a('function');
 				expect(actual.schema.title).to.equal('series');
 			});
-			it('should return parallel recipe if taskInfo.task is an object', function () {
+			it.skip('should return parallel recipe if taskInfo.task is an object', function () {
 				var actual;
 				var taskInfo = {
 					name: name,
