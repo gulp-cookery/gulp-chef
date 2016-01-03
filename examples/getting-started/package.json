@@ -8,5 +8,7 @@
   "devDependencies": {
     "gulp": "github:gulpjs/gulp#4.0",
     "gulp-ccr": "github:gulp-ccr/gulp-ccr"
+  },
+  "dependencies": {
   }
 }
