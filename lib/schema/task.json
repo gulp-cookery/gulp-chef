@@ -38,7 +38,7 @@
 			"type": "boolean"
 		},
 		"task": {
-			"description": "Inline function(s) or reference(s) to other task(s). If provided as an array, child tasks are forced to run in series. If an object, and \"order\" property not specified, child tasks are forced to run in parallel.",
+			"description": "Inline function(s) or reference(s) to other task(s). If provided as an array, child tasks are forced to run in series. If an object, child tasks are forced to run in parallel.",
 			"type": "array"
 		},
 		"visibility": {
