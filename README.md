@@ -134,7 +134,26 @@ var recipes = configure({
     }
 });
 ```
-Or even simpler, just put sub task configurations in array:
+However, if you forgot to use `series` "flow controller", and just put `order` property, child tasks won't execute in series.
+``` javascript
+var recipes = configure({
+    src: 'src',
+    dest: 'dist',
+    build: {
+		scripts: {
+			src: '**/*.js',
+			order: 0
+		},
+		styles: {
+			src: '**/*.css',
+			order: 1
+		}
+    }
+});
+```
+In this example, "scripts" and "styles" task are executed in parallel.
+
+There is a simpler way to execute child tasks in series: just put sub task configurations in array:
 ``` javascript
 var recipes = configure({
     src: 'src',
