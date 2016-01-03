@@ -1,31 +1,50 @@
 {
+	"type": "object",
 	"properties": {
 		"alias": {
-			"description": ""
+			"description": "Alias name of this task.",
+			"type": "string"
 		},
 		"description": {
-			"description": ""
+			"description": "Description of this task.",
+			"type": "string"
 		},
 		"name": {
-			"description": "Name of this task."
+			"description": "Name of this task.",
+			"type": "string"
 		},
 		"order": {
-			"description": "Series execution order of this task. Just used to sort, don't have to be unique or continuous."
+			"description": "Series execution order of this task. Just used to sort, don't have to be unique or continuous.",
+			"type": "integer"
 		},
 		"plugin": {
-			"description": ""
+			"description": "A plugin module name to use.",
+			"type": ["string", "any"]
+		},
+		"parallel": {
+			"description": "Same as task, but child tasks are forced to run in parallel.",
+			"type": "array"
 		},
 		"runtime": {
-			"description": ""
+			"description": "Runtime of this task. Valid values are \"production\" and \"development\".",
+			"type": "string"
+		},
+		"series": {
+			"description": "Same as task, but child tasks are forced to run in series.",
+			"type": "array"
 		},
 		"sprout": {
-			"description": "Force write file(s) out."
+			"description": "Instruct recipe or task to write file(s) out if was optional.",
+			"type": "boolean"
 		},
 		"task": {
-			"description": "Inline task function or reference to other task."
+			"description": "Inline function(s) or reference(s) to other task(s). If provided as an array, child tasks are forced to run in series. If an object, and \"order\" property not specified, child tasks are forced to run in parallel.",
+			"type": "array"
 		},
 		"visibility": {
-			"description": ""
+			"description": "Visibility of this task. Valid values are \"visible\" and \"hidden\".",
+			"type": "string"
 		}
-	}
+	},
+	"additionalProperties": false
 }
