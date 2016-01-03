@@ -31,7 +31,7 @@ describe('Core', function () {
 			registry = new Registry();
 			gulp = FakeFactory.createFakeGulp();
 			gulp.registry(registry);
-			factory = new ConfigurableTaskFactory(stuff, new ConfigurableRecipeFactory(stuff, registry), registry);
+			factory = new ConfigurableTaskFactory(new ConfigurableRecipeFactory(stuff, registry), registry);
 			gulpTask = gulp.task('gulp-task');
 			configurableTask = gulp.task('configurable-task');
 		});
@@ -180,7 +180,7 @@ describe('Core', function () {
 
 				actual = factory.one('', config, {});
 				assertConfigurableTask(actual, name);
-				expect(actual.recipe.schema.title).to.equal('parallel');
+				expect(actual.recipe.displayName).to.equal('<parallel>');
 			});
 			it('should not throw even can not resolve to a task', function () {
 				var name = 'non-existent';
