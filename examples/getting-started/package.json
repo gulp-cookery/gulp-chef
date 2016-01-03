@@ -1,0 +1,12 @@
+{
+  "name": "getting-started",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "author": "Amobiz",
+  "license": "MIT",
+  "devDependencies": {
+    "gulp": "github:gulpjs/gulp#4.0",
+    "gulp-ccr": "github:gulp-ccr/gulp-ccr"
+  }
+}
