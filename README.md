@@ -693,6 +693,7 @@ Gulp-ccr uses "[json-normalizer](https://www.npmjs.com/package/json-normalizer)"
 ### Flow Controller
 
 #### gulp-ccr-if
+#### gulp-ccr-watch
 
 ### Filter
 
