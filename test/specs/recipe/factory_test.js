@@ -59,40 +59,7 @@ describe('Core', function () {
 		}
 
 		describe('#flow()', function () {
-			var name = 'non-existent';
-			var array = [
-				'task-task',
-				function () {}
-			];
-			var object = {
-				'task-task': {},
-				'inline': function () {}
-			};
-			var rawConfig = {};
-
 			test('flow-task', 'flow');
-			it.skip('should return series recipe if taskInfo.task is an array', function () {
-				var actual;
-				var taskInfo = {
-					name: name,
-					task: array
-				};
-
-				actual = factory.flow(taskInfo, rawConfig);
-				expect(actual).to.be.a('function');
-				expect(actual.schema.title).to.equal('series');
-			});
-			it.skip('should return parallel recipe if taskInfo.task is an object', function () {
-				var actual;
-				var taskInfo = {
-					name: name,
-					task: object
-				};
-
-				actual = factory.flow(taskInfo, rawConfig);
-				expect(actual).to.be.a('function');
-				expect(actual.schema.title).to.equal('parallel');
-			});
 		});
 		describe('#reference()', function () {
 			it('should always return a recipe even if the referring task not found', function () {
