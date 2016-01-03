@@ -1,6 +1,6 @@
 # gulp-ccr
 
-Configurable cascading recipes for Gulp 4.0. An elegant, intuition way to reuse gulp tasks.
+Cascading configurable recipes for Gulp 4.0. An elegant, intuition way to reuse gulp tasks.
 
 ## Install
 ``` bash
