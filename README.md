@@ -637,9 +637,6 @@ Additional options to pass to task. Usually used by underling gulp plugins.
 
 #### copy
 
-#### help
-
-
 
 
 ### Stream Processor
@@ -663,10 +660,6 @@ Provides the same functionality of `gulp.pipe()`. Pipe streams from one sub task
 ### Flow Controller
 A flow controller takes care of when to execute, and execution order of its sub tasks and don't care their input and/or output streams.
 
-#### parallel
-
-#### series
-
 #### watch
 
 
@@ -688,14 +681,7 @@ Gulp-ccr uses "[json-normalizer](https://www.npmjs.com/package/json-normalizer)"
 #### gulp-ccr-babel
 #### gulp-ccr-browserify
 #### gulp-ccr-bump
-#### gulp-ccr-css
-#### gulp-ccr-eslint
-#### gulp-ccr-images
-#### gulp-ccr-jscs
-#### gulp-ccr-jshint
-#### gulp-ccr-markups
 #### gulp-ccr-stylus
-#### gulp-ccr-uglify
 #### gulp-ccr-webpack
 
 ### Stream Processor
@@ -712,3 +698,35 @@ Gulp-ccr uses "[json-normalizer](https://www.npmjs.com/package/json-normalizer)"
 
 #### gulp-ccr-newer
 #### gulp-ccr-changed
+
+## List of reserved keywords
+
+###	alias
+Alias name of this task.
+### description
+Description of this task.
+### name
+Name of this task.
+### order
+Series execution order of this task. Just used to sort, don't have to be unique or continuous.
+### plugin
+A plugin module name to use.
+### parallel
+Same as task, but child tasks are forced to run in parallel.
+### runtime
+Runtime of this task. Valid values are "production" and "development".
+### series
+Same as task, but child tasks are forced to run in series.
+### sprout
+Instruct recipe or task to write file(s) out if was optional.
+### task
+Inline function(s) or reference(s) to other task(s). If provided as an array, child tasks are forced to run in series. If an object, child tasks are forced to run in parallel.
+### visibility
+Visibility of this task. Valid values are "visible" and "hidden".
+
+## List of CLI options
+
+### --task
+
+### --recipe
+
