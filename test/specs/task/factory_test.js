@@ -4,12 +4,16 @@ var Sinon = require('sinon');
 var Chai = require('chai');
 var expect = Chai.expect;
 
+var log = require('gulp-util').log;
+
 var base = process.cwd();
 
 var ConfigurableRecipeFactory = require(base + '/lib/recipe/factory');
 var ConfigurableTaskFactory = require(base + '/lib/task/factory');
 var Configuration = require(base + '/lib/configuration');
 var Registry = require(base + '/lib/task/registry');
+var Settings = require(base + '/lib/helpers/settings');
+var expose = require(base + '/lib/task/expose');
 
 var createFakeStuff = require(base + '/test/fake/stuff');
 var FakeFactory = require(base + '/test/fake/factory');
@@ -22,16 +26,17 @@ function assertConfigurableTask(task, name) {
 
 describe('Core', function () {
 	describe('ConfigurableTaskFactory', function () {
-		var gulp, registry, factory, gulpTask, configurableTask;
+		var gulp, registry, settings, factory, gulpTask, configurableTask;
 
 		beforeEach(function () {
 			var stuff;
 
 			stuff = createFakeStuff();
 			registry = new Registry();
+			settings = new Settings();
 			gulp = FakeFactory.createFakeGulp();
 			gulp.registry(registry);
-			factory = new ConfigurableTaskFactory(new ConfigurableRecipeFactory(stuff, registry), registry);
+			factory = new ConfigurableTaskFactory(new ConfigurableRecipeFactory(stuff, registry), registry, expose(registry, settings));
 			gulpTask = gulp.task('gulp-task');
 			configurableTask = gulp.task('configurable-task');
 		});
