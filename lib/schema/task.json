@@ -1,10 +1,6 @@
 {
 	"type": "object",
 	"properties": {
-		"alias": {
-			"description": "Alias name of this task.",
-			"type": "string"
-		},
 		"description": {
 			"description": "Description of this task.",
 			"type": "string"
@@ -18,12 +14,16 @@
 			"type": "integer"
 		},
 		"plugin": {
-			"description": "A plugin module name to use.",
+			"description": "The name of plugin module to use.",
 			"type": ["string", "any"]
 		},
 		"parallel": {
 			"description": "Same as task, but child tasks are forced to run in parallel.",
 			"type": "array"
+		},
+		"recipe": {
+			"description": "The name of recipe to use.",
+			"type": "string"
 		},
 		"runtime": {
 			"description": "Runtime of this task. Valid values are \"production\" and \"development\".",
