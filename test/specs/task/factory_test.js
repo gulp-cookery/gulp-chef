@@ -4,8 +4,6 @@ var Sinon = require('sinon');
 var Chai = require('chai');
 var expect = Chai.expect;
 
-var log = require('gulp-util').log;
-
 var base = process.cwd();
 
 var ConfigurableRecipeFactory = require(base + '/lib/recipe/factory');

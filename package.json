@@ -10,8 +10,8 @@
   "keywords": [
     "async",
     "build",
-	"cascade",
-	"cascading",
+    "cascade",
+    "cascading",
     "config",
     "configure",
     "configurable",
@@ -78,6 +78,7 @@
     "gulp-ccr-watch": "git+https://github.com/gulp-ccr/gulp-ccr-watch.git",
     "gulp-load-plugins": "^1.1.0",
     "gulp-util": "^3.0.7",
+    "gulplog": "^1.0.0",
     "json-normalizer": "^0.3.3",
     "json-regulator": "^0.1.14",
     "lodash": "^3.10.1",
