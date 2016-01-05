@@ -20,7 +20,7 @@ function assertConfigurableTask(task, name) {
 	expect(task).to.be.a('function');
 	expect(task.run).to.be.a('function');
 	expect(task.displayName).to.equal(name);
-};
+}
 
 describe('Core', function () {
 	describe('ConfigurableTaskFactory', function () {

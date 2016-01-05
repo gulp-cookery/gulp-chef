@@ -1,10 +1,7 @@
 'use strict';
 
-var Sinon = require('sinon');
 var Chai = require('chai');
 var expect = Chai.expect;
-
-var _ = require('lodash');
 
 var base = process.cwd();
 
