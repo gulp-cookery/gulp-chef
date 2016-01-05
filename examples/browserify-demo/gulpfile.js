@@ -20,7 +20,8 @@ var recipes = configure({
 					}
 				},
 				bundle: {
-					entry: 'main.js'
+					entry: 'main.js',
+					file: 'bundle.js'
 				}
 			}
 		},
