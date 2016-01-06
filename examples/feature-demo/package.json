@@ -6,7 +6,7 @@
   "author": "Amobiz",
   "license": "MIT",
   "devDependencies": {
-    "gulp-ccr": "git+https://github.com/gulp-ccr/gulp-ccr.git",
+    "gulp-cookery": "git+https://github.com/gulp-cookery/gulp-cookery.git",
     "gulp": "gulpjs/gulp#4.0"
   }
 }

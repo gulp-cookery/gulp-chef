@@ -1,10 +1,10 @@
-# gulp-ccr
+# gulp-cookery
 
 Cascading configurable recipes for Gulp 4.0. An elegant, intuition way to reuse gulp tasks.
 
 ## Install
 ``` bash
-$ npm install --save-dev https://github.com/gulp-ccr/gulp-ccr.git
+$ npm install --save-dev https://github.com/gulp-cookery/gulp-cookery.git
 ```
 
 ## Terminology
@@ -42,7 +42,7 @@ function configurableTask(done) {
 You don't write configurable tasks, instead, you create a configurable task by defining a configuration, and call `configure()` function.
 ``` javascript
 var gulp = require('gulp');
-var configure = require('gulp-ccr');
+var configure = require('gulp-cookery');
 var recipes = configure({
     scripts: {
         src: 'src/**/*.js',
@@ -331,7 +331,7 @@ Disable a task and all its sub tasks. Not defined at all.
 
 
 ### Conditional Configurations
-Gulp-ccr supports conditional configurations via rumtime environment modes.
+Gulp-cookery supports conditional configurations via rumtime environment modes.
 By default, `development`, `production` and `staging` modes are supported. You can write your configurations for each specific mode under sections with keys `development`/`dev`, `production`/`prod` and `staging` respectively.
 
 For example, with the following configuration:
@@ -667,7 +667,7 @@ A flow controller takes care of when to execute, and execution order of its sub 
 
 ### Configuration Schema
 
-Gulp-ccr uses "[json-normalizer](https://www.npmjs.com/package/json-normalizer)" to normalize json configurations. You can define your configuration schema to support property alias, type convertion and default values, etc.
+Gulp-cookery uses "[json-normalizer](https://www.npmjs.com/package/json-normalizer)" to normalize json configurations. You can define your configuration schema to support property alias, type convertion and default values, etc.
 
 ### Test Plugin
 
@@ -701,11 +701,14 @@ Gulp-ccr uses "[json-normalizer](https://www.npmjs.com/package/json-normalizer)"
 #### gulp-ccr-changed
 
 ## List of reserved keywords
+These keywords are reserved for task properties, you can't use them as task name.
 
-###	alias
-Alias name of this task.
+### configs
+Description of this task.
 ### description
 Description of this task.
+### dest
+The path where files should be written.
 ### name
 Name of this task.
 ### order
@@ -714,12 +717,16 @@ Series execution order of this task. Just used to sort, don't have to be unique 
 A plugin module name to use.
 ### parallel
 Same as task, but child tasks are forced to run in parallel.
+### recipe
+The recipe to use, if not same as task name.
 ### runtime
 Runtime of this task. Valid values are "production" and "development".
 ### series
 Same as task, but child tasks are forced to run in series.
 ### sprout
 Instruct recipe or task to write file(s) out if was optional.
+### src
+The path or glob that files should be loaded.
 ### task
 Inline function(s) or reference(s) to other task(s). If provided as an array, child tasks are forced to run in series. If an object, child tasks are forced to run in parallel.
 ### visibility

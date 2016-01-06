@@ -1,7 +1,7 @@
 'use strict';
 
 var gulp = require('gulp');
-var configure = require('gulp-ccr');
+var configure = require('gulp-cookery');
 
 var recipes = configure({
 	src: 'app',
