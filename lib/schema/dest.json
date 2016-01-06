@@ -26,12 +26,12 @@
 					"default": true
 				},
 				"flatten": {
-					"description": "Remove or replace relative path for files. Since gulp-cookery 0.1.0.",
+					"description": "Remove or replace relative path for files. Since 0.1.0.",
 					"type": "boolean",
 					"default": false
 				},
 				"override": {
-					"description": "Override parent's dest settings, not join it. Since gulp-cookery 0.1.0.",
+					"description": "Override parent's dest settings, not join it. Since 0.1.0.",
 					"type": "boolean",
 					"default": false
 				}

@@ -7,7 +7,7 @@
   "license": "MIT",
   "devDependencies": {
     "gulp": "github:gulpjs/gulp#4.0",
-    "gulp-cookery": "github:gulp-cookery/gulp-cookery"
+    "gulp-chef": "github:gulp-cookery/gulp-chef"
   },
   "dependencies": {
   }

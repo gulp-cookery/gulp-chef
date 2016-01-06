@@ -1,10 +1,10 @@
-# gulp-cookery
+# gulp-chef
 
 Cascading configurable recipes for Gulp 4.0. An elegant, intuition way to reuse gulp tasks.
 
 ## Install
 ``` bash
-$ npm install --save-dev https://github.com/gulp-cookery/gulp-cookery.git
+$ npm install https://github.com/gulp-cookery/gulp-chef.git
 ```
 
 ## Terminology
@@ -42,7 +42,7 @@ function configurableTask(done) {
 You don't write configurable tasks, instead, you create a configurable task by defining a configuration, and call `configure()` function.
 ``` javascript
 var gulp = require('gulp');
-var configure = require('gulp-cookery');
+var configure = require('gulp-chef');
 var recipes = configure({
     scripts: {
         src: 'src/**/*.js',
@@ -331,7 +331,7 @@ Disable a task and all its sub tasks. Not defined at all.
 
 
 ### Conditional Configurations
-Gulp-cookery supports conditional configurations via rumtime environment modes.
+Gulp-chef supports conditional configurations via rumtime environment modes.
 By default, `development`, `production` and `staging` modes are supported. You can write your configurations for each specific mode under sections with keys `development`/`dev`, `production`/`prod` and `staging` respectively.
 
 For example, with the following configuration:
@@ -667,7 +667,7 @@ A flow controller takes care of when to execute, and execution order of its sub 
 
 ### Configuration Schema
 
-Gulp-cookery uses "[json-normalizer](https://www.npmjs.com/package/json-normalizer)" to normalize json configurations. You can define your configuration schema to support property alias, type convertion and default values, etc.
+Gulp-chef uses "[json-normalizer](https://www.npmjs.com/package/json-normalizer)" to normalize json configurations. You can define your configuration schema to support property alias, type convertion and default values, etc.
 
 ### Test Plugin
 
@@ -689,6 +689,9 @@ Gulp-cookery uses "[json-normalizer](https://www.npmjs.com/package/json-normaliz
 #### gulp-ccr-concat
 #### gulp-ccr-each
 #### gulp-ccr-each-dir
+#### gulp-ccr-merge
+#### gulp-ccr-pipe
+#### gulp-ccr-queue
 
 ### Flow Controller
 
@@ -700,7 +703,7 @@ Gulp-cookery uses "[json-normalizer](https://www.npmjs.com/package/json-normaliz
 #### gulp-ccr-newer
 #### gulp-ccr-changed
 
-## List of reserved keywords
+## List of Reserved Keywords
 These keywords are reserved for task properties, you can't use them as task name.
 
 ### configs
@@ -732,7 +735,7 @@ Inline function(s) or reference(s) to other task(s). If provided as an array, ch
 ### visibility
 Visibility of this task. Valid values are "visible" and "hidden".
 
-## List of CLI options
+## List of CLI Options
 
 ### --task
 

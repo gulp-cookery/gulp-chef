@@ -1,7 +1,7 @@
 'use strict';
 
 var gulp = require('gulp');
-var configure = require('gulp-cookery');
+var configure = require('gulp-chef');
 
 var normalGulpTask = function () {
 };

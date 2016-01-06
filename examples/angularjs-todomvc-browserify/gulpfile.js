@@ -17,7 +17,7 @@ var ngAnnotate = require('browserify-ngannotate');
 var CacheBuster = require('gulp-cachebust');
 var cachebust = new CacheBuster();
 
-var configure = require('gulp-cookery');
+var configure = require('gulp-chef');
 
 var recipes = configure({
 	dest: './dist/',
