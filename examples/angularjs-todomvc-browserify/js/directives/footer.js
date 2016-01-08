@@ -1,10 +1,10 @@
 angular.module('todomvc')
-    .directive('tdFooter', function () {
-        'use strict';
+  .directive('tdFooter', function () {
+    'use strict';
 
-        return {
-            restrict: 'E',
-            templateUrl: '/partials/footer.html'
-        };
+    return {
+      restrict: 'E',
+      templateUrl: '/partials/footer.html'
+    };
 
-    });
+  });
