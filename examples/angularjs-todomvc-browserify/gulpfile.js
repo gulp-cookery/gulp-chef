@@ -17,9 +17,9 @@ var ngAnnotate = require('browserify-ngannotate');
 var CacheBuster = require('gulp-cachebust');
 var cachebust = new CacheBuster();
 
-var configure = require('gulp-chef');
+var chef = require('gulp-chef');
 
-var recipes = configure({
+var meal = chef({
 	dest: './dist/',
 	clean: {
 		description: 'Cleans the build output'
@@ -42,7 +42,7 @@ var recipes = configure({
 				.pipe(gulp.dest(this.config.dest.path));
 		}
 	},
-	'.build-template-cache': {
+	'build-template-cache': {
 		description: 'Fills in the Angular template cache, to prevent loading the html templates via separate http requests',
 		src: './partials/*.html',
 		$file: 'templateCachePartials.js',
@@ -177,4 +177,4 @@ var recipes = configure({
 
 });
 
-gulp.registry(recipes);
+gulp.registry(meal);
