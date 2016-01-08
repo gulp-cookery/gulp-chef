@@ -22,15 +22,15 @@ var configure = require('gulp-chef');
 var recipes = configure({
 	dest: './dist/',
 	clean: {
-		description: 'cleans the build output'
+		description: 'Cleans the build output'
 	},
 	bower: {
-		description: 'runs bower to install frontend dependencies',
+		description: 'Runs bower to install frontend dependencies',
 		plugin: 'gulp-install',
 		src: './bower.json'
 	},
 	'build-css': {
-		description: 'runs sass, creates css source maps',
+		description: 'Runs sass, creates css source maps',
 		src: './styles/*',
 		$maps: './maps/',
 		task: function () {
@@ -42,8 +42,8 @@ var recipes = configure({
 				.pipe(gulp.dest(this.config.dest.path));
 		}
 	},
-	'build-template-cache': {
-		description: 'fills in the Angular template cache, to prevent loading the html templates via separate http requests',
+	'.build-template-cache': {
+		description: 'Fills in the Angular template cache, to prevent loading the html templates via separate http requests',
 		src: './partials/*.html',
 		$file: 'templateCachePartials.js',
 		task: function () {
@@ -60,7 +60,7 @@ var recipes = configure({
 		}
 	},
 	jshint: {
-		description: 'runs jshint',
+		description: 'Runs jshint',
 		src: './js/*.js',
 		task: function () {
 			return gulp.src(this.config.src.globs)
@@ -69,10 +69,10 @@ var recipes = configure({
 		}
 	},
 	test: {
-		description: 'runs karma tests',
-		task: [
-			'build-js',
-			{
+		description: 'Runs karma tests',
+		series: {
+			'.build-js': {},
+			'.karma': {
 				src: './test/unit/*.js',
 				task: function () {
 					return gulp.src(this.config.src.globs)
@@ -86,7 +86,7 @@ var recipes = configure({
 						});
 				}
 			}
-		]
+		}
 	},
 	'build-js': {
 		description: 'Build a minified Javascript bundle - the order of the js files is determined by browserify',
@@ -110,10 +110,13 @@ var recipes = configure({
 		}
 	},
 	build: {
-		description: 'full build (except sprites), applies cache busting to the main page css and js bundles',
-		task: [
-			'clean', 'build-css', 'build-template-cache', 'jshint', 'build-js',
-			{
+		description: 'Full build (except sprites), applies cache busting to the main page css and js bundles',
+		series: {
+			'.clean': {},
+			'.build-all': {
+				parallel: ['build-css', 'build-template-cache', 'jshint', 'build-js']
+			},
+			'.cache-busting': {
 				src: 'index.html',
 				task: function () {
 					return gulp.src(this.config.src.globs)
@@ -121,16 +124,16 @@ var recipes = configure({
 						.pipe(gulp.dest(this.config.dest.path));
 				}
 			}
-		]
+		}
 	},
 	watch: {
-		description: 'watches file system and triggers a build when a modification is detected',
+		description: 'Watches file system and triggers a build when a modification is detected',
 		task: function () {
 			return gulp.watch(['./index.html', './partials/*.html', './styles/*.*css', './js/**/*.js'], ['build']);
 		}
 	},
 	webserver: {
-		description: 'launches a web server that serves files in the current directory',
+		description: 'Launches a web server that serves files in the current directory',
 		src: '.',
 		$url: 'http://localhost:8000/dist/index.html',
 		task: function () {
@@ -144,8 +147,8 @@ var recipes = configure({
 				}));
 		}
 	},
-	dev: {
-		description: 'launch a build upon modification and publish it to a running server',
+	serve: {
+		description: 'Launch a build upon modification and publish it to a running server',
 		task: ['watch', 'webserver']
 	},
 	sprite: {
@@ -168,7 +171,7 @@ var recipes = configure({
 		}
 	},
 	default: {
-		description: 'installs and builds everything, including sprites',
+		description: 'Installs and builds everything, including sprites',
 		task: ['sprite', 'build', 'test']
 	}
 
