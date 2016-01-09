@@ -2,7 +2,7 @@
 
 var gulp = require('gulp');
 var chef = require('gulp-chef');
-var browserSync = require('browser-sync').create();
+var browserSync = require('browser-sync');
 
 var meal = chef({
   src: 'src/',
@@ -15,14 +15,13 @@ var meal = chef({
     },
     scripts: {
       src: 'scripts/**/*.js',
-      concat: {
+      '.concat': {
         file: 'script.js'
       }
     },
     styles: {
-      src: 'styles/**/',
-      concat: {
-        src: ['normalize.css', 'styles.css'],
+      src: ['styles/normalize.css', 'styles/styles.css'],
+      '.concat': {
         file: 'style.css'
       }
     },

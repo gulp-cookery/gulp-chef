@@ -1,5 +1,4 @@
-;(function () {
-  'use strict';
-
-  console.log('Hello There!');
+'use strict';
+(function () {
+  console.log('Hello Chef!');
 })();
