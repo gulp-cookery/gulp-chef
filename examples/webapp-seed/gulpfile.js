@@ -36,6 +36,10 @@ var meal = chef({
     }
   },
   build: ['clean', 'make'],
+  serve: {
+    recipe: 'watch',
+    task: ['markups', 'scripts', 'styles', 'images', 'assets']
+  },
   default: 'build'
 });
 
