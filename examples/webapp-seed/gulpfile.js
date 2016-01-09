@@ -2,28 +2,28 @@
 
 var gulp = require('gulp');
 var chef = require('gulp-chef');
+var browserSync = require('browser-sync').create();
 
 var meal = chef({
-  src: 'src',
-  dest: 'dist',
+  src: 'src/',
+  dest: 'dist/',
   clean: {},
   make: {
     markups: {
       src: 'index.html',
-      task: function (done) {
-        done();
-      }
+      recipe: 'copy'
     },
     scripts: {
       src: 'scripts/**/*.js',
-      task: function (done) {
-        done();
+      concat: {
+        file: 'script.js'
       }
     },
     styles: {
-      src: 'styles/**/*.css',
-      task: function (done) {
-        done();
+      src: 'styles/**/',
+      concat: {
+        src: ['normalize.css', 'styles.css'],
+        file: 'style.css'
       }
     },
     images: {
@@ -31,14 +31,20 @@ var meal = chef({
       recipe: 'copy'
     },
     assets: {
-      src: '**/*.txt',
+      src: ['**/*.txt', '.htaccess'],
       recipe: 'copy'
     }
   },
   build: ['clean', 'make'],
   serve: {
-    recipe: 'watch',
-    task: ['markups', 'scripts', 'styles', 'images', 'assets']
+    browserSync: function () {
+      browserSync.init({
+        server: {
+            baseDir: this.config.dest.path
+        }
+      });
+    },
+    watch: ['markups', 'scripts', 'styles', 'images', 'assets']
   },
   default: 'build'
 });
