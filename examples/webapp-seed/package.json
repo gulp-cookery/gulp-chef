@@ -6,6 +6,7 @@
   "author": "Amobiz",
   "license": "MIT",
   "devDependencies": {
+    "browser-sync": "^2.11.0",
     "gulp": "github:gulpjs/gulp#4.0",
     "gulp-chef": "github:gulp-cookery/gulp-chef"
   },
