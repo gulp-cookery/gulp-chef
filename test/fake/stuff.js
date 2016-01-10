@@ -6,7 +6,9 @@ var base = process.cwd();
 var ConfigurableRecipeRegistry = require(base + '/lib/recipe/registry');
 
 function create(name, fn) {
-	var recipe = Sinon.spy(fn);
+	var recipe;
+
+	recipe = Sinon.spy(fn);
 	recipe.schema = {
 		title: name
 	};

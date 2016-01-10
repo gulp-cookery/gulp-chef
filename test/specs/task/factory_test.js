@@ -18,7 +18,6 @@ var FakeFactory = require(base + '/test/fake/factory');
 
 function assertConfigurableTask(task, name) {
 	expect(task).to.be.a('function');
-	expect(task.run).to.be.a('function');
 	expect(task.displayName).to.equal(name);
 }
 
@@ -59,7 +58,7 @@ describe('Core', function () {
 				recipe = Sinon.spy();
 			});
 
-			it('should return a ConfigurableTask (i.e. a function with run() method)', function () {
+			it('should return a ConfigurableTask', function () {
 				var actual;
 
 				actual = factory.create('', taskInfo, taskConfig, recipe);
@@ -83,33 +82,30 @@ describe('Core', function () {
 				actual = factory.create('', taskInfo, taskConfig, recipe, tasks);
 				expect(actual.tasks).to.be.an('array');
 			});
-			it('should invoke configurableRunner() method when act as a configurable task: invoked via configurableRunner.run()', function () {
+			it('should invoke configurableRunner() method when act as a configurable task', function () {
 				var context = {
 					gulp: gulp,
 					config: taskConfig
 				};
-				var actual;
+				var actual, call;
 
 				actual = factory.create('', taskInfo, taskConfig, recipe);
 				assertConfigurableTask(actual, taskInfo.name);
 
-				actual.run.call(context, done);
-				expect(recipe.calledOn(context)).to.be.true;
+				actual.call(context, done);
+				call = recipe.getCall(0);
+				expect(call.thisValue.config).to.deep.equal(taskConfig);
 				expect(recipe.calledWith(done)).to.be.true;
 			});
 			it('should invoke configurableRunner() when act as a gulp task: invoked directly', function () {
-				var context = {
-					gulp: gulp,
-					config: taskConfig,
-					helper: Configuration
-				};
-				var actual;
+				var actual, call;
 
 				actual = factory.create('', taskInfo, taskConfig, recipe);
 				assertConfigurableTask(actual, taskInfo.name);
 
 				actual(done);
-				expect(recipe.thisValues[0]).to.deep.equal(context);
+				call = recipe.getCall(0);
+				expect(call.thisValue.config).to.deep.equal(taskConfig);
 				expect(recipe.calledWith(done)).to.be.true;
 			});
 			it('should be able to inject value and resolve config at runtime when act as a configurable task', function () {
@@ -133,7 +129,7 @@ describe('Core', function () {
 				actual = factory.create('', taskInfo, templateConfig, recipe);
 				assertConfigurableTask(actual, taskInfo.name);
 
-				actual.run.call(context, done);
+				actual.call(context, done);
 				expect(recipe.thisValues[0].config).to.deep.equal(expectedConfig);
 			});
 		});

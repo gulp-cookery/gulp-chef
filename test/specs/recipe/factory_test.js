@@ -104,7 +104,7 @@ describe('Core', function () {
 				expect(gulpTask.calledOn(context)).to.be.true;
 				expect(gulpTask.calledWithExactly(done)).to.be.true;
 			});
-			it("should wrap a configurable task and call target's run() at runtime", function () {
+			it("should wrap a configurable task and call it at runtime", function () {
 				var configurableTask = gulp.task('configurable-task');
 				var taskInfo = {
 					name: 'reference-task',
@@ -119,8 +119,8 @@ describe('Core', function () {
 				actual = factory.reference(taskInfo);
 				expect(actual).to.be.a('function');
 				actual.call(context, done);
-				expect(configurableTask.run.calledOn(context)).to.be.true;
-				expect(configurableTask.run.calledWithExactly(done)).to.be.true;
+				expect(configurableTask.calledOn(context)).to.be.true;
+				expect(configurableTask.calledWithExactly(done)).to.be.true;
 			});
 		});
 		describe('#stream()', function () {

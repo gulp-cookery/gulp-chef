@@ -15,25 +15,21 @@ function createSpyGulpTask(name, gulpTask) {
 }
 
 function createSpyConfigurableTask(name, optionalRecipe, optionalTaskConfig) {
-	var run, task, recipe, taskConfig;
+	var task, recipe, taskConfig;
 
 	recipe = optionalRecipe || Sinon.spy();
 	taskConfig = optionalTaskConfig || {};
-	run = Sinon.spy(function (done) {
-		var context;
-
-		context = this;
-		context.config = _.defaultsDeep({}, taskConfig, context.config);
-		return recipe.call(context, done);
-	});
 	task = createSpyGulpTask(name, function (done) {
 		var context;
 
+		context = {
+			config: this ? _.defaultsDeep({}, taskConfig, this.config) : taskConfig
+		};
+
 		context = this;
-		run.call(context, done);
+		recipe.call(context, done);
 	});
 	task.displayName = name;
-	task.run = run;
 	return task;
 }
 
