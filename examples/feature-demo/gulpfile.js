@@ -331,34 +331,34 @@ var FeatureConfigs = {
           }
         }
       }, {
-          file: 'main.min.css',
-          join: {
-            file: 'main.css',
-            stylus: {
-              src: 'app/*.stylus',
-              options: {}
-            },
-            css: {
-              '.autoprefix': {
-                src: 'app/*.css'
-              }
+        file: 'main.min.css',
+        join: {
+          file: 'main.css',
+          stylus: {
+            src: 'app/*.stylus',
+            options: {}
+          },
+          css: {
+            '.autoprefix': {
+              src: 'app/*.css'
             }
           }
-        }, {
-          file: 'options.min.css',
-          join: {
-            file: 'options.css',
-            stylus: {
-              src: 'options/**/*.stylus',
-              options: {}
-            },
-            css: {
-              '.autoprefix': {
-                src: 'options/**/*.css'
-              }
+        }
+      }, {
+        file: 'options.min.css',
+        join: {
+          file: 'options.css',
+          stylus: {
+            src: 'options/**/*.stylus',
+            options: {}
+          },
+          css: {
+            '.autoprefix': {
+              src: 'options/**/*.css'
             }
           }
-        }]
+        }
+      }]
     }
   },
   runtime: {
@@ -445,9 +445,9 @@ var SampleUsageConfigs = {
         external: '',
         file: '1'
       }, {
-          entries: 'options',
-          file: '2'
-        }]
+        entries: 'options',
+        file: '2'
+      }]
     },
     bookmarklet: {
       src: '**/*.js',
@@ -477,9 +477,9 @@ var SampleUsageConfigs = {
       entries: ['directives/index.js'],
       file: 'directives.js'
     }, {
-        entries: ['services/index.js'],
-        file: 'services.js'
-      }]
+      entries: ['services/index.js'],
+      file: 'services.js'
+    }]
   },
   // Bundle modules with concat for each folder.
   'modules:concat': {
@@ -563,10 +563,10 @@ var SampleUsageConfigs = {
       values: [{
         dir: 'directives'
       }, {
-          dir: 'services'
-        }, {
-          dir: 'views'
-        }],
+        dir: 'services'
+      }, {
+        dir: 'views'
+      }],
       process: function () {
         return require('streamifier')('');
       }
