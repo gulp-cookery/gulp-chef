@@ -10,5 +10,7 @@
     "gulp-chef": "github:gulp-cookery/gulp-chef"
   },
   "dependencies": {
+    "gulp": "github:gulpjs/gulp#4.0",
+    "gulp-chef": "github:gulp-cookery/gulp-chef"
   }
 }
