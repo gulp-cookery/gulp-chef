@@ -9,6 +9,14 @@ var meal = chef({
   dest: 'dist/',
   clean: {},
   make: {
+    assets: {
+      src: ['**/*.txt', '.htaccess'],
+      recipe: 'copy'
+    },
+    images: {
+      src: 'images/**/*.*',
+      recipe: 'copy'
+    },
     markups: {
       src: 'index.html',
       recipe: 'copy'
@@ -24,23 +32,13 @@ var meal = chef({
       '.concat': {
         file: 'style.css'
       }
-    },
-    images: {
-      src: 'images/**/*.*',
-      recipe: 'copy'
-    },
-    assets: {
-      src: ['**/*.txt', '.htaccess'],
-      recipe: 'copy'
     }
   },
   build: ['clean', 'make'],
   serve: {
     browserSync: function () {
       browserSync.init({
-        server: {
-            baseDir: this.config.dest.path
-        }
+        server: this.config.dest.path
       });
     },
     watch: ['markups', 'scripts', 'styles', 'images', 'assets']
