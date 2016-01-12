@@ -1,0 +1,15 @@
+{
+  "name": "webapp-seed",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "author": "Amobiz",
+  "license": "MIT",
+  "devDependencies": {
+    "browser-sync": "^2.11.0",
+    "gulp": "github:gulpjs/gulp#4.0",
+    "gulp-ccr-concat": "git+https://github.com/gulp-cookery/gulp-ccr-concat.git",
+    "gulp-chef": "github:gulp-cookery/gulp-chef"
+  },
+  "dependencies": {}
+}
