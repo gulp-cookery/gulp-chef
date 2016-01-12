@@ -244,7 +244,7 @@
     "id-match": 0,
     "indent": [
       2,
-      2
+      "tab"
     ],
     "jsx-quotes": [
       1,
