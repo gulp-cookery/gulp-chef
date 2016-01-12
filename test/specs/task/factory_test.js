@@ -47,8 +47,7 @@ describe('Core', function () {
 			beforeEach(function () {
 				taskInfo = {
 					name: 'configurable-task',
-					visibility: Configuration.CONSTANT.VISIBILITY.NORMAL,
-					runtime: Configuration.CONSTANT.RUNTIME.ALL
+					visibility: Configuration.CONSTANT.VISIBILITY.NORMAL
 				};
 
 				taskConfig = {
@@ -64,7 +63,6 @@ describe('Core', function () {
 				actual = factory.create('', taskInfo, taskConfig, recipe);
 				assertConfigurableTask(actual, taskInfo.name);
 				expect(actual.visibility).to.equal(taskInfo.visibility);
-				expect(actual.runtime).to.equal(taskInfo.runtime);
 			});
 			it('should return a ConfigurableTask with the given name with prefix', function () {
 				var actual, prefix;
@@ -149,20 +147,22 @@ describe('Core', function () {
 				var config = {
 					name: name
 				};
+				var expected = '<' + name + '>';
 				var actual;
 
 				actual = factory.one('', config, {});
-				assertConfigurableTask(actual, name);
+				assertConfigurableTask(actual, expected);
 			});
 			it('should be able to resolve to a stream task', function () {
 				var name = 'stream-task';
 				var config = {
 					name: name
 				};
+				var expected = '<' + name + '>';
 				var actual;
 
 				actual = factory.one('', config, {});
-				assertConfigurableTask(actual, name);
+				assertConfigurableTask(actual, expected);
 			});
 			it('should resolve a non-existent-recipe-with-sub-task-configs to a parallel flow task', function () {
 				var name = 'non-existent-recipe-with-sub-task-configs';
