@@ -1,4 +1,3 @@
-/* eslint consistent-this: 0 */
 'use strict';
 
 var Sinon = require('sinon');
@@ -25,8 +24,6 @@ function createSpyConfigurableTask(name, optionalRecipe, optionalTaskConfig) {
 		context = {
 			config: this ? _.defaultsDeep({}, taskConfig, this.config) : taskConfig
 		};
-
-		context = this;
 		recipe.call(context, done);
 	});
 	task.displayName = name;
