@@ -25,10 +25,6 @@
 			"description": "The name of recipe to use.",
 			"type": "string"
 		},
-		"runtime": {
-			"description": "Runtime of this task. Valid values are \"production\" and \"development\".",
-			"type": "string"
-		},
 		"series": {
 			"description": "Same as task, but child tasks are forced to run in series.",
 			"type": "array"

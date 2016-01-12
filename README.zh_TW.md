@@ -613,9 +613,6 @@ Description of the task.
 #### order
 Execution order of the task. Only required when you defining tasks in object and want them be executed in series. The values are used for sort, so don't have to be contiguous.
 
-#### runtime
-Execution time of the task. Valid values are `all`, `production` and `development`. Defaults to `all`.
-
 #### task
 Define a plain, inline or reference task.
 
@@ -722,8 +719,6 @@ A plugin module name to use.
 Same as task, but child tasks are forced to run in parallel.
 ### recipe
 The recipe to use, if not same as task name.
-### runtime
-Runtime of this task. Valid values are "production" and "development".
 ### series
 Same as task, but child tasks are forced to run in series.
 ### sprout

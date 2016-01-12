@@ -48,24 +48,6 @@ describe('Core', function () {
 					visibility: '#'
 				}
 			}, {
-				name: 'should accept ! postfix and mark task available in production mode only',
-				value: {
-					name: 'build!'
-				},
-				expected: {
-					name: 'build',
-					runtime: '!'
-				}
-			}, {
-				name: 'should accept ? postfix and mark task available in development mode only',
-				value: {
-					name: 'build?'
-				},
-				expected: {
-					name: 'build',
-					runtime: '?'
-				}
-			}, {
 				name: 'should throw if invalid name',
 				value: {
 					name: 'build?!'
@@ -83,7 +65,6 @@ describe('Core', function () {
 					name: 'build',
 					description: 'description',
 					order: 999,
-					runtime: '!',
 					task: 'task',
 					visibility: '.'
 				},
@@ -91,17 +72,15 @@ describe('Core', function () {
 					name: 'build',
 					description: 'description',
 					order: 999,
-					runtime: '!',
 					task: 'task',
 					visibility: '.'
 				}
 			}, {
 				name: 'should properties from raw-name override properties from config',
 				value: {
-					name: '#build?',
+					name: '#build',
 					description: 'description',
 					order: 999,
-					runtime: '!',
 					task: 'task',
 					visibility: '.'
 				},
@@ -109,7 +88,6 @@ describe('Core', function () {
 					name: 'build',
 					description: 'description',
 					order: 999,
-					runtime: '?',
 					task: 'task',
 					visibility: '#'
 				}
