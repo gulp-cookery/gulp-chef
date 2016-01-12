@@ -81,7 +81,7 @@ var configs = {
 			}
 		}
 	},
-	default: 'stream'
+	default: 'async-streams'
 };
 
 var meal = chef(configs);
