@@ -33,7 +33,7 @@
 			"description": "Same as task, but child tasks are forced to run in series.",
 			"type": "array"
 		},
-		"sprout": {
+		"spit": {
 			"description": "Instruct recipe or task to write file(s) out if was optional.",
 			"type": "boolean"
 		},
