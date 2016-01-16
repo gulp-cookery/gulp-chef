@@ -68,6 +68,7 @@
   },
   "dependencies": {
     "chalk": "^1.1.1",
+    "end-of-stream": "^1.1.0",
     "glob": "^6.0.4",
     "globby": "^2.1.0",
     "globjoin": "^0.1.1",
@@ -84,6 +85,7 @@
     "json-regulator": "^0.1.14",
     "lodash": "^3.10.1",
     "require-dir": "^0.3.0",
+    "stream-exhaust": "^1.0.1",
     "yargs": "^3.31.0"
   }
 }
