@@ -52,6 +52,29 @@ describe('Prerequisite', function () {
 					src: ['src']
 				});
 			});
+			it('should not merge array items into object', function () {
+				var target = {
+					src: {
+						globs: ['src']
+					}
+				};
+				var source = {
+					src: ['src', 'app']
+				};
+				var expected = {
+					src: {
+						globs: ['src']
+					}
+				};
+				var actual = {
+					src: {
+						'0': 'src',
+						'1': 'app',
+						globs: ['src']
+					}
+				};
+				expect(_.defaultsDeep(target, source)).to.deep.equal(expected);
+			});
 		});
 	});
 });
