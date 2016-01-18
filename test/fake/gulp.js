@@ -42,4 +42,7 @@ FakeGulp.prototype.registry = function (registry) {
 	}
 };
 
+FakeGulp.prototype.emit = function () {
+};
+
 module.exports = FakeGulp;
