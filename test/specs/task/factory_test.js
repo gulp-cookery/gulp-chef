@@ -93,7 +93,6 @@ describe('Core', function () {
 				actual.call(context, done);
 				call = recipe.getCall(0);
 				expect(call.thisValue.config).to.deep.equal(taskConfig);
-				expect(recipe.calledWith(done)).to.be.true;
 			});
 			it('should invoke configurableRunner() when act as a gulp task: invoked directly', function () {
 				var actual, call;
@@ -104,7 +103,6 @@ describe('Core', function () {
 				actual(done);
 				call = recipe.getCall(0);
 				expect(call.thisValue.config).to.deep.equal(taskConfig);
-				expect(recipe.calledWith(done)).to.be.true;
 			});
 			it('should be able to inject value and resolve config at runtime when act as a configurable task', function () {
 				var templateConfig = {
@@ -179,7 +177,7 @@ describe('Core', function () {
 
 				actual = factory.one('', config, {});
 				assertConfigurableTask(actual, name);
-				expect(actual.recipe.displayName).to.equal('<parallel>');
+				expect(actual.tasks[0].displayName).to.equal('<parallel>');
 			});
 			it('should not throw even can not resolve to a task', function () {
 				var name = 'non-existent';
@@ -238,8 +236,8 @@ describe('Core', function () {
 
 					expect(actual.length).to.equal(6);
 					expect(actual[0].displayName).to.equal('task1');
-					expect(actual[1].displayName).to.equal('gulp-task-by-ref');
-					expect(actual[2].displayName).to.equal('configurable-task-by-ref');
+					expect(actual[1].recipe.displayName).to.equal('gulp-task-by-ref');
+					expect(actual[2].recipe.displayName).to.equal('configurable-task-by-ref');
 					expect(actual[3].displayName).to.equal('gulp-task');
 					expect(actual[4].displayName).to.equal('configurable-task');
 					expect(actual[5].displayName).to.be.a('string');
