@@ -158,7 +158,9 @@ var configs = {
 			}
 		}
 	},
-	default: 'async-streams'
+	default: {
+		parallel: ['single-dest-and-watch', 'multi-dest', 'incremental-rebuilding', 'only-changed', 'async-streams', 'serial-join', 'stream-array']
+	}
 };
 
 var meal = chef(configs);
