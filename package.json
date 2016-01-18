@@ -83,7 +83,7 @@
     "gulplog": "^1.0.0",
     "json-normalizer": "^0.3.3",
     "json-regulator": "^0.1.14",
-    "lodash": "^3.10.1",
+    "lodash": "^4.0.0",
     "require-dir": "^0.3.0",
     "stream-exhaust": "^1.0.1",
     "yargs": "^3.31.0"
