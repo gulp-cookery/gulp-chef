@@ -3,6 +3,8 @@
 var gulp = require('gulp');
 var chef = require('gulp-chef');
 
+var consolidate = require('gulp-consolidate').bind(null, 'nunjucks');
+
 var configs = {
 	$description: 'This is to demo what gulp-chef can achieve, not encourage you write configuration this way.',
 	src: 'src/',
@@ -137,8 +139,8 @@ var configs = {
 				}],
 				pipe: {
 					'.consolidate': {
-						plugin: 'consolidate',
-						src: 'a.js',
+						plugin: consolidate,
+						src: 'a.ejs',
 						options: {
 							title: '{{title}}',
 							price: '{{price}}'
