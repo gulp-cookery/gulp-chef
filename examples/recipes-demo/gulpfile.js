@@ -106,7 +106,7 @@ var configs = {
 					pipe: {
 						src: 'second.css',
 						'.cssimport': {
-							plugin: 'css-cssimport'
+							plugin: 'gulp-cssimport'
 						},
 						'.autoprefixer': {
 							plugin: 'gulp-autoprefixer',
