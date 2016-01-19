@@ -20,19 +20,19 @@ var cachebust = new CacheBuster();
 var chef = require('gulp-chef');
 
 var meal = chef({
-  dest: './dist/',
+  dest: 'dist/',
   clean: {
     description: 'Cleans the build output'
   },
   bower: {
     description: 'Runs bower to install frontend dependencies',
     plugin: 'gulp-install',
-    src: './bower.json'
+    src: 'bower.json'
   },
   'build-css': {
     description: 'Runs sass, creates css source maps',
-    src: './styles/*',
-    maps: './maps/',
+    src: 'styles/*',
+    maps: 'maps/',
     task: function () {
       return gulp.src(this.config.src.globs)
         .pipe(sourcemaps.init())
@@ -44,7 +44,7 @@ var meal = chef({
   },
   'build-template-cache': {
     description: 'Fills in the Angular template cache, to prevent loading the html templates via separate http requests',
-    src: './partials/*.html',
+    src: 'partials/*.html',
     file: 'templateCachePartials.js',
     task: function () {
       var ngHtml2Js = require('gulp-ng-html2js');
@@ -61,7 +61,7 @@ var meal = chef({
   },
   jshint: {
     description: 'Runs jshint',
-    src: './js/*.js',
+    src: 'js/*.js',
     task: function () {
       return gulp.src(this.config.src.globs)
         .pipe(jshint())
@@ -73,7 +73,7 @@ var meal = chef({
     series: {
       '.build-js': {},
       '.karma': {
-        src: './test/unit/*.js',
+        src: 'test/unit/*.js',
         task: function () {
           return gulp.src(this.config.src.globs)
             .pipe(karma({
@@ -94,7 +94,7 @@ var meal = chef({
       var b = browserify({
         entries: './js/app.js',
         debug: true,
-        paths: ['./js/controllers', './js/services', './js/directives'],
+        paths: ['js/controllers', 'js/services', 'js/directives'],
         transform: [ngAnnotate]
       });
 
@@ -106,7 +106,7 @@ var meal = chef({
         .pipe(uglify())
         .on('error', gutil.log)
         .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('./dist/js/'));
+        .pipe(gulp.dest('dist/js/'));
     }
   },
   build: {
@@ -129,7 +129,7 @@ var meal = chef({
   watch: {
     description: 'Watches file system and triggers a build when a modification is detected',
     task: function () {
-      return gulp.watch(['./index.html', './partials/*.html', './styles/*.*css', './js/**/*.js'], ['build']);
+      return gulp.watch(['index.html', 'partials/*.html', 'styles/*.*css', 'js/**/*.js'], ['build']);
     }
   },
   webserver: {
@@ -153,7 +153,7 @@ var meal = chef({
   },
   sprite: {
     description: 'Generates a sprite png and the corresponding sass sprite map. This is not included in the recurring development build and needs to be run separately',
-    src: './images/*.png',
+    src: 'images/*.png',
     spritesmith: {
       imgName: 'todo-sprite.png',
       cssName: '_todo-sprite.scss',
