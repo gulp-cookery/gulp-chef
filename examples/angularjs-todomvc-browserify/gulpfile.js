@@ -113,22 +113,17 @@ var meal = chef({
     description: 'Build scripts in correct order',
 	series: ['build-template-cache', 'build-js']
   },
+  markup: {
+    src: 'index.html',
+    task: function () {
+	  return gulp.src(this.config.src.globs)
+	  .pipe(cachebust.references())
+	  .pipe(gulp.dest(this.config.dest.path));
+    }
+  },
   build: {
     description: 'Full build (except sprites), applies cache busting to the main page css and js bundles',
-    series: {
-      '.clean': {},
-      '.build-all': {
-        parallel: ['build-css', 'jshint', 'scripts']
-      },
-      '.cache-busting': {
-        src: 'index.html',
-        task: function () {
-          return gulp.src(this.config.src.globs)
-            .pipe(cachebust.references())
-            .pipe(gulp.dest(this.config.dest.path));
-        }
-      }
-    }
+    series: ['clean', { parallel: ['build-css', 'jshint', 'scripts'] }, 'markup']
   },
   watch: {
     description: 'Watches file system and triggers a build when a modification is detected',
