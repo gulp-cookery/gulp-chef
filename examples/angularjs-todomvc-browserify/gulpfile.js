@@ -109,12 +109,16 @@ var meal = chef({
         .pipe(gulp.dest('dist/js/'));
     }
   },
+  scripts: {
+    description: 'Build scripts in correct order',
+	series: ['build-template-cache', 'build-js']
+  },
   build: {
     description: 'Full build (except sprites), applies cache busting to the main page css and js bundles',
     series: {
       '.clean': {},
       '.build-all': {
-        parallel: ['build-css', 'build-template-cache', 'jshint', 'build-js']
+        parallel: ['build-css', 'jshint', 'scripts']
       },
       '.cache-busting': {
         src: 'index.html',
