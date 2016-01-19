@@ -68,25 +68,23 @@ var meal = chef({
         .pipe(jshint.reporter('default'));
     }
   },
+  karma: {
+    src: 'test/unit/*.js',
+    task: function () {
+      return gulp.src(this.config.src.globs)
+      .pipe(karma({
+        configFile: 'karma.conf.js',
+        action: 'run'
+      }))
+      .on('error', function (err) {
+        console.log('karma tests failed: ' + err);
+        throw err;
+      });
+    }
+  },
   test: {
     description: 'Runs karma tests',
-    series: {
-      '.build-js': {},
-      '.karma': {
-        src: 'test/unit/*.js',
-        task: function () {
-          return gulp.src(this.config.src.globs)
-            .pipe(karma({
-              configFile: 'karma.conf.js',
-              action: 'run'
-            }))
-            .on('error', function (err) {
-              console.log('karma tests failed: ' + err);
-              throw err;
-            });
-        }
-      }
-    }
+    series: ['build-js', 'karma']
   },
   'build-js': {
     description: 'Build a minified Javascript bundle - the order of the js files is determined by browserify',
