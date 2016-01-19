@@ -32,20 +32,20 @@ var meal = chef({
   'build-css': {
     description: 'Runs sass, creates css source maps',
     src: './styles/*',
-    $maps: './maps/',
+    maps: './maps/',
     task: function () {
       return gulp.src(this.config.src.globs)
         .pipe(sourcemaps.init())
         .pipe(sass())
         .pipe(cachebust.resources())
-        .pipe(sourcemaps.write(this.config.$maps))
+        .pipe(sourcemaps.write(this.config.maps))
         .pipe(gulp.dest(this.config.dest.path));
     }
   },
   'build-template-cache': {
     description: 'Fills in the Angular template cache, to prevent loading the html templates via separate http requests',
     src: './partials/*.html',
-    $file: 'templateCachePartials.js',
+    file: 'templateCachePartials.js',
     task: function () {
       var ngHtml2Js = require('gulp-ng-html2js');
       var concat = require('gulp-concat');
@@ -135,7 +135,7 @@ var meal = chef({
   webserver: {
     description: 'Launches a web server that serves files in the current directory',
     src: '.',
-    $url: 'http://localhost:8000/dist/index.html',
+    url: 'http://localhost:8000/dist/index.html',
     task: function () {
       var webserver = require('gulp-webserver');
 
@@ -143,7 +143,7 @@ var meal = chef({
         .pipe(webserver({
           livereload: false,
           directoryListing: true,
-          open: this.config.$url
+          open: this.config.url
         }));
     }
   },
@@ -154,7 +154,7 @@ var meal = chef({
   sprite: {
     description: 'Generates a sprite png and the corresponding sass sprite map. This is not included in the recurring development build and needs to be run separately',
     src: './images/*.png',
-    $spritesmith: {
+    spritesmith: {
       imgName: 'todo-sprite.png',
       cssName: '_todo-sprite.scss',
       algorithm: 'top-down',
@@ -162,7 +162,7 @@ var meal = chef({
     },
     task: function () {
       var spriteData = gulp.src(this.config.src.globs)
-        .pipe(spritesmith(this.config.$spritesmith));
+        .pipe(spritesmith(this.config.spritesmith));
 
       return merge(
         spriteData.css.pipe(gulp.dest(this.config.dest.path)),
