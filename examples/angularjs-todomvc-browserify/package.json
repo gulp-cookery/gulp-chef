@@ -27,7 +27,7 @@
     "gulp-webserver": "^0.9.0",
     "gulp.spritesmith": "^3.5.3",
     "jasmine-core": "^2.2.0",
-    "karma": "^0.12.31",
+    "karma": "^0.13.0",
     "karma-chrome-launcher": "^0.1.7",
     "karma-firefox-launcher": "^0.1.4",
     "karma-jasmine": "^0.3.5",

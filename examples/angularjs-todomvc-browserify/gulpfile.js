@@ -38,74 +38,78 @@ var meal = chef({
         .pipe(gulp.dest(this.config.dest.path));
     }
   },
-  'build-template-cache': {
-    description: 'Fills in the Angular template cache, to prevent loading the html templates via separate http requests',
-    src: 'partials/*.html',
-    file: 'templateCachePartials.js',
-    task: function () {
-      var ngHtml2Js = require('gulp-ng-html2js');
-      var concat = require('gulp-concat');
-
-      return gulp.src(this.config.src.globs)
-        .pipe(ngHtml2Js({
-          moduleName: 'todoPartials',
-          prefix: '/partials/'
-        }))
-        .pipe(concat(this.config.file))
-        .pipe(gulp.dest(this.config.dest.path));
-    }
-  },
   jshint: {
     description: 'Runs jshint',
     src: 'js/*.js'
   },
   karma: {
-    description: 'Runs karma tests',
-    src: 'test/unit/*.js'
+    description: 'Runs karma tests'
   },
   test: {
     description: 'Build and runs karma tests',
-    series: ['build-js', 'karma']
-  },
-  'build-js': {
-    description: 'Build a minified Javascript bundle - the order of the js files is determined by browserify',
-	src: 'js/',
-	dest: 'js/',
-    task: function () {
-	  var src = this.config.src.globs[0];
-      var b = browserify({
-        entries: './' + src + 'app.js',
-        debug: true,
-        paths: [src + 'controllers/', src + 'services/', src + 'directives/'],
-        transform: [ngAnnotate]
-      });
-
-      return b.bundle()
-        .pipe(source('bundle.js'))
-        .pipe(buffer())
-        .pipe(cachebust.resources())
-        .pipe(sourcemaps.init({ loadMaps: true }))
-        .pipe(uglify())
-        .on('error', gutil.log)
-        .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest(this.config.dest.path));
-    }
+    series: ['scripts', 'karma']
   },
   scripts: {
     description: 'Build scripts in correct order',
-	series: ['build-template-cache', 'build-js']
+    dest: 'js/',
+    pipe: {
+      '.build-template-cache': {
+        description: 'Fills in the Angular template cache, to prevent loading the html templates via separate http requests',
+        src: 'partials/*.html',
+        file: 'templateCachePartials.js',
+        task: function () {
+          var ngHtml2Js = require('gulp-ng-html2js');
+          var concat = require('gulp-concat');
+
+          return gulp.src(this.config.src.globs)
+            .pipe(ngHtml2Js({
+              moduleName: 'todoPartials',
+              prefix: '/partials/'
+            }))
+            .pipe(concat(this.config.file))
+            .pipe(gulp.dest(this.config.dest.path));
+        }
+      },
+      '.browserify': {
+        description: 'Build a minified Javascript bundle - the order of the js files is determined by browserify',
+        task: function () {
+          return browserify({
+            entries: './js/app.js',
+            debug: true,
+            paths: ['js/controllers/', 'js/services/', 'js/directives/'],
+            transform: [ngAnnotate]
+          })
+          .bundle()
+          .pipe(source('bundle.js'))
+          .pipe(buffer())
+          .on('error', gutil.log);
+        }
+      },
+      '.bust': function () {
+        return this.upstream
+          //.pipe(cachebust.resources())
+          // .pipe(sourcemaps.init({
+          //   loadMaps: true
+          // }))
+          // .pipe(uglify())
+          // .pipe(sourcemaps.write('./'))
+          .pipe(gulp.dest(this.config.dest.path));
+      }
+    }
   },
   markup: {
     src: 'index.html',
     task: function () {
-	  return gulp.src(this.config.src.globs)
-	  .pipe(cachebust.references())
-	  .pipe(gulp.dest(this.config.dest.path));
+      return gulp.src(this.config.src.globs)
+        .pipe(cachebust.references())
+        .pipe(gulp.dest(this.config.dest.path));
     }
   },
   build: {
     description: 'Full build (except sprites), applies cache busting to the main page css and js bundles',
-    series: ['clean', { parallel: ['build-css', 'jshint', 'scripts'] }, 'markup']
+    series: ['clean', {
+      parallel: ['build-css', 'jshint', 'scripts']
+    }, 'markup']
   },
   watch: {
     description: 'Watches file system and triggers a build when a modification is detected',
@@ -115,14 +119,13 @@ var meal = chef({
   },
   webserver: {
     description: 'Launches a web server that serves files in the current directory',
-	plugin: 'gulp-webserver',
-   	src: '.',
-	options: {
-		port: '8081',
-		livereload: false,
-		directoryListing: true,
-    	open: 'http://localhost:8000/dist/index.html'
-	}
+    plugin: 'gulp-webserver',
+    src: '.',
+    options: {
+      livereload: false,
+      directoryListing: true,
+      open: 'http://localhost:8000/dist/index.html'
+    }
   },
   serve: {
     description: 'Launch a build upon modification and publish it to a running server',

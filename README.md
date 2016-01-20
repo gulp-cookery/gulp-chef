@@ -2,6 +2,8 @@
 
 Cascading configurable recipes for Gulp 4.0. An elegant, intuition way to reuse gulp tasks.
 
+This project seems to work in many cases, but it is still early in development and likely has some bugs at the moment. Let me know how it works for you!s
+
 ## Install
 ``` bash
 $ npm install https://github.com/gulp-cookery/gulp-chef.git
