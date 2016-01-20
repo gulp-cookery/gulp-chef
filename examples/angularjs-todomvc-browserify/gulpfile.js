@@ -117,22 +117,18 @@ var meal = chef({
   },
   webserver: {
     description: 'Launches a web server that serves files in the current directory',
-    src: '.',
-    url: 'http://localhost:8000/dist/index.html',
-    task: function () {
-      var webserver = require('gulp-webserver');
-
-      return gulp.src(this.config.src.globs)
-        .pipe(webserver({
-          livereload: false,
-          directoryListing: true,
-          open: this.config.url
-        }));
-    }
+	plugin: 'gulp-webserver',
+   	src: '.',
+	options: {
+		port: '8081',
+		livereload: false,
+		directoryListing: true,
+    	open: 'http://localhost:8000/dist/index.html'
+	}
   },
   serve: {
     description: 'Launch a build upon modification and publish it to a running server',
-    task: ['watch', 'webserver']
+    task: ['build', 'watch', 'webserver']
   },
   sprite: {
     description: 'Generates a sprite png and the corresponding sass sprite map. This is not included in the recurring development build and needs to be run separately',
