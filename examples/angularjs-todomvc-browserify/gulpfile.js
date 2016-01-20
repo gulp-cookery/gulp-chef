@@ -2,7 +2,6 @@
 
 var gulp = require('gulp');
 var sass = require('gulp-sass');
-var karma = require('gulp-karma');
 var merge = require('merge-stream');
 var sourcemaps = require('gulp-sourcemaps');
 var spritesmith = require('gulp.spritesmith');
@@ -63,21 +62,11 @@ var meal = chef({
     src: 'js/*.js'
   },
   karma: {
-    src: 'test/unit/*.js',
-    task: function () {
-      return gulp.src(this.config.src.globs)
-      .pipe(karma({
-        configFile: 'karma.conf.js',
-        action: 'run'
-      }))
-      .on('error', function (err) {
-        console.log('karma tests failed: ' + err);
-        throw err;
-      });
-    }
+    description: 'Runs karma tests',
+    src: 'test/unit/*.js'
   },
   test: {
-    description: 'Runs karma tests',
+    description: 'Build and runs karma tests',
     series: ['build-js', 'karma']
   },
   'build-js': {
