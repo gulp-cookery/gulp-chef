@@ -3,7 +3,6 @@
 var gulp = require('gulp');
 var sass = require('gulp-sass');
 var karma = require('gulp-karma');
-var jshint = require('gulp-jshint');
 var merge = require('merge-stream');
 var sourcemaps = require('gulp-sourcemaps');
 var spritesmith = require('gulp.spritesmith');
@@ -61,12 +60,7 @@ var meal = chef({
   },
   jshint: {
     description: 'Runs jshint',
-    src: 'js/*.js',
-    task: function () {
-      return gulp.src(this.config.src.globs)
-        .pipe(jshint())
-        .pipe(jshint.reporter('default'));
-    }
+    src: 'js/*.js'
   },
   karma: {
     src: 'test/unit/*.js',
@@ -88,11 +82,14 @@ var meal = chef({
   },
   'build-js': {
     description: 'Build a minified Javascript bundle - the order of the js files is determined by browserify',
+	src: 'js/',
+	dest: 'js/',
     task: function () {
+	  var src = this.config.src.globs[0];
       var b = browserify({
-        entries: './js/app.js',
+        entries: './' + src + 'app.js',
         debug: true,
-        paths: ['js/controllers', 'js/services', 'js/directives'],
+        paths: [src + 'controllers/', src + 'services/', src + 'directives/'],
         transform: [ngAnnotate]
       });
 
@@ -104,7 +101,7 @@ var meal = chef({
         .pipe(uglify())
         .on('error', gutil.log)
         .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('dist/js/'));
+        .pipe(gulp.dest(this.config.dest.path));
     }
   },
   scripts: {
