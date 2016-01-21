@@ -1,4 +1,4 @@
-/*global angular */
+/* global angular */
 
 /**
  * The main TodoMVC app module
@@ -6,7 +6,8 @@
  * @type {angular.Module}
  */
 
-angular = require('angular');
+var angular = require('angular');
+
 require('angular-route');
 require('../dist/js/templateCachePartials.js');
 

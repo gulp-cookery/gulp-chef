@@ -1,4 +1,4 @@
-/*global angular */
+/* global angular */
 
 /**
  * Services that persists and retrieves todos from localStorage or a backend API
@@ -7,7 +7,7 @@
  * They both follow the same API, returning promises for all changes to the
  * model.
  */
-angular = require('angular');
+var angular = require('angular');
 
 angular.module('todomvc')
   .factory('todoStorage', function ($http, $injector) {

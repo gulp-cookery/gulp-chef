@@ -1,13 +1,6 @@
 'use strict';
 
 var gulp = require('gulp');
-var sourcemaps = require('gulp-sourcemaps');
-var browserify = require('browserify');
-var source = require('vinyl-source-stream');
-var buffer = require('vinyl-buffer');
-var uglify = require('gulp-uglify');
-var gutil = require('gulp-util');
-var ngAnnotate = require('browserify-ngannotate');
 
 var CacheBuster = require('gulp-cachebust');
 var _cachebust;
@@ -49,55 +42,23 @@ var meal = chef({
   },
   test: {
     description: 'Build and runs karma tests',
-    series: ['scripts', 'karma']
+    series: ['script', 'karma']
   },
-  scripts: {
-    description: 'Build scripts in correct order',
+  script: {
+    description: 'Build a minified Javascript bundle - the order of the js files is determined by browserify',
     dest: 'js/',
-    pipe: {
-      '.build-template-cache': {
-        description: 'Fills in the Angular template cache, to prevent loading the html templates via separate http requests',
-        src: 'partials/*.html',
-        file: 'templateCachePartials.js',
-        task: function () {
-          var ngHtml2Js = require('gulp-ng-html2js');
-          var concat = require('gulp-concat');
-
-          return gulp.src(this.config.src.globs)
-            .pipe(ngHtml2Js({
-              moduleName: 'todoPartials',
-              prefix: '/partials/'
-            }))
-            .pipe(concat(this.config.file))
-            .pipe(gulp.dest(this.config.dest.path));
-        }
-      },
-      '.browserify': {
-        description: 'Build a minified Javascript bundle - the order of the js files is determined by browserify',
-        task: function () {
-          return browserify({
-            entries: './js/app.js',
-            debug: true,
-            paths: ['js/controllers/', 'js/services/', 'js/directives/'],
-            transform: [ngAnnotate]
-          })
-          .bundle()
-          .pipe(source('bundle.js'))
-          .pipe(buffer())
-          .on('error', gutil.log);
-        }
-      },
-      '.bust': function () {
-        return this.upstream
-          .pipe(cachebust().resources())
-          .pipe(sourcemaps.init({
-            loadMaps: true
-          }))
-          .pipe(uglify())
-          .pipe(sourcemaps.write('./'))
-          .pipe(gulp.dest(this.config.dest.path));
-      }
-    }
+	config: {
+		partials: {
+			src: 'partials/*.html',
+			file: 'templateCachePartials.js',
+			moduleName: 'todoPartials',
+			prefix: '/partials/'
+		},
+		entries: './js/app.js',
+		paths: ['js/controllers/', 'js/services/', 'js/directives/'],
+		transform: ['browserify-ngannotate'],
+		cachebust: cachebust
+	}
   },
   markup: {
     src: 'index.html',
@@ -105,7 +66,7 @@ var meal = chef({
   },
   build: {
     description: 'Full build (except sprites), applies cache busting to the main page css and js bundles',
-    series: ['clean', { parallel: ['sass', 'jshint', 'scripts'] }, 'markup']
+    series: ['clean', { parallel: ['sass', 'jshint', 'script'] }, 'markup']
   },
   watch: {
     description: 'Watches file system and triggers a build when a modification is detected',

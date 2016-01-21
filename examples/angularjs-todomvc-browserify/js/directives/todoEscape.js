@@ -1,11 +1,11 @@
-/*global angular */
+/* global angular */
 
 /**
  * Directive that executes an expression when the element it is applied to gets
  * an `escape` keydown event.
  */
 
-angular = require('angular');
+var angular = require('angular');
 
 angular.module('todomvc')
   .directive('todoEscape', function () {
