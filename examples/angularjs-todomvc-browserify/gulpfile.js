@@ -109,9 +109,7 @@ var meal = chef({
   },
   watch: {
     description: 'Watches file system and triggers a build when a modification is detected',
-    task: function () {
-      return gulp.watch(['index.html', 'partials/*.html', 'styles/*.*css', 'js/**/*.js'], ['build']);
-    }
+    task: 'build'
   },
   webserver: {
     description: 'Launches a web server that serves files in the current directory',
