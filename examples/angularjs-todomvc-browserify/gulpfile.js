@@ -1,7 +1,6 @@
 'use strict';
 
 var gulp = require('gulp');
-var sass = require('gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
 var browserify = require('browserify');
 var source = require('vinyl-source-stream');
@@ -11,7 +10,15 @@ var gutil = require('gulp-util');
 var ngAnnotate = require('browserify-ngannotate');
 
 var CacheBuster = require('gulp-cachebust');
-var cachebust = new CacheBuster();
+var _cachebust;
+
+// use function to protect, share and lazy loading complex object.
+function cachebust() {
+  if (!_cachebust) {
+    _cachebust = new CacheBuster();
+  }
+  return _cachebust;
+}
 
 var chef = require('gulp-chef');
 
@@ -25,18 +32,13 @@ var meal = chef({
     plugin: 'gulp-install',
     src: 'bower.json'
   },
-  'build-css': {
+  sass: {
     description: 'Runs sass, creates css source maps',
     src: 'styles/*',
-    maps: 'maps/',
-    task: function () {
-      return gulp.src(this.config.src.globs)
-        .pipe(sourcemaps.init())
-        .pipe(sass())
-        .pipe(cachebust.resources())
-        .pipe(sourcemaps.write(this.config.maps))
-        .pipe(gulp.dest(this.config.dest.path));
-    }
+	config: {
+      maps: 'maps/',
+	  cachebust: cachebust
+	}
   },
   jshint: {
     description: 'Runs jshint',
@@ -87,12 +89,12 @@ var meal = chef({
       },
       '.bust': function () {
         return this.upstream
-          //.pipe(cachebust.resources())
-          // .pipe(sourcemaps.init({
-          //   loadMaps: true
-          // }))
-          // .pipe(uglify())
-          // .pipe(sourcemaps.write('./'))
+          .pipe(cachebust().resources())
+          .pipe(sourcemaps.init({
+            loadMaps: true
+          }))
+          .pipe(uglify())
+          .pipe(sourcemaps.write('./'))
           .pipe(gulp.dest(this.config.dest.path));
       }
     }
@@ -101,14 +103,14 @@ var meal = chef({
     src: 'index.html',
     task: function () {
       return gulp.src(this.config.src.globs)
-        .pipe(cachebust.references())
+        .pipe(cachebust().references())
         .pipe(gulp.dest(this.config.dest.path));
     }
   },
   build: {
     description: 'Full build (except sprites), applies cache busting to the main page css and js bundles',
     series: ['clean', {
-      parallel: ['build-css', 'jshint', 'scripts']
+      parallel: ['sass', 'jshint', 'scripts']
     }, 'markup']
   },
   watch: {
