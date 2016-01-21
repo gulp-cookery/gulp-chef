@@ -1,9 +1,9 @@
 'use strict';
 
-var merge = require('merge-stream');
-var spritesmith = require('gulp.spritesmith');
-
 module.exports = function () {
+  var merge = require('merge-stream');
+  var spritesmith = require('gulp.spritesmith');
+
   var gulp = this.gulp;
   var config = this.config;
 

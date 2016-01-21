@@ -105,9 +105,7 @@ var meal = chef({
   },
   build: {
     description: 'Full build (except sprites), applies cache busting to the main page css and js bundles',
-    series: ['clean', {
-      parallel: ['sass', 'jshint', 'scripts']
-    }, 'markup']
+    series: ['clean', { parallel: ['sass', 'jshint', 'scripts'] }, 'markup']
   },
   watch: {
     description: 'Watches file system and triggers a build when a modification is detected',
