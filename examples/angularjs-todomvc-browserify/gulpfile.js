@@ -101,11 +101,7 @@ var meal = chef({
   },
   markup: {
     src: 'index.html',
-    task: function () {
-      return gulp.src(this.config.src.globs)
-        .pipe(cachebust().references())
-        .pipe(gulp.dest(this.config.dest.path));
-    }
+	$cachebust: cachebust
   },
   build: {
     description: 'Full build (except sprites), applies cache busting to the main page css and js bundles',
