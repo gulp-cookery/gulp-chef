@@ -45,7 +45,7 @@ describe('Core', function () {
 					upstream: null
 				};
 
-				actual = factory[method](taskInfo, rawConfig);
+				actual = factory[method](taskInfo);
 				expect(actual.schema.title).to.equal(name);
 
 				actual.call(context, done);
