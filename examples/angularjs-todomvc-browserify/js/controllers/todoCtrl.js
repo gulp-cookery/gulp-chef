@@ -1,4 +1,4 @@
-/* global angular */
+'use strict';
 
 /**
  * The main controller for the app. The controller:
@@ -9,8 +9,6 @@ var angular = require('angular');
 
 angular.module('todomvc')
   .controller('TodoCtrl', function TodoCtrl($scope, $routeParams, $filter, store) {
-    'use strict';
-
     var todos = $scope.todos = store.todos;
 
     $scope.newTodo = '';
@@ -62,7 +60,7 @@ angular.module('todomvc')
       $scope.saveEvent = event;
 
       if ($scope.reverted) {
-        // Todo edits were reverted-- don't save.
+        // the todo edits were reverted-- don't save.
         $scope.reverted = null;
         return;
       }

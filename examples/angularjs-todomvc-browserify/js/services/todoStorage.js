@@ -1,4 +1,4 @@
-/* global angular */
+'use strict';
 
 /**
  * Services that persists and retrieves todos from localStorage or a backend API
@@ -9,21 +9,18 @@
  */
 var angular = require('angular');
 
+var STORAGE_ID = 'todos-angularjs';
+
 angular.module('todomvc')
   .factory('todoStorage', function ($http, $injector) {
-    'use strict';
     return $injector.get('localStorage');
   })
-  .factory('localStorage', function ($q) {
-    'use strict';
-
-    var STORAGE_ID = 'todos-angularjs';
-
+  .factory('localStorage', function () {
     var store = {
       todos: [],
 
       _getFromLocalStorage: function () {
-        return todos;
+        return this.todos;
       },
 
       _saveToLocalStorage: function (newTodos) {
@@ -33,6 +30,7 @@ angular.module('todomvc')
       clearCompleted: function () {
         var completeTodos = [];
         var incompleteTodos = [];
+
         store.todos.forEach(function (todo) {
           if (todo.completed) {
             completeTodos.push(todo);

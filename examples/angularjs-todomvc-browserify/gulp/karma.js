@@ -6,5 +6,10 @@ module.exports = function (done) {
   new Server({
     configFile: process.cwd() + '/karma.conf.js',
     singleRun: true
-  }, done).start();
+  }, function () {
+    done();
+    process.nextTick(function () {
+      process.exit();
+    });
+  }).start();
 };

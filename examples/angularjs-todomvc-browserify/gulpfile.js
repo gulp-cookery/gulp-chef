@@ -1,19 +1,18 @@
 'use strict';
 
 var gulp = require('gulp');
-
+var chef = require('gulp-chef');
 var CacheBuster = require('gulp-cachebust');
+
 var _cachebust;
 
 // use function to protect, share and lazy loading complex object.
-function cachebust() {
+var cachebust = function () {
   if (!_cachebust) {
     _cachebust = new CacheBuster();
   }
   return _cachebust;
-}
-
-var chef = require('gulp-chef');
+};
 
 var meal = chef({
   dest: 'dist/',
@@ -28,14 +27,30 @@ var meal = chef({
   sass: {
     description: 'Runs sass, creates css source maps',
     src: 'styles/*',
-	config: {
+    config: {
       maps: 'maps/',
-	  cachebust: cachebust
-	}
+      cachebust: cachebust
+    }
   },
   jshint: {
     description: 'Runs jshint',
     src: 'js/*.js'
+  },
+  script: {
+    description: 'Build a minified Javascript bundle - the order of the js files is determined by browserify',
+    dest: 'js/',
+    config: {
+      partials: {
+        src: 'partials/*.html',
+        file: 'templateCachePartials.js',
+        moduleName: 'todoPartials',
+        prefix: '/partials/'
+      },
+      entries: './js/app.js',
+      paths: ['js/controllers/', 'js/services/', 'js/directives/'],
+      transform: ['browserify-ngannotate'],
+      cachebust: cachebust
+    }
   },
   karma: {
     description: 'Runs karma tests'
@@ -44,25 +59,11 @@ var meal = chef({
     description: 'Build and runs karma tests',
     series: ['script', 'karma']
   },
-  script: {
-    description: 'Build a minified Javascript bundle - the order of the js files is determined by browserify',
-    dest: 'js/',
-	config: {
-		partials: {
-			src: 'partials/*.html',
-			file: 'templateCachePartials.js',
-			moduleName: 'todoPartials',
-			prefix: '/partials/'
-		},
-		entries: './js/app.js',
-		paths: ['js/controllers/', 'js/services/', 'js/directives/'],
-		transform: ['browserify-ngannotate'],
-		cachebust: cachebust
-	}
-  },
   markup: {
     src: 'index.html',
-	$cachebust: cachebust
+    config: {
+      cachebust: cachebust
+    }
   },
   build: {
     description: 'Full build (except sprites), applies cache busting to the main page css and js bundles',
@@ -98,7 +99,7 @@ var meal = chef({
   },
   default: {
     description: 'Installs and builds everything, including sprites',
-    task: ['sprite', 'build', 'test']
+    task: ['sprite', 'build', 'karma']
   }
 
 });

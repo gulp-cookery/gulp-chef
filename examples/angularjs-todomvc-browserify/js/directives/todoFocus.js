@@ -1,4 +1,4 @@
-/* global angular */
+'use strict';
 
 /**
  * Directive that places focus on the element it is applied to when the
@@ -9,8 +9,6 @@ var angular = require('angular');
 
 angular.module('todomvc')
   .directive('todoFocus', function todoFocus($timeout) {
-    'use strict';
-
     return function (scope, elem, attrs) {
       scope.$watch(attrs.todoFocus, function (newVal) {
         if (newVal) {
