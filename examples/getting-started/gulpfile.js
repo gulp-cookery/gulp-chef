@@ -41,21 +41,21 @@ var COURSES = {
   ],
   configuration: {
     msg: [
-      'TODO: intro about the relationship between recipe and task name.',
+      'intro about the relationship between recipe and task name.',
       ''
     ],
     recipe: [
     ],
     glob: [
-      'TODO: print transformed configuration for all use case.',
+      'print transformed configuration for all use case.',
       ''
     ],
     path: [
-      'TODO: print transformed configuration for all use case.',
+      'print transformed configuration for all use case.',
       ''
     ],
     casscading: [
-      'TODO: show how the parent configuration inherited by child.',
+      'show how the parent configuration inherited by child.',
       ''
     ],
     _task_: [
