@@ -3,6 +3,7 @@
 var Sinon = require('sinon');
 var Chai = require('chai');
 var expect = Chai.expect;
+var test = require('mocha-cases');
 
 var base = process.cwd();
 
@@ -38,16 +39,99 @@ describe('Core', function () {
 			configurableTask = gulp.task('configurable-task');
 		});
 
+		describe('.getTaskRuntimeInfo()', function () {
+			var testCases = [{
+				name: 'should accept normal task name',
+				value: {
+					name: 'build'
+				},
+				expected: {
+					name: 'build'
+				}
+			}, {
+				name: 'should accept task name with space, underscore, dash',
+				value: {
+					name: '_build the-project'
+				},
+				expected: {
+					name: '_build the-project'
+				}
+			}, {
+				name: 'should accept . prefix and mark task hidden',
+				value: {
+					name: '.build'
+				},
+				expected: {
+					name: 'build',
+					visibility: '.'
+				}
+			}, {
+				name: 'should accept # prefix and mark task undefined',
+				value: {
+					name: '#build'
+				},
+				expected: {
+					name: 'build',
+					visibility: '#'
+				}
+			}, {
+				name: 'should throw if invalid name',
+				value: {
+					name: 'build?!'
+				},
+				error: Error
+			}, {
+				name: 'should throw if invalid name',
+				value: {
+					name: '?build'
+				},
+				error: Error
+			}, {
+				name: 'should also accept properties from config',
+				value: {
+					name: 'build',
+					description: 'description',
+					order: 999,
+					task: 'task',
+					visibility: '.'
+				},
+				expected: {
+					name: 'build',
+					description: 'description',
+					order: 999,
+					task: 'task',
+					visibility: '.'
+				}
+			}, {
+				name: 'should properties from raw-name override properties from config',
+				value: {
+					name: '#build',
+					description: 'description',
+					order: 999,
+					task: 'task',
+					visibility: '.'
+				},
+				expected: {
+					name: 'build',
+					description: 'description',
+					order: 999,
+					task: 'task',
+					visibility: '#'
+				}
+			}];
+
+			test(testCases, ConfigurableTaskFactory.getTaskRuntimeInfo);
+		});
+
 		describe('#create()', function () {
 			var taskInfo, taskConfig, recipe;
 
-			function done() {
-			}
+			function done() {}
 
 			beforeEach(function () {
 				taskInfo = {
 					name: 'configurable-task',
-					visibility: Configuration.CONSTANT.VISIBILITY.NORMAL
+					visibility: ConfigurableTaskFactory.CONSTANT.VISIBILITY.NORMAL
 				};
 
 				taskConfig = {
@@ -193,20 +277,22 @@ describe('Core', function () {
 		describe('#multiple()', function () {
 			describe('when take subTaskConfigs as an array', function () {
 				it('should returns an array', function () {
-					var subTaskConfigs = [
-						{ name: 'task-1' },
-						{ name: 'task-2' }
-					];
+					var subTaskConfigs = [{
+						name: 'task-1'
+					}, {
+						name: 'task-2'
+					}];
 					var actual = factory.multiple('', subTaskConfigs, {});
 
 					expect(actual).to.be.an('array');
 					expect(actual.length).to.equal(2);
 				});
 				it('should process each config defined in subTaskConfigs', function () {
-					var subTaskConfigs = [
-						{ name: 'task-1' },
-						{ name: 'task-2' }
-					];
+					var subTaskConfigs = [{
+						name: 'task-1'
+					}, {
+						name: 'task-2'
+					}];
 
 					Sinon.spy(factory, 'one');
 					factory.multiple('', subTaskConfigs, {});
@@ -214,10 +300,11 @@ describe('Core', function () {
 					factory.one.restore();
 				});
 				it('should give tasks names if not provided', function () {
-					var subTaskConfigs = [
-						{ name: 'task-1' },
-						{ options: {} }
-					];
+					var subTaskConfigs = [{
+						name: 'task-1'
+					}, {
+						options: {}
+					}];
 					var actual = factory.multiple('', subTaskConfigs, {});
 
 					expect(actual[0].displayName).to.be.a('string');
@@ -226,18 +313,18 @@ describe('Core', function () {
 				it('should dereference task references', function () {
 					var subTaskConfigs = [
 						{ name: 'task1' },
-						'gulp-task-by-ref',			// reference to registered gulp task
-						'configurable-task-by-ref',	// reference to registered configurable task
-						gulpTask,					// registered gulp task
-						configurableTask,			// registered configurable task
-						Sinon.spy()					// stand-alone gulp task (not registered to gulp)
+						'gulp-task-by-ref', // reference to registered gulp task
+						'configurable-task-by-ref', // reference to registered configurable task
+						gulpTask, // registered gulp task
+						configurableTask, // registered configurable task
+						Sinon.spy() // stand-alone gulp task (not registered to gulp)
 					];
 					var actual = factory.multiple('', subTaskConfigs, {});
 
 					expect(actual.length).to.equal(6);
 					expect(actual[0].displayName).to.equal('task1');
-					expect(actual[1].recipe.displayName).to.equal('gulp-task-by-ref');
-					expect(actual[2].recipe.displayName).to.equal('configurable-task-by-ref');
+					expect(actual[1].recipeInstance.displayName).to.equal('gulp-task-by-ref');
+					expect(actual[2].recipeInstance.displayName).to.equal('configurable-task-by-ref');
 					expect(actual[3].displayName).to.equal('gulp-task');
 					expect(actual[4].displayName).to.equal('configurable-task');
 					expect(actual[5].displayName).to.be.a('string');
@@ -267,8 +354,12 @@ describe('Core', function () {
 				});
 				it('should sort tasks by "order" if provided', function () {
 					var subTaskConfigs = {
-						'task-1': { order: 2 },
-						'task-2': { order: 1 }
+						'task-1': {
+							order: 2
+						},
+						'task-2': {
+							order: 1
+						}
 					};
 					var actual = factory.multiple('', subTaskConfigs, {});
 
@@ -278,9 +369,15 @@ describe('Core', function () {
 				it('should be order-stable: tasks not defined "order" property defaults to 0', function () {
 					var subTaskConfigs = {
 						'task-1': {},
-						'task-2': { order: 1 },
-						'task-3': { order: 2 },
-						'task-4': { order: 1 },
+						'task-2': {
+							order: 1
+						},
+						'task-3': {
+							order: 2
+						},
+						'task-4': {
+							order: 1
+						},
 						'task-5': 'gulp-task',
 						'task-6': {
 							order: 0,
@@ -299,12 +396,12 @@ describe('Core', function () {
 				});
 				it('should dereference task references', function () {
 					var subTaskConfigs = {
-						task1: {},							// sub-config task
-						task2: 'gulp-task-by-ref',			// reference to registered gulp task
-						task3: 'configurable-task-by-ref',	// reference to registered configurable task
-						task4: gulpTask,					// registered gulp task
-						task5: configurableTask,			// registered configurable task
-						task6: Sinon.spy()					// stand-alone gulp task (not registered to gulp)
+						task1: {}, // sub-config task
+						task2: 'gulp-task-by-ref', // reference to registered gulp task
+						task3: 'configurable-task-by-ref', // reference to registered configurable task
+						task4: gulpTask, // registered gulp task
+						task5: configurableTask, // registered configurable task
+						task6: Sinon.spy() // stand-alone gulp task (not registered to gulp)
 					};
 					var actual = factory.multiple('', subTaskConfigs, {});
 
