@@ -8,7 +8,7 @@ var _ = require('lodash');
 
 var base = process.cwd();
 
-var Configuration = require(base + '/lib/configuration');
+var sort = require(base + '/lib/configuration/sort');
 
 describe('Core', function () {
 	describe('Configuration', function () {
@@ -16,7 +16,7 @@ describe('Core', function () {
 			it('should accept empty config', function () {
 				var actual;
 
-				actual = Configuration.sort({}, {}, {}, {});
+				actual = sort({}, {}, {}, {});
 				expect(actual).to.deep.equal({
 					taskInfo: {},
 					taskConfig: {},
@@ -31,7 +31,7 @@ describe('Core', function () {
 				var actual, original;
 
 				original = _.cloneDeep(config);
-				actual = Configuration.sort({}, config, {}, {});
+				actual = sort({}, config, {}, {});
 				expect(actual).to.deep.equal({
 					taskInfo: {},
 					taskConfig: {
@@ -57,7 +57,7 @@ describe('Core', function () {
 				var actual, original;
 
 				original = _.cloneDeep(config);
-				actual = Configuration.sort({}, config, {}, null);
+				actual = sort({}, config, {}, null);
 				expect(actual).to.deep.equal({
 					taskInfo: {},
 					taskConfig: {
@@ -80,12 +80,12 @@ describe('Core', function () {
 			});
 			it('should throw if parent config not normalized', function () {
 				expect(function () {
-					Configuration.sort({}, {}, {
+					sort({}, {}, {
 						src: 'src'
 					}, {});
 				}).to.throw(TypeError);
 				expect(function () {
-					Configuration.sort({}, {}, {
+					sort({}, {}, {
 						dest: 'dist'
 					}, {});
 				}).to.throw(TypeError);
@@ -102,7 +102,7 @@ describe('Core', function () {
 				var actual, original;
 
 				original = _.cloneDeep(config);
-				actual = Configuration.sort({}, {}, config, {});
+				actual = sort({}, {}, config, {});
 				expect(actual).to.deep.equal({
 					taskInfo: {},
 					taskConfig: {
@@ -134,7 +134,7 @@ describe('Core', function () {
 
 				original = _.cloneDeep(config);
 				originalParent = _.cloneDeep(parent);
-				actual = Configuration.sort({}, config, parent, {});
+				actual = sort({}, config, parent, {});
 				expect(actual).to.deep.equal({
 					taskInfo: {},
 					taskConfig: {
@@ -185,7 +185,7 @@ describe('Core', function () {
 
 				original = _.cloneDeep(config);
 				originalParent = _.cloneDeep(parent);
-				actual = Configuration.sort({}, config, parent, schema);
+				actual = sort({}, config, parent, schema);
 
 				original = _.cloneDeep(config);
 				expect(actual).to.deep.equal({
@@ -217,7 +217,7 @@ describe('Core', function () {
 					description: 'extract title and description from schema if available'
 				};
 
-				expect(Configuration.sort({}, {}, {}, schema)).to.deep.equal({
+				expect(sort({}, {}, {}, schema)).to.deep.equal({
 					taskInfo: {
 						name: 'schema-extractor',
 						description: 'extract title and description from schema if available'
@@ -422,7 +422,7 @@ describe('Core', function () {
 				var actual, original;
 
 				original = _.cloneDeep(config);
-				actual = Configuration.sort({}, config, {}, schema);
+				actual = sort({}, config, {}, schema);
 				expect(actual).to.deep.equal({
 					taskInfo: {},
 					taskConfig: expected,
@@ -430,58 +430,6 @@ describe('Core', function () {
 					}
 				});
 				expect(config).to.deep.equal(original);
-			});
-		});
-		describe('.realize()', function () {
-			it('should call resolver function', function () {
-				var resolved, values, expected;
-
-				resolved = 'resolver called';
-				values = {
-					runtime: Sinon.spy(function () {
-						return resolved;
-					})
-				};
-				expected = {
-					runtime: resolved
-				};
-
-				expect(Configuration.realize(values)).to.deep.equal(expected);
-				expect(values.runtime.calledWith(values)).to.be.true;
-			});
-			it('should render template using given values', function () {
-				var rootResolver = function () {
-					return 'value from rootResolver()';
-				};
-				var nestResolver = function () {
-					return 'value from nestedResolver()';
-				};
-				var template = 'Hello {{plainValue}}! {{nested.plainValue}}, {{resolver}} and {{nested.resolver}}.';
-				var realized = 'Hello World! Inner World, value from rootResolver() and value from nestedResolver().';
-				var values = {
-					message: template,
-					nested: {
-						message: template,
-						resolver: nestResolver,
-						plainValue: 'Inner World'
-					},
-					resolver: rootResolver,
-					plainValue: 'World'
-				};
-				var expected = {
-					message: realized,
-					nested: {
-						message: realized,
-						resolver: nestResolver(),
-						plainValue: 'Inner World'
-					},
-					resolver: rootResolver(),
-					plainValue: 'World'
-				};
-				var actual;
-
-				actual = Configuration.realize(values);
-				expect(actual).to.deep.equal(expected);
 			});
 		});
 	});
