@@ -78,18 +78,6 @@ describe('Core', function () {
 				});
 				expect(config).to.deep.equal(original);
 			});
-			it('should throw if parent config not normalized', function () {
-				expect(function () {
-					sort({}, {}, {
-						src: 'src'
-					}, {});
-				}).to.throw(TypeError);
-				expect(function () {
-					sort({}, {}, {
-						dest: 'dist'
-					}, {});
-				}).to.throw(TypeError);
-			});
 			it('should inherit parent config', function () {
 				var config = {
 					src: {
