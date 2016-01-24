@@ -7,27 +7,34 @@ var browserSync = require('browser-sync');
 var meal = chef({
   src: 'src/',
   dest: 'dist/',
-  clean: {},
+  clean: {
+    description: 'Clean up builds.',
+  },
   make: {
     assets: {
+      description: 'Copy asserts.',
       src: ['**/*.txt', '.htaccess'],
       recipe: 'copy'
     },
     images: {
+      description: 'Copy images.',
       src: 'images/**/*.*',
       recipe: 'copy'
     },
     markups: {
+      description: 'Copy markups.',
       src: 'index.html',
       recipe: 'copy'
     },
     scripts: {
+      description: 'Concat scripts.',
       src: 'scripts/**/*.js',
       '.concat': {
         file: 'script.js'
       }
     },
     styles: {
+      description: 'Concat styles.',
       src: ['styles/normalize.css', 'styles/styles.css'],
       '.concat': {
         file: 'style.css'
@@ -36,7 +43,8 @@ var meal = chef({
   },
   build: ['clean', 'make'],
   serve: {
-    browserSync: function () {
+    description: 'Launch browser and watch files.',
+    '.browserSync': function () {
       browserSync.init({
         server: this.config.dest.path
       });
