@@ -84,7 +84,7 @@
     "gulp-load-plugins": "^1.1.0",
     "gulp-util": "^3.0.7",
     "gulplog": "^1.0.0",
-    "json-normalizer": "^0.3.3",
+    "json-normalizer": "^0.3.5",
     "json-regulator": "^0.1.14",
     "lodash": "^4.0.0",
     "require-dir": "^0.3.0",
