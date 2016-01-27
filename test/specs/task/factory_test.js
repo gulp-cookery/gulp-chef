@@ -63,7 +63,7 @@ describe('Core', function () {
 				},
 				expected: {
 					name: 'build',
-					visibility: '.'
+					visibility: 'hidden'
 				}
 			}, {
 				name: 'should accept # prefix and mark task undefined',
@@ -72,7 +72,7 @@ describe('Core', function () {
 				},
 				expected: {
 					name: 'build',
-					visibility: '#'
+					visibility: 'disabled'
 				}
 			}, {
 				name: 'should throw if invalid name',
@@ -93,14 +93,14 @@ describe('Core', function () {
 					description: 'description',
 					order: 999,
 					task: 'task',
-					visibility: '.'
+					visibility: 'hidden'
 				},
 				expected: {
 					name: 'build',
 					description: 'description',
 					order: 999,
 					task: 'task',
-					visibility: '.'
+					visibility: 'hidden'
 				}
 			}, {
 				name: 'should properties from raw-name override properties from config',
@@ -109,14 +109,14 @@ describe('Core', function () {
 					description: 'description',
 					order: 999,
 					task: 'task',
-					visibility: '.'
+					visibility: 'hidden'
 				},
 				expected: {
 					name: 'build',
 					description: 'description',
 					order: 999,
 					task: 'task',
-					visibility: '#'
+					visibility: 'disabled'
 				}
 			}];
 
