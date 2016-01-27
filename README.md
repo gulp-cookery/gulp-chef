@@ -375,7 +375,7 @@ var meals = chef({
     }
 };
 ```
-In this example the `concat` task is invisible while its sub task `coffee` and `js` is still visible.
+In this example the `concat` task is invisible whereas its sub task `coffee` and `js` is still visible.
 
 For simplicity, you can prefix a task's name with a "`.`" character to hide it, just as [dot-files](https://en.wikipedia.org/wiki/Dot-file).
 ``` javascript
@@ -444,6 +444,75 @@ var meals = chef({
 };
 ```
 This generates exactly the same results as previous example.
+
+### Passing configuration values
+
+As you may noted: properties in a configuration entry can be task properties and sub tasks. How do you distinguish each and passing configuration values to your recipe function? The reserved "`config`" [keyword](#Reserved_Configuration_Properties_(Keywords)) is exactly reserved for this purpose.
+``` javascript
+{
+    scripts: {
+        config: {
+            file: 'bundle.js'
+        }
+    }
+```
+
+Sometimes writing a "`config`" entry solely for one property is too over, if this is the case, you can prefix a "`$`" character to any property name, and those properties will be recognized as configuration values rather then sub tasks.
+
+``` javascript
+{
+    scripts: {
+        $file: 'bundle.js'
+    }
+```
+Now the property "`$file`" will be recognized as a configuration value, and you can use "`$file`"  and "`file`" interchangeable in your recipe, though  "`file`" is recommended to allow using the "`config`" keyword.
+
+### Reserved Task Properties (Keywords)
+These keywords are reserved for task properties, you can't use them as task name.
+
+#### name
+Name of the task. Only required when defining task in an array and you want to run it from CLI.
+
+#### description
+Description of the task.
+
+#### config
+Configuration values of the task.
+
+#### src
+The path or glob that files should be loaded. Normally you define paths in parent task and files in leaf tasks. Files defined in sub tasks inherits parent's path. The property value can be any valid glob, or array of globs, or of the form `{ globs: [], options: {} }`, and will be passed to task with the later form.
+
+#### dest
+The path where files should be written. Path should be resolved to a single directory. Path defined in sub tasks inherits parent's path. The property value can be any valid path string, or of the form `{ path: '', options: {} }`, and will be passed to task with the later form.
+
+#### order
+Execution order of the task. Only required when you are defining tasks in object and want them be executed in series. Order values are used for sorting, so don't have to be contiguous.
+
+#### recipe
+Recipe module name to use. Defaults to the same value of `name`.
+
+#### plugin
+A plugin module name to use.
+
+#### task
+Define a plain function, inline function, or references to other tasks. If provided as an array, child tasks are forced to run in series, otherwise child tasks are running in parallel.
+
+#### parallel
+Instruct sub tasks to run in parallel. Sub tasks can be defined in an array or object. Note sub tasks defined in an object are executed in parallel by default.
+
+#### series
+Instruct sub tasks to run in series. Sub tasks can be defined in an array or object. Note sub tasks defined in an array are executed in series by default.
+
+#### spit
+Instruct task to write file(s) out if was optional.
+
+#### visibility
+Visibility of the task. Valid values are `normal`, `hidden`, and `disabled`.
+
+
+### Dynamic Configuration / Template Variable Realizing
+
+Some stream processors (e.g., "gulp-ccr-eachdir") programmatically modify and/or generate new configurations. The new configuration values are injected to recipe's configuration at runtime. And templates with `{{var}}` syntax are realized with resolved variables.
 
 ### Conditional Configurations
 Gulp-chef supports conditional configurations via rumtime environment modes.
@@ -662,6 +731,10 @@ However, you can't use [keywords](#Reserved_Configuration_Properties_(Keywords))
 
 There are 3 kinds of recipes: "__task__", "__stream processor__", and "__flow controller__".
 
+Most of the time, you want to write `task` recipes. Task recipes are the actual task that do things, whereas `stream processor`s and `flow controller`s manipulate other tasks.
+
+For more information about `stream processor` and `flow controller`, or you are willing to share your recipes, you can write them as plugins. Check out [Writing Plugins](#Writing_Plugins) for how.
+
 If you write recipes only for your own project use, you can put them in sub folders within your project's root:
 
 type            |folder
@@ -669,8 +742,6 @@ type            |folder
 task            |gulp, gulp/tasks
 stream processor|gulp/streams
 flow controller |gulp/flows
-
-If you are willing to share your recipes, you can write them as plugins. Check out [Writing Plugins](#Writing_Plugins) for how.
 
 If your recipes do not need configuration, you can write them just as normal gulp tasks. That is, your existing gulp tasks are already reusable recipes! You just need to put them in a standalone module file, and put to the "gulp" folder within your project's root folder.
 
@@ -711,64 +782,18 @@ var meals = chef({
 });
 ```
 
-### Dynamic Configuration / Template Variable Realizing
-
-Some stream processors (e.g., "gulp-ccr-eachdir") programmatically modify and/or generate new configurations. The new configuration values are injected to recipe's configuration at runtime. And templates with `{{var}}` syntax are realized with resolved variables.
-
 ### Development / Production Mode
 
 Configurable recipes don't have to worry about development/production mode. Configurations are resolved for that specific mode already.
 
-### Reserved Configuration Properties (Keywords)
-
-#### name
-Name of the task. Only required when defining task in an array and you want to run it from CLI.
-
-#### description
-Description of the task.
-
-#### src
-Define source path or files. Normally you define paths in parent task and files in leaf tasks. Files defined in sub tasks inherits parent's path. The property value can be any valid glob, or array of globs, or of the form `{ globs: [], options: {} }`, and will be passed to task with the later form.
-
-#### dest
-Define destination path. Path should be resolved to a single directory. Path defined in sub tasks inherits parent's path. The property value can be any valid path string, or of the form `{ path: '', options: {} }`, and will be passed to task with the later form.
-
-#### order
-Execution order of the task. Only required when you are defining tasks in object and want them be executed in series. The values are used for sorting, so don't have to be contiguous.
-
-#### recipe
-Recipe module name to use. Defaults to the same value of `name`.
-
-#### task
-Define a plain, inline or reference task.
-
-#### parallel
-Instruct sub tasks to run in parallel. Sub tasks can be defined in an array or object. Note sub tasks defined in an object are executed in parallel by default.
-
-#### series
-Instruct sub tasks to run in series. Sub tasks can be defined in an array or object. Note sub tasks defined in an array are executed in series by default.
-
-#### visibility
-Visibility of the task. Valid values are `normal`, `hidden`, and `disabled`.
-
-#### options
-Additional options to pass to task. Usually used by underling gulp plugins.
 
 ## Build-in Recipes
-
-### Task
 
 #### clean
 Clean up `dest` folder.
 
 #### copy
 Copy assets defined by`src` to `dest` folder, optionally remove or replace relative paths for files.
-
-
-### Stream Processor
-A stream processor manipulates its sub tasks' input and/or output streams.
-
-In the "Configurable Recipe" section, that said "configurable task" is simply a wrapper that calls "configurable recipe" with exactly the same name. That's not entirely true. Stream processor may not has the same name as "configurable task".
 
 #### merge
 A merge stream processor creates a new stream, that ends only when all its sub tasks' stream ends.
@@ -783,24 +808,115 @@ See [streamqueue](https://www.npmjs.com/package/streamqueue) for details.
 #### pipe
 Provides the same functionality of `gulp.pipe()`. Pipe streams from one sub task to another.
 
-
-### Flow Controller
-A flow controller takes care of when to execute, and execution order of its sub tasks and don't care their input and/or output streams.
-
 #### parallel
-Run sub tasks in parallel, without waiting until the previous task has completed.
+A parallel flow controller runs sub tasks in parallel, without waiting until the previous task has completed.
 
 #### series
-Run sub tasks in series, each one running once the previous task has completed.
+A series flow controller runs sub tasks in series, each one running once the previous task has completed.
 
 #### watch
-Watch source files of specific tasks and their descendants and run corresponding task when a file changes.
+A watch flow controller watches source files of specific tasks and their descendants and run corresponding task when a file changes.
 
 ## Writing Plugins
 
+### Plugin Types
+
+Aa said in "[Writing Recipes](#Writing_Recipes)" section, there are 3 kinds of recipes: "__task__", "__stream processor__", and "__flow controller__". Gulp-chef need to know which type the plugin is. Since a plugin is installed via `npm install`, plugin must denote which type it is.
+
+``` javascript
+function myPlugin(done) {
+    done();
+}
+
+module.exports = myPlugin;
+module.exports.type = 'flow';
+```
+Valid types are "`flow`", "`stream`", and "`task`".
+
 ### Configuration Schema
 
-To simplify the processing of the configuration, gulp-chef uses "[json-normalizer](https://github.com/amobiz/json-normalizer)" to normalize JSON configurations. You can define your configuration schema to support property alias, type conversion, and default values, etc.
+To simplify the processing of configuration, gulp-chef encourages using "[JSON Schema](http://json-schema.org/)" to validate and transform configuration. Gulp-chef use "[json-normalizer](https://github.com/amobiz/json-normalizer)" to provide extend JSON schema functionality and to normalize configuration. You can define your configuration schema to support property alias, type conversion, and default value, etc. Check out "[json-normalizer](https://github.com/amobiz/json-normalizer)" for how to extend your schema.
+
+The schema can show up in `gulp --recipe <recipe-name>` command, so user can figure out how to write configuration without checking out the document.
+
+``` javascript
+var gulpif = require('gulp-if');
+var concat = require('gulp-concat');
+var sourcemaps = require('gulp-sourcemaps');
+var uglify = require('gulp-uglify');
+
+function myPlugin() {
+    var gulp = this.gulp;
+    var config = this.config;
+    var options = this.config.options || {};
+    var maps = (options.sourcemaps === 'external') ? './' : null;
+
+    return gulp.src(config.src.globs)
+        .pipe(gulpif(config.sourcemaps, sourcemaps.init())
+        .pipe(concat(config.file))
+        .pipe(gulpif(options.uglify, uglify()))
+        .pipe(gulpif(options.sourcemaps, sourcemaps.write(maps)))
+        .pipe(gulp.dest(config.dest.path));
+}
+
+module.exports = myPlugin;
+module.exports.type = 'task';
+module.exports.schema = {
+    title: 'My Plugin',
+    description: 'My first plugin',
+    type: 'object',
+    properties: {
+        src: {
+            type: 'glob'
+        },
+        dest: {
+            type: 'path'
+        },
+        file: {
+            description: 'Output file name',
+            type: 'string'
+        },
+        options: {
+            type: 'object',
+            properties: {
+                sourcemaps: {
+                    description: 'Sourcemap support',
+                    alias: ['sourcemap'],
+                    enum: [false, 'inline', 'external'],
+                    default: false
+                },
+                uglify: {
+                    description: 'Uglify bundle file',
+                    type: 'boolean',
+                    default: false
+                }
+            }
+        }
+    },
+    required: ['file']
+};
+```
+First note that since "`file`" property is required, there is no need to check if "`file`" property was provided in plugin.
+
+Also note the "`sourcemaps`" options has alias "`sourcemap`", user can use both property name interchangeable, whereas the plugin needs just to deal with "`sourcemaps`".
+
+#### Extended Data Types
+
+Gulp-chef provides two extended data type for JSON schema: "`glob`" and "`path`".
+
+##### glob
+
+##### path
+
+### Writing Stream Processor
+A stream processor manipulates its sub tasks' input and/or output streams.
+
+In the "Configurable Recipe" section, that said "configurable task" is simply a wrapper that calls "configurable recipe" with exactly the same name. That's not entirely true. Stream processor may not has the same name as "configurable task".
+
+### Writing Flow Controller
+A flow controller takes care of when to execute, and execution order of its sub tasks and don't care their input and/or output streams.
+
+
 
 ### Test Plugin
 
@@ -826,36 +942,6 @@ To simplify the processing of the configuration, gulp-chef uses "[json-normalize
 
 #### gulp-ccr-watch
 
-
-## List of Reserved Keywords
-These keywords are reserved for task properties, you can't use them as task name.
-
-### config
-Description of this task.
-### description
-Description of this task.
-### dest
-The path where files should be written.
-### name
-Name of this task.
-### order
-Series execution order of this task. Just used to sort, don't have to be unique or continuous.
-### plugin
-A plugin module name to use.
-### parallel
-Same as task, but child tasks are forced to run in parallel.
-### recipe
-The recipe to use, if not same as task name.
-### series
-Same as task, but child tasks are forced to run in series.
-### spit
-Instruct recipe or task to write file(s) out if was optional.
-### src
-The path or glob that files should be loaded.
-### task
-Inline function(s) or reference(s) to other task(s). If provided as an array, child tasks are forced to run in series. If an object, child tasks are forced to run in parallel.
-### visibility
-Visibility of this task. Valid values are "visible" and "hidden".
 
 ## List of CLI Options
 
