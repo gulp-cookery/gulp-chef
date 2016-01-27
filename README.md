@@ -72,7 +72,7 @@ function gulpTask(done) {
 }
 ```
 
-You register a gulp task using `gulp.task()` method, and then run it from CLI.
+You register a gulp task using `gulp.task()` method, and then run it in CLI.
 ``` javascript
 gulp.task(gulpTask);
 ```
@@ -120,7 +120,11 @@ scripts.call({
 }, done);
 ```
 
-Note the `chef()` function returns a registry, you can call `gulp.registry()` to register all available tasks in the registry.
+Note the `chef()` function returns a registry, you can call `gulp.registry()` to register all available tasks in the registry. Once you call `gulp.registry()`, you can run tasks in CLI.
+
+``` bash
+$ gulp scripts
+```
 
 Also note that in this example, the "`scripts`" entry in the configuration is the module name of a recipe, that must be present in your project's "`gulp`" folder, or of a plugin, that must be installed. Check out [Writing Recipes](#Writing_Recipes) and [Using Plugins](#Using_Plugins) for more information.
 
@@ -547,6 +551,8 @@ Not your style? There is other ways you can overcome this behavior.
 }
 ```
 
+Note: to minimize the chance to get into name collision and to simplify task tree, some tasks are hidden by default. Namely the __stream processor__ and the __flow controller__. See [Writing Stream Processor](#Writing_Stream_Processor) and [Writing Flow Controller](#Writing_Flow_Controller) for more information.
+
 ### Using Gulp Plugins
 
 Sometimes your task is merely calling a plain gulp plugin. In this case, you don't even bother to write a recipe, you can use "`plugin`" keyword to reference the plugin.
@@ -646,6 +652,10 @@ You can write your configuration like this:
     }
 }
 ```
+
+#### Smart Configuration Properties
+
+For convenience sake, when a configuration entry uses any of "`task`", "`series`",  "`parallel`",  and "`plugin`" keywords, it is considered there is no ambiguous between sub tasks and properties, and all non-reserved properties will be recognized as the task's properties.
 
 ### Dynamic Configuration / Template Variable Realizing
 
@@ -1290,15 +1300,73 @@ module.exports = function () {
 
 A stream processor manipulates its sub tasks' input and/or output streams.
 
-In the "Configurable Recipe" section, that said "configurable task" is simply a wrapper that calls "configurable recipe" with exactly the same name. That's not entirely true. Stream processor may not has the same name as "configurable task".
+A stream processor may generate streams itself, or from it's sub tasks. A stream processor can pass stream between sub tasks; or merge, or queue streams from sub tasks, any thing you can imaging.
+
+A stream processor takes a "`tasks`" property from its context. Sub tasks are passed to stream processor via the "tasks" array.
+
+When invoking the sub task, a stream processor must setup a context for the sub task.
+
+``` javascript
+module.exports = function () {
+    var gulp = this.gulp;
+    var config = this.config;
+    var tasks = this.tasks;
+    var context, stream;
+
+	context = {
+	    gulp: gulp,
+	    config: {
+	        // inject configuration values for sub task
+	    }
+	};
+    stream = tasks[0].call(context);
+    // ...
+    return stream;
+};
+```
+
+Note that parent can inject dynamic configuration to sub tasks. Only new value can be injected: the injected value won't overwrite sub task's existing configuration value.
+
+When passing stream to the sub task, a stream processor must setup a context with "`upstream`" property for the sub task.
+
+``` javascript
+module.exports = function () {
+    var gulp = this.gulp;
+    var config = this.config;
+    var tasks = this.tasks;
+    var context, stream, i;
+
+	context = {
+	    gulp: gulp,
+	    config: {
+	    }
+	};
+    stream = gulp.src(config.src.globs, config.src.options);
+	for (i = 0; i < tasks.length; ++i) {
+	    context.upstream = stream;
+    	stream = tasks[i].call(context);
+	}
+	return stream;
+};
+```
+
+If a stream processor expecting its sub task returning a stream, and sub task don't, it should throw an exception.
+
+Note: According to the [guidelines](https://github.com/gulpjs/gulp/blob/4.0/docs/writing-a-plugin/guidelines.md) about writing gulp plugin that said: "__do not throw errors inside a stream__". No, you shouldn't. But since we are between streams, not inside a stream, it's OK to throw.
+
+You can use [gulp-ccr-stream-helper](https://github.com/gulp-cookery/gulp-ccr-stream-helper) to help invoking sub tasks and checking results.
+
+Check out [gulp-ccr-merge](https://github.com/gulp-cookery/gulp-ccr-merge), and [gulp-ccr-queue](https://github.com/gulp-cookery/gulp-ccr-queue) for example.
 
 ### Writing Flow Controller
 
 A flow controller takes care of when to execute, and execution order of its sub tasks and don't care their input and/or output streams.
 
+There is little limitation on flow controller. The only rule is a flow controller must ensure its sub tasks ended properly, say, calling the "`done()`" callback, returning a stream or a promise, etc. Check out [gulp-ccr-parallel](https://github.com/gulp-cookery/gulp-ccr-parallel), [gulp-ccr-series](https://github.com/gulp-cookery/gulp-ccr-series), and [gulp-ccr-watch](https://github.com/gulp-cookery/gulp-ccr-watch) for example.
 
-### Test Plugin
+### Testing Plugin
 
+It is recommended you start writing your plugin as a local recipe, and transform to a plugin when you think it is done. Most recipes are data-driven, if it is your case, maybe you want give [mocha-cases](https://github.com/amobiz/mocha-cases) a shot.
 
 ### List of Reserved Task Properties (Keywords)
 
@@ -1361,5 +1429,24 @@ Visibility of the task. Valid values are `normal`, `hidden`, and `disabled`.
 
 ### --task
 
+Look up a task and display its description and configurations.
+
+``` bash
+$ gulp --task <task-name>
+```
+
 ### --recipe
 
+List available recipes, including all build-in recipes, local recipes, and installed plugins.
+
+You can use "`--recipes`",  "`--recipe`",  and "`--r`" interchangeable.
+
+``` bash
+$ gulp --recipes
+```
+
+Look up a recipe and display its description and configuration schema if available.
+
+``` bash
+$ gulp --recipe <recipe-name>
+```
