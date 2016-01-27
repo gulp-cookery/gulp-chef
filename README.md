@@ -7,11 +7,13 @@ This project is still in early development stage and likely has some bugs at the
 ## Getting Started
 
 ### Install gulp cli 4.0 globally
+
 ``` bash
 npm install -g "gulpjs/gulp-cli#4.0"
 ```
 
 ### Install gulp 4.0 in your project's devDependencies
+
 ``` bash
 npm install --save-dev "gulpjs/gulp#4.0"
 ```
@@ -19,6 +21,7 @@ npm install --save-dev "gulpjs/gulp#4.0"
 See this [tutorial](http://blog.reactandbethankful.com/posts/2015/05/01/how-to-install-gulp-4/) for detailed installation instructions.
 
 ### Install gulp-chef in your project's devDependencies
+
 ``` bash
 $ npm install --save-dev gulp-chef
 ```
@@ -60,6 +63,7 @@ $ gulp
 
 ### Gulp Task
 A gulp task is a plain JavaScript function that returns promises, observables, child processes or streams, or call `done()` callback when finished. Starting from gulp 4.0, a gulp task takes `undefined` as context.
+
 ``` javascript
 function gulpTask(done) {
     assert(this === null);
@@ -80,6 +84,7 @@ $ gulp gulpTask
 ### Configurable Task
 
 A configurable task has signature same as normal gulp task, and can be used just as a normal gulp task. But, were called with an object: `{ gulp, config, upstream }` as context.
+
 ``` javascript
 // Note: You don't write configurable task but configuration.
 // The plugin generates configurable task for you.
@@ -89,6 +94,7 @@ function configurableTask(done) {
 ```
 
 You don't write configurable tasks, instead, you create a configurable task by defining a configuration, and call `chef()` function.
+
 ``` javascript
 var gulp = require('gulp');
 var chef = require('gulp-chef');
@@ -98,9 +104,12 @@ var meals = chef({
         dest: 'dist/'
     }
 });
+
 gulp.registry(meals);
 ```
-This generates a configurable task called "`scripts`" for you, and can be accessed via `meals.get('scripts')`. The configurable task will be called with the configuration defined with it, some kind of like this:
+
+This generates a configurable task called "`scripts`" for you, and can be accessed via `meals.get('scripts')`. When invoked, the configurable task will be called with the configuration defined with it, some kind of like this:
+
 ``` javascript
 scripts.call({
     gulp: gulp,
@@ -113,24 +122,33 @@ scripts.call({
 
 Note the `chef()` function returns a registry, you can call `gulp.registry()` to register all available tasks in the registry.
 
+Also note that in this example, the "`scripts`" entry in the configuration is the module name of a recipe, that must be present in your project's "`gulp`" folder, or of a plugin, that must be installed. Check out [Writing Recipes](#Writing_Recipes) and [Using Plugins](#Using_Plugins) for more information.
+
 ### Configurable Recipe
 
-A configurable recipe is the actual function that do things, and also has signature same as normal gulp task. A configurable recipe is the actual __recipe__ you want to write and reuse. In fact, a "[configurable task](#Configurable_Task)" is simply a wrapper that calls "configurable recipe" with exactly the same name.
+A configurable recipe is the actual __recipe__ you want to write and reuse, and also has the same signature as normal gulp task. In fact, a "[configurable task](#Configurable_Task)" is simply a wrapper that calls "configurable recipe" with exactly the same name.
+
 ``` javascript
-function configurableRecipe(done) {
+function scripts(done) {
+    // Note: you have asscess to the gulp instance.
     var gulp = this.gulp;
+    // Note: you can access configuration via 'config' property.
     var config = this.config;
 
     // do things ...
+
     done();
 }
 ```
 
 ## Writing Configurations
 
+A configuration is a plain JSON object. Each entries and nested entries are either "configuration property" or "sub task".
+
 ### Nesting Task
 
 Tasks can be nested. Sub tasks lexically (or so called "cascading") inherits its parent's configurations. And even better, for some predefined properties, e.g. "`src`", "`dest`", paths are joined automatically.
+
 ``` javascript
 var meals = chef({
     src: 'src/',
@@ -145,11 +163,13 @@ var meals = chef({
     }
 });
 ```
+
 This creates __3__ configurable tasks for you: `build`, `scripts` and `styles`.
 
 ### Parallel Tasks
 
 In the above example, when you run `build`, its sub tasks `scripts` and `styles` will be executed in __parallel__, and be called with configurations like this:
+
 ``` javascript
 scripts: {
     src: 'src/**/*.js',
@@ -164,6 +184,7 @@ styles: {
 ### Series Tasks
 
 If you want sub tasks be executed in __series__, you can use "`series`" __flow controller__, and add "`order`" property to them:
+
 ``` javascript
 var meals = chef({
     src: 'src/',
@@ -182,7 +203,9 @@ var meals = chef({
     }
 });
 ```
-However, if you forgot to use "`series`" __flow controller__, and just put "`order`" property, child tasks won't execute in series.
+
+However, if you forgot to use "`series`" __flow controller__, but just put "`order`" property, child tasks won't execute in series.
+
 ``` javascript
 var meals = chef({
     src: 'src/',
@@ -199,9 +222,11 @@ var meals = chef({
     }
 });
 ```
-In this example, `scripts` and `styles` task are executed in parallel.
 
-There is a simpler way to execute child tasks in series: just put sub task configurations in an array:
+In this example, `scripts` and `styles` task will be executed in parallel.
+
+There is a simpler way to execute child tasks in series: put sub task configurations in an array:
+
 ``` javascript
 var meals = chef({
     src: 'src/',
@@ -216,9 +241,12 @@ var meals = chef({
 };
 ```
 
+Looks funny? Well, read on.
+
 ### Referencing Task
 
-You can reference other task by its name.
+You can reference other task by its name. Reference can be forward and backward.
+
 ``` javascript
 var meals = chef({
     src: 'src/',
@@ -233,11 +261,13 @@ var meals = chef({
     build: ['clean', 'scripts', 'styles']
 };
 ```
-Referencing tasks won't generate new task names, so you can't run them in console. In this example, only `clean`, `scripts`, `styles` and `build` task were generated.
 
-As said previously, sub tasks lexically inherits its parent's configurations, since refered tasks are not defined under the referencing task, they won't inherit its static configuration. However, dynamic generated configurations are still injected to refered tasks. See [Dynamic Configuration](#Dynamic_Configuration) for detail.
+Referencing tasks won't generate new tasks, so you can't run them in CLI. In this example, only `clean`, `scripts`, `styles` and `build` task were generated.
+
+As said previously, sub tasks lexically inherits their parent's configurations, since referred tasks are not defined under the referencing task, they won't inherit its static configuration. However, dynamic generated configurations are still injected to refered tasks. See [Dynamic Configuration](#Dynamic_Configuration_Template_Variable_Realizing) for detail.
 
 Note in the above example, `clean`, `scripts`, and `styles` are in an array, so they will be executed in series. You can use "`parallel`" __flow controller__ to change this default behavior.
+
 ``` javascript
 var meals = chef({
     src: 'src/',
@@ -254,6 +284,7 @@ var meals = chef({
 ```
 
 Or you can put them into a common parent, so they will be executed in parallel by default.
+
 ``` javascript
 var meals = chef({
     src: 'src/',
@@ -272,6 +303,7 @@ var meals = chef({
 ```
 
 You can use "`task`" property to specify the referred tasks, so referencing tasks can have their own configurations.
+
 ``` javascript
 var meals = chef({
     src: 'src/',
@@ -296,7 +328,9 @@ var meals = chef({
 ```
 
 ### Plain / Inline Function
+
 Tasks can be a plain JavaScript functions and be referenced directly or defined inline anonymously.
+
 ``` javascript
 function clean() {
     return del(this.config.dest.path);
@@ -312,9 +346,11 @@ var meals = chef({
     build: [clean, { parallel: ['scripts', 'styles'] }]
 };
 ```
+
 Note in this example, since `clean` was never defined in configuration, it is never exposed, i.e., can't run in CLI. The other thing to note is that even plain functions are called in the `{ gulp, config, upstream }` context.
 
 You can use "`task`" property to specify the plain/inline functions, so referencing tasks can have their own configurations too.
+
 ``` javascript
 function clean() {
     return del(this.config.dest.path);
@@ -350,12 +386,15 @@ var meals = chef({
     }
 };
 ```
+
 Note that in contrast to previous example, there is a `clean` task in configuration in this example, so it will be exposed and can run in CLI.
 
 ### Invisible Task
+
 Sometimes there is tasks that never need to run in CLI. An invisible task do not expose itself to CLI and can't be referenced. Hiding a task won't affect its sub tasks: sub tasks still inherit its configuration. An invisible task is still functional and can be invoked from its parent task.
 
 To hide a task from expose to CLI, add a "`visibility`" property with "`hidden`" value to its configuration.
+
 ``` javascript
 var meals = chef({
     src: 'src/',
@@ -375,9 +414,11 @@ var meals = chef({
     }
 };
 ```
+
 In this example the `concat` task is invisible whereas its sub task `coffee` and `js` is still visible.
 
 For simplicity, you can prefix a task's name with a "`.`" character to hide it, just as [dot-files](https://en.wikipedia.org/wiki/Dot-file).
+
 ``` javascript
 var meals = chef({
     src: 'src/',
@@ -396,13 +437,15 @@ var meals = chef({
     }
 };
 ```
+
 This generates exactly the same results as previous example.
 
-
 ### Disabled Task
+
 Sometimes when you are tweaking gulpfile.js, you need to disable some tasks to figure out where is the source of problems. Disabling a task, meaning the task itself along with all its sub tasks are not defined at all.
 
 To disable a task, add a "`visibility`" property with "`disabled`" value to its configuration.
+
 ``` javascript
 var meals = chef({
     src: 'src/',
@@ -422,9 +465,11 @@ var meals = chef({
     }
 };
 ```
+
 In this example the `coffee` task is disabled.
 
 For simplicity, you can prefix a task's name with a "`#`" character to disable it, just as you write comments in a bash script.
+
 ``` javascript
 var meals = chef({
     src: 'src/',
@@ -443,11 +488,90 @@ var meals = chef({
     }
 };
 ```
+
 This generates exactly the same results as previous example.
 
-### Passing configuration values
+### Handling Name Collisions
 
-As you may noted: properties in a configuration entry can be task properties and sub tasks. How do you distinguish each and passing configuration values to your recipe function? The reserved "`config`" [keyword](#Reserved_Configuration_Properties_(Keywords)) is exactly reserved for this purpose.
+It is recommended that you name all your task in unique, distinct names.
+
+However, if you have many tasks, there is a great chance that more than one task utilize a same recipe. And by default, task name is exactly same as recipe name. Then how gulp-chef generate task names when this happens? It automaticly prefix task names with their parent's name, like this: "`make:scripts:concat`".
+
+In fact, you can turn this behavior on by default using "`exposeWithPrefix`" settings. The default setting is "`auto`". You can set to "`true`" to turn it on.
+
+``` javascript
+var ingredients = { ... };
+var settings = { exposeWithPrefix: true };
+var meals = chef(ingredients, settings);
+```
+
+Not your style? There is other ways you can overcome this behavior.
+
+#### Use a new parent and hide the name collision task
+
+``` javascript
+{
+    scripts: {
+        concatScripts: {
+            '.concat': {
+                file: 'bundle.js'
+            }
+        }
+    },
+    styles: {
+        concatStyles: {
+            '.concat': {
+                file: 'main.css'
+            }
+        }
+    }
+}
+```
+
+#### Use `recipe` keyword
+
+``` javascript
+{
+    scripts: {
+        concatScripts: {
+            recipe: 'concat',
+            file: 'bundle.js'
+        }
+    },
+    styles: {
+        concatStyles: {
+            recipe: 'concat',
+            file: 'main.css'
+        }
+    }
+}
+```
+
+### Using Gulp Plugins
+
+Sometimes your task is merely calling a plain gulp plugin. In this case, you don't even bother to write a recipe, you can use "`plugin`" keyword to reference the plugin.
+
+``` javascript
+{
+    concat: {
+        plugin: 'gulp-concat',
+        options: 'bundle.js'
+    }
+}
+```
+
+The plugin property accepts "`string`" and "`function`" value. When string provided, it tries to "`require()`" the module. The "`plugin`" keyword expects an optional "`options`" configuration value, and pass to the plugin function if provided.
+
+You can apply the "`plugin`" keyword to any gulp plugin that takes 0 or 1 parameter and returns a stream or a promise. Plugins must be installed using `npm install`.
+
+Don't get this confused with [plugins for gulp-chef](#Using_Plugins), that stand for "Cascading Configurable Recipe for Gulp", or "gulp-ccr" for sort.
+
+### Passing Configuration Values
+
+As you may noted: properties in a configuration entry can be either task properties and sub tasks. How do you distinguish each one? The general rule is: except the  [keyword](#List_of_Reserved_Task_Properties_(Keywords))s "`config`", "`description`", "`dest`", "`name`", "`order`", "`parallel`", "`plugin`", "`recipe`", "`series`", "`spit`", "`src`", "`task`", and "`visibility`", all other properties are recognized as sub tasks.
+
+So, how do you passing configuration values to your recipe function? The reserved "`config`" keyword is exactly reserved for this purpose.
+
 ``` javascript
 {
     scripts: {
@@ -455,6 +579,18 @@ As you may noted: properties in a configuration entry can be task properties and
             file: 'bundle.js'
         }
     }
+}
+```
+
+And in recipe, take the "`file`" value via the "`config`" property (explained in [Writing Recipes](#Writing_Recipes)).
+
+``` javascript
+function myPlugin(done) {
+    var file = this.config.file;
+    done();
+}
+
+module.exports = myPlugin;
 ```
 
 Sometimes writing a "`config`" entry solely for one property is too over, if this is the case, you can prefix a "`$`" character to any property name, and those properties will be recognized as configuration values rather then sub tasks.
@@ -464,61 +600,81 @@ Sometimes writing a "`config`" entry solely for one property is too over, if thi
     scripts: {
         $file: 'bundle.js'
     }
+}
 ```
+
 Now the property "`$file`" will be recognized as a configuration value, and you can use "`$file`"  and "`file`" interchangeable in your recipe, though  "`file`" is recommended to allow using the "`config`" keyword.
 
-### Reserved Task Properties (Keywords)
-These keywords are reserved for task properties, you can't use them as task name.
+#### Recipe / Plugin Reserved Configuration Properties
 
-#### name
-Name of the task. Only required when defining task in an array and you want to run it from CLI.
+Recipes and plugins can [define](#Configuration_Schema) their own configuration properties using [JSON Schema](http://json-schema.org/). In this case, you can write configuration values directly inside the configuration entry without the "`config`" keyword. For example, the "gulp-ccr-browserify" plugin defines "`bundles`", and "`options`" properties, you can put them directly inside the configuration entry.
 
-#### description
-Description of the task.
+Instead of this:
 
-#### config
-Configuration values of the task.
+``` javascript
+{
+    src: 'src/',
+    dest: 'dest/',
+    browserify: {
+        config: {
+            bundles: {
+                entry: 'main.ts'
+            },
+            options: {
+                plugins: 'tsify',
+                sourcemaps: 'external'
+            }
+        }
+    }
+}
+```
 
-#### src
-The path or glob that files should be loaded. Normally you define paths in parent task and files in leaf tasks. Files defined in sub tasks inherits parent's path. The property value can be any valid glob, or array of globs, or of the form `{ globs: [], options: {} }`, and will be passed to task with the later form.
+You can write your configuration like this:
 
-#### dest
-The path where files should be written. Path should be resolved to a single directory. Path defined in sub tasks inherits parent's path. The property value can be any valid path string, or of the form `{ path: '', options: {} }`, and will be passed to task with the later form.
-
-#### order
-Execution order of the task. Only required when you are defining tasks in object and want them be executed in series. Order values are used for sorting, so don't have to be contiguous.
-
-#### recipe
-Recipe module name to use. Defaults to the same value of `name`.
-
-#### plugin
-A plugin module name to use.
-
-#### task
-Define a plain function, inline function, or references to other tasks. If provided as an array, child tasks are forced to run in series, otherwise child tasks are running in parallel.
-
-#### parallel
-Instruct sub tasks to run in parallel. Sub tasks can be defined in an array or object. Note sub tasks defined in an object are executed in parallel by default.
-
-#### series
-Instruct sub tasks to run in series. Sub tasks can be defined in an array or object. Note sub tasks defined in an array are executed in series by default.
-
-#### spit
-Instruct task to write file(s) out if was optional.
-
-#### visibility
-Visibility of the task. Valid values are `normal`, `hidden`, and `disabled`.
-
+``` javascript
+{
+    src: 'src/',
+    dest: 'dest/',
+    browserify: {
+        bundles: {
+            entry: 'main.ts'
+        },
+        options: {
+            plugins: 'tsify',
+            sourcemaps: 'external'
+        }
+    }
+}
+```
 
 ### Dynamic Configuration / Template Variable Realizing
 
-Some stream processors (e.g., "gulp-ccr-eachdir") programmatically modify and/or generate new configurations. The new configuration values are injected to recipe's configuration at runtime. And templates with `{{var}}` syntax are realized with resolved variables.
+Some stream processors (e.g., "gulp-ccr-eachdir") programmatically modify and/or generate new configuration values. The new configuration values are injected to recipe's configuration at runtime. And templates with `{{var}}` syntax are realized (or interpolated) with resolved variables.
+
+``` javascript
+{
+    src: 'src/',
+    dest: 'dist/',
+    'each-dir': {
+        dir: 'modules/',
+        concat: {
+            file: '{{dir}}',
+            spit: true
+        }
+    }
+}
+```
+
+Here the "`each-dir`" plugin iterates sub folders of "`modules`" folder that was denoted by the "`dir`" property, and generates a new "`dir`" property, passing to each sub tasks. Sub tasks can read this value in their "`config`" property, and user can use the "`{{dir}}`" syntax to reference the value in configuration.
 
 ### Conditional Configurations
-Gulp-chef supports conditional configurations via rumtime environment modes.
+
+Gulp-chef supports conditional configurations via runtime environment modes. This functionality is based on [json-regulator](https://github.com/amobiz/json-regulator?utm_referer="gulp-chef"), check it out for more information.
+
 By default, `development`, `production` and `staging` modes are supported. You can write your configurations for each specific mode under `development`/`dev`, `production`/`prod`, and `staging`  property respectively.
 
 For example, with the following configuration:
+
 ``` javascript
 {
     scripts: {
@@ -599,7 +755,8 @@ For example, with the following configuration:
 }
 ```
 
-In `development` mode will becomes:
+In `development` mode, will becomes:
+
 ``` javascript
 {
     scripts: {
@@ -625,7 +782,8 @@ In `development` mode will becomes:
 }
 ```
 
-And in `production` mode will becomes:
+And in `production` mode, will becomes:
+
 ``` javascript
 {
     scripts: {
@@ -656,31 +814,41 @@ And in `production` mode will becomes:
     }
 }
 ```
+
 Super!
 
 #### Run Gulp in Specific Runtime Environment Mode
 
 ##### Via CLI Argument
+
 ``` bash
 $ gulp --development build
 ```
+
 Or, for short:
+
 ``` bash
 $ gulp --dev build
 ```
 
 ##### Via Environment Variable
+
 In Linux/Unix:
+
 ``` bash
 $ NODE_ENV=development gulp build
 ```
+
 Or, for short:
+
 ``` bash
 $ NODE_ENV=dev gulp build
 ```
 
 #### Customizing Rumtime Environment Modes
+
 Rumtime environment modes are totally configurable too. If you are a minimalist, you can even use `d`, `p` and `s` for `development`, `production` and `staging` respectively, just remember that your configurations and runtime environment modes are in sync.
+
 ``` javascript
 var ingredients = {
     scripts: {
@@ -710,9 +878,11 @@ var options = {
 };
 var meals = chef(ingredients, options);
 ```
+
 Note the `default` in `options.modes`. It won't define a mode. Instead, it define which mode being default. If `options.modes.default` is not specified, first mode will becomes default. However, it's recommended not to omit.
 
 Moreover, you can design any modes you want, with alias support.
+
 ``` javascript
 var options = {
     modes = {
@@ -725,13 +895,71 @@ var options = {
 };
 ```
 
-However, you can't use [keywords](#Reserved_Configuration_Properties_(Keywords)) reserved for task information, of course.
+However, you can't use [keywords](#List_of_Reserved_Task_Properties_(Keywords)) reserved for task properties, of course.
+
+## Build-in Recipes
+
+#### clean
+
+Clean up `dest` folder.
+
+#### copy
+
+Copy assets defined by`src` to `dest` folder, optionally remove or replace relative paths for files.
+
+#### merge
+
+A merge stream processor creates a new stream, that ends only when all its sub tasks' stream ends.
+
+See [merge-stream](https://www.npmjs.com/package/merge-stream) for details.
+
+#### queue
+
+A queue stream processor creates a new stream, that pipe queued streams of its sub tasks progressively, keeping datas order.
+
+See [streamqueue](https://www.npmjs.com/package/streamqueue) for details.
+
+#### pipe
+
+Provides the same functionality of `gulp.pipe()`. Pipe streams from one sub task to another.
+
+#### parallel
+
+A parallel flow controller runs sub tasks in parallel, without waiting until the previous task has completed.
+
+#### series
+
+A series flow controller runs sub tasks in series, each one running once the previous task has completed.
+
+#### watch
+
+A watch flow controller watches source files of specific tasks and their descendants and run corresponding task when a file changes.
+
+## Using Plugins
+
+Before you write your own recipes, take a look and find out what others already done, maybe there is a perfect one for you. You can search [github.com](https://github.com/search?utf8=%E2%9C%93&q=gulp-ccr) and [npmjs.com](https://www.npmjs.com/search?q=gulp-ccr) using keyword: "`gulp recipe`", or the recommended: "`gulp-ccr`".  The term "`gulp-ccr`" stand for "Cascading Configurable Recipe for Gulp".
+
+Once you found one, say, `gulp-ccr-browserify`, install it in your project's devDependencies:
+
+``` bash
+$ npm install --save-dev gulp-ccr-browserify
+```
+
+Gulp-chef remove plugin name prefix "`gulp-ccr-`" for you, so you must reference it without the "`gulp-ccr-`" prefix.
+
+``` javascript
+{
+    browserify: {
+        description: 'Using the gulp-ccr-browserify plugin'
+    }
+}
+```
 
 ## Writing Recipes
 
 There are 3 kinds of recipes: "__task__", "__stream processor__", and "__flow controller__".
 
-Most of the time, you want to write `task` recipes. Task recipes are the actual task that do things, whereas `stream processor`s and `flow controller`s manipulate other tasks.
+Most of the time, you want to write task recipes. Task recipes are the actual task that do things, whereas `stream processor`s and `flow controller`s manipulate other tasks.
 
 For more information about `stream processor` and `flow controller`, or you are willing to share your recipes, you can write them as plugins. Check out [Writing Plugins](#Writing_Plugins) for how.
 
@@ -745,17 +973,20 @@ flow controller |gulp/flows
 
 If your recipes do not need configuration, you can write them just as normal gulp tasks. That is, your existing gulp tasks are already reusable recipes! You just need to put them in a standalone module file, and put to the "gulp" folder within your project's root folder.
 
-To use your existing recipe, write a configuration with a property name exactly same as your recipe's module name.
+To use your existing recipe, write a configuration with a property name exactly the same as your recipe's module name.
 
-For example, say you have your "my-recipe.js" recipe in `<your-project>/gulp` folder. Write a configuration to reference it:
+For example, say you have your "`my-recipe.js`" recipe in `<your-project>/gulp` folder. Write a configuration to reference it:
+
 ``` javascript
 var meals = chef({
     "my-recipe": {}
 });
 ```
-Then you can run it by executing `gulp my-recipe` in CLI.
+
+That's it. And then you can run it by executing `gulp my-recipe` in CLI.
 
 However, configurations helps maximizing the reusability of recpies. A configurable recipe takes its configurations via its execution context, i.e., `this` variable.
+
 ``` javascript
 function scripts(done) {
     var gulp = this.gulp;
@@ -770,7 +1001,9 @@ function scripts(done) {
 
 module.exports = scripts;
 ```
+
 And can be configured as:
+
 ``` javascript
 var meals = chef({
     src: 'src/',
@@ -787,36 +1020,6 @@ var meals = chef({
 Configurable recipes don't have to worry about development/production mode. Configurations are resolved for that specific mode already.
 
 
-## Build-in Recipes
-
-#### clean
-Clean up `dest` folder.
-
-#### copy
-Copy assets defined by`src` to `dest` folder, optionally remove or replace relative paths for files.
-
-#### merge
-A merge stream processor creates a new stream, that ends only when all its sub tasks' stream ends.
-
-See [merge-stream](https://www.npmjs.com/package/merge-stream) for details.
-
-#### queue
-A queue stream processor creates a new stream, that pipe queued streams of its sub tasks progressively, keeping datas order.
-
-See [streamqueue](https://www.npmjs.com/package/streamqueue) for details.
-
-#### pipe
-Provides the same functionality of `gulp.pipe()`. Pipe streams from one sub task to another.
-
-#### parallel
-A parallel flow controller runs sub tasks in parallel, without waiting until the previous task has completed.
-
-#### series
-A series flow controller runs sub tasks in series, each one running once the previous task has completed.
-
-#### watch
-A watch flow controller watches source files of specific tasks and their descendants and run corresponding task when a file changes.
-
 ## Writing Plugins
 
 ### Plugin Types
@@ -831,11 +1034,12 @@ function myPlugin(done) {
 module.exports = myPlugin;
 module.exports.type = 'flow';
 ```
+
 Valid types are "`flow`", "`stream`", and "`task`".
 
 ### Configuration Schema
 
-To simplify the processing of configuration, gulp-chef encourages using "[JSON Schema](http://json-schema.org/)" to validate and transform configuration. Gulp-chef use "[json-normalizer](https://github.com/amobiz/json-normalizer)" to provide extend JSON schema functionality and to normalize configuration. You can define your configuration schema to support property alias, type conversion, and default value, etc. Check out "[json-normalizer](https://github.com/amobiz/json-normalizer)" for how to extend your schema.
+To simplify the processing of configuration, gulp-chef encourages using "[JSON Schema](http://json-schema.org/)" to validate and transform configuration. Gulp-chef use "[json-normalizer](https://github.com/amobiz/json-normalizer?utm_referer="gulp-chef")" to provide extend JSON schema functionality and to normalize configuration. You can define your configuration schema to support property alias, type conversion, and default value, etc. Check out "[json-normalizer](https://github.com/amobiz/json-normalizer?utm_referer="gulp-chef")" for how to extend your schema.
 
 The schema can show up in `gulp --recipe <recipe-name>` command, so user can figure out how to write configuration without checking out the document.
 
@@ -896,9 +1100,10 @@ module.exports.schema = {
     required: ['file']
 };
 ```
+
 First note that since "`file`" property is required, there is no need to check if "`file`" property was provided in plugin.
 
-Also note the "`sourcemaps`" options has alias "`sourcemap`", user can use both property name interchangeable, whereas the plugin needs just to deal with "`sourcemaps`".
+Also note the "`sourcemaps`" options has alias "`sourcemap`", user can use both property name interchangeable, whereas the plugin needs only to deal with "`sourcemaps`".
 
 #### Extended Data Types
 
@@ -906,41 +1111,250 @@ Gulp-chef provides two extended data type for JSON schema: "`glob`" and "`path`"
 
 ##### glob
 
+A "`glob`" property can accepts a path, an array of paths, a glob, an array of globs, and optionally along with options.
+
+The following all are valid glob values:
+
+``` javascript
+// a path string
+'src'
+// an array of path string
+['src', 'lib']
+// a glob
+'**/*.js'
+// an array of globs
+['**/*.{js,ts}', '!test*']
+// object form
+{ glob: ['**/*.js', '**/*.ts', '!test*'] }
+```
+
+All above values will be normalized to their "object form":
+
+``` javascript
+// a path string
+{ globs: ['src'] }
+// an array of path string
+{ globs: ['src', 'lib'] }
+// a glob
+{ globs: ['src/**/*.js'] }
+// an array of globs
+{ globs: ['**/*.{js,ts}', '!test*'] }
+// object form (note that 'glob' was normalized to 'globs')
+{ globs: ['**/*.js', '**/*.ts', '!test*'] }
+```
+
+Note that "`glob`" is alias of "`globs`" property, and will be normalized as is, and all globs values will be converted to array.
+
+In its object form, a glob property can take options.
+
+``` javascript
+{
+    globs: ['**/*.{js,ts}', '!test*'],
+    options: {
+        base: 'src',
+        buffer: true,
+        dot: true
+    }
+}
+```
+
+See [node-glob](https://github.com/isaacs/node-glob#options) for more options.
+
+Any properties of type "glob" in sub task will inherit its parent's "`src`" property, and if both parent and sub task specified, path will be joined.
+
+``` javascript
+{
+   src: 'src',
+   browserify: {
+       bundles: {
+           entries: 'main.js'
+       }
+   }
+}
+```
+
+In this example, the "browserify" plugin has a "`bundles`" property that has an nested "`entries`" property of glob type. The "`entries`" property will inherit "`src`" property, and has the value: `{ globs: "src/main.js" }`.
+
+If you don't want this behavior, you can specify "`override`" option to override it.
+
+``` javascript
+{
+   src: 'src',
+   browserify: {
+       bundles: {
+           entry: {
+               glob: 'main.js',
+               override: true
+           }
+       }
+   }
+}
+```
+
+Now the "`entries`" property will have the value: `{ globs: "main.js", options: { override: true } }`.
+
+In your plugin, always remember to pass "`options`" properties (to whatever API you use) and write code like this to allow user specify options:
+
+``` javascript
+module.exports = function () {
+   var gulp = this.gulp;
+   var config = this.config;
+
+   return gulp.src(config.src.globs, config.src.options)
+	   .pipe(...);
+}
+```
+
 ##### path
 
+A "`path`" property can accepts a path string and optionally along with options.
+
+The following all are valid path values:
+
+``` javascript
+// a path string
+'dist'
+// a path string
+'src/lib/'
+// object form
+{ path: 'maps/' }
+```
+
+All above values will be normalized to their "object form":
+
+``` javascript
+// a path string
+{ path: 'dist' }
+// a path string
+{ path: 'src/lib/' }
+// object form
+{ path: 'maps/' }
+```
+
+In its object form, a path property can take options.
+
+``` javascript
+{
+    path: 'dist/',
+    options: {
+        cwd: './',
+        overwrite: true
+    }
+}
+```
+
+See [gulp.dest()](https://github.com/gulpjs/gulp/blob/4.0/docs/API.md#options-1) for more options.
+
+Any properties of type "path" in sub task will inherit its parent's "`dest`" property, and if both parent and sub task specified, path will be joined.
+
+``` javascript
+{
+   dest: 'dist/',
+   scripts: {
+       file: 'bundle.js'
+   }
+}
+```
+
+Assume that the "`file`" property is of type "path", it will inherit "`dest`" property and have the value: "`{ path: 'dist/bundle.js' }`".
+
+If you don't want this behavior, you can specify "`override`" option to override it.
+
+``` javascript
+{
+   dest: 'dist/',
+   scripts: {
+       file: {
+           path: 'bundle.js',
+           override: true
+       }
+   }
+}
+```
+
+Now the "`file`" property will have the value: "`{ path: 'bundle.js', options: { override: true } }`".
+
+In your plugin, always remember to pass "`options`" properties (to whatever API you use) and write code like this to allow user specify options:
+
+``` javascript
+module.exports = function () {
+   var gulp = this.gulp;
+   var config = this.config;
+
+   return gulp.src(config.src.globs, config.src.options)
+	   .pipe(...)
+	   .pipe(gulp.dest(config.dest.path, config.dest.options));
+}
+```
 ### Writing Stream Processor
+
 A stream processor manipulates its sub tasks' input and/or output streams.
 
 In the "Configurable Recipe" section, that said "configurable task" is simply a wrapper that calls "configurable recipe" with exactly the same name. That's not entirely true. Stream processor may not has the same name as "configurable task".
 
 ### Writing Flow Controller
-A flow controller takes care of when to execute, and execution order of its sub tasks and don't care their input and/or output streams.
 
+A flow controller takes care of when to execute, and execution order of its sub tasks and don't care their input and/or output streams.
 
 
 ### Test Plugin
 
 
+### List of Reserved Task Properties (Keywords)
 
-## List of Recipe Plugins
+These keywords are reserved for task properties, you can't use them as task names or property names.
 
-### Task
+#### config
 
-#### gulp-ccr-browserify
-#### gulp-ccr-bump
+Configuration values of the task.
 
-### Stream Processor
+#### description
 
-#### gulp-ccr-concat
-#### gulp-ccr-each
-#### gulp-ccr-each-dir
-#### gulp-ccr-merge
-#### gulp-ccr-pipe
-#### gulp-ccr-queue
+Description of the task.
 
-### Flow Controller
+#### dest
 
-#### gulp-ccr-watch
+The path where files should be written. Path should be resolved to a single directory. Path defined in sub tasks inherits parent's path. The property value can be any valid path string, or of the form `{ path: '', options: {} }`, and will be passed to task with the later form.
+
+#### name
+
+Name of the task. Only required when defining task in an array and you want to run it from CLI.
+
+#### order
+
+Execution order of the task. Only required when you are defining tasks in object and want them be executed in series. Order values are used for sorting, so don't have to be contiguous.
+
+#### parallel
+
+Instruct sub tasks to run in parallel. Sub tasks can be defined in an array or object. Note sub tasks defined in an object are executed in parallel by default.
+
+#### plugin
+
+A plugin module name to use.
+
+#### recipe
+
+Recipe module name to use. Defaults to the same value of `name`.
+
+#### series
+
+Instruct sub tasks to run in series. Sub tasks can be defined in an array or object. Note sub tasks defined in an array are executed in series by default.
+
+#### spit
+
+Instruct task to write file(s) out if was optional.
+
+#### src
+
+The path or glob that files should be loaded. Normally you define paths in parent task and files in leaf tasks. Files defined in sub tasks inherits parent's path. The property value can be any valid glob, or array of globs, or of the form `{ globs: [], options: {} }`, and will be passed to task with the later form.
+
+#### task
+
+Define a plain function, inline function, or references to other tasks. If provided as an array, child tasks are forced to run in series, otherwise child tasks are running in parallel.
+
+#### visibility
+
+Visibility of the task. Valid values are `normal`, `hidden`, and `disabled`.
 
 
 ## List of CLI Options
