@@ -59,6 +59,21 @@ gulp.registry(meals);
 $ gulp
 ```
 
+## Examples
+
+* [example-minimal-configuration](https://github.com/gulp-cookery/example-minimal-configuration)
+
+Demonstrates using gulp-chef as a glue, all tasks are plain functions without configuration.
+
+* [example-recipes-demo](https://github.com/gulp-cookery/example-recipes-demo)
+
+Taking examples from [gulp-cheatsheet](https://github.com/osscafe/gulp-cheatsheet), demonstrates what gulp-chef can achieve. Writing configuration this way is not encouraged.
+
+* [example-todomvc-angularjs-browserify](https://github.com/gulp-cookery/example-todomvc-angularjs-browserify)
+
+Taking a full working example from [angularjs-gulp-example](https://github.com/jhades/angularjs-gulp-example). Demonstrates rewriting gulpfile.js using gulp-chef. Also check out the great article: "[A complete toolchain for AngularJs - Gulp, Browserify, Sass](http://blog.jhades.org/what-every-angular-project-likely-needs-and-a-gulp-build-to-provide-it/)" from the author.
+
+
 ## Terminology
 
 ### Gulp Task
