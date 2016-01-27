@@ -73,6 +73,10 @@ Taking examples from [gulp-cheatsheet](https://github.com/osscafe/gulp-cheatshee
 
 Taking a full working example from [angularjs-gulp-example](https://github.com/jhades/angularjs-gulp-example). Demonstrates rewriting gulpfile.js using gulp-chef. Also check out the great article: "[A complete toolchain for AngularJs - Gulp, Browserify, Sass](http://blog.jhades.org/what-every-angular-project-likely-needs-and-a-gulp-build-to-provide-it/)" from the author.
 
+* [example-webapp-seed](https://github.com/gulp-cookery/example-webapp-seed)
+
+A simple webapp seed project.
+
 
 ## Terminology
 
