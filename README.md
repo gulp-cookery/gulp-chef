@@ -1385,7 +1385,7 @@ There is little limitation on flow controller. The only rule is a flow controlle
 
 ### Testing Plugin
 
-It is recommended you start writing your plugin as a local recipe, and transform to a plugin when you think it is done. Most recipes are data-driven, if it is your case, maybe you want give [mocha-cases](https://github.com/amobiz/mocha-cases) a shot.
+It is recommended you start writing your plugin as a local recipe, and transform to a plugin when you think it is done. Most recipe testings are data-driven, if this is your case, maybe you want give [mocha-cases](https://github.com/amobiz/mocha-cases) a shot.
 
 ### List of Reserved Task Properties (Keywords)
 
