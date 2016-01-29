@@ -649,11 +649,13 @@ module.exports = myPlugin;
 
 這樣 "`$file`" 項目就會被當作是組態屬性，而你在組態配置及 recipe 中，可以透過 "`file`" 名稱來存取它。 (注意，名稱不是 "`$file`"，這是為了允許使用者可以交換使用 "`$`" 字元和 "`config`" 項目來傳遞組態屬性。)
 
-#### Recipe / Plugin Reserved Configuration Properties
+#### Recipe / Plugin 專屬組態屬性
 
-Recipes and plugins can [define](#Configuration_Schema) their own configuration properties using [JSON Schema](http://json-schema.org/). In this case, you can write configuration values directly inside the configuration entry without the "`config`" keyword. For example, the "gulp-ccr-browserify" plugin defines "`bundles`", and "`options`" properties, you can put them directly inside the configuration entry.
+Recipe 以及 plugin 可以使用 [JSON Schema](http://json-schema.org/) 來定義它們的組態屬性及架構。如果它們確實定義了組態屬性架構，那麼你就可以在組態配置項目中，直接列舉專屬的屬性，而不需要透過 "`$`" 字元和 "`config`" 關鍵字。
 
-Instead of this:
+舉例，在 "gulp-ccr-browserify" plugin 中，它定義了 "`bundles`" 及 "`options`" 屬性，因此你可以在組態項目中直接使用這兩個屬性。
+
+原本需要這樣寫：
 
 ``` javascript
 {
@@ -673,7 +675,7 @@ Instead of this:
 }
 ```
 
-You can write your configuration like this:
+現在可以省略寫成這樣：
 
 ``` javascript
 {
@@ -691,9 +693,9 @@ You can write your configuration like this:
 }
 ```
 
-#### Smart Configuration Properties
+#### 自動識別屬性
 
-For convenience sake, when a configuration entry uses any of "`task`", "`series`",  "`parallel`",  and "`plugin`" keywords, it is considered there is no ambiguous between sub tasks and properties, and all non-reserved properties will be recognized as the task's properties.
+為了方便起見，當組態項目中包含有 "`task`", "`series`",  "`parallel`" 及 "`plugin`" 關鍵字的時候，這時候除了保留屬性之外，其餘的屬性都將自動認定為組態屬性，而不是子任務。
 
 ### Dynamic Configuration / Template Variable Realizing
 
