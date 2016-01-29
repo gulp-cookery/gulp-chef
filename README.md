@@ -2,7 +2,7 @@
 
 Cascading configurable recipes for Gulp 4.0. An elegant, and intuition way to reuse gulp tasks.
 
-This project is still in early development stage and likely has some bugs at the moment. Let me know how it works for you!
+This project is still in early development stage and likely has some bugs at the moment. Please report issues and let me know how it works for you!
 
 ## Getting Started
 
@@ -55,6 +55,7 @@ gulp.registry(meals);
 ```
 
 ### Run Gulp
+
 ``` bash
 $ gulp
 ```
@@ -77,10 +78,10 @@ Taking a full working example from [angularjs-gulp-example](https://github.com/j
 
 A simple webapp seed project.
 
-
 ## Terminology
 
 ### Gulp Task
+
 A gulp task is a plain JavaScript function that returns promises, observables, child processes or streams, or call `done()` callback when finished. Starting from gulp 4.0, a gulp task takes `undefined` as context.
 
 ``` javascript
@@ -91,10 +92,13 @@ function gulpTask(done) {
 }
 ```
 
-You register a gulp task using `gulp.task()` method, and then run it in CLI.
+You register a gulp task using `gulp.task()` method.
+
 ``` javascript
 gulp.task(gulpTask);
 ```
+
+And then run it in CLI.
 
 ``` bash
 $ gulp gulpTask
@@ -127,7 +131,19 @@ var meals = chef({
 gulp.registry(meals);
 ```
 
-This generates a configurable task called "`scripts`" for you, and can be accessed via `meals.get('scripts')`. When invoked, the configurable task will be called with the configuration defined with it, some kind of like this:
+This generates a configurable task called "`scripts`" for you. The `chef()` function returns a gulp registry. You can access the "`scripts`" configurable task via `meals.get('scripts')`. But normally you call `gulp.registry()` to register all available tasks in the registry.
+
+``` javascript
+gulp.registry(meals);
+```
+
+Once you call `gulp.registry()`, you can run registered tasks in CLI.
+
+``` bash
+$ gulp scripts
+```
+
+When invoked, the configurable task will be called with the configuration defined with it, some kind of like this:
 
 ``` javascript
 scripts.call({
@@ -139,17 +155,11 @@ scripts.call({
 }, done);
 ```
 
-Note the `chef()` function returns a registry, you can call `gulp.registry()` to register all available tasks in the registry. Once you call `gulp.registry()`, you can run tasks in CLI.
-
-``` bash
-$ gulp scripts
-```
-
 Also note that in this example, the "`scripts`" entry in the configuration is the module name of a recipe, that must be present in your project's "`gulp`" folder, or of a plugin, that must be installed. Check out [Writing Recipes](#Writing_Recipes) and [Using Plugins](#Using_Plugins) for more information.
 
 ### Configurable Recipe
 
-A configurable recipe is the actual __recipe__ you want to write and reuse, and also has the same signature as normal gulp task. In fact, a "[configurable task](#Configurable_Task)" is simply a wrapper that calls "configurable recipe" with exactly the same name.
+A configurable recipe is, a configurable and reusable gulp task, that you actually write and reuse, and also has the same signature as normal gulp task. In fact, a "[configurable task](#Configurable_Task)" is simply a wrapper that calls "configurable recipe" with exactly the same name.
 
 ``` javascript
 function scripts(done) {
@@ -170,7 +180,7 @@ A configuration is a plain JSON object. Each entries and nested entries are eith
 
 ### Nesting Task
 
-Tasks can be nested. Sub tasks lexically (or so called "cascading") inherits its parent's configurations. And even better, for some predefined properties, e.g. "`src`", "`dest`", paths are joined automatically.
+Tasks can be nested. Sub tasks lexically (or statically) cascading inherits its parent's configurations. And even better, for some predefined properties, e.g. "`src`", "`dest`", paths are joined automatically.
 
 ``` javascript
 var meals = chef({
@@ -187,11 +197,11 @@ var meals = chef({
 });
 ```
 
-This creates __3__ configurable tasks for you: `build`, `scripts` and `styles`.
+This creates __three__ configurable tasks for you: `build`, `scripts`, and `styles`.
 
 ### Parallel Tasks
 
-In the above example, when you run `build`, its sub tasks `scripts` and `styles` will be executed in __parallel__, and be called with configurations like this:
+In the above example, when you run `build`, its sub tasks `scripts`, and `styles` will be executed in __parallel__, and be called with configurations listed as the following because of inheritance:
 
 ``` javascript
 scripts: {
@@ -234,14 +244,14 @@ var meals = chef({
     src: 'src/',
     dest: 'dist/',
     build: {
-		scripts: {
-			src: '**/*.js',
-			order: 0
-		},
-		styles: {
-			src: '**/*.css',
-			order: 1
-		}
+        scripts: {
+            src: '**/*.js',
+            order: 0
+        },
+        styles: {
+            src: '**/*.css',
+            order: 1
+        }
     }
 });
 ```
@@ -285,7 +295,7 @@ var meals = chef({
 };
 ```
 
-Referencing tasks won't generate new tasks, so you can't run them in CLI. In this example, only `clean`, `scripts`, `styles` and `build` task were generated.
+In this example, the `build` task has three sub tasks, that referring to `clean`, `scripts`, and `styles` task, respectively. Referencing tasks won't generate and register new tasks, so you can't run them directly in CLI. Of course you can still run them via parent task (in series order in this example).
 
 As said previously, sub tasks lexically inherits their parent's configurations, since referred tasks are not defined under the referencing task, they won't inherit its static configuration. However, dynamic generated configurations are still injected to refered tasks. See [Dynamic Configuration](#Dynamic_Configuration_Template_Variable_Realizing) for detail.
 
@@ -340,8 +350,12 @@ var meals = chef({
             src: '**/*.css'
         }
     },
-    build: ['clean', 'make'],
+    build: {
+        description: 'Clean and make',
+        task: ['clean', 'make']
+    },
     watch: {
+		description: 'Watch and run related task',
         options: {
             usePolling: true
         },
@@ -370,7 +384,9 @@ var meals = chef({
 };
 ```
 
-Note in this example, since `clean` was never defined in configuration, it is never exposed, i.e., can't run in CLI. The other thing to note is that even plain functions are called in the `{ gulp, config, upstream }` context.
+Note in this example, since `clean` was never defined in configuration, it is never exposed, i.e., can't run in CLI.
+
+The other thing to note is that even plain functions are called in the `{ gulp, config, upstream }` context.
 
 You can use "`task`" property to specify the plain/inline functions, so referencing tasks can have their own configurations too.
 
@@ -382,12 +398,12 @@ function clean() {
 var meals = chef({
     src: 'src/',
     dest: 'dist/',
-	clean: {
-	    options: {
-	        dryRun: true
-	    },
-		task: clean
-	},
+    clean: {
+        options: {
+            dryRun: true
+        },
+        task: clean
+    },
     make: {
         scripts: {
             src: '**/*.js',
@@ -518,7 +534,7 @@ This generates exactly the same results as previous example.
 
 It is recommended that you name all your task in unique, distinct names.
 
-However, if you have many tasks, there is a great chance that more than one task utilize a same recipe. And by default, task name is exactly same as recipe name. Then how gulp-chef generate task names when this happens? It automaticly prefix task names with their parent's name, like this: "`make:scripts:concat`".
+However, if you have many tasks, there is a great chance that more than one task utilize a same recipe or plugin. And by default, task name is direct mapping to recipe name. Then how gulp-chef generate task names when name collision happens? It automaticly prefix task names with their parent's name, like this: "`make:scripts:concat`".
 
 In fact, you can turn this behavior on by default using "`exposeWithPrefix`" settings. The default setting is "`auto`". You can set to "`true`" to turn it on.
 
@@ -725,16 +741,16 @@ For example, with the following configuration:
             }
         },
 
-		production: {
-			// production configs
-			description: 'production mode',
-			dest: 'dist/',
+        production: {
+            // production configs
+            description: 'production mode',
+            dest: 'dist/',
 
-			options: {
-				// production options
-				debug: false
-			}
-		},
+            options: {
+                // production options
+                debug: false
+            }
+        },
 
         options: {
             // common options
@@ -753,7 +769,7 @@ For example, with the following configuration:
         },
 
         // sub tasks
-		pipe: [{
+        pipe: [{
             typescript: {
                 src: '**/*.ts'
             },
@@ -762,24 +778,24 @@ For example, with the following configuration:
                 src: '**/*.js'
             }
         }, {
-			production: {
-				// production configs
-				description: 'production mode',
+            production: {
+                // production configs
+                description: 'production mode',
 
-				// sub tasks for production mode
-				uglify: {
-				}
-			}
+                // sub tasks for production mode
+                uglify: {
+                }
+            }
         }, {
-			production: {
-				// production configs
-				description: 'production mode',
+            production: {
+                // production configs
+                description: 'production mode',
 
-				// sub tasks for production mode
-				concat: {
-				}
-			}
-		}]
+                // sub tasks for production mode
+                concat: {
+                }
+            }
+        }]
     }
 }
 ```
@@ -799,14 +815,14 @@ In `development` mode, will becomes:
         },
         lint: {
         },
-		pipe: [{
-			typescript: {
-				src: '**/*.ts'
-			},
-			js: {
-				src: '**/*.js'
-			}
-		}]
+        pipe: [{
+            typescript: {
+                src: '**/*.ts'
+            },
+            js: {
+                src: '**/*.js'
+            }
+        }]
     }
 }
 ```
@@ -817,29 +833,29 @@ And in `production` mode, will becomes:
 {
     scripts: {
         src: 'src/',
-		description: 'production mode',
+        description: 'production mode',
         dest: 'dist/',
         options: {
             description: 'production mode',
             sourcemap: 'external',
             debug: false
         },
-		pipe: [{
-			typescript: {
-				src: '**/*.ts'
-			},
-			js: {
-				src: '**/*.js'
-			}
-		}, {
-        	description: 'production mode',
-        	uglify: {
-			}
-		}, {
-        	description: 'production mode',
-        	concat: {
-			}
-		}]
+        pipe: [{
+            typescript: {
+                src: '**/*.ts'
+            },
+            js: {
+                src: '**/*.js'
+            }
+        }, {
+            description: 'production mode',
+            uglify: {
+            }
+        }, {
+            description: 'production mode',
+            concat: {
+            }
+        }]
     }
 }
 ```
@@ -1193,12 +1209,12 @@ Any properties of type "glob" in sub task will inherit its parent's "`src`" prop
 
 ``` javascript
 {
-   src: 'src',
-   browserify: {
-       bundles: {
-           entries: 'main.js'
-       }
-   }
+    src: 'src',
+    browserify: {
+        bundles: {
+            entries: 'main.js'
+        }
+    }
 }
 ```
 
@@ -1208,15 +1224,15 @@ If you don't want this behavior, you can specify "`override`" option to override
 
 ``` javascript
 {
-   src: 'src',
-   browserify: {
-       bundles: {
-           entry: {
-               glob: 'main.js',
-               override: true
-           }
-       }
-   }
+    src: 'src',
+    browserify: {
+        bundles: {
+            entry: {
+                glob: 'main.js',
+                override: true
+            }
+        }
+    }
 }
 ```
 
@@ -1226,11 +1242,11 @@ In your plugin, always remember to pass "`options`" properties (to whatever API 
 
 ``` javascript
 module.exports = function () {
-   var gulp = this.gulp;
-   var config = this.config;
+    var gulp = this.gulp;
+    var config = this.config;
 
-   return gulp.src(config.src.globs, config.src.options)
-	   .pipe(...);
+    return gulp.src(config.src.globs, config.src.options)
+        .pipe(...);
 }
 ```
 
@@ -1278,10 +1294,10 @@ Any properties of type "path" in sub task will inherit its parent's "`dest`" pro
 
 ``` javascript
 {
-   dest: 'dist/',
-   scripts: {
-       file: 'bundle.js'
-   }
+    dest: 'dist/',
+    scripts: {
+        file: 'bundle.js'
+    }
 }
 ```
 
@@ -1291,13 +1307,13 @@ If you don't want this behavior, you can specify "`override`" option to override
 
 ``` javascript
 {
-   dest: 'dist/',
-   scripts: {
-       file: {
-           path: 'bundle.js',
-           override: true
-       }
-   }
+    dest: 'dist/',
+    scripts: {
+        file: {
+            path: 'bundle.js',
+            override: true
+        }
+    }
 }
 ```
 
@@ -1307,12 +1323,12 @@ In your plugin, always remember to pass "`options`" properties (to whatever API 
 
 ``` javascript
 module.exports = function () {
-   var gulp = this.gulp;
-   var config = this.config;
+    var gulp = this.gulp;
+    var config = this.config;
 
-   return gulp.src(config.src.globs, config.src.options)
-	   .pipe(...)
-	   .pipe(gulp.dest(config.dest.path, config.dest.options));
+    return gulp.src(config.src.globs, config.src.options)
+        .pipe(...)
+        .pipe(gulp.dest(config.dest.path, config.dest.options));
 }
 ```
 ### Writing Stream Processor
@@ -1332,12 +1348,12 @@ module.exports = function () {
     var tasks = this.tasks;
     var context, stream;
 
-	context = {
-	    gulp: gulp,
-	    config: {
-	        // inject configuration values for sub task
-	    }
-	};
+    context = {
+        gulp: gulp,
+        config: {
+            // inject configuration values for sub task
+        }
+    };
     stream = tasks[0].call(context);
     // ...
     return stream;
@@ -1355,17 +1371,17 @@ module.exports = function () {
     var tasks = this.tasks;
     var context, stream, i;
 
-	context = {
-	    gulp: gulp,
-	    config: {
-	    }
-	};
+    context = {
+        gulp: gulp,
+        config: {
+        }
+    };
     stream = gulp.src(config.src.globs, config.src.options);
-	for (i = 0; i < tasks.length; ++i) {
-	    context.upstream = stream;
-    	stream = tasks[i].call(context);
-	}
-	return stream;
+    for (i = 0; i < tasks.length; ++i) {
+        context.upstream = stream;
+        stream = tasks[i].call(context);
+    }
+    return stream;
 };
 ```
 
