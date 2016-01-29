@@ -648,7 +648,9 @@ Now the property "`$file`" will be recognized as a configuration value, and you 
 
 #### Recipe / Plugin Reserved Configuration Properties
 
-Recipes and plugins can [define](#Configuration_Schema) their own configuration properties using [JSON Schema](http://json-schema.org/). In this case, you can write configuration values directly inside the configuration entry without the "`config`" keyword. For example, the "gulp-ccr-browserify" plugin defines "`bundles`", and "`options`" properties, you can put them directly inside the configuration entry.
+Recipes and plugins can [define](#Configuration_Schema) their own configuration properties using [JSON Schema](http://json-schema.org/). In this case, you can write configuration values directly inside the configuration entry without the "`$`" character and the "`config`" keyword.
+
+For example, the "gulp-ccr-browserify" plugin defines "`bundles`", and "`options`" properties, you can put them directly inside the configuration entry.
 
 Instead of this:
 
