@@ -601,7 +601,7 @@ Sometimes your task is merely calling a plain gulp plugin. In this case, you don
 }
 ```
 
-The plugin property accepts "`string`" and "`function`" value. When string provided, it tries to "`require()`" the module. The "`plugin`" keyword expects an optional "`options`" configuration value, and pass to the plugin function if provided.
+The plugin property accepts `string` and `function` value. When string provided, it tries to "`require()`" the module. The "`plugin`" property expects an optional "`options`" configuration value, and pass to the plugin function if provided.
 
 You can apply the "`plugin`" keyword to any gulp plugin that takes 0 or 1 parameter and returns a stream or a promise. Plugins must be installed using `npm install`.
 
@@ -611,11 +611,11 @@ Don't get this confused with [plugins for gulp-chef](#Using_Plugins), that stand
 
 As you may noted: properties in a configuration entry can be either task properties and sub tasks. How do you distinguish each one? The general rule is: except the  [keyword](#List_of_Reserved_Task_Properties_(Keywords))s "`config`", "`description`", "`dest`", "`name`", "`order`", "`parallel`", "`plugin`", "`recipe`", "`series`", "`spit`", "`src`", "`task`", and "`visibility`", all other properties are recognized as sub tasks.
 
-So, how do you passing configuration values to your recipe function? The reserved "`config`" keyword is exactly reserved for this purpose.
+So, how do you passing configuration values to your recipe function? The reserved "`config`" keyword is exactly reserved for this purpose:
 
 ``` javascript
 {
-    scripts: {
+    myPlugin: {
         config: {
             file: 'bundle.js'
         }
@@ -623,7 +623,7 @@ So, how do you passing configuration values to your recipe function? The reserve
 }
 ```
 
-And in recipe, take the "`file`" value via the "`config`" property (explained in [Writing Recipes](#Writing_Recipes)).
+Here the "`file`" property of "`config`" property will be passed to recipe. And recipe can take the "`file`" property via the "`config`" property (explained in [Writing Recipes](#Writing_Recipes)).
 
 ``` javascript
 function myPlugin(done) {
@@ -638,13 +638,13 @@ Sometimes writing a "`config`" entry solely for one property is too over, if thi
 
 ``` javascript
 {
-    scripts: {
+    myPlugin: {
         $file: 'bundle.js'
     }
 }
 ```
 
-Now the property "`$file`" will be recognized as a configuration value, and you can use "`$file`"  and "`file`" interchangeable in your recipe, though  "`file`" is recommended to allow using the "`config`" keyword.
+Now the property "`$file`" will be recognized as a configuration value, and you can use "`file`" in your configuration and recipe. Note: the property name is not "`$file`", that's because we want to allow user using the "`$`" character and the "`config`" keyword interchangeably.
 
 #### Recipe / Plugin Reserved Configuration Properties
 
