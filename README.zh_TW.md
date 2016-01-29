@@ -589,13 +589,11 @@ var meals = chef(ingredients, settings);
 }
 ```
 
-注意：為了盡量避免發生名稱衝突的可能性，並且簡化任務樹，某些特定種類的任務預設是隱藏的。
-
-Note: to minimize the chance to get into name collision and to simplify task tree, some tasks are hidden by default. 主要是『__串流處理器 (stream processor)__』及『__流程控制器 (flow controller)__』。請參考 [撰寫串流處理器](#Writing_Stream_Processor) and [撰寫流程控制器](#Writing_Flow_Controller) 的說明。
+注意：為了盡量避免發生名稱衝突的可能性，並且簡化任務樹，某些特定種類的任務預設是隱藏的。主要是『__串流處理器 (stream processor)__』及『__流程控制器 (flow controller)__』。請參考 [撰寫串流處理器](#Writing_Stream_Processor) and [撰寫流程控制器](#Writing_Flow_Controller) 的說明。
 
 ### 使用 Gulp Plugins
 
-Sometimes your task is merely calling a plain gulp plugin. In this case, you don't even bother to write a recipe, you can use "`plugin`" keyword to reference the plugin.
+有時候，你所撰寫的任務所做的，只不過是轉呼叫一個 plugin。如果只是這樣的話，事實上你完全可以不用費心寫一個 recipe，你可以直接在組態配置中使用 "`plugin`" 關鍵字做為屬性來引用 plugin。
 
 ``` javascript
 {
@@ -606,21 +604,21 @@ Sometimes your task is merely calling a plain gulp plugin. In this case, you don
 }
 ```
 
-The plugin property accepts "`string`" and "`function`" value. When string provided, it tries to "`require()`" the module. The "`plugin`" keyword expects an optional "`options`" configuration value, and pass to the plugin function if provided.
+這個 "`plugin`" 屬性可以接受 `string` 和 `function` 類型的值。當指定的值不是 `function` 而是 `string` 類型時，gulp-chef 將以此字串做為模組名稱，嘗試去 "`require()`" 該模組。使用 "`plugin`" 屬性時，另外還可以指定 "`options`" 屬性，該屬性的值將直接做為唯一參數，用來呼叫 plugin 函數。
 
-You can apply the "`plugin`" keyword to any gulp plugin that takes 0 or 1 parameter and returns a stream or a promise. Plugins must be installed using `npm install`.
+任何 gulp plugin，只要它只接受 0 或 1 個參數，並且回傳一個 Stream 或 Promise 物件，就可以使用 `plugin`" 關鍵字來加以引用。前提當然是 plugin 已經使用 `npm install` 指令先安裝好了。
 
-Don't get this confused with [plugins for gulp-chef](#Using_Plugins), that stand for "Cascading Configurable Recipe for Gulp", or "gulp-ccr" for sort.
+千萬不要將 gulp plugin 與 [gulp-chef 專用的 plugin](#Using_Plugins) 搞混了。gulp-chef 專用的 plugin 稱為 "Cascading Configurable Recipe for Gulp" 或簡稱 "gulp-ccr"，意思是『可層疊組態配置、可重複使用的 Gulp 任務』。
 
-### Passing Configuration Values
+### 傳遞組態值
 
-As you may noted: properties in a configuration entry can be either task properties and sub tasks. How do you distinguish each one? The general rule is: except the  [keyword](#List_of_Reserved_Task_Properties_(Keywords))s "`config`", "`description`", "`dest`", "`name`", "`order`", "`parallel`", "`plugin`", "`recipe`", "`series`", "`spit`", "`src`", "`task`", and "`visibility`", all other properties are recognized as sub tasks.
+如同你到目前為止所看到的，在組態配置中的項目，要嘛是任務的屬性，要不然就是子任務。你要如何區別兩者？基本的規則是，除了 "`config`", "`description`", "`dest`", "`name`", "`order`", "`parallel`", "`plugin`", "`recipe`", "`series`", "`spit`", "`src`", "`task`" 以及 "`visibility`" 這些[關鍵字](#List_of_Reserved_Task_Properties_(Keywords))之外，其餘的項目都將被視為子任務。
 
-So, how do you passing configuration values to your recipe function? The reserved "`config`" keyword is exactly reserved for this purpose.
+那麼，你要如何傳遞組態值給你的 recipe 函數呢？其實，"`config`" 關鍵字就是特地為了這個目的而保留的。
 
 ``` javascript
 {
-    scripts: {
+    myPlugin: {
         config: {
             file: 'bundle.js'
         }
@@ -628,7 +626,7 @@ So, how do you passing configuration values to your recipe function? The reserve
 }
 ```
 
-And in recipe, take the "`file`" value via the "`config`" property (explained in [Writing Recipes](#Writing_Recipes)).
+這裡 "`config`" 屬性連同其 "`file`" 屬性，將一起被傳遞給 recipe 函數，而 recipe 函數則透過執行環境依序取得 "`config`" 屬性及 "`file`" 屬性 (在『[撰寫 recipe](#Writing_Recipes)』中詳細說明)。
 
 ``` javascript
 function myPlugin(done) {
@@ -639,17 +637,17 @@ function myPlugin(done) {
 module.exports = myPlugin;
 ```
 
-Sometimes writing a "`config`" entry solely for one property is too over, if this is the case, you can prefix a "`$`" character to any property name, and those properties will be recognized as configuration values rather then sub tasks.
+只為了傳遞一個屬性，就必須特地寫一個 "`config`" 項目來傳遞它，如果你覺得這樣做太超過了，你也可以直接在任意屬性名稱前面附加一個 "`$`" 字元，這樣它們就會被視為是組態屬性，而不再會被當作是子任務。
 
 ``` javascript
 {
-    scripts: {
+    myPlugin: {
         $file: 'bundle.js'
     }
 }
 ```
 
-Now the property "`$file`" will be recognized as a configuration value, and you can use "`$file`"  and "`file`" interchangeable in your recipe, though  "`file`" is recommended to allow using the "`config`" keyword.
+這樣 "`$file`" 項目就會被當作是組態屬性，而你在組態配置及 recipe 中，可以透過 "`file`" 名稱來存取它。 (注意，名稱不是 "`$file`"，這是為了允許使用者可以交換使用 "`$`" 字元和 "`config`" 項目來傳遞組態屬性。)
 
 #### Recipe / Plugin Reserved Configuration Properties
 
