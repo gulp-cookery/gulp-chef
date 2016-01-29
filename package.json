@@ -53,7 +53,7 @@
   "author": "Amobiz",
   "license": "MIT",
   "peerDependencies": {
-    "gulp": ">=4.0.0 || >=4.0.0-alpha.1 || >=4.0.0-beta.1"
+    "gulp": ">=4.0.0 || >=4.0.0-alpha.2 || >=4.0.0-beta.0"
   },
   "devDependencies": {
     "chai": "^3.2.0",
@@ -73,14 +73,14 @@
     "glob": "^6.0.4",
     "globby": "^2.1.0",
     "globjoin": "^0.1.1",
-    "gulp-ccr-clean": "git+https://github.com/gulp-cookery/gulp-ccr-clean.git",
-    "gulp-ccr-copy": "git+https://github.com/gulp-cookery/gulp-ccr-copy.git",
-    "gulp-ccr-merge": "git+https://github.com/gulp-cookery/gulp-ccr-merge.git",
-    "gulp-ccr-parallel": "git+https://github.com/gulp-cookery/gulp-ccr-parallel.git",
-    "gulp-ccr-pipe": "git+https://github.com/gulp-cookery/gulp-ccr-pipe.git",
-    "gulp-ccr-queue": "git+https://github.com/gulp-cookery/gulp-ccr-queue.git",
-    "gulp-ccr-series": "git+https://github.com/gulp-cookery/gulp-ccr-series.git",
-    "gulp-ccr-watch": "git+https://github.com/gulp-cookery/gulp-ccr-watch.git",
+    "gulp-ccr-clean": "^0.1.0",
+    "gulp-ccr-copy": "^0.1.0",
+    "gulp-ccr-merge": "^0.1.0",
+    "gulp-ccr-parallel": "^0.1.0",
+    "gulp-ccr-pipe": "^0.1.0",
+    "gulp-ccr-queue": "^0.1.0",
+    "gulp-ccr-series": "^0.1.0",
+    "gulp-ccr-watch": "^0.1.0",
     "gulp-load-plugins": "^1.1.0",
     "gulp-util": "^3.0.7",
     "gulplog": "^1.0.0",
