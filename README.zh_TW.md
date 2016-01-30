@@ -1005,37 +1005,42 @@ Gulp-chef 會為你移除附加在前面的 "`gulp-ccr-`" 名稱，所以你在�
 }
 ```
 
-## Writing Recipes
+## 撰寫 Recipe
 
-There are 3 kinds of recipes: "__task__", "__stream processor__", and "__flow controller__".
+斯斯，不是，recipe 有三種： "__任務型 (task)__", "__串流處理器 (stream processor)__" 以及 "__流程控制器 (flow controller)__"。
 
-Most of the time, you want to write task recipes. Task recipes are the actual task that do things, whereas `stream processor`s and `flow controller`s manipulate other tasks.
+大多數時候，你想要寫的是任務型 recipe。任務型 recipe 負責做苦工，而串流處理器及流程控制器則負責操弄其它 recipe。
 
-For more information about `stream processor` and `flow controller`, or you are willing to share your recipes, you can write them as plugins. Check out [Writing Plugins](#Writing_Plugins) for how.
+更多關於串流處理器及流程控制器的說明，或者你樂於分享你的 recipe，你可以寫成 plugin，請參考 [撰寫 Plugin](#Writing_Plugins) 的說明。
 
-If you write recipes only for your own project use, you can put them in sub folders within your project's root:
+如果你撰寫的 recipe 只打算給特定專案使用，你可以將它們放在專案根目錄下的特定子目錄下：
 
-type            |folder
-----------------|------------------
-task            |gulp, gulp/tasks
-stream processor|gulp/streams
-flow controller |gulp/flows
+類型      |目錄
+---------|------------------
+任務型    |gulp, gulp/tasks
+串流處理器 |gulp/streams
+流程控制器 |gulp/flows
 
-If your recipes do not need configuration, you can write them just as normal gulp tasks. That is, your existing gulp tasks are already reusable recipes! You just need to put them in a standalone module file, and put to the "gulp" folder within your project's root folder.
+如果你的 recipe 不需要組態配置，你可以像平常寫 gulp task 一樣的方式撰寫 recipe。知道這代表什麼意思嗎？這代表你以前寫的 gulp task 都可以直接拿來當作 recipe 用。你只需要將它們個別存放到專屬的模組檔案，然後放到專案根目錄下的 "gulp" 目錄下即可。
 
-To use your existing recipe, write a configuration with a property name exactly the same as your recipe's module name.
+使用 recipe 的時候，在組態配置中，使用一個屬性名稱與 recipe 模組名稱一模一樣的項目來引用該 recipe。
 
-For example, say you have your "`my-recipe.js`" recipe in `<your-project>/gulp` folder. Write a configuration to reference it:
+譬如，假設你有一個 "`my-recipe.js`" recipe 放在 `<your-project>/gulp` 目錄下。可以這樣撰寫組態配置來引用它：
 
 ``` javascript
+var gulp = require('gulp');
+var chef = require('gulp-chef');
 var meals = chef({
     "my-recipe": {}
 });
+gulp.registry(meals);
 ```
 
-That's it. And then you can run it by executing `gulp my-recipe` in CLI.
+就是這麼簡單。之後你就可以在命令列下，以 `gulp my-recipe` 指令執行它。
 
-However, configurations helps maximizing the reusability of recpies. A configurable recipe takes its configurations via its execution context, i.e., `this` variable.
+然而，提供組態配置的能力，才能最大化 recipe 的重複使用價值。
+
+要讓 recipe 可以處理組態內容，可以在 recipe 函數中，透過執行環境，也就是 `this` 變數，取得組態。
 
 ``` javascript
 function scripts(done) {
@@ -1052,7 +1057,7 @@ function scripts(done) {
 module.exports = scripts;
 ```
 
-And can be configured as:
+上面的 "`scripts`" recipe，在使用的時候可以像這樣配置：
 
 ``` javascript
 var meals = chef({
@@ -1065,10 +1070,9 @@ var meals = chef({
 });
 ```
 
-### Development / Production Mode
+### Development / Production 模式
 
-Configurable recipes don't have to worry about development/production mode. Configurations are resolved for that specific mode already.
-
+一個支援組態配置，可供 gulp 重複使用的 recipe，不需要自行處理條件式組態配置。組態配置在傳遞給 recipe 之前，已經先根據執行環境模式處理完畢。
 
 ## Writing Plugins
 
