@@ -1026,14 +1026,19 @@ To use your existing recipe, write a configuration with a property name exactly 
 For example, say you have your "`my-recipe.js`" recipe in `<your-project>/gulp` folder. Write a configuration to reference it:
 
 ``` javascript
+var gulp = require('gulp');
+var chef = require('gulp-chef');
 var meals = chef({
     "my-recipe": {}
 });
+gulp.registry(meals);
 ```
 
 That's it. And then you can run it by executing `gulp my-recipe` in CLI.
 
-However, configurations helps maximizing the reusability of recpies. A configurable recipe takes its configurations via its execution context, i.e., `this` variable.
+However, configurations helps maximizing the reusability of recpies.
+
+A configurable recipe takes its configurations via its execution context, i.e., `this` variable.
 
 ``` javascript
 function scripts(done) {
