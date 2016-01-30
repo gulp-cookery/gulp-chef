@@ -963,13 +963,13 @@ See [merge-stream](https://www.npmjs.com/package/merge-stream) for details.
 
 #### queue
 
-A queue stream processor creates a new stream, that pipe queued streams of its sub tasks progressively, keeping datas order.
+A queue stream processor creates a new stream, that pipe queued streams of its sub tasks progressively, keeping data's order.
 
 See [streamqueue](https://www.npmjs.com/package/streamqueue) for details.
 
 #### pipe
 
-Provides the same functionality of `gulp.pipe()`. Pipe streams from one sub task to another.
+A pipe stream processor provides the same functionality of [`stream.Readable.pipe()`](https://nodejs.org/api/stream.html#stream_readable_pipe_destination_options). Pipe streams from one sub task to another.
 
 #### parallel
 
