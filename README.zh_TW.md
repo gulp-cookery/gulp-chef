@@ -653,7 +653,7 @@ module.exports = myPlugin;
 
 Recipe 以及 plugin 可以使用 [JSON Schema](http://json-schema.org/) 來定義它們的組態屬性及架構。如果它們確實定義了組態架構，那麼你就可以在組態配置項目中，直接列舉專屬的屬性，而不需要透過 "`$`" 字元和 "`config`" 關鍵字。
 
-舉例，在 "gulp-ccr-browserify" plugin 中，它定義了 "`bundles`" 及 "`options`" 屬性，因此你可以在組態項目中直接使用這兩個屬性。
+舉例，在 "[gulp-ccr-browserify](https://github.com/gulp-cookery/gulp-ccr-browserify)" plugin 中，它定義了 "`bundles`" 及 "`options`" 屬性，因此你可以在組態項目中直接使用這兩個屬性。
 
 原本需要這樣寫：
 
@@ -949,39 +949,39 @@ var settings = {
 
 ## 內建的 Recipe
 
-#### clean
+#### [clean](https://github.com/gulp-cookery/gulp-ccr-clean)
 
 清除 `dest` 屬性指定的目錄。
 
-#### copy
+#### [copy](https://github.com/gulp-cookery/gulp-ccr-copy)
 
 複製由 `src` 屬性指定的檔案，到由 `dest` 屬性指定的目錄，可以選擇是否移除或改變檔案的相對路徑。
 
-#### merge
+#### [merge](https://github.com/gulp-cookery/gulp-ccr-merge)
 
 這是一個串流處理器。回傳一個新的串流，該串流只有在所有的子任務的串流都停止時才會停止。
 
 更多資訊請參考 [merge-stream](https://www.npmjs.com/package/merge-stream) 。
 
-#### queue
+#### [queue](https://github.com/gulp-cookery/gulp-ccr-queue)
 
 這是一個串流處理器。可以匯集子任務所回傳的串流，並回傳一個新的串流，該串流會將子任務回傳的串流，依照子任務的順序排列在一起。
 
 更多資訊請參考 [streamqueue](https://www.npmjs.com/package/streamqueue) 。
 
-#### pipe
+#### [pipe](https://github.com/gulp-cookery/gulp-ccr-pipe)
 
 這是一個串流處理器。提供與 [`stream.Readable.pipe()`](https://nodejs.org/api/stream.html#stream_readable_pipe_destination_options) 相同的功能。方便在子任務之間遞送 (pipe) 串流。
 
-#### parallel
+#### [parallel](https://github.com/gulp-cookery/gulp-ccr-parallel)
 
 這是一個流程控制器。會以並行 (parallel) 的方式執行子任務，子任務之間不會互相等待。
 
-#### series
+#### [series](https://github.com/gulp-cookery/gulp-ccr-series)
 
 這是一個流程控制器。會以序列 (series) 的方式執行子任務，前一個子任務結束之後才會執行下一個子任務。
 
-#### watch
+#### [watch](https://github.com/gulp-cookery/gulp-ccr-watch)
 
 這是一個流程控制器。負責監看指定的子任務、以及其所有子任務的來源檔案，當有任何檔案異動時，執行對應的指定任務。
 
@@ -989,7 +989,7 @@ var settings = {
 
 在你撰寫自己的 recipe 之前，先看一下別人已經做了哪些東西，也許有現成的可以拿來用。你可以使用" `gulp recipe`"，或者，更建議使用 "`gulp-ccr`"，在 [github.com](https://github.com/search?utf8=%E2%9C%93&q=gulp-ccr) 和 [npmjs.com](https://www.npmjs.com/search?q=gulp-ccr)  上搜尋。這個 "`gulp-ccr`" 是  "Cascading Configurable Recipe for Gulp" 的簡寫，意思是『可層疊組態配置、可重複使用的 Gulp 任務』。
 
-一旦你找到了，譬如，`gulp-ccr-browserify` ，將它安裝為專案的 devDependencies：
+一旦你找到了，譬如，[`gulp-ccr-browserify`](https://github.com/gulp-cookery/gulp-ccr-browserify) ，將它安裝為專案的 devDependencies：
 
 ``` bash
 $ npm install --save-dev gulp-ccr-browserify
@@ -1095,7 +1095,7 @@ module.exports.type = 'flow';
 
 ### 組態架構 (Configuration Schema)
 
-為了簡化組態配置的處理過程，gulp-chef 鼓勵使用 [JSON Schema](http://json-schema.org/) 來驗證和轉換組態配置。Gulp-chef 使用 [json-normalizer](https://github.com/amobiz/json-normalizer?utm_referer="gulp-chef") 來為 JSON Schema 提供擴充功能，並且協助將組態內容一般化，以提供最大的組態配置彈性。你可以為你的 plugin 定義組態架構，以提供屬性別名、類型轉換、預設值等功能。同時，組態架構的定義內容還可以顯示在命令列中，使用者可以使用指令 `gulp --recipe <recipe-name>` 查詢，不必另外查閱文件，就可以了解如何撰寫組態配置。請參考 [json-normalizer](https://github.com/amobiz/json-normalizer?utm_referer="gulp-chef") 的說明，了解如何定義組態架構，甚至加以擴充。
+為了簡化組態配置的處理過程，gulp-chef 鼓勵使用 [JSON Schema](http://json-schema.org/) 來驗證和轉換組態配置。Gulp-chef 使用 [json-normalizer](https://github.com/amobiz/json-normalizer?utm_referer="gulp-chef") 來為 JSON Schema 提供擴充功能，並且協助將組態內容一般化 (或稱正規化)，以提供最大的組態配置彈性。你可以為你的 plugin 定義組態架構，以提供屬性別名、類型轉換、預設值等功能。同時，組態架構的定義內容還可以顯示在命令列中，使用者可以使用指令 `gulp --recipe <recipe-name>` 查詢，不必另外查閱文件，就可以了解如何撰寫組態配置。請參考 [json-normalizer](https://github.com/amobiz/json-normalizer?utm_referer="gulp-chef") 的說明，了解如何定義組態架構，甚至加以擴充。
 
 以下是一個簡單的 plugin，示範如何定義組態架構：
 
@@ -1161,47 +1161,47 @@ module.exports.schema = {
 
 另外注意到 "`sourcemaps`" 選項允許 "`sourcemap`" 別名，因此使用者可以在組態配置中隨意使用 "`sourcemaps`" 或 "`sourcemap`"，但是同時在 plugin 中，卻只需要處理 "`sourcemaps`"  即可。
 
-#### Extended Data Types
+#### 擴充資料型別
 
-Gulp-chef provides two extended data type for JSON schema: "`glob`" and "`path`".
+Gulp-chef 提供兩個擴充的 JSON Schema 資料型別： "`glob`" 及 "`path`"。
 
 ##### glob
 
-A "`glob`" property can accepts a path, an array of paths, a glob, an array of globs, and optionally along with options.
+一個屬性如果是 "`glob`" 型別，它可以接受一個路徑、一個路徑批配表達式 (glob)，或者是一個由路徑或路徑批配表達式組成的陣列。另外還可以額外附帶選項資料。
 
-The following all are valid glob values:
+以下都是正確的 "`glob`" 數值：
 
 ``` javascript
-// a path string
+// 一個路徑字串
 'src'
-// an array of path string
+// 一個由路徑字串組成的陣列
 ['src', 'lib']
-// a glob
+// 一個路徑批配表達式
 '**/*.js'
-// an array of globs
+// 一個由路徑或路徑批配表達式組成的陣列
 ['**/*.{js,ts}', '!test*']
-// object form
-{ glob: ['**/*.js', '**/*.ts', '!test*'] }
+// 非正規化的『物件表達形式』(注意 "glob" 屬性)
+{ glob: '**/*.js' }
 ```
 
-All above values will be normalized to their "object form":
+上面所有的數值，都會被正規化為所謂的『物件表達形式』：
 
 ``` javascript
-// a path string
+// 一個路徑字串
 { globs: ['src'] }
-// an array of path string
+// 一個由路徑字串組成的陣列
 { globs: ['src', 'lib'] }
-// a glob
-{ globs: ['src/**/*.js'] }
-// an array of globs
+// 一個路徑批配表達式
+{ globs: ['**/*.js'] }
+// 一個由路徑或路徑批配表達式組成的陣列
 { globs: ['**/*.{js,ts}', '!test*'] }
-// object form (note that 'glob' was normalized to 'globs')
-{ globs: ['**/*.js', '**/*.ts', '!test*'] }
+// 正規化之後的『物件表達形式』(注意 "glob" 屬性已經正規化為 "globs")
+{ globs: ['**/*.js'] }
 ```
 
-Note that "`glob`" is alias of "`globs`" property, and will be normalized as is, and all globs values will be converted to array.
+注意到 "`glob`" 是 "`globs`" 屬性的別名，在正規化之後，被更正為 "`globs`"。同時，"`glob`" 型別的 "`globs`" 屬性的型態為陣列，因此，所有的值都將自動被轉換為陣列。
 
-In its object form, a glob property can take options.
+當以『物件表達形式』呈現時，還可以使用 "`options`" 屬性額外附帶選項資料。
 
 ``` javascript
 {
@@ -1214,9 +1214,9 @@ In its object form, a glob property can take options.
 }
 ```
 
-See [node-glob](https://github.com/isaacs/node-glob#options) for more options.
+更多選項資料，請參考 [node-glob](https://github.com/isaacs/node-glob#options) 的說明。
 
-Any properties of type "glob" in sub task will inherit its parent's "`src`" property, and if both parent and sub task specified, path will be joined.
+在任務中，任何具有 "`glob`" 型別的組態屬性，都會繼承其父任務的 "`src`" 屬性。這意謂著，當父任務定義了 "`src`" 屬性時，gulp-chef 會為子任務的 "`glob`" 型別的組態屬性，自動連接好父任務的 "`src`" 屬性的路徑。
 
 ``` javascript
 {
@@ -1229,9 +1229,9 @@ Any properties of type "glob" in sub task will inherit its parent's "`src`" prop
 }
 ```
 
-In this example, the "browserify" plugin has a "`bundles`" property that has an nested "`entries`" property of glob type. The "`entries`" property will inherit "`src`" property, and has the value: `{ globs: "src/main.js" }`.
+在這個例子中，"[browserify](https://github.com/gulp-cookery/gulp-ccr-browserify)" plugin 具有一個 "`bundles`" 屬性，"`bundles`" 屬性下又有一個 "`entries`" 屬性，而該屬性為 "`glob`" 型別。這個 "`entries`" 屬性將繼承外部的 "`src`" 屬性，因而變成： `{ globs: "src/main.js" }` 。
 
-If you don't want this behavior, you can specify "`override`" option to override it.
+如果這不是你要的，你可以指定 "`join`" 選項來覆蓋這個行為。
 
 ``` javascript
 {
@@ -1240,16 +1240,20 @@ If you don't want this behavior, you can specify "`override`" option to override
         bundles: {
             entry: {
                 glob: 'main.js',
-                override: true
+                options: {
+                    join: false
+                }
             }
         }
     }
 }
 ```
 
-Now the "`entries`" property will have the value: `{ globs: "main.js", options: { override: true } }`.
+現在 "`entries`" 屬性的值將成為： `{ globs: "main.js", options: { join: false } }` 。
 
-In your plugin, always remember to pass "`options`" properties (to whatever API you use) and write code like this to allow user specify options:
+選項 "`join`" 也可以接受字串，用來指定要從哪一個屬性繼承路徑，該屬性必須是 "`glob`" 或 "`path`" 型別。
+
+在 plugin 中，也可以透過組態架構來定義預設要繼承的屬性。請記住，除非有好的理由，請永遠記得同時將 "`options`" 傳遞給呼叫的 API，以便允許使用者指定選項。像這樣：
 
 ``` javascript
 module.exports = function () {
@@ -1263,31 +1267,31 @@ module.exports = function () {
 
 ##### path
 
-A "`path`" property can accepts a path string and optionally along with options.
+一個屬性如果是 "`path`" 型別，它可以接受一個路徑字串。另外還可以額外附帶選項資料。
 
-The following all are valid path values:
+以下都是正確的 "`path`" 數值：
 
 ``` javascript
-// a path string
+// 一個路徑字串
 'dist'
-// a path string
+// 一個路徑字串
 'src/lib/'
-// object form
+// 『物件表達形式』
 { path: 'maps/' }
 ```
 
-All above values will be normalized to their "object form":
+上面所有的數值，都會被正規化為所謂的『物件表達形式』：
 
 ``` javascript
-// a path string
+// 一個路徑字串
 { path: 'dist' }
-// a path string
+// 一個路徑字串
 { path: 'src/lib/' }
-// object form
+// 『物件表達形式』
 { path: 'maps/' }
 ```
 
-In its object form, a path property can take options.
+當以『物件表達形式』呈現時，還可以使用 "`options`" 屬性額外附帶選項資料。
 
 ``` javascript
 {
@@ -1299,9 +1303,9 @@ In its object form, a path property can take options.
 }
 ```
 
-See [gulp.dest()](https://github.com/gulpjs/gulp/blob/4.0/docs/API.md#options-1) for more options.
+更多選項資料，請參考 [gulp.dest()](https://github.com/gulpjs/gulp/blob/4.0/docs/API.md#options-1) 的說明。
 
-Any properties of type "path" in sub task will inherit its parent's "`dest`" property, and if both parent and sub task specified, path will be joined.
+在任務中，任何具有 "`type`" 型別的組態屬性，都會繼承其父任務的 "`dest`" 屬性。這意謂著，當父任務定義了 "`dest`" 屬性時，gulp-chef 會為子任務的 "`path`" 型別的組態屬性，自動連接好父任務的 "`dest`" 屬性的路徑。
 
 ``` javascript
 {
@@ -1312,9 +1316,9 @@ Any properties of type "path" in sub task will inherit its parent's "`dest`" pro
 }
 ```
 
-Assume that the "`file`" property is of type "path", it will inherit "`dest`" property and have the value: "`{ path: 'dist/bundle.js' }`".
+假設這裡的 "`file`" 屬性是 "`path`" 型別，它將會繼承外部的 "`dest`" 屬性，而成為： "`{ path: 'dist/bundle.js' }`"。
 
-If you don't want this behavior, you can specify "`override`" option to override it.
+如果這不是你要的，你可以指定 "`join`" 選項來覆蓋這個行為。
 
 ``` javascript
 {
@@ -1322,15 +1326,19 @@ If you don't want this behavior, you can specify "`override`" option to override
     scripts: {
         file: {
             path: 'bundle.js',
-            override: true
+            options: {
+                join: false
+            }
         }
     }
 }
 ```
 
-Now the "`file`" property will have the value: "`{ path: 'bundle.js', options: { override: true } }`".
+現在 "`file`" 屬性將成為： "`{ path: 'bundle.js', options: { join: false } }`"。
 
-In your plugin, always remember to pass "`options`" properties (to whatever API you use) and write code like this to allow user specify options:
+選項 "`join`" 也可以接受字串，用來指定要從哪一個屬性繼承路徑，該屬性必須是 "`path`" 型別。在 plugin 中也可以透過組態架構來定義預設要繼承的屬性。
+
+在 plugin 中，也可以透過組態架構來定義預設要繼承的屬性。請記住，除非有好的理由，請永遠記得同時將 "`options`" 傳遞給呼叫的 API，以便允許使用者指定選項。像這樣：
 
 ``` javascript
 module.exports = function () {
