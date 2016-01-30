@@ -947,43 +947,43 @@ var settings = {
 
 但是要注意的是，不要使用到保留給任務使用的[關鍵字](#List_of_Reserved_Task_Properties_(Keywords))。
 
-## Build-in Recipes
+## 內建的 Recipe
 
 #### clean
 
-Clean up `dest` folder.
+清除 `dest` 屬性指定的目錄。
 
 #### copy
 
-Copy assets defined by`src` to `dest` folder, optionally remove or replace relative paths for files.
+複製由 `src` 屬性指定的檔案，到由 `dest` 屬性指定的目錄，可以選擇是否移除或改變檔案的相對路徑。
 
 #### merge
 
-A merge stream processor creates a new stream, that ends only when all its sub tasks' stream ends.
+這是一個串流處理器。回傳一個新的串流，該串流只有在所有的子任務的串流都停止時才會停止。
 
-See [merge-stream](https://www.npmjs.com/package/merge-stream) for details.
+更多資訊請參考 [merge-stream](https://www.npmjs.com/package/merge-stream) 。
 
 #### queue
 
-A queue stream processor creates a new stream, that pipe queued streams of its sub tasks progressively, keeping datas order.
+這是一個串流處理器。可以匯集子任務所回傳的串流，並回傳一個新的串流，該串流會將子任務回傳的串流，依照子任務的順序排列在一起。
 
-See [streamqueue](https://www.npmjs.com/package/streamqueue) for details.
+更多資訊請參考 [streamqueue](https://www.npmjs.com/package/streamqueue) 。
 
 #### pipe
 
-Provides the same functionality of `gulp.pipe()`. Pipe streams from one sub task to another.
+這是一個串流處理器。提供與 [`stream.Readable.pipe()`](https://nodejs.org/api/stream.html#stream_readable_pipe_destination_options) 相同的功能。方便在子任務之間遞送 (pipe) 串流。
 
 #### parallel
 
-A parallel flow controller runs sub tasks in parallel, without waiting until the previous task has completed.
+這是一個流程控制器。會以並行 (parallel) 的方式執行子任務，子任務之間不會互相等待。
 
 #### series
 
-A series flow controller runs sub tasks in series, each one running once the previous task has completed.
+這是一個流程控制器。會以序列 (series) 的方式執行子任務，前一個子任務結束之後才會執行下一個子任務。
 
 #### watch
 
-A watch flow controller watches source files of specific tasks and their descendants and run corresponding task when a file changes.
+這是一個流程控制器。負責監看指定的子任務、以及其所有子任務的來源檔案，當有任何檔案異動時，執行對應的指定任務。
 
 ## Using Plugins
 
