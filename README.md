@@ -106,7 +106,7 @@ $ gulp gulpTask
 
 ### Configurable Task
 
-A configurable task has signature same as normal gulp task, and can be used just as a normal gulp task. But, were called with an object: `{ gulp, config, upstream }` as context.
+A configurable task has the same signature as normal gulp task, but be called with an object: `{ gulp, config, upstream }` as context.
 
 ``` javascript
 // Note: You don't write configurable task but configuration.
@@ -159,7 +159,7 @@ Also note that in this example, the "`scripts`" entry in the configuration is th
 
 ### Configurable Recipe
 
-A configurable recipe is, a configurable and reusable gulp task, that you actually write and reuse, and also has the same signature as normal gulp task. In fact, a "[configurable task](#Configurable_Task)" is simply a wrapper that calls "configurable recipe" with exactly the same name.
+A configurable recipe is, a configurable and reusable gulp task, that has the same signature as normal gulp task, but be called with an object: `{ gulp, config, upstream }` as context. A configurable recipe is the function you actually write and reuse. In fact, a "[configurable task](#Configurable_Task)" is simply a wrapper that calls "configurable recipe" with exactly the same name.
 
 ``` javascript
 function scripts(done) {
@@ -1094,9 +1094,9 @@ Valid types are "`flow`", "`stream`", and "`task`".
 
 ### Configuration Schema
 
-To simplify the processing of configuration, gulp-chef encourages using "[JSON Schema](http://json-schema.org/)" to validate and transform configuration. Gulp-chef use "[json-normalizer](https://github.com/amobiz/json-normalizer?utm_referer="gulp-chef")" to provide extend JSON schema functionality and to normalize configuration. You can define your configuration schema to support property alias, type conversion, and default value, etc. Check out "[json-normalizer](https://github.com/amobiz/json-normalizer?utm_referer="gulp-chef")" for how to extend your schema.
+To simplify the processing of configuration, gulp-chef encourages using [JSON Schema](http://json-schema.org/) to validate and transform configuration. Gulp-chef use [json-normalizer](https://github.com/amobiz/json-normalizer?utm_referer="gulp-chef") to maximize flexibility of configuration by extending JSON Schema functionality and normalizing configuration. You can define your configuration schema to support property alias, type conversion, and default value, etc. Also the schema can show up in `gulp --recipe <recipe-name>` command, so user can figure out how to write configuration without checking out the document. Check out [json-normalizer](https://github.com/amobiz/json-normalizer?utm_referer="gulp-chef") for how to define and extend your schema.
 
-The schema can show up in `gulp --recipe <recipe-name>` command, so user can figure out how to write configuration without checking out the document.
+Here is a simple plugin with configuration schema:
 
 ``` javascript
 var gulpif = require('gulp-if');
@@ -1162,7 +1162,7 @@ Also note the "`sourcemaps`" options has alias "`sourcemap`", user can use both 
 
 #### Extended Data Types
 
-Gulp-chef provides two extended data type for JSON schema: "`glob`" and "`path`".
+Gulp-chef provides two extended data type for JSON Schema: "`glob`" and "`path`".
 
 ##### glob
 
