@@ -1007,7 +1007,7 @@ Gulp-chef 會為你移除附加在前面的 "`gulp-ccr-`" 名稱，所以你在�
 
 ## 撰寫 Recipe
 
-斯斯，不是，recipe 有三種： "__任務型 (task)__", "__串流處理器 (stream processor)__" 以及 "__流程控制器 (flow controller)__"。
+斯斯，不是，recipe 有三種： __任務型 (task)__、__串流處理器 (stream processor)__ 以及 __流程控制器 (flow controller)__。
 
 大多數時候，你想要寫的是任務型 recipe。任務型 recipe 負責做苦工，而串流處理器及流程控制器則負責操弄其它 recipe。
 
@@ -1072,13 +1072,15 @@ var meals = chef({
 
 ### Development / Production 模式
 
-一個支援組態配置，可供 gulp 重複使用的 recipe，不需要自行處理條件式組態配置。組態配置在傳遞給 recipe 之前，已經先根據執行環境模式處理完畢。
+Gulp-chef 的 recipe 不需要自行處理條件式組態配置。組態配置在傳遞給 recipe 之前，已經先根據執行環境模式處理完畢。
 
-## Writing Plugins
+## 撰寫 Plugin
 
-### Plugin Types
+Gulp-chef 的 plugin，只是普通的 Node.js 模組，再加上一些必要的資訊。
 
-Aa said in "[Writing Recipes](#Writing_Recipes)" section, there are 3 kinds of recipes: "__task__", "__stream processor__", and "__flow controller__". Gulp-chef need to know which type the plugin is. Since a plugin is installed via `npm install`, plugin must denote which type it is.
+### Plugin 的類型
+
+在前面 [撰寫 Recipe](#Writing_Recipes) 的部份提到過，recipe 有三種：__任務型 (task)__、__串流處理器 (stream processor)__ 以及 __流程控制器 (flow controller)__。Gulp-chef 需要知道 plugin 的類型，才能安插必要的輔助功能。由於 plugin 必須使用 `npm install` 安裝，gulp-chef 無法像本地的 recipe 一樣，由目錄決定 recipe 的類型，因此 plugin 必須自行提供類型資訊。
 
 ``` javascript
 function myPlugin(done) {
@@ -1089,7 +1091,7 @@ module.exports = myPlugin;
 module.exports.type = 'flow';
 ```
 
-Valid types are "`flow`", "`stream`", and "`task`".
+有效的類型為： "`flow`"、"`stream`" 以及 "`task`"。
 
 ### Configuration Schema
 
@@ -1412,7 +1414,7 @@ There is little limitation on flow controller. The only rule is a flow controlle
 
 It is recommended you start writing your plugin as a local recipe, and transform to a plugin when you think it is done. Most recipe testings are data-driven, if this is your case, maybe you want give [mocha-cases](https://github.com/amobiz/mocha-cases) a shot.
 
-### List of Reserved Task Properties (Keywords)
+## List of Reserved Task Properties (Keywords)
 
 These keywords are reserved for task properties, you can't use them as task names or property names.
 
