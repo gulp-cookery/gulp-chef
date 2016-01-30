@@ -75,7 +75,7 @@ $ gulp
 
 * [example-webapp-seed](https://github.com/gulp-cookery/example-webapp-seed)
 
-一個簡單的 webapp 種子專案。
+一個簡單的 web app 種子專案。同時也可以當做是一個示範使用本地 recipe 的專案。
 
 
 ## 用語說明
@@ -695,11 +695,11 @@ Recipe 以及 plugin 可以使用 [JSON Schema](http://json-schema.org/) 來定�
 
 #### 自動識別屬性
 
-為了方便起見，當組態項目中包含有 "`task`", "`series`",  "`parallel`" 及 "`plugin`" 關鍵字的時候，這時候除了保留屬性之外，其餘的屬性都將自動認定為組態屬性，而不是子任務。
+為了方便起見，當組態項目中包含有 "`task`", "`series`",  "`parallel`" 或 "`plugin`" 關鍵字的時候，這時候除了保留屬性之外，其餘的屬性都將自動認定為組態屬性，而不是子任務。
 
-### Dynamic Configuration / Template Variable Realizing
+### 動態組態屬性 / 模板引值
 
-Some stream processors (e.g., "gulp-ccr-eachdir") programmatically modify and/or generate new configuration values. The new configuration values are injected to recipe's configuration at runtime. And templates with `{{var}}` syntax are realized (or interpolated) with resolved variables.
+有些『串流處理器』 (譬如 "[gulp-ccr-each-dir](https://github.com/gulp-cookery/gulp-ccr-each-dir)")，會以程序化或動態的方式產生新的組態屬性。這些新產生的屬性，將在執行時期，插入到子任務的的組態中。除了 recipe 及 plugin 可以透過 "`config`" 屬性取得這些值之外，子任務也可以透過使用模板的方式，以 "`{{var}}`" 這樣的語法，直接在組態中引用這些值。
 
 ``` javascript
 {
@@ -715,15 +715,15 @@ Some stream processors (e.g., "gulp-ccr-eachdir") programmatically modify and/or
 }
 ```
 
-Here the "`each-dir`" plugin iterates sub folders of "`modules`" folder that was denoted by the "`dir`" property, and generates a new "`dir`" property, passing to each sub tasks. Sub tasks can read this value in their "`config`" property, and user can use the "`{{dir}}`" syntax to reference the value in configuration.
+這個例子裡，"[each-dir](https://github.com/gulp-cookery/gulp-ccr-each-dir)" plugin 會根據 "`dir`" 屬性指定的內容，也就是 "`modules`" 目錄，找出其下的所有子目錄，然後產生新的 "`dir`" 屬性，透過這個屬性將子目錄資訊傳遞給每個子任務 (這裡只有 "concat" 任務)。子任務可以透過 "`config`" 屬性讀取這個值。使用者也可以使用 "`{{dir}}`" 這樣的語法，在組態配置中引用這個值。
 
-### Conditional Configurations
+### 條件式組態配置
 
-Gulp-chef supports conditional configurations via runtime environment modes. This functionality is based on [json-regulator](https://github.com/amobiz/json-regulator?utm_referer="gulp-chef"), check it out for more information.
+Gulp-chef 支援條件式組態配置。可以透過設定執行時期環境的模式來啟用不同的條件式組態配置。這個功能的實作是基於 [json-regulator](https://github.com/amobiz/json-regulator?utm_referer="gulp-chef") 這個模組，可以參考該模組的說明以便獲得更多的相關資訊。
 
-By default, `development`, `production` and `staging` modes are supported. You can write your configurations for each specific mode under `development`/`dev`, `production`/`prod`, and `staging`  property respectively.
+預設提供了 `development`, `production` 及 `staging` 三個模式。你可以在組態配置中，將相關的組態內容，分別寫在對應的 `development` 或 `dev`, `production` 或 `prod` ，或 `staging`  項目之下。
 
-For example, with the following configuration:
+譬如，如果將組態配置寫成這樣：
 
 ``` javascript
 {
@@ -805,7 +805,7 @@ For example, with the following configuration:
 }
 ```
 
-In `development` mode, will becomes:
+當啟用 `development` 模式時，組態配置將被轉換為：
 
 ``` javascript
 {
@@ -832,7 +832,7 @@ In `development` mode, will becomes:
 }
 ```
 
-And in `production` mode, will becomes:
+而啟用 `production` 模式時，組態配置將被轉換為：
 
 ``` javascript
 {
@@ -865,39 +865,39 @@ And in `production` mode, will becomes:
 }
 ```
 
-Super!
+超強的！
 
-#### Run Gulp in Specific Runtime Environment Mode
+#### 以特定的執行時期環境模式啟動 Gulp
 
-##### Via CLI Argument
+##### 經由命令列參數
 
 ``` bash
 $ gulp --development build
 ```
 
-Or, for short:
+也可以使用簡寫:
 
 ``` bash
 $ gulp --dev build
 ```
 
-##### Via Environment Variable
+##### 經由環境變數
 
-In Linux/Unix:
+在 Linux/Unix 下：
 
 ``` bash
 $ NODE_ENV=development gulp build
 ```
 
-Or, for short:
+同樣地，若使用簡寫:
 
 ``` bash
 $ NODE_ENV=dev gulp build
 ```
 
-#### Customizing Rumtime Environment Modes
+#### 自訂執行時期環境模式
 
-Rumtime environment modes are totally configurable too. If you are a minimalist, you can even use `d`, `p` and `s` for `development`, `production` and `staging` respectively, just remember that your configurations and runtime environment modes are in sync.
+Gulp-chef 允許你自訂執行時期環境模式。如果你崇尚極簡主義，你甚至可以分別使用 `d`, `p` 及 `s` 代表 `development`, `production` 及 `staging` 模式。只是要記得，組態配置必須與執行時期環境模式配套才行。
 
 ``` javascript
 var ingredients = {
@@ -918,7 +918,7 @@ var ingredients = {
         }
     }
 };
-var options = {
+var settings = {
     modes: {
         production: ['p'],
         development: ['d'],
@@ -926,15 +926,15 @@ var options = {
         default: 'production'
     }
 };
-var meals = chef(ingredients, options);
+var meals = chef(ingredients, settings);
 ```
 
-Note the `default` in `options.modes`. It won't define a mode. Instead, it define which mode being default. If `options.modes.default` is not specified, first mode will becomes default. However, it's recommended not to omit.
+注意到在 `settings.modes` 之下的 `default` 屬性。這個屬性不會定義新的模式，它是用來指定預設的模式。如果沒有指定 `settings.modes.default` ，那麼，預設模式會成為列在 `settings.modes` 之下的第一個模式。建議最好不要省略。
 
-Moreover, you can design any modes you want, with alias support.
+除了改變模式的代號，你甚至可以設計自己的模式，並且還能一次提供多個代號。
 
 ``` javascript
-var options = {
+var settings = {
     modes = {
         build: ['b', 'build'],
         compile: ['c', 'compile'],
@@ -945,7 +945,7 @@ var options = {
 };
 ```
 
-However, you can't use [keywords](#List_of_Reserved_Task_Properties_(Keywords)) reserved for task properties, of course.
+但是要注意的是，不要使用到保留給任務使用的[關鍵字](#List_of_Reserved_Task_Properties_(Keywords))。
 
 ## Build-in Recipes
 
