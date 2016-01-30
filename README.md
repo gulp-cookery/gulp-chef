@@ -76,7 +76,7 @@ Taking a full working example from [angularjs-gulp-example](https://github.com/j
 
 * [example-webapp-seed](https://github.com/gulp-cookery/example-webapp-seed)
 
-A simple webapp seed project.
+A simple web app seed project.
 
 ## Terminology
 
@@ -692,11 +692,12 @@ You can write your configuration like this:
 
 #### Smart Configuration Properties
 
-For convenience sake, when a configuration entry uses any of "`task`", "`series`",  "`parallel`",  and "`plugin`" keywords, it is considered there is no ambiguous between sub tasks and properties, and all non-reserved properties will be recognized as the task's properties.
+For convenience sake, when a configuration entry uses any of "`task`", "`series`",  "`parallel`",  or "`plugin`" keywords, it is considered there is no ambiguous between sub tasks and properties, and all non-reserved properties will be recognized as the task's properties.
 
 ### Dynamic Configuration / Template Variable Realizing
 
-Some stream processors (e.g., "gulp-ccr-eachdir") programmatically modify and/or generate new configuration values. The new configuration values are injected to recipe's configuration at runtime. And templates with `{{var}}` syntax are realized (or interpolated) with resolved variables.
+Some stream processors (e.g., "[gulp-ccr-each-dir](https://github.com/gulp-cookery/gulp-ccr-each-dir)") programmatically or dynamically generate new configuration values. The new configuration values were injected to sub task's configuration at runtime. Of course recipe and plugin can access these values via "`config`" property.
+Sub tasks can also reference these values via templates with `{{var}}` syntax that are realized (or interpolated) with resolved values.
 
 ``` javascript
 {
@@ -712,13 +713,13 @@ Some stream processors (e.g., "gulp-ccr-eachdir") programmatically modify and/or
 }
 ```
 
-Here the "`each-dir`" plugin iterates sub folders of "`modules`" folder that was denoted by the "`dir`" property, and generates a new "`dir`" property, passing to each sub tasks. Sub tasks can read this value in their "`config`" property, and user can use the "`{{dir}}`" syntax to reference the value in configuration.
+Here the "[each-dir](https://github.com/gulp-cookery/gulp-ccr-each-dir)" plugin iterates sub folders of "`modules`" folder that was denoted by the "`dir`" property, and generates a new "`dir`" property, passing to each sub tasks (only one task "concat" here). Sub tasks can read this value in their "`config`" property, and user can use the "`{{dir}}`" syntax to reference the value in configuration.
 
 ### Conditional Configurations
 
 Gulp-chef supports conditional configurations via runtime environment modes. This functionality is based on [json-regulator](https://github.com/amobiz/json-regulator?utm_referer="gulp-chef"), check it out for more information.
 
-By default, `development`, `production` and `staging` modes are supported. You can write your configurations for each specific mode under `development`/`dev`, `production`/`prod`, and `staging`  property respectively.
+By default, `development`, `production`, and `staging` modes are supported. You can write your configurations for each specific mode under `development`/`dev`, `production`/`prod`, and `staging`  property respectively.
 
 For example, with the following configuration:
 
@@ -915,7 +916,7 @@ var ingredients = {
         }
     }
 };
-var options = {
+var settings = {
     modes: {
         production: ['p'],
         development: ['d'],
@@ -923,15 +924,15 @@ var options = {
         default: 'production'
     }
 };
-var meals = chef(ingredients, options);
+var meals = chef(ingredients, settings);
 ```
 
-Note the `default` in `options.modes`. It won't define a mode. Instead, it define which mode being default. If `options.modes.default` is not specified, first mode will becomes default. However, it's recommended not to omit.
+Note the `default` in `settings.modes`. It won't define a mode. Instead, it define which mode being default. If `settings.modes.default` is not specified, first mode will becomes default. However, it's recommended not to omit.
 
 Moreover, you can design any modes you want, with alias support.
 
 ``` javascript
-var options = {
+var settings = {
     modes = {
         build: ['b', 'build'],
         compile: ['c', 'compile'],
