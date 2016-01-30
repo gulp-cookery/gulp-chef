@@ -985,17 +985,17 @@ var settings = {
 
 這是一個流程控制器。負責監看指定的子任務、以及其所有子任務的來源檔案，當有任何檔案異動時，執行對應的指定任務。
 
-## Using Plugins
+## 使用 Plugin
 
-Before you write your own recipes, take a look and find out what others already done, maybe there is a perfect one for you. You can search [github.com](https://github.com/search?utf8=%E2%9C%93&q=gulp-ccr) and [npmjs.com](https://www.npmjs.com/search?q=gulp-ccr) using keyword: "`gulp recipe`", or the recommended: "`gulp-ccr`".  The term "`gulp-ccr`" stand for "Cascading Configurable Recipe for Gulp".
+在你撰寫自己的 recipe 之前，先看一下別人已經做了哪些東西，也許有現成的可以拿來用。你可以使用" `gulp recipe`"，或者，更建議使用 "`gulp-ccr`"，在 [github.com](https://github.com/search?utf8=%E2%9C%93&q=gulp-ccr) 和 [npmjs.com](https://www.npmjs.com/search?q=gulp-ccr)  上搜尋。這個 "`gulp-ccr`" 是  "Cascading Configurable Recipe for Gulp" 的簡寫，意思是『可層疊組態配置、可重複使用的 Gulp 任務』。
 
-Once you found one, say, `gulp-ccr-browserify`, install it in your project's devDependencies:
+一旦你找到了，譬如，`gulp-ccr-browserify` ，將它安裝為專案的 devDependencies：
 
 ``` bash
 $ npm install --save-dev gulp-ccr-browserify
 ```
 
-Gulp-chef remove plugin name prefix "`gulp-ccr-`" for you, so you must reference it without the "`gulp-ccr-`" prefix.
+Gulp-chef 會為你移除附加在前面的 "`gulp-ccr-`" 名稱，所以你在使用 plugin 的時候，請移除 "`gulp-ccr-`" 部份。
 
 ``` javascript
 {
