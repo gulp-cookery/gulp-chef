@@ -1070,14 +1070,16 @@ var meals = chef({
 
 ### Development / Production Mode
 
-Configurable recipes don't have to worry about development/production mode. Configurations are resolved for that specific mode already.
+Recipes for gulp-chef don't have to worry about development/production mode. Configurations are resolved for that specific mode already.
 
 
 ## Writing Plugins
 
+A gulp-chef plugin is just a normal Node.js module, plus some required information.
+
 ### Plugin Types
 
-Aa said in "[Writing Recipes](#Writing_Recipes)" section, there are 3 kinds of recipes: "__task__", "__stream processor__", and "__flow controller__". Gulp-chef need to know which type the plugin is. Since a plugin is installed via `npm install`, plugin must denote which type it is.
+Aa said in [Writing Recipes](#Writing_Recipes) section, there are 3 kinds of recipes: "__task__", "__stream processor__", and "__flow controller__". Gulp-chef need to know which type the plugin is. Since a plugin is installed via `npm install`, there is no folder name from which gulp-chef reailze which type a local recipe is, therefore plugin must denote which type it is.
 
 ``` javascript
 function myPlugin(done) {
