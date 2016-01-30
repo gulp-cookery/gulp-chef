@@ -650,7 +650,7 @@ Now the property "`$file`" will be recognized as a configuration value, and you 
 
 Recipes and plugins can [define](#Configuration_Schema) their own configuration properties using [JSON Schema](http://json-schema.org/). In this case, you can write configuration values directly inside the configuration entry without the "`$`" character and the "`config`" keyword.
 
-For example, the "gulp-ccr-browserify" plugin defines "`bundles`", and "`options`" properties, you can put them directly inside the configuration entry.
+For example, the "[gulp-ccr-browserify](https://github.com/gulp-cookery/gulp-ccr-browserify)" plugin defines "`bundles`", and "`options`" properties, you can put them directly inside the configuration entry.
 
 Instead of this:
 
@@ -947,39 +947,39 @@ However, you can't use [keywords](#List_of_Reserved_Task_Properties_(Keywords)) 
 
 ## Build-in Recipes
 
-#### clean
+#### [clean](https://github.com/gulp-cookery/gulp-ccr-clean)
 
 Clean up `dest` folder.
 
-#### copy
+#### [copy](https://github.com/gulp-cookery/gulp-ccr-copy)
 
 Copy assets defined by`src` to `dest` folder, optionally remove or replace relative paths for files.
 
-#### merge
+#### [merge](https://github.com/gulp-cookery/gulp-ccr-merge)
 
 A merge stream processor creates a new stream, that ends only when all its sub tasks' stream ends.
 
 See [merge-stream](https://www.npmjs.com/package/merge-stream) for details.
 
-#### queue
+#### [queue](https://github.com/gulp-cookery/gulp-ccr-queue)
 
 A queue stream processor creates a new stream, that pipe queued streams of its sub tasks progressively, keeping data's order.
 
 See [streamqueue](https://www.npmjs.com/package/streamqueue) for details.
 
-#### pipe
+#### [pipe](https://github.com/gulp-cookery/gulp-ccr-pipe)
 
 A pipe stream processor provides the same functionality of [`stream.Readable.pipe()`](https://nodejs.org/api/stream.html#stream_readable_pipe_destination_options). Pipe streams from one sub task to another.
 
-#### parallel
+#### [parallel](https://github.com/gulp-cookery/gulp-ccr-parallel)
 
 A parallel flow controller runs sub tasks in parallel, without waiting until the previous task has completed.
 
-#### series
+#### [series](https://github.com/gulp-cookery/gulp-ccr-series)
 
 A series flow controller runs sub tasks in series, each one running once the previous task has completed.
 
-#### watch
+#### [watch](https://github.com/gulp-cookery/gulp-ccr-watch)
 
 A watch flow controller watches source files of specific tasks and their descendants and run corresponding task when a file changes.
 
@@ -987,7 +987,7 @@ A watch flow controller watches source files of specific tasks and their descend
 
 Before you write your own recipes, take a look and find out what others already done, maybe there is a perfect one for you. You can search [github.com](https://github.com/search?utf8=%E2%9C%93&q=gulp-ccr) and [npmjs.com](https://www.npmjs.com/search?q=gulp-ccr) using keyword: "`gulp recipe`", or the recommended: "`gulp-ccr`".  The term "`gulp-ccr`" stand for "Cascading Configurable Recipe for Gulp".
 
-Once you found one, say, `gulp-ccr-browserify`, install it in your project's devDependencies:
+Once you found one, say, [`gulp-ccr-browserify`](https://github.com/gulp-cookery/gulp-ccr-browserify), install it in your project's devDependencies:
 
 ``` bash
 $ npm install --save-dev gulp-ccr-browserify
@@ -1156,17 +1156,17 @@ module.exports.schema = {
 };
 ```
 
-First note that since "`file`" property is required, there is no need to check if "`file`" property was provided in plugin.
+First note that since "`file`" property is required, plugin can use JSON Schema validator to validate configuration, without checking the "`file`" property itself.
 
 Also note the "`sourcemaps`" options has alias "`sourcemap`", user can use both property name interchangeable, whereas the plugin needs only to deal with "`sourcemaps`".
 
 #### Extended Data Types
 
-Gulp-chef provides two extended data type for JSON Schema: "`glob`" and "`path`".
+Gulp-chef provides two extended JSON Schema data type: "`glob`" and "`path`".
 
 ##### glob
 
-A "`glob`" property can accepts a path, an array of paths, a glob, an array of globs, and optionally along with options.
+A "`glob`" property can accepts a path, a glob, an array of paths and/or globs, and optionally along with options.
 
 The following all are valid glob values:
 
@@ -1177,10 +1177,10 @@ The following all are valid glob values:
 ['src', 'lib']
 // a glob
 '**/*.js'
-// an array of globs
+// an array of paths and/or globs
 ['**/*.{js,ts}', '!test*']
-// object form
-{ glob: ['**/*.js', '**/*.ts', '!test*'] }
+// non-normalized object form (note the "glob" property)
+{ glob: '**/*.js' }
 ```
 
 All above values will be normalized to their "object form":
@@ -1191,16 +1191,16 @@ All above values will be normalized to their "object form":
 // an array of path string
 { globs: ['src', 'lib'] }
 // a glob
-{ globs: ['src/**/*.js'] }
+{ globs: ['**/*.js'] }
 // an array of globs
 { globs: ['**/*.{js,ts}', '!test*'] }
 // object form (note that 'glob' was normalized to 'globs')
-{ globs: ['**/*.js', '**/*.ts', '!test*'] }
+{ globs: ['**/*.js'] }
 ```
 
 Note that "`glob`" is alias of "`globs`" property, and will be normalized as is, and all globs values will be converted to array.
 
-In its object form, a glob property can take options.
+In its object form, a glob property can take options via "`options`" property.
 
 ``` javascript
 {
@@ -1228,9 +1228,9 @@ Any properties of type "glob" in sub task will inherit its parent's "`src`" prop
 }
 ```
 
-In this example, the "browserify" plugin has a "`bundles`" property that has an nested "`entries`" property of glob type. The "`entries`" property will inherit "`src`" property, and has the value: `{ globs: "src/main.js" }`.
+In this example, the "[browserify](https://github.com/gulp-cookery/gulp-ccr-browserify)" plugin has a "`bundles`" property that has an nested "`entries`" property of glob type. The "`entries`" property will inherit "`src`" property, and has the value: `{ globs: "src/main.js" }`.
 
-If you don't want this behavior, you can specify "`override`" option to override it.
+If you don't want this behavior, you can specify "`join`" option to override it.
 
 ``` javascript
 {
@@ -1239,16 +1239,18 @@ If you don't want this behavior, you can specify "`override`" option to override
         bundles: {
             entry: {
                 glob: 'main.js',
-                override: true
+                join: false
             }
         }
     }
 }
 ```
 
-Now the "`entries`" property will have the value: `{ globs: "main.js", options: { override: true } }`.
+Now the "`entries`" property will have the value: `{ globs: "main.js", options: { join: false } }`.
 
-In your plugin, always remember to pass "`options`" properties (to whatever API you use) and write code like this to allow user specify options:
+The "`join`" option also can take a string, specifing which parent's property to inherit, which must be of type "`glob`" or "`path`" .
+
+You can also define default property to inherit via configuration schema in plugin. Always remember to pass "`options`" properties (to whatever API you use) and write code like this to allow user specify options:
 
 ``` javascript
 module.exports = function () {
@@ -1311,9 +1313,9 @@ Any properties of type "path" in sub task will inherit its parent's "`dest`" pro
 }
 ```
 
-Assume that the "`file`" property is of type "path", it will inherit "`dest`" property and have the value: "`{ path: 'dist/bundle.js' }`".
+Assume that the "`file`" property is of type "`path`", it will inherit "`dest`" property and have the value: "`{ path: 'dist/bundle.js' }`".
 
-If you don't want this behavior, you can specify "`override`" option to override it.
+If you don't want this behavior, you can specify "`join`" option to override it.
 
 ``` javascript
 {
@@ -1321,15 +1323,17 @@ If you don't want this behavior, you can specify "`override`" option to override
     scripts: {
         file: {
             path: 'bundle.js',
-            override: true
+            join: false
         }
     }
 }
 ```
 
-Now the "`file`" property will have the value: "`{ path: 'bundle.js', options: { override: true } }`".
+Now the "`file`" property will have the value: "`{ path: 'bundle.js', options: { join: false } }`".
 
-In your plugin, always remember to pass "`options`" properties (to whatever API you use) and write code like this to allow user specify options:
+The "`join`" option also can take a string, specifing which parent's property to inherit, which must be of type "`path`".
+
+You can also define default property to inherit via configuration schema in plugin. Always remember to pass "`options`" properties (to whatever API you use) and write code like this to allow user specify options:
 
 ``` javascript
 module.exports = function () {
