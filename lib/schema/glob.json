@@ -159,10 +159,10 @@
 					"description": "A cache of known symbolic links. You may pass in a previously generated symlinks object to save lstat calls when resolving ** matches.",
 					"type": "object"
 				},
-				"override": {
-					"description": "Override parent's src settings, not join it. Since Gulp-Chef 0.1.0.",
-					"type": "boolean",
-					"default": false
+				"join": {
+					"description": "Join parent's folder. Since Gulp-Chef 0.1.0.",
+					"type": ["string", "boolean"],
+					"default": "src"
 				}
 			}
 		},

@@ -138,6 +138,49 @@ describe('Core', function () {
 				expect(config).to.deep.equal(original);
 				expect(parent).to.deep.equal(originalParent);
 			});
+			it('should not join parent path config if said so', function () {
+				var config = {
+					src: {
+						globs: ['services/**/*.js', 'views/**/*.js'],
+						options: {
+							join: false
+						}
+					},
+					dest: {
+						path: 'lib',
+						options: {
+							join: false
+						}
+					}
+				};
+				var parent = {
+					src: {
+						globs: ['src']
+					},
+					dest: {
+						path: 'dist'
+					}
+				};
+				var actual, original, originalParent;
+
+				original = _.cloneDeep(config);
+				originalParent = _.cloneDeep(parent);
+				actual = sort({}, config, parent, {});
+				expect(actual).to.deep.equal({
+					taskInfo: {},
+					taskConfig: {
+						src: {
+							globs: ['services/**/*.js', 'views/**/*.js']
+						},
+						dest: {
+							path: 'lib'
+						}
+					},
+					subTaskConfigs: {}
+				});
+				expect(config).to.deep.equal(original);
+				expect(parent).to.deep.equal(originalParent);
+			});
 			it('should put unknown properties to subTaskConfigs', function () {
 				var config = {
 					src: ['services/**/*.js', 'views/**/*.js'],
