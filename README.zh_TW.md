@@ -6,7 +6,7 @@
 
 ## 入門
 
-### 將 gulp cli 4.0 安裝為公用程式 (全域)
+### 將 gulp cli 4.0 安裝為公用程式 (全域安裝)
 
 ``` bash
 npm install -g "gulpjs/gulp-cli#4.0"
@@ -158,7 +158,7 @@ scripts.call({
 
 ### Configurable Recipe
 
-一個支援組態配置，可供 gulp 重複使用的任務，在 gulp-chef 中稱為  configurable recipe <sub>[註]</sub>。這是你真正撰寫，並且重複使用的函數。事實上，前面提到的 "[configurable task](#Configurable_Task)"，就是透過名稱對應的方式，在組態配置中對應到真正的 configurable recipe，然後加以包裝、註冊為 gulp 任務。
+一個支援組態配置，可供 gulp 重複使用的任務，在 gulp-chef 中稱為  configurable recipe <sub>[註]</sub>，其函數參數配置也與普通 gulp task 相同，在被 gulp-chef 呼叫時，gulp-chef 也將傳遞一個 `{ gulp, config, upstream }` 物件做為其執行環境 (context)。這是你真正撰寫，並且重複使用的函數。事實上，前面提到的 "[configurable task](#Configurable_Task)"，就是透過名稱對應的方式，在組態配置中對應到真正的 configurable recipe，然後加以包裝、註冊為 gulp 任務。
 
 ``` javascript
 function scripts(done) {
@@ -173,7 +173,7 @@ function scripts(done) {
 }
 ```
 
-註：在 gulp-chef 中，recipe 意指可重複使用的任務。就像一份『食譜』可以用來做無數的菜餚一樣。
+註：在 gulp-chef 中，recipe 意指可重複使用的任務。就像一份『食譜』可以用來做出無數的菜餚一樣。
 
 ## 撰寫組態配置
 
@@ -181,7 +181,7 @@ function scripts(done) {
 
 ### 巢狀任務
 
-任務可以巢狀配置。子任務依照組態的語法結構 (lexically)，或稱靜態語彙結構 (statically)，以層疊結構 (cascading) 的形式繼承 (inherit) 其父任務的組態。更棒的是，一些預先定義的屬性，譬如 "`src`", "`dest`" 等路徑性質的屬性，路徑會自動幫你連接好。
+任務可以巢狀配置。子任務依照組態的語法結構 (lexically)，或稱靜態語彙結構 (statically)，以層疊結構 (cascading) 的形式繼承 (inherit) 其父任務的組態。更棒的是，一些預先定義的屬性，譬如 "`src`", "`dest`" 等路徑性質的屬性，gulp-chef 會自動幫你連接好路徑。
 
 ``` javascript
 var meals = chef({
@@ -651,7 +651,7 @@ module.exports = myPlugin;
 
 #### Recipe / Plugin 專屬組態屬性
 
-Recipe 以及 plugin 可以使用 [JSON Schema](http://json-schema.org/) 來定義它們的組態屬性及架構。如果它們確實定義了組態屬性架構，那麼你就可以在組態配置項目中，直接列舉專屬的屬性，而不需要透過 "`$`" 字元和 "`config`" 關鍵字。
+Recipe 以及 plugin 可以使用 [JSON Schema](http://json-schema.org/) 來定義它們的組態屬性及架構。如果它們確實定義了組態架構，那麼你就可以在組態配置項目中，直接列舉專屬的屬性，而不需要透過 "`$`" 字元和 "`config`" 關鍵字。
 
 舉例，在 "gulp-ccr-browserify" plugin 中，它定義了 "`bundles`" 及 "`options`" 屬性，因此你可以在組態項目中直接使用這兩個屬性。
 
@@ -1093,11 +1093,11 @@ module.exports.type = 'flow';
 
 有效的類型為： "`flow`"、"`stream`" 以及 "`task`"。
 
-### Configuration Schema
+### 組態架構 (Configuration Schema)
 
-To simplify the processing of configuration, gulp-chef encourages using "[JSON Schema](http://json-schema.org/)" to validate and transform configuration. Gulp-chef use "[json-normalizer](https://github.com/amobiz/json-normalizer?utm_referer="gulp-chef")" to provide extend JSON schema functionality and to normalize configuration. You can define your configuration schema to support property alias, type conversion, and default value, etc. Check out "[json-normalizer](https://github.com/amobiz/json-normalizer?utm_referer="gulp-chef")" for how to extend your schema.
+為了簡化組態配置的處理過程，gulp-chef 鼓勵使用 [JSON Schema](http://json-schema.org/) 來驗證和轉換組態配置。Gulp-chef 使用 [json-normalizer](https://github.com/amobiz/json-normalizer?utm_referer="gulp-chef") 來為 JSON Schema 提供擴充功能，並且協助將組態內容一般化，以提供最大的組態配置彈性。你可以為你的 plugin 定義組態架構，以提供屬性別名、類型轉換、預設值等功能。同時，組態架構的定義內容還可以顯示在命令列中，使用者可以使用指令 `gulp --recipe <recipe-name>` 查詢，不必另外查閱文件，就可以了解如何撰寫組態配置。請參考 [json-normalizer](https://github.com/amobiz/json-normalizer?utm_referer="gulp-chef") 的說明，了解如何定義組態架構，甚至加以擴充。
 
-The schema can show up in `gulp --recipe <recipe-name>` command, so user can figure out how to write configuration without checking out the document.
+以下是一個簡單的 plugin，示範如何定義組態架構：
 
 ``` javascript
 var gulpif = require('gulp-if');
@@ -1157,9 +1157,9 @@ module.exports.schema = {
 };
 ```
 
-First note that since "`file`" property is required, there is no need to check if "`file`" property was provided in plugin.
+首先，注意到 "`file`" 被標示為『必須』，plugin 可以利用組態驗證工具自動進行檢查，因此在程式中就不須要再自行判斷。
 
-Also note the "`sourcemaps`" options has alias "`sourcemap`", user can use both property name interchangeable, whereas the plugin needs only to deal with "`sourcemaps`".
+另外注意到 "`sourcemaps`" 選項允許 "`sourcemap`" 別名，因此使用者可以在組態配置中隨意使用 "`sourcemaps`" 或 "`sourcemap`"，但是同時在 plugin 中，卻只需要處理 "`sourcemaps`"  即可。
 
 #### Extended Data Types
 
