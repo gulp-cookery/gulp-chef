@@ -612,7 +612,7 @@ var meals = chef(ingredients, settings);
 
 ### 傳遞組態值
 
-如同你到目前為止所看到的，在組態配置中的項目，要嘛是任務的屬性，要不然就是子任務。你要如何區別兩者？基本的規則是，除了 "`config`", "`description`", "`dest`", "`name`", "`order`", "`parallel`", "`plugin`", "`recipe`", "`series`", "`spit`", "`src`", "`task`" 以及 "`visibility`" 這些[關鍵字](#List_of_Reserved_Task_Properties_(Keywords))之外，其餘的項目都將被視為子任務。
+如同你到目前為止所看到的，在組態配置中的項目，要嘛是任務的屬性，要不然就是子任務。你要如何區別兩者？基本的規則是，除了 "`config`", "`description`", "`dest`", "`name`", "`order`", "`parallel`", "`plugin`", "`recipe`", "`series`", "`spit`", "`src`", "`task`" 以及 "`visibility`" 這些[關鍵字](#keywords)之外，其餘的項目都將被視為子任務。
 
 那麼，你要如何傳遞組態值給你的 recipe 函數呢？其實，"`config`" 關鍵字就是特地為了這個目的而保留的。
 
@@ -945,7 +945,7 @@ var settings = {
 };
 ```
 
-但是要注意的是，不要使用到保留給任務使用的[關鍵字](#List_of_Reserved_Task_Properties_(Keywords))。
+但是要注意的是，不要使用到保留給任務使用的[關鍵字](#keywords)。
 
 ## 內建的 Recipe
 
@@ -1412,78 +1412,79 @@ module.exports = function () {
 
 你可以從 [gulp-ccr-merge](https://github.com/gulp-cookery/gulp-ccr-merge) 以及 [gulp-ccr-queue](https://github.com/gulp-cookery/gulp-ccr-queue) 專案，參考串流處理器的實作。
 
-### Writing Flow Controller
+### 撰寫流程控制器
 
-A flow controller takes care of when to execute, and execution order of its sub tasks and don't care their input and/or output streams.
+流程控制器負責控制子任務的執行時機，順序等，而且並不關心子任務的輸出、入串流。
 
-There is little limitation on flow controller. The only rule is a flow controller must ensure its sub tasks ended properly, say, calling the "`done()`" callback, returning a stream or a promise, etc. Check out [gulp-ccr-parallel](https://github.com/gulp-cookery/gulp-ccr-parallel), [gulp-ccr-series](https://github.com/gulp-cookery/gulp-ccr-series), and [gulp-ccr-watch](https://github.com/gulp-cookery/gulp-ccr-watch) for example.
+流程控制器沒有什麼特別的限制，唯一的規則是，流程控制器必須正確處理子任務的結束事件。譬如，子任務可以呼叫 "`done()`" 回呼函數；回傳一個串流或 Promise，等等。
 
-### Testing Plugin
+你可以從  [gulp-ccr-parallel](https://github.com/gulp-cookery/gulp-ccr-parallel) 、 [gulp-ccr-series](https://github.com/gulp-cookery/gulp-ccr-series) 以及 [gulp-ccr-watch](https://github.com/gulp-cookery/gulp-ccr-watch) 專案，參考流程控制器的實作。
 
-It is recommended you start writing your plugin as a local recipe, and transform to a plugin when you think it is done. Most recipe testings are data-driven, if this is your case, maybe you want give [mocha-cases](https://github.com/amobiz/mocha-cases) a shot.
+### 測試 Plugin
 
-## List of Reserved Task Properties (Keywords)
+建議你可以先寫供專案使用的本地 recipe，完成之後，再轉換為 plugin。大多數的 recipe 測試都是資料導向的，如果你的 recipe 也是這樣，也許你可以考慮使用我的另一個專案： [mocha-cases](https://github.com/amobiz/mocha-cases) 。
 
-These keywords are reserved for task properties, you can't use them as task names or property names.
+## <a href="#" id="keywords"></a> 任務專用屬性列表 (關鍵字)
+
+以下的關鍵字保留給任務屬性使用，你不能使用這些關鍵字做為你的任務或屬性名稱。
 
 #### config
 
-Configuration values of the task.
+要傳遞給任務的組態配置。
 
 #### description
 
-Description of the task.
+描述任務的工作內容。
 
 #### dest
 
-The path where files should be written. Path should be resolved to a single directory. Path defined in sub tasks inherits parent's path. The property value can be any valid path string, or of the form `{ path: '', options: {} }`, and will be passed to task with the later form.
+要寫出檔案的路徑。定義在子任務中的路徑，預設會繼承父任務的定義的 dest 路徑。屬性值可以是字串，或者是如下的物件形式： `{ path: '', options: {} }` 。實際傳遞給任務的是後者的形式。
 
 #### name
 
-Name of the task. Only required when defining task in an array and you want to run it from CLI.
+任務名稱。通常會自動由組態項目名稱獲得。除非任務是定義在陣列中，而你仍然希望能夠在命令列中執行。
 
 #### order
 
-Execution order of the task. Only required when you are defining tasks in object and want them be executed in series. Order values are used for sorting, so don't have to be contiguous.
+任務的執行順序。只有在你以物件屬性的方式定義子任務時，又希望子任務能夠依序執行時才需要。數值僅用來排序，因此不需要是連續值。需要配合 "`series`" 屬性才能發揮作用。
 
 #### parallel
 
-Instruct sub tasks to run in parallel. Sub tasks can be defined in an array or object. Note sub tasks defined in an object are executed in parallel by default.
+要求子任務以並行的方式同時執行。預設情形下，以物件屬性的方式定義的子任務才會並行執行。使用此關鍵字時，子任務不論是以陣列項目或物件屬性的方式定義，都將並行執行。
 
 #### plugin
 
-A plugin module name to use.
+要使用的原生 gulp plugin，可以是模組名稱或函數。
 
 #### recipe
 
-Recipe module name to use. Defaults to the same value of `name`.
+任務所要對應的 recipe 模組名稱。預設與任務名稱 "`name`" 屬性相同。
 
 #### series
 
-Instruct sub tasks to run in series. Sub tasks can be defined in an array or object. Note sub tasks defined in an array are executed in series by default.
+要求子任務以序列的方式逐一執行。預設情形下，以陣列項目的方式定義的子任務才會序列執行。使用此關鍵字時，子任務不論是以陣列項目或物件屬性的方式定義，都將序列執行。
 
 #### spit
 
-Instruct task to write file(s) out if was optional.
+要求任務寫出檔案。任務允許使用者決定要不要寫出檔案時才有作用。
 
 #### src
 
-The path or glob that files should be loaded. Normally you define paths in parent task and files in leaf tasks. Files defined in sub tasks inherits parent's path. The property value can be any valid glob, or array of globs, or of the form `{ globs: [], options: {} }`, and will be passed to task with the later form.
+要讀入的檔案來源的路徑或檔案批配表達式。由於預設會繼承父任務的 "`src`" 屬性，通常你會在父任務中定義路徑，在終端任務中才定義檔案批配表達式。屬性值可以是任意合格的檔案批配表達式，或由檔案批配表達式組成的陣列，或者如下的物件形式： `{ globs: [], options: {} }` 呈現。實際傳遞給任務的是後者的形式。
 
 #### task
 
-Define a plain function, inline function, or references to other tasks. If provided as an array, child tasks are forced to run in series, otherwise child tasks are running in parallel.
+定義實際執行任務的方式。可以是普通函數的引用、內聯函數或對其它任務的參照。子任務如果以陣列的形式提供，子任務將以序列的順序執行，否則子任務將以並行的方式同時執行。
 
 #### visibility
 
-Visibility of the task. Valid values are `normal`, `hidden`, and `disabled`.
+任務的可見性。有效值為 `normal` 、 `hidden` 以及 `disabled` 。
 
-
-## List of CLI Options
+## <a href="" id="cli-options"></a> 命令列選項列表
 
 ### --task
 
-Look up a task and display its description and configurations.
+查詢任務並顯示其工作內容說明以及組態配置內容。
 
 ``` bash
 $ gulp --task <task-name>
@@ -1491,15 +1492,15 @@ $ gulp --task <task-name>
 
 ### --recipe
 
-List available recipes, including all build-in recipes, local recipes, and installed plugins.
+列舉可用的 recipe，包含內建的 recipe、本地的 recipe 以及已安裝的 plugin 。
 
-You can use "`--recipes`",  "`--recipe`",  and "`--r`" interchangeable.
+你可以任意使用 "`--recipes`" 、 "`--recipe`" 以及 "`--r`" 。
 
 ``` bash
 $ gulp --recipes
 ```
 
-Look up a recipe and display its description and configuration schema if available.
+查詢指定 recipe，顯示其用途說明，以及，如果有定義的話，顯示其組態架構。
 
 ``` bash
 $ gulp --recipe <recipe-name>
