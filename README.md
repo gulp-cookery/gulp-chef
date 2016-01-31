@@ -104,7 +104,7 @@ And then run it in CLI.
 $ gulp gulpTask
 ```
 
-### Configurable Task
+### <a href="#" id="configurable-task"></a> Configurable Task
 
 A configurable task has the same signature as normal gulp task, but be called with an object: `{ gulp, config, upstream }` as context.
 
@@ -155,11 +155,11 @@ scripts.call({
 }, done);
 ```
 
-Also note that in this example, the "`scripts`" entry in the configuration is the module name of a recipe, that must be present in your project's "`gulp`" folder, or of a plugin, that must be installed. Check out [Writing Recipes](#Writing_Recipes) and [Using Plugins](#Using_Plugins) for more information.
+Also note that in this example, the "`scripts`" entry in the configuration is the module name of a recipe, that must be present in your project's "`gulp`" folder, or of a plugin, that must be installed. Check out [Writing Recipes](#writing-recipes) and [Using Plugins](#using-plugins) for more information.
 
 ### Configurable Recipe
 
-A configurable recipe is, a configurable and reusable gulp task, that has the same signature as normal gulp task, but be called with an object: `{ gulp, config, upstream }` as context. A configurable recipe is the function you actually write and reuse. In fact, a "[configurable task](#Configurable_Task)" is simply a wrapper that calls "configurable recipe" with exactly the same name.
+A configurable recipe is, a configurable and reusable gulp task, that has the same signature as normal gulp task, but be called with an object: `{ gulp, config, upstream }` as context. A configurable recipe is the function you actually write and reuse. In fact, a "[configurable task](#configurable-task)" is simply a wrapper that calls "configurable recipe" with exactly the same name.
 
 ``` javascript
 function scripts(done) {
@@ -297,7 +297,7 @@ var meals = chef({
 
 In this example, the `build` task has three sub tasks, that referring to `clean`, `scripts`, and `styles` task, respectively. Referencing tasks won't generate and register new tasks, so you can't run them directly in CLI. Of course you can still run them via parent task (in series order in this example).
 
-As said previously, sub tasks lexically inherits their parent's configurations, since referred tasks are not defined under the referencing task, they won't inherit its static configuration. However, dynamic generated configurations are still injected to refered tasks. See [Dynamic Configuration](#Dynamic_Configuration_Template_Variable_Realizing) for detail.
+As said previously, sub tasks lexically inherits their parent's configurations, since referred tasks are not defined under the referencing task, they won't inherit its static configuration. However, dynamic generated configurations are still injected to refered tasks. See [Dynamic Configuration](#dynamic-configuration) for detail.
 
 Note in the above example, `clean`, `scripts`, and `styles` are in an array, so they will be executed in series. You can use "`parallel`" __flow controller__ to change this default behavior.
 
@@ -586,7 +586,7 @@ Not your style? There is other ways you can overcome this behavior.
 }
 ```
 
-Note: to minimize the chance to get into name collision and to simplify task tree, some tasks are hidden by default. Namely the __stream processor__ and the __flow controller__. See [Writing Stream Processor](#Writing_Stream_Processor) and [Writing Flow Controller](#Writing_Flow_Controller) for more information.
+Note: to minimize the chance to get into name collision and to simplify task tree, some tasks are hidden by default. Namely the __stream processor__ and the __flow controller__. See [Writing Stream Processor](#writing-stream-processor) and [Writing Flow Controller](#writing-flow-controller) for more information.
 
 ### Using Gulp Plugins
 
@@ -605,7 +605,7 @@ The plugin property accepts `string` and `function` value. When string provided,
 
 You can apply the "`plugin`" keyword to any gulp plugin that takes 0 or 1 parameter and returns a stream or a promise. Plugins must be installed using `npm install`.
 
-Don't get this confused with [plugins for gulp-chef](#Using_Plugins), that stand for "Cascading Configurable Recipe for Gulp", or "gulp-ccr" for sort.
+Don't get this confused with [plugins for gulp-chef](#using-plugins), that stand for "Cascading Configurable Recipe for Gulp", or "gulp-ccr" for sort.
 
 ### Passing Configuration Values
 
@@ -623,7 +623,7 @@ So, how do you passing configuration values to your recipe function? The reserve
 }
 ```
 
-Here the "`file`" property of "`config`" property will be passed to recipe. And recipe can take the "`file`" property via the "`config`" property (explained in [Writing Recipes](#Writing_Recipes)).
+Here the "`file`" property of "`config`" property will be passed to recipe. And recipe can take the "`file`" property via the "`config`" property (explained in [Writing Recipes](#writing-recipes)).
 
 ``` javascript
 function myPlugin(done) {
@@ -648,7 +648,7 @@ Now the property "`$file`" will be recognized as a configuration value, and you 
 
 #### Recipe / Plugin Reserved Configuration Properties
 
-Recipes and plugins can [define](#Configuration_Schema) their own configuration properties using [JSON Schema](http://json-schema.org/). In this case, you can write configuration values directly inside the configuration entry without the "`$`" character and the "`config`" keyword.
+Recipes and plugins can [define](#configuration-schema) their own configuration properties using [JSON Schema](http://json-schema.org/). In this case, you can write configuration values directly inside the configuration entry without the "`$`" character and the "`config`" keyword.
 
 For example, the "[gulp-ccr-browserify](https://github.com/gulp-cookery/gulp-ccr-browserify)" plugin defines "`bundles`", and "`options`" properties, you can put them directly inside the configuration entry.
 
@@ -694,7 +694,7 @@ You can write your configuration like this:
 
 For convenience sake, when a configuration entry uses any of "`task`", "`series`",  "`parallel`",  or "`plugin`" keywords, it is considered there is no ambiguous between sub tasks and properties, and all non-reserved properties will be recognized as the task's properties.
 
-### Dynamic Configuration / Template Variable Realizing
+### <a href="#" id="dynamic-configuration"></a> Dynamic Configuration / Template Variable Realizing
 
 Some stream processors (e.g., "[gulp-ccr-each-dir](https://github.com/gulp-cookery/gulp-ccr-each-dir)") programmatically or dynamically generate new configuration values. The new configuration values were injected to sub task's configuration at runtime. Of course recipe and plugin can access these values via "`config`" property.
 Sub tasks can also reference these values via templates with `{{var}}` syntax that are realized (or interpolated) with resolved values.
@@ -983,7 +983,7 @@ A series flow controller runs sub tasks in series, each one running once the pre
 
 A watch flow controller watches source files of specific tasks and their descendants and run corresponding task when a file changes.
 
-## Using Plugins
+## <a href="#" id="using-plugins"></a> Using Plugins
 
 Before you write your own recipes, take a look and find out what others already done, maybe there is a perfect one for you. You can search [github.com](https://github.com/search?utf8=%E2%9C%93&q=gulp-ccr) and [npmjs.com](https://www.npmjs.com/search?q=gulp-ccr) using keyword: "`gulp recipe`", or the recommended: "`gulp-ccr`".  The term "`gulp-ccr`" stand for "Cascading Configurable Recipe for Gulp".
 
@@ -1003,13 +1003,13 @@ Gulp-chef remove plugin name prefix "`gulp-ccr-`" for you, so you must reference
 }
 ```
 
-## Writing Recipes
+## <a href="#" id="writing-recipes"></a> Writing Recipes
 
 There are 3 kinds of recipes: "__task__", "__stream processor__", and "__flow controller__".
 
 Most of the time, you want to write task recipes. Task recipes are the actual task that do things, whereas `stream processor`s and `flow controller`s manipulate other tasks.
 
-For more information about `stream processor` and `flow controller`, or you are willing to share your recipes, you can write them as plugins. Check out [Writing Plugins](#Writing_Plugins) for how.
+For more information about `stream processor` and `flow controller`, or you are willing to share your recipes, you can write them as plugins. Check out [Writing Plugins](#writing-plugins) for how.
 
 If you write recipes only for your own project use, you can put them in sub folders within your project's root:
 
@@ -1079,7 +1079,7 @@ A gulp-chef plugin is just a normal Node.js module, plus some required informati
 
 ### Plugin Types
 
-Aa said in [Writing Recipes](#Writing_Recipes) section, there are 3 kinds of recipes: "__task__", "__stream processor__", and "__flow controller__". Gulp-chef need to know which type the plugin is. Since a plugin is installed via `npm install`, there is no folder name from which gulp-chef reailze which type a local recipe is, therefore plugin must denote which type it is.
+Aa said in [Writing Recipes](#writing-recipes) section, there are 3 kinds of recipes: "__task__", "__stream processor__", and "__flow controller__". Gulp-chef need to know which type the plugin is. Since a plugin is installed via `npm install`, there is no folder name from which gulp-chef reailze which type a local recipe is, therefore plugin must denote which type it is.
 
 ``` javascript
 function myPlugin(done) {
@@ -1092,7 +1092,7 @@ module.exports.type = 'flow';
 
 Valid types are "`flow`", "`stream`", and "`task`".
 
-### Configuration Schema
+### <a href="#" id="configuration-schema"></a> Configuration Schema
 
 To simplify the processing of configuration, gulp-chef encourages using [JSON Schema](http://json-schema.org/) to validate and transform configuration. Gulp-chef use [json-normalizer](https://github.com/amobiz/json-normalizer?utm_referer="gulp-chef") to maximize flexibility of configuration by extending JSON Schema functionality and normalizing configuration. You can define your configuration schema to support property alias, type conversion, and default value, etc. Also the schema can show up in `gulp --recipe <recipe-name>` command, so user can figure out how to write configuration without checking out the document. Check out [json-normalizer](https://github.com/amobiz/json-normalizer?utm_referer="gulp-chef") for how to define and extend your schema.
 
@@ -1250,7 +1250,7 @@ Now the "`entries`" property will have the value: `{ globs: "main.js", options: 
 
 The "`join`" option also can take a string, specifing which parent's property to inherit, which must be of type "`glob`" or "`path`" .
 
-You can also define default property to inherit via configuration schema in plugin. Always remember to pass "`options`" properties (to whatever API you use) and write code like this to allow user specify options:
+You can also define default property to inherit via [configuration schema](#configuration-schema) in plugin. Always remember to pass "`options`" properties (to whatever API you use) and write code like this to allow user specify options:
 
 ``` javascript
 module.exports = function () {
@@ -1333,7 +1333,7 @@ Now the "`file`" property will have the value: "`{ path: 'bundle.js', options: {
 
 The "`join`" option also can take a string, specifing which parent's property to inherit, which must be of type "`path`".
 
-You can also define default property to inherit via configuration schema in plugin. Always remember to pass "`options`" properties (to whatever API you use) and write code like this to allow user specify options:
+You can also define default property to inherit via [configuration schema](#configuration-schema) in plugin. Always remember to pass "`options`" properties (to whatever API you use) and write code like this to allow user specify options:
 
 ``` javascript
 module.exports = function () {
@@ -1345,7 +1345,7 @@ module.exports = function () {
         .pipe(gulp.dest(config.dest.path, config.dest.options));
 }
 ```
-### Writing Stream Processor
+### <a href="#" id="writing-stream-processor"></a> Writing Stream Processor
 
 A stream processor manipulates its sub tasks' input and/or output streams.
 
@@ -1375,7 +1375,7 @@ module.exports = function () {
 };
 ```
 
-Note that parent can inject dynamic configuration to sub tasks. Only new value can be injected: the injected value won't overwrite sub task's existing configuration value.
+Note that parent can inject [dynamic configuration](#dynamic-configuration) to sub tasks. Only new value can be injected: the injected value won't overwrite sub task's existing configuration value.
 
 When passing stream to the sub task, a stream processor must setup a context with "`upstream`" property for the sub task.
 
@@ -1407,7 +1407,7 @@ You can use [gulp-ccr-stream-helper](https://github.com/gulp-cookery/gulp-ccr-st
 
 Check out [gulp-ccr-merge](https://github.com/gulp-cookery/gulp-ccr-merge), and [gulp-ccr-queue](https://github.com/gulp-cookery/gulp-ccr-queue) for example.
 
-### Writing Flow Controller
+### <a href="#" id="writing-flow-controller"></a> Writing Flow Controller
 
 A flow controller takes care of when to execute, and execution order of its sub tasks and don't care their input and/or output streams.
 
@@ -1494,7 +1494,7 @@ You can use "`--recipes`",  "`--recipe`",  and "`--r`" interchangeable.
 $ gulp --recipes
 ```
 
-Look up a recipe and display its description and configuration schema if available.
+Look up a recipe and display its description and [configuration schema](#configuration-schema) if available.
 
 ``` bash
 $ gulp --recipe <recipe-name>
