@@ -104,7 +104,7 @@ gulp.task(gulpTask);
 $ gulp gulpTask
 ```
 
-### Configurable Task
+### <a href="#" id="configurable-task"></a> Configurable Task
 
 一個可組態配置的 gulp 任務在 gulp-chef 中稱為 configurable task，其函數參數配置與普通 gulp task 相同。但是被 gulp-chef 呼叫時，gulp-chef 將傳遞一個 `{ gulp, config, upstream }` 物件做為其執行環境 (context)。
 
@@ -154,11 +154,11 @@ scripts.call({
 }, done);
 ```
 
-另外注意到在這個例子中，在組態中的 "`scripts`" 項目，實際上對應到一個 recipe 或 plugin 的模組名稱。如果是 recipe 的話，該 recipe 模組檔案必須位於專案的 "`gulp`" 目錄下。如果對應的是 plugin 的話，該 plugin 必須先安裝到專案中。更多細節請參考『[撰寫 recipe]((#Writing_Recipes))』及『[使用 plugin](#Using_Plugins)』的說明。
+另外注意到在這個例子中，在組態中的 "`scripts`" 項目，實際上對應到一個 recipe 或 plugin 的模組名稱。如果是 recipe 的話，該 recipe 模組檔案必須位於專案的 "`gulp`" 目錄下。如果對應的是 plugin 的話，該 plugin 必須先安裝到專案中。更多細節請參考『[撰寫 recipe](#writing-recipes)』及『[使用 plugin](#using-plugins)』的說明。
 
 ### Configurable Recipe
 
-一個支援組態配置，可供 gulp 重複使用的任務，在 gulp-chef 中稱為  configurable recipe <sub>[註]</sub>，其函數參數配置也與普通 gulp task 相同，在被 gulp-chef 呼叫時，gulp-chef 也將傳遞一個 `{ gulp, config, upstream }` 物件做為其執行環境 (context)。這是你真正撰寫，並且重複使用的函數。事實上，前面提到的 "[configurable task](#Configurable_Task)"，就是透過名稱對應的方式，在組態配置中對應到真正的 configurable recipe，然後加以包裝、註冊為 gulp 任務。
+一個支援組態配置，可供 gulp 重複使用的任務，在 gulp-chef 中稱為  configurable recipe <sub>[註]</sub>，其函數參數配置也與普通 gulp task 相同，在被 gulp-chef 呼叫時，gulp-chef 也將傳遞一個 `{ gulp, config, upstream }` 物件做為其執行環境 (context)。這是你真正撰寫，並且重複使用的函數。事實上，前面提到的 "[configurable task](#configurable-task)"，就是透過名稱對應的方式，在組態配置中對應到真正的 configurable recipe，然後加以包裝、註冊為 gulp 任務。
 
 ``` javascript
 function scripts(done) {
@@ -298,7 +298,7 @@ var meals = chef({
 
 在這個例子中，`build` 任務有三個子任務，分別參照到 `clean`, `scripts` 以及 `styles` 任務。參照任務並不會產生並註冊新的任務，所以，在這個例子中，你無法直接執行 `build` 任務的子任務，但是你可以透過執行 `build` 任務執行它們。
 
-前面提到過，子任務依照組態的語法結構 (lexically)，或稱靜態語彙結構 (statically)，以層疊結構 (cascading) 的形式繼承 (inherit) 其父任務的組態。既然『被參照的任務』不是定義在『參照任務』之下，『被參照的任務』自然不會繼承『參照任務』及其父任務的靜態組態配置。不過，有另一種組態是執行時期動態產生的，動態組態會在執行時期注入到『被參照的任務』。更多細節請參考『[動態組態](#Dynamic_Configuration_Template_Variable_Realizing)』的說明。
+前面提到過，子任務依照組態的語法結構 (lexically)，或稱靜態語彙結構 (statically)，以層疊結構 (cascading) 的形式繼承 (inherit) 其父任務的組態。既然『被參照的任務』不是定義在『參照任務』之下，『被參照的任務』自然不會繼承『參照任務』及其父任務的靜態組態配置。不過，有另一種組態是執行時期動態產生的，動態組態會在執行時期注入到『被參照的任務』。更多細節請參考『[動態組態](#dynamic-configuration)』的說明。
 
 在這個例子中，由於使用陣列來指定參照 `clean`, `scripts` 及 `styles` 的任務，所以是以序列的順序執行。你可以使用 "`parallel`" 流程控制器改變這個預設行為。
 
@@ -589,7 +589,7 @@ var meals = chef(ingredients, settings);
 }
 ```
 
-注意：為了盡量避免發生名稱衝突的可能性，並且簡化任務樹，某些特定種類的任務預設是隱藏的。主要是『__串流處理器 (stream processor)__』及『__流程控制器 (flow controller)__』。請參考 [撰寫串流處理器](#Writing_Stream_Processor) and [撰寫流程控制器](#Writing_Flow_Controller) 的說明。
+注意：為了盡量避免發生名稱衝突的可能性，並且簡化任務樹，某些特定種類的任務預設是隱藏的。主要是『__串流處理器 (stream processor)__』及『__流程控制器 (flow controller)__』。請參考 [撰寫串流處理器](#writing-stream-processor) and [撰寫流程控制器](#writing-flow-controller) 的說明。
 
 ### 使用 Gulp Plugins
 
@@ -608,7 +608,7 @@ var meals = chef(ingredients, settings);
 
 任何 gulp plugin，只要它只接受 0 或 1 個參數，並且回傳一個 Stream 或 Promise 物件，就可以使用 `plugin`" 關鍵字來加以引用。前提當然是 plugin 已經使用 `npm install` 指令先安裝好了。
 
-千萬不要將 gulp plugin 與 [gulp-chef 專用的 plugin](#Using_Plugins) 搞混了。gulp-chef 專用的 plugin 稱為 "Cascading Configurable Recipe for Gulp" 或簡稱 "gulp-ccr"，意思是『可層疊組態配置、可重複使用的 Gulp 任務』。
+千萬不要將 gulp plugin 與 [gulp-chef 專用的 plugin](#using-plugins) 搞混了。gulp-chef 專用的 plugin 稱為 "Cascading Configurable Recipe for Gulp" 或簡稱 "gulp-ccr"，意思是『可層疊組態配置、可重複使用的 Gulp 任務』。
 
 ### 傳遞組態值
 
@@ -626,7 +626,7 @@ var meals = chef(ingredients, settings);
 }
 ```
 
-這裡 "`config`" 屬性連同其 "`file`" 屬性，將一起被傳遞給 recipe 函數，而 recipe 函數則透過執行環境依序取得 "`config`" 屬性及 "`file`" 屬性 (在『[撰寫 recipe](#Writing_Recipes)』中詳細說明)。
+這裡 "`config`" 屬性連同其 "`file`" 屬性，將一起被傳遞給 recipe 函數，而 recipe 函數則透過執行環境依序取得 "`config`" 屬性及 "`file`" 屬性 (在『[撰寫 recipe](#writing-recipes)』中詳細說明)。
 
 ``` javascript
 function myPlugin(done) {
@@ -697,7 +697,7 @@ Recipe 以及 plugin 可以使用 [JSON Schema](http://json-schema.org/) 來定�
 
 為了方便起見，當組態項目中包含有 "`task`", "`series`",  "`parallel`" 或 "`plugin`" 關鍵字的時候，這時候除了保留屬性之外，其餘的屬性都將自動認定為組態屬性，而不是子任務。
 
-### 動態組態屬性 / 模板引值
+### <a href="#" id="dynamic-configuration"></a>  動態組態屬性 / 模板引值
 
 有些『串流處理器』 (譬如 "[gulp-ccr-each-dir](https://github.com/gulp-cookery/gulp-ccr-each-dir)")，會以程序化或動態的方式產生新的組態屬性。這些新產生的屬性，將在執行時期，插入到子任務的的組態中。除了 recipe 及 plugin 可以透過 "`config`" 屬性取得這些值之外，子任務也可以透過使用模板的方式，以 "`{{var}}`" 這樣的語法，直接在組態中引用這些值。
 
@@ -985,7 +985,7 @@ var settings = {
 
 這是一個流程控制器。負責監看指定的子任務、以及其所有子任務的來源檔案，當有任何檔案異動時，執行對應的指定任務。
 
-## 使用 Plugin
+## <a href="#" id="using-plugins"></a>  使用 Plugin
 
 在你撰寫自己的 recipe 之前，先看一下別人已經做了哪些東西，也許有現成的可以拿來用。你可以使用" `gulp recipe`"，或者，更建議使用 "`gulp-ccr`"，在 [github.com](https://github.com/search?utf8=%E2%9C%93&q=gulp-ccr) 和 [npmjs.com](https://www.npmjs.com/search?q=gulp-ccr)  上搜尋。這個 "`gulp-ccr`" 是  "Cascading Configurable Recipe for Gulp" 的簡寫，意思是『可層疊組態配置、可重複使用的 Gulp 任務』。
 
@@ -1005,13 +1005,13 @@ Gulp-chef 會為你移除附加在前面的 "`gulp-ccr-`" 名稱，所以你在�
 }
 ```
 
-## 撰寫 Recipe
+## <a href="#" id="writing-recipes"></a>  撰寫 Recipe
 
 斯斯，不是，recipe 有三種： __任務型 (task)__、__串流處理器 (stream processor)__ 以及 __流程控制器 (flow controller)__。
 
 大多數時候，你想要寫的是任務型 recipe。任務型 recipe 負責做苦工，而串流處理器及流程控制器則負責操弄其它 recipe。
 
-更多關於串流處理器及流程控制器的說明，或者你樂於分享你的 recipe，你可以寫成 plugin，請參考 [撰寫 Plugin](#Writing_Plugins) 的說明。
+更多關於串流處理器及流程控制器的說明，或者你樂於分享你的 recipe，你可以寫成 plugin，請參考 [撰寫 Plugin](#writing-plugins) 的說明。
 
 如果你撰寫的 recipe 只打算給特定專案使用，你可以將它們放在專案根目錄下的特定子目錄下：
 
@@ -1074,13 +1074,13 @@ var meals = chef({
 
 Gulp-chef 的 recipe 不需要自行處理條件式組態配置。組態配置在傳遞給 recipe 之前，已經先根據執行環境模式處理完畢。
 
-## 撰寫 Plugin
+## <a href="#" id="writing-plugins"></a>  撰寫 Plugin
 
 Gulp-chef 的 plugin，只是普通的 Node.js 模組，再加上一些必要的資訊。
 
 ### Plugin 的類型
 
-在前面 [撰寫 Recipe](#Writing_Recipes) 的部份提到過，recipe 有三種：__任務型 (task)__、__串流處理器 (stream processor)__ 以及 __流程控制器 (flow controller)__。Gulp-chef 需要知道 plugin 的類型，才能安插必要的輔助功能。由於 plugin 必須使用 `npm install` 安裝，gulp-chef 無法像本地的 recipe 一樣，由目錄決定 recipe 的類型，因此 plugin 必須自行提供類型資訊。
+在前面 [撰寫 Recipe](#writing-recipes) 的部份提到過，recipe 有三種：__任務型 (task)__、__串流處理器 (stream processor)__ 以及 __流程控制器 (flow controller)__。Gulp-chef 需要知道 plugin 的類型，才能安插必要的輔助功能。由於 plugin 必須使用 `npm install` 安裝，gulp-chef 無法像本地的 recipe 一樣，由目錄決定 recipe 的類型，因此 plugin 必須自行提供類型資訊。
 
 ``` javascript
 function myPlugin(done) {
@@ -1093,7 +1093,7 @@ module.exports.type = 'flow';
 
 有效的類型為： "`flow`"、"`stream`" 以及 "`task`"。
 
-### 組態架構 (Configuration Schema)
+### <a href="#" id="configuration-schema"></a>  組態架構 (Configuration Schema)
 
 為了簡化組態配置的處理過程，gulp-chef 鼓勵使用 [JSON Schema](http://json-schema.org/) 來驗證和轉換組態配置。Gulp-chef 使用 [json-normalizer](https://github.com/amobiz/json-normalizer?utm_referer="gulp-chef") 來為 JSON Schema 提供擴充功能，並且協助將組態內容一般化 (或稱正規化)，以提供最大的組態配置彈性。你可以為你的 plugin 定義組態架構，以提供屬性別名、類型轉換、預設值等功能。同時，組態架構的定義內容還可以顯示在命令列中，使用者可以使用指令 `gulp --recipe <recipe-name>` 查詢，不必另外查閱文件，就可以了解如何撰寫組態配置。請參考 [json-normalizer](https://github.com/amobiz/json-normalizer?utm_referer="gulp-chef") 的說明，了解如何定義組態架構，甚至加以擴充。
 
@@ -1253,7 +1253,7 @@ Gulp-chef 提供兩個擴充的 JSON Schema 資料型別： "`glob`" 及 "`path`
 
 選項 "`join`" 也可以接受字串，用來指定要從哪一個屬性繼承路徑，該屬性必須是 "`glob`" 或 "`path`" 型別。
 
-在 plugin 中，也可以透過組態架構來定義預設要繼承的屬性。請記住，除非有好的理由，請永遠記得同時將 "`options`" 傳遞給呼叫的 API，以便允許使用者指定選項。像這樣：
+在 plugin 中，也可以透過[組態架構](#configuration-schema)來定義預設要繼承的屬性。請記住，除非有好的理由，請永遠記得同時將 "`options`" 傳遞給呼叫的 API，以便允許使用者指定選項。像這樣：
 
 ``` javascript
 module.exports = function () {
@@ -1336,9 +1336,9 @@ module.exports = function () {
 
 現在 "`file`" 屬性將成為： "`{ path: 'bundle.js', options: { join: false } }`"。
 
-選項 "`join`" 也可以接受字串，用來指定要從哪一個屬性繼承路徑，該屬性必須是 "`path`" 型別。在 plugin 中也可以透過組態架構來定義預設要繼承的屬性。
+選項 "`join`" 也可以接受字串，用來指定要從哪一個屬性繼承路徑，該屬性必須是 "`path`" 型別。
 
-在 plugin 中，也可以透過組態架構來定義預設要繼承的屬性。請記住，除非有好的理由，請永遠記得同時將 "`options`" 傳遞給呼叫的 API，以便允許使用者指定選項。像這樣：
+在 plugin 中，也可以透過[組態架構](#configuration-schema)來定義預設要繼承的屬性。請記住，除非有好的理由，請永遠記得同時將 "`options`" 傳遞給呼叫的 API，以便允許使用者指定選項。像這樣：
 
 ``` javascript
 module.exports = function () {
@@ -1350,7 +1350,7 @@ module.exports = function () {
         .pipe(gulp.dest(config.dest.path, config.dest.options));
 }
 ```
-### 撰寫串流處理器
+### <a href="#" id="writing-stream-processor"></a>  撰寫串流處理器
 
 串流處理器負責操作它的子任務輸入或輸出串流。
 
@@ -1412,7 +1412,7 @@ module.exports = function () {
 
 你可以從 [gulp-ccr-merge](https://github.com/gulp-cookery/gulp-ccr-merge) 以及 [gulp-ccr-queue](https://github.com/gulp-cookery/gulp-ccr-queue) 專案，參考串流處理器的實作。
 
-### 撰寫流程控制器
+### <a href="#" id="writing-flow-controller"></a>  撰寫流程控制器
 
 流程控制器負責控制子任務的執行時機，順序等，而且並不關心子任務的輸出、入串流。
 
@@ -1500,7 +1500,7 @@ $ gulp --task <task-name>
 $ gulp --recipes
 ```
 
-查詢指定 recipe，顯示其用途說明，以及，如果有定義的話，顯示其組態架構。
+查詢指定 recipe，顯示其用途說明，以及，如果有定義的話，顯示其[組態架構](#configuration-schema)。
 
 ``` bash
 $ gulp --recipe <recipe-name>
