@@ -609,7 +609,7 @@ Don't get this confused with [plugins for gulp-chef](#Using_Plugins), that stand
 
 ### Passing Configuration Values
 
-As you may noted: properties in a configuration entry can be either task properties and sub tasks. How do you distinguish each one? The general rule is: except the  [keyword](#List_of_Reserved_Task_Properties_(Keywords))s "`config`", "`description`", "`dest`", "`name`", "`order`", "`parallel`", "`plugin`", "`recipe`", "`series`", "`spit`", "`src`", "`task`", and "`visibility`", all other properties are recognized as sub tasks.
+As you may noted: properties in a configuration entry can be either task properties and sub tasks. How do you distinguish each one? The general rule is: except the [keywords](#keywords) "`config`", "`description`", "`dest`", "`name`", "`order`", "`parallel`", "`plugin`", "`recipe`", "`series`", "`spit`", "`src`", "`task`", and "`visibility`", all other properties are recognized as sub tasks.
 
 So, how do you passing configuration values to your recipe function? The reserved "`config`" keyword is exactly reserved for this purpose:
 
@@ -943,7 +943,7 @@ var settings = {
 };
 ```
 
-However, you can't use [keywords](#List_of_Reserved_Task_Properties_(Keywords)) reserved for task properties, of course.
+However, you can't use [keywords](#keywords) reserved for task properties, of course.
 
 ## Build-in Recipes
 
@@ -1411,13 +1411,13 @@ Check out [gulp-ccr-merge](https://github.com/gulp-cookery/gulp-ccr-merge), and 
 
 A flow controller takes care of when to execute, and execution order of its sub tasks and don't care their input and/or output streams.
 
-There is little limitation on flow controller. The only rule is a flow controller must ensure its sub tasks ended properly, say, calling the "`done()`" callback, returning a stream or a promise, etc. Check out [gulp-ccr-parallel](https://github.com/gulp-cookery/gulp-ccr-parallel), [gulp-ccr-series](https://github.com/gulp-cookery/gulp-ccr-series), and [gulp-ccr-watch](https://github.com/gulp-cookery/gulp-ccr-watch) for example.
+There is little restriction on flow controller. The only rule is a flow controller must ensure its sub tasks ended properly, say, calling the "`done()`" callback, returning a stream or a promise, etc. Check out [gulp-ccr-parallel](https://github.com/gulp-cookery/gulp-ccr-parallel), [gulp-ccr-series](https://github.com/gulp-cookery/gulp-ccr-series), and [gulp-ccr-watch](https://github.com/gulp-cookery/gulp-ccr-watch) for example.
 
 ### Testing Plugin
 
 It is recommended you start writing your plugin as a local recipe, and transform to a plugin when you think it is done. Most recipe testings are data-driven, if this is your case, maybe you want give [mocha-cases](https://github.com/amobiz/mocha-cases) a shot.
 
-### List of Reserved Task Properties (Keywords)
+### <a href="#" id="keywords"></a> List of Reserved Task Properties (Keywords)
 
 These keywords are reserved for task properties, you can't use them as task names or property names.
 
@@ -1431,7 +1431,7 @@ Description of the task.
 
 #### dest
 
-The path where files should be written. Path should be resolved to a single directory. Path defined in sub tasks inherits parent's path. The property value can be any valid path string, or of the form `{ path: '', options: {} }`, and will be passed to task with the later form.
+The path where files should be written. Path defined in sub tasks inherits parent's path. The property value can be any valid path string, or of the form `{ path: '', options: {} }`, and will be passed to task with the later form.
 
 #### name
 
@@ -1447,11 +1447,11 @@ Instruct sub tasks to run in parallel. Sub tasks can be defined in an array or o
 
 #### plugin
 
-A plugin module name to use.
+The gulp plugin to use. Can be module name or function.
 
 #### recipe
 
-Recipe module name to use. Defaults to the same value of `name`.
+The recipe module name to use. Defaults to the same value of `name`.
 
 #### series
 
@@ -1463,7 +1463,7 @@ Instruct task to write file(s) out if was optional.
 
 #### src
 
-The path or glob that files should be loaded. Normally you define paths in parent task and files in leaf tasks. Files defined in sub tasks inherits parent's path. The property value can be any valid glob, or array of globs, or of the form `{ globs: [], options: {} }`, and will be passed to task with the later form.
+The path or glob that files should be loaded. Files defined in sub tasks inherits parent's path. Normally you define paths in parent task and files in leaf tasks. The property value can be any valid glob, or array of globs, or of the form `{ globs: [], options: {} }`, and will be passed to task with the later form.
 
 #### task
 
