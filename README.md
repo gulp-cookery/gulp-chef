@@ -1349,7 +1349,7 @@ module.exports = function () {
 
 A stream processor manipulates its sub tasks' input and/or output streams.
 
-A stream processor may generate streams itself, or from it's sub tasks. A stream processor can pass stream between sub tasks; or merge, or queue streams from sub tasks, any thing you can imaging.
+A stream processor may generate streams itself, or from it's sub tasks. A stream processor can pass stream between sub tasks; or merge, or queue streams from sub tasks, any thing you can imaging. The only restriction is that stream processor must return a stream.
 
 A stream processor takes a "`tasks`" property from its context. Sub tasks are passed to stream processor via the "tasks" array.
 
@@ -1364,10 +1364,11 @@ module.exports = function () {
 
     context = {
         gulp: gulp,
-        config: {
-            // inject configuration values for sub task
-        }
+        // pass the given config to allow parents injecting configuration values
+        config: config
     };
+    // inject more new configuration values for sub task if desired
+    context.config.injectedValue = 'hello!';
     stream = tasks[0].call(context);
     // ...
     return stream;
@@ -1387,8 +1388,7 @@ module.exports = function () {
 
     context = {
         gulp: gulp,
-        config: {
-        }
+        config: config
     };
     stream = gulp.src(config.src.globs, config.src.options);
     for (i = 0; i < tasks.length; ++i) {
