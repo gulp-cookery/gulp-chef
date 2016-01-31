@@ -1350,15 +1350,15 @@ module.exports = function () {
         .pipe(gulp.dest(config.dest.path, config.dest.options));
 }
 ```
-### Writing Stream Processor
+### 撰寫串流處理器
 
-A stream processor manipulates its sub tasks' input and/or output streams.
+串流處理器負責操作它的子任務輸入或輸出串流。
 
-A stream processor may generate streams itself, or from it's sub tasks. A stream processor can pass stream between sub tasks; or merge, or queue streams from sub tasks, any thing you can imaging.
+串流處理器可以自己輸出串流，或者由其中的子任務輸出。串流處理器可以在子任務之間遞送串流；或合併；或串接子任務的串流。任何你能想像得到的處理方式。唯一必要的要求就是：串流處理器必須回傳一個串流。
 
-A stream processor takes a "`tasks`" property from its context. Sub tasks are passed to stream processor via the "tasks" array.
+串流處理器由執行環境中取得 "`tasks`" 屬性，子任務即是經由此屬性，以陣列的方式傳入。
 
-When invoking the sub task, a stream processor must setup a context for the sub task.
+當呼叫子任務時，串流處理器必須為子任務建立適當的執行環境。
 
 ``` javascript
 module.exports = function () {
@@ -1369,19 +1369,20 @@ module.exports = function () {
 
     context = {
         gulp: gulp,
-        config: {
-            // inject configuration values for sub task
-        }
+        // 傳入獲得的組態配置，以便將上層父任務動態插入的組態屬性傳遞給子任務
+        config: config
     };
+    // 如果需要的話，可以額外插入新的組態屬性
+    context.config.injectedValue = 'hello!';
     stream = tasks[0].call(context);
     // ...
     return stream;
 };
 ```
 
-Note that parent can inject dynamic configuration to sub tasks. Only new value can be injected: the injected value won't overwrite sub task's existing configuration value.
+注意父任務可以動態給子任務插入新的組態屬性。只有新的值可以成功插入，若子任務原本就配置了同名的屬性，則新插入的屬性不會覆蓋原本的屬性。
 
-When passing stream to the sub task, a stream processor must setup a context with "`upstream`" property for the sub task.
+如果要傳遞串流給子任務，串流處理器必須透過 "`upstream`" 屬性傳遞。
 
 ``` javascript
 module.exports = function () {
@@ -1392,8 +1393,7 @@ module.exports = function () {
 
     context = {
         gulp: gulp,
-        config: {
-        }
+        config: config
     };
     stream = gulp.src(config.src.globs, config.src.options);
     for (i = 0; i < tasks.length; ++i) {
@@ -1404,13 +1404,13 @@ module.exports = function () {
 };
 ```
 
-If a stream processor expecting its sub task returning a stream, and sub task don't, it should throw an exception.
+如果串流處理器期望子任務回傳一個串流，然而子任務卻沒有，那麼此時串流處理器必須拋出一個錯誤。
 
-Note: According to the [guidelines](https://github.com/gulpjs/gulp/blob/4.0/docs/writing-a-plugin/guidelines.md) about writing gulp plugin that said: "__do not throw errors inside a stream__". No, you shouldn't. But since we are between streams, not inside a stream, it's OK to throw.
+注意：官方關於撰寫 gulp plugin 的 [指導方針](https://github.com/gulpjs/gulp/blob/4.0/docs/writing-a-plugin/guidelines.md) 中提到: "__不要在串流中拋出錯誤 (do not throw errors inside a stream)__"。 沒錯，你不應該在串流中拋出錯誤。但是在串流處理器中，如果不是位於處理串流的程式流程中，而是在處理流程之外，那麼，拋出錯誤是沒有問題的。
 
-You can use [gulp-ccr-stream-helper](https://github.com/gulp-cookery/gulp-ccr-stream-helper) to help invoking sub tasks and checking results.
+你可以使用 [gulp-ccr-stream-helper](https://github.com/gulp-cookery/gulp-ccr-stream-helper) 來協助呼叫子任務，並且檢查其是否正確回傳一個串流。
 
-Check out [gulp-ccr-merge](https://github.com/gulp-cookery/gulp-ccr-merge), and [gulp-ccr-queue](https://github.com/gulp-cookery/gulp-ccr-queue) for example.
+你可以從 [gulp-ccr-merge](https://github.com/gulp-cookery/gulp-ccr-merge) 以及 [gulp-ccr-queue](https://github.com/gulp-cookery/gulp-ccr-queue) 專案，參考串流處理器的實作。
 
 ### Writing Flow Controller
 
