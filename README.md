@@ -4,6 +4,30 @@ Cascading configurable recipes for Gulp 4.0. An elegant, and intuition way to re
 
 This project is still in early development stage and likely has some bugs at the moment. Please report issues and let me know how it works for you!
 
+## Features
+
+* Gulp 4.0 support,
+* Automatic local recipe lookup,
+* Plugin support using npm,
+* Nesting tasks with configuration inheritance,
+* Forward and backward task reference,
+* Process streams via configuration: merge, queue, or concat streams, etc,
+* Control tasks execution via configuration: run tasks in parallel or series,
+* Conditional configuration support,
+* CLI commands for recipes listing and usage, and
+* CLI commands for displaying task description and configuration.
+
+## Q.A.
+
+### Q. Does gulp-chef violate the "preferring code over configuration" philosophy of gulp?
+
+__A.__ No, you write codes as usual and abstract changes in configurations.
+
+Gulp-chef adds flexibility by helping:
+
+* [Split tasks across multiple files](https://github.com/gulpjs/gulp/blob/master/docs/recipes/split-tasks-across-multiple-files.md), and
+* [Make recipes shareable and usable instantly](https://github.com/gulpjs/gulp/tree/master/docs/recipes).
+
 ## Getting Started
 
 ### Install gulp cli 4.0 globally
