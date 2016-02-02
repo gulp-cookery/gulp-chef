@@ -4,6 +4,30 @@
 
 注意：此專案目前仍處於早期開發階段，因此可能還存有錯誤。請協助回報問題並分享您的使用經驗，謝謝！
 
+## 功能
+
+* 支援 Gulp 4.0，
+* 自動載入本地 recipe，
+* 支援透過 npm 安裝 plugin，
+* 支援巢狀任務並且允許子任務繼承組態配置，
+* 支援向前、向後參照任務，
+* 透過組態配置即可處理串流：譬如 merge, queue, 或者 concat，
+* 透過組態配置即可控制子任務的執行： parallel 或者 series，
+* 支援條件式組態配置，
+* 支援命令列指令，查詢可用的 recpies 及使用方式，以及
+* 支援命令列指令，查詢可用的任務說明及其組態配置。
+
+## 問與答
+
+### 問. gulp-chef 違反了 gulp 的『編碼優於組態配置 (preferring code over configuration)』哲學嗎？
+
+__答__ 沒有， 你還是像平常一樣寫程式， 並且將可變動部份以組態配置的形式萃取出來。
+
+Gulp-chef 透過簡化以下的工作來提昇使用彈性：
+
+* [分割任務到不同的檔案](https://github.com/gulpjs/gulp/blob/master/docs/recipes/split-tasks-across-multiple-files.md)，以及
+* [讓任務可分享並立即可用](https://github.com/gulpjs/gulp/tree/master/docs/recipes)。
+
 ## 入門
 
 ### 將 gulp cli 4.0 安裝為公用程式 (全域安裝)
@@ -98,7 +122,7 @@ function gulpTask(done) {
 gulp.task(gulpTask);
 ```
 
-然後才能在命列列下執行。
+然後才能在命令列下執行。
 
 ``` bash
 $ gulp gulpTask
