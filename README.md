@@ -2,6 +2,8 @@
 
 Cascading configurable recipes for Gulp 4.0. An elegant, and intuition way to reuse gulp tasks.
 
+DRY (Don’t repeat yourself) your code, why WET (write everything twice) your gulpfile.js?
+
 This project is still in early development stage and likely has some bugs at the moment. Please report issues and let me know how it works for you!
 
 ## Features
@@ -58,19 +60,23 @@ var chef = require('gulp-chef');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 
-function recipe() {
-    return gulp.src(this.config.src.globs)
-        .pipe(concat())
-        .pipe(uglify())
-        .pipe(gulp.dest(this.config.dest.path));
-}
-
 var ingredients = {
-    src: 'src/**/*.js',
+    src: 'src/',
     dest: 'dist/',
     clean: {},
-    build: recipe,
-    default: ['clean', 'build']
+    make: {
+        styles: {
+            recipe: 'copy',
+            src: '**/*.js'
+        },
+        browserify: {
+            bundle: {
+                entry: 'main.js'
+            }
+        }
+    },
+    build: ['clean', 'make'],
+    default: 'build'
 };
 
 var meals = chef(ingredients);

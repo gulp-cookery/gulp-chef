@@ -2,6 +2,8 @@
 
 支援 Gulp 4.0，允许嵌套配置任务及组态。以优雅、直觉的方式，重复使用 gulp 任务。
 
+编码的时候你遵守 DRY 原则，那编写 gulpfile.js 的时候，为什么不呢？
+
 注意：此专案目前仍处于早期开发阶段，因此可能还存有错误。请协助回报问题并分享您的使用经验，谢谢！
 
 ## 功能
@@ -58,19 +60,23 @@ var chef = require('gulp-chef');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 
-function recipe() {
-    return gulp.src(this.config.src.globs)
-        .pipe(concat())
-        .pipe(uglify())
-        .pipe(gulp.dest(this.config.dest.path));
-}
-
 var ingredients = {
-    src: 'src/**/*.js',
-    dest: 'dist/',
-    clean: {},
-    build: recipe,
-    default: ['clean', 'build']
+    src: 'src/',
+    dest: 'dist/',
+    clean: {},
+    make: {
+        styles: {
+            recipe: 'copy',
+            src: '**/*.js'
+        },
+        browserify: {
+            bundle: {
+                entry: 'main.js'
+            }
+        }
+    },
+    build: ['clean', 'make'],
+    default: 'build'
 };
 
 var meals = chef(ingredients);
