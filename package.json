@@ -1,7 +1,7 @@
 {
   "name": "gulp-chef",
   "version": "0.1.0",
-  "description": "Cascading configurable recipes for Gulp 4.0. An elegant, intuition way to reuse gulp tasks.",
+  "description": "Cascading configurable recipes for Gulp 4.0. An elegant, intuitive way to reuse gulp tasks.",
   "main": "index.js",
   "scripts": {
     "test": "mocha ./test/specs/**/*_test.js",
