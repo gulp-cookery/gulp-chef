@@ -1,6 +1,6 @@
 # gulp-chef
 
-Cascading configurable recipes for Gulp 4.0. An elegant, and intuition way to reuse gulp tasks.
+Cascading configurable recipes for Gulp 4.0. An elegant, and intuitive way to reuse gulp tasks.
 
 DRY (Don’t repeat yourself) your code, why WET (write everything twice) your gulpfile.js?
 
@@ -10,8 +10,8 @@ This project is still in early development stage and likely has some bugs at the
 
 * Gulp 4.0 support,
 * Automatic local recipe lookup,
-* Plugin support using npm,
-* Nesting tasks with configuration inheritance,
+* Plugin support via npm,
+* Nesting task with configuration inheritance,
 * Forward and backward task reference,
 * Process streams via configuration: merge, queue, or concat streams, etc,
 * Control tasks execution via configuration: run tasks in parallel or series,
@@ -23,12 +23,26 @@ This project is still in early development stage and likely has some bugs at the
 
 ### Q. Does gulp-chef violate the "preferring code over configuration" philosophy of gulp?
 
-__A.__ No, you write codes as usual and abstract changes in configurations.
+__A__. No, you write codes as usual and abstract changes in configurations.
 
 Gulp-chef adds flexibility by helping:
 
 * [Split tasks across multiple files](https://github.com/gulpjs/gulp/blob/master/docs/recipes/split-tasks-across-multiple-files.md), and
 * [Make recipes shareable and usable instantly](https://github.com/gulpjs/gulp/tree/master/docs/recipes).
+
+### Q. Are there any alternatives?
+
+__A__. Yes, there are [gulp-cozy](https://github.com/lmammino/gulp-cozy), [gulp-starter](https://github.com/vigetlabs/gulp-starter), [elixir](https://github.com/laravel/elixir), and a lot [more](https://github.com/search?utf8=%E2%9C%93&q=gulp+recipes&type=Repositories&ref=searchresults).
+
+### Q. So, what advantages do gulp-chef have over others?
+
+__A__.
+
+* Gulp-chef is non-intrusive. It does not force or restrict you to its API to write recipes.
+* Gulp-chef is powerful yet easy to use. Build in best practices such as merge, and queue streams. This means you can make your task [do one thing and do it well](https://en.wikipedia.org/wiki/Unix_philosophy), and then assemble your tasks via configuration.
+* Gulp-chef itself is a gulp plugin. That means you can install it via npm, no more copy and paste the library code.
+* Recipes can be shared and installed as node modules via npm. Stop worrying about outdated, or out of sync tasks.
+* There is great flexibility you can decide how to use gulp-chef, [minimal](https://github.com/gulp-cookery/example-minimal-configuration) or [maximal](https://github.com/gulp-cookery/example-recipes-demo), whatever you choice.
 
 ## Getting Started
 

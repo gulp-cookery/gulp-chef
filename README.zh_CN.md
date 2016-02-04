@@ -9,12 +9,12 @@
 ## 功能
 
 * 支援 Gulp 4.0，
-* 自动载入本地 recipe，
-* 支援透过 npm 安装 plugin，
+* 自动载入本地通用任务 (recipe)，
+* 支援透过 npm 安装共享任務 (plugin)，
 * 支援嵌套任务并且允许子任务继承组态配置，
 * 支援向前、向后参照任务，
-* 透过组态配置即可处理串流：譬如 merge, queue, 或者 concat，
-* 透过组态配置即可控制子任务的执行： parallel 或者 series，
+* 透过组态配置即可处理串流：譬如 合併merge, 序列 (queue), 或者 串接 (concat)，
+* 透过组态配置即可控制子任务的执行： 並行 (parallel) 或者 序列 (series)，
 * 支援条件式组态配置，
 * 支援命令行指令，查询可用的 recpies 及使用方式，以及
 * 支援命令行指令，查询可用的任务说明及其组态配置。
@@ -29,6 +29,20 @@ Gulp-chef 透过简化以下的工作来提高使用弹性：
 
 * [分割任务到不同的档案](https://github.com/gulpjs/gulp/blob/master/docs/recipes/split-tasks-across-multiple-files.md)，以及
 * [让任务可分享并立即可用](https://github.com/gulpjs/gulp/tree/master/docs/recipes)。
+
+### 问： 有其它类似的替代方案吗？
+
+__答__： 有，像 [gulp-cozy](https://github.com/lmammino/gulp-cozy), [gulp-starter](https://github.com/vigetlabs/gulp-starter) , [elixir](https://github.com/laravel/elixir)， 还有[更多其他方案](https://github.com/search?utf8=%E2%9C%93&q=gulp+recipes&type= Repositories&ref=searchresults)。
+
+### 问： 那么，跟其它方案比起来，gulp-chef 的优势何在？
+
+__答__：
+
+* Gulp-chef 不是侵入式的。它不强迫也不限定你使用它的 API 来撰写通用任务 (recipe)。
+* Gulp-chef 强大且易用。它提供了最佳实务作法，如：合并串流、序列串流等。这表示，你可以让任务『[只做一件事并做好(do one thing and do it well)](https://en.wikipedia.org/wiki/Unix_philosophy)』，然后使用组态配置来组合任务。
+* Gulp-chef 本身是一个 gulp plugin。你可以透过 npm 安装它，不再需要像某些工具一样，必须手动复制工具程式库。
+* 通用任务 (recipe) 能够以 node 模组的形式共享及安装。不需要再担心忘记更新某个专案的任务，或者担心专案之间的任务版本不一致。
+* Gulp-chef 提供极大的弹性，让你依喜好方式决定如何使用它： 『[最精简(minimal)](https://github.com/gulp-cookery/example-minimal-configuration)』 或『[最全面(maximal)](https://github.com/gulp-cookery/example-recipes-demo)』，随你选择。
 
 ## 入门
 
