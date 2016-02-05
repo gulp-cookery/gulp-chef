@@ -70,8 +70,6 @@ $ npm install --save-dev gulp-chef
 ``` jsavascript
 var gulp = require('gulp');
 var chef = require('gulp-chef');
-var concat = require('gulp-concat');
-var uglify = require('gulp-uglify');
 
 var ingredients = {
     src: 'src/',
