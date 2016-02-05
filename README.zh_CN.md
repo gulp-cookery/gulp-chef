@@ -40,8 +40,7 @@ __答__：
 
 * Gulp-chef 不是侵入式的。它不强迫也不限定你使用它的 API 来撰写通用任务 (recipe)。
 * Gulp-chef 强大且易用。它提供了最佳实务作法，如：合并串流、序列串流等。这表示，你可以让任务『[只做一件事并做好(do one thing and do it well)](https://en.wikipedia.org/wiki/Unix_philosophy)』，然后使用组态配置来组合任务。
-* Gulp-chef 本身是一个 gulp plugin。你可以透过 npm 安装它，不再需要像某些工具一样，必须手动复制工具程式库。
-* 通用任务 (recipe) 能够以 node 模组的形式共享及安装。不需要再担心忘记更新某个专案的任务，或者担心专案之间的任务版本不一致。
+* Gulp-chef 本身以及共享任务 (plugin) 都是标准的 node 模组。你可以透过 npm 安装并管理依赖关系，不再需要手动复制工具程式库或任务程式码，不再需要再担心忘记更新某个专案的任务，或者担心专案之间的任务版本因各自修改而导致不一致的状况。
 * Gulp-chef 提供极大的弹性，让你依喜好方式决定如何使用它： 『[最精简(minimal)](https://github.com/gulp-cookery/example-minimal-configuration)』 或『[最全面(maximal)](https://github.com/gulp-cookery/example-recipes-demo)』，随你选择。
 
 ## 入门
