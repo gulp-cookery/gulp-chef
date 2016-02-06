@@ -1540,3 +1540,31 @@ Look up a recipe and display its description and [configuration schema](#configu
 ``` bash
 $ gulp --recipe <recipe-name>
 ```
+
+## Build and Contribute
+
+``` bash
+$ git clone https://github.com/gulp-cookery/gulp-chef.git
+$ cd gulp-chef
+$ npm install
+```
+
+## Issues
+
+[Issues](https://github.com/gulp-cookery/gulp-chef/issues)
+
+## Test
+
+Tests are written in [mocha](https://mochajs.org/). Run tests in terminal:
+
+``` bash
+$ npm test
+```
+
+## License
+
+[MIT](http://opensource.org/licenses/MIT)
+
+## Author
+
+[Amobiz](https://github.com/amobiz)

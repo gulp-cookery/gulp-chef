@@ -1546,3 +1546,31 @@ $ gulp --recipes
 ``` bash
 $ gulp --recipe <recipe-name>
 ```
+
+## 專案建制與貢獻
+
+``` bash
+$ git clone https://github.com/gulp-cookery/gulp-chef.git
+$ cd gulp-chef
+$ npm install
+```
+
+## 問題提報
+
+[Issues](https://github.com/gulp-cookery/gulp-chef/issues)
+
+## 測試
+
+測試是以 [mocha](https://mochajs.org/) 撰寫，請在命令列下執行下列指令：
+
+``` bash
+$ npm test
+```
+
+## 授權
+
+[MIT](http://opensource.org/licenses/MIT)
+
+## 作者
+
+[Amobiz](https://github.com/amobiz)
