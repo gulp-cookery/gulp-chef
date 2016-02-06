@@ -580,7 +580,7 @@ var meals = chef({
 
 在缺省情况下，任务名称必须与 recipe 名称相同，这样 gulp-chef 才有办法找到对应的 recipe。那么，当发生名称冲突时，gulp-chef 是怎么处理的呢？ gulp-chef 会自动为发生冲突的的任务，在前方附加父任务的名称，像这样："`make:scripts:concat`"。
 
-事实上，你也可以将这个附加名称的行为变成缺省行为：在呼叫 `chef()` 函数时，在 `settings` 参数传入值为 `true` 的 "`exposeWithPrefix`" 属性即可。 "`exposeWithPrefix`" 属性的缺省值为 "`auto`"。
+事实上，你也可以将这个附加名称的行为变成缺省行为：在呼叫 `chef()` 函数时，在 `settings` 参数传入值为 `true` 的 "`exposeWithPrefix`" 属性即可。 "`exposeWithPrefix`" 属性的缺省值为 `"auto"`。
 
 ``` javascript
 var ingredients = { ... };

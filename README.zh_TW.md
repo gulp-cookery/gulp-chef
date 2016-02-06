@@ -580,7 +580,7 @@ var meals = chef({
 
 在預設情況下，任務名稱必須與 recipe 名稱相同，這樣 gulp-chef 才有辦法找到對應的 recipe。那麼，當發生名稱衝突時，gulp-chef 是怎麼處理的呢？gulp-chef 會自動為發生衝突的的任務，在前方附加父任務的名稱，像這樣："`make:scripts:concat`"。
 
-事實上，你也可以將這個附加名稱的行為變成預設行為：在呼叫 `chef()` 函數時，在 `settings` 參數傳入值為 `true` 的 "`exposeWithPrefix`" 屬性即可。 "`exposeWithPrefix`" 屬性的預設值為 "`auto`"。
+事實上，你也可以將這個附加名稱的行為變成預設行為：在呼叫 `chef()` 函數時，在 `settings` 參數傳入值為 `true` 的 "`exposeWithPrefix`" 屬性即可。 "`exposeWithPrefix`" 屬性的預設值為 `"auto"`。
 
 ``` javascript
 var ingredients = { ... };

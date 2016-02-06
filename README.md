@@ -577,7 +577,7 @@ It is recommended that you name all your task in unique, distinct names.
 
 However, if you have many tasks, there is a great chance that more than one task utilize a same recipe or plugin. And by default, task name is direct mapping to recipe name. Then how gulp-chef generate task names when name collision happens? It automaticly prefix task names with their parent's name, like this: "`make:scripts:concat`".
 
-In fact, you can turn this behavior on by default using "`exposeWithPrefix`" settings. The default setting is "`auto`". You can set to "`true`" to turn it on.
+In fact, you can turn this behavior on by default using "`exposeWithPrefix`" settings. The default setting is `"auto"`. You can set to `true` to turn it on.
 
 ``` javascript
 var ingredients = { ... };
@@ -1514,6 +1514,90 @@ Define a plain function, inline function, or references to other tasks. If provi
 
 Visibility of the task. Valid values are `normal`, `hidden`, and `disabled`.
 
+## <a href="#" id="settings"></a> List of API Settings
+
+### settings.exposeWithPrefix
+
+Switch on or off whether to automaticly prefix task names with their parent's name. When turned on, task name will be of the form: "`make:scripts:concat`".
+
+Defaults to `"auto"`. You can set to `true` to turn it on.
+
+### settings.modes
+
+A hash object to set custom modes for conditional configurations.
+
+Keys except `default` that denotes default mode, are 'mode' for specific conditional configuration.
+
+Values must be array of 'identifier's, that can be used in configuration and CLI.
+
+Defaults to:
+
+``` javascript
+{
+	production: ['production', 'prod'],
+	development: ['development', 'dev'],
+	staging: ['staging'],
+	default: 'production'
+}
+```
+
+### settings.plugins
+
+Options passed to "[gulp-load-plugins](https://github.com/jackfranklin/gulp-load-plugins)".
+Gulp-chef use "gulp-load-plugins" to load configurable task plugins, i.e. "gulp-ccr" plugins.
+By default any plugins that don't have "gulp-ccr" prefix won't be loaded.
+You can change the "plugins" settings to load these plugins.
+
+Defaults to:
+
+``` javascript
+{
+	camelize: false,
+	config: process.cwd() + '/package.json',
+	pattern: ['gulp-ccr-*'],
+	replaceString: /^gulp[-.]ccr[-.]/g
+}
+```
+
+### settings.plugins.DEBUG
+
+When set to true, the plugin will log info to console. Useful for bug reporting and issue debugging.
+
+### settings.plugins.camelize
+
+If true, transforms hyphenated plugins names to camel case.
+
+### settings.plugins.config
+
+Where to find the plugins, by default searched up from process.cwd().
+
+### settings.plugins.pattern
+
+The glob(s) to search for.
+
+### settings.plugins.scope
+
+Which keys in the config to look within. Defaults to
+
+``` javascript
+['dependencies', 'devDependencies', 'peerDependencies'].
+```
+
+### settings.plugins.replaceString
+
+What to remove from the name of the module when adding it to the context.
+
+### settings.plugins.lazy
+
+Whether the plugins should be lazy loaded on demand. Defaults to true.
+
+### settings.plugins.rename
+
+A mapping hash object of plugins to rename.
+
+### settings.plugins.renameFn
+
+A function to handle the renaming of plugins (the default works).
 
 ## List of CLI Options
 
