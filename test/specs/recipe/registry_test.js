@@ -11,24 +11,24 @@ describe('Core', function () {
 	describe('ConfigurableRecipeRegistry', function () {
 		describe('constructor()', function () {
 			it('should take a hash object of tasks', function () {
-				var actual;
+				var registry;
 
-				actual = new ConfigurableRecipeRegistry({
+				registry = new ConfigurableRecipeRegistry({
 					task: function () {}
 				});
-				expect(actual).to.be.instanceof(ConfigurableRecipeRegistry);
-				expect(actual.size()).to.equal(1);
+				expect(registry).to.be.instanceof(ConfigurableRecipeRegistry);
+				expect(registry.size()).to.equal(1);
 			});
 		});
 		describe('#lookup()', function () {
 			it('should return a function if found, otherwise, undefined', function () {
-				var actual;
+				var registry;
 
-				actual = new ConfigurableRecipeRegistry({
+				registry = new ConfigurableRecipeRegistry({
 					task: function () {}
 				});
-				expect(actual.lookup('task')).to.be.a('function');
-				expect(actual.lookup('none')).to.be.an('undefined');
+				expect(registry.lookup('task')).to.be.a('function');
+				expect(registry.lookup('none')).to.be.an('undefined');
 			});
 		});
 	});
