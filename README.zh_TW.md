@@ -1521,6 +1521,126 @@ module.exports = function () {
 
 任務的可見性。有效值為 `normal` 、 `hidden` 以及 `disabled` 。
 
+
+## <a href="#" id="settings"></a> 設定選項
+
+設定選項可以改變 gulp-chef 的預設行為，以及用來定義自訂條件式組態配置的執行時期環境模式。
+
+設定選項是經由 `chef()` 方法的第二個參數傳遞：
+
+``` javascript
+var config = {
+};
+var settings = {
+};
+var meals = chef(config, settings);
+```
+
+### settings.exposeWithPrefix
+
+開關自動附加任務名稱功能。預設值為 `"auto"`，當發生名稱衝突時，gulp-chef 會自動為發生衝突的的任務，在前方附加父任務的名稱，像這樣："`make:scripts:concat`"。你可以設定為 `true` 強制開啟。設定為 `false` 強制關閉，此時若遇到名稱衝突時，會拋出錯誤。
+
+### settings.lookups
+
+設定本地通用任務模組 (recipe) 的查找目錄。預設值為：
+
+``` javascript
+{
+    lookups: {
+        flows: 'flows',
+        streams: 'streams',
+        tasks: 'tasks'
+    }
+}
+```
+
+### settings.lookups.flows
+
+設定本地流程控制器的查找目錄。預設值為 `"flows"` 。
+
+### settings.lookups.streams
+
+設定本地串流處理器的查找目錄。預設值為 `"streams"` 。
+
+### settings.lookups.tasks
+
+設定本地通用任務的查找目錄。預設值為 `"tasks"` 。
+
+### settings.plugins
+
+傳遞給 "[gulp-load-plugins](https://github.com/jackfranklin/gulp-load-plugins)" 的選項。
+Gulp-chef 使用 "gulp-load-plugins" 來載入共享任務模組，或稱為 "gulp-ccr" 模組。
+預設情形下，不是以 `"gulp-ccr"` 名稱開頭的共享任務模組將不會被載入。你可以透過更改 "`plugins`" 選項來載入這些模組。
+
+預設選項為：
+
+``` javascript
+{
+    plugins: {
+        camelize: false,
+        config: process.cwd() + '/package.json',
+        pattern: ['gulp-ccr-*'],
+        replaceString: /^gulp[-.]ccr[-.]/g
+    }
+}
+```
+
+### settings.plugins.DEBUG
+
+當設定為 `true` 時，"gulp-load-plugins" 將輸出 log 訊息到 console。
+
+### settings.plugins.camelize
+
+若設定為 `true`，使用 `"-"` 連接的名稱將被改為駝峰形式。
+
+### settings.plugins.config
+
+由何處查找共享任務模組的資訊。預設為專案的 package.json。
+
+### settings.plugins.pattern
+
+共享任務模組的路徑匹配表達式 (glob)。預設為 `"gulp-ccr-*"`。
+
+### settings.plugins.scope
+
+要查找哪些相依範圍。預設為：
+
+``` javascript
+['dependencies', 'devDependencies', 'peerDependencies'].
+```
+
+### settings.plugins.replaceString
+
+要移除的模組附加名稱。預設為： `/^gulp[-.]ccr[-.]/g` 。
+
+### settings.plugins.lazy
+
+是否延遲載入模組。預設為 `true`。
+
+### settings.plugins.rename
+
+指定改名。必須為 hash 物件。鍵為原始名稱，值為改名名稱。
+
+### settings.plugins.renameFn
+
+改名函數。
+
+### settings.modes
+
+定義自訂條件式組態配置的執行時期環境模式。
+
+除了 `default` 屬性是用來指定預設模式之外，其餘的屬性名稱定義新的模式，而值必須是陣列，陣列的項目是可用於組態配置及命令列的識別字代號。注意不要使用到保留給任務使用的[關鍵字](#keywords)。預設為：
+
+``` javascript
+{
+    production: ['production', 'prod'],
+    development: ['development', 'dev'],
+    staging: ['staging'],
+    default: 'production'
+}
+```
+
+
 ## <a href="" id="cli-options"></a> 命令列選項列表
 
 ### --task

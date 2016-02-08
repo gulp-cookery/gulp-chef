@@ -396,7 +396,7 @@ var meals = chef({
         task: ['clean', 'make']
     },
     watch: {
-		description: 'Watch and run related task',
+        description: 'Watch and run related task',
         options: {
             usePolling: true
         },
@@ -1514,48 +1514,70 @@ Define a plain function, inline function, or references to other tasks. If provi
 
 Visibility of the task. Valid values are `normal`, `hidden`, and `disabled`.
 
-## <a href="#" id="settings"></a> List of API Settings
+
+## <a href="#" id="settings"></a> List of Settings
+
+Settings are used to cheange default behavior and to define custom conditional runtime environment modes.
+
+The `chef()` method takes settings as second parameter:
+
+``` javascript
+var config = {
+};
+var settings = {
+};
+var meals = chef(config, settings);
+```
 
 ### settings.exposeWithPrefix
 
 Switch on or off whether to automaticly prefix task names with their parent's name. When turned on, task name will be of the form: "`make:scripts:concat`".
 
-Defaults to `"auto"`. You can set to `true` to turn it on.
+Defaults to `"auto"`. You can set to `true` to turn it on. Set to `false` to turn off, will throw error when name collision occurred.
 
-### settings.modes
+### settings.lookups
 
-A hash object to set custom modes for conditional configurations.
-
-Keys except `default` that denotes default mode, are 'mode' for specific conditional configuration.
-
-Values must be array of 'identifier's, that can be used in configuration and CLI.
-
-Defaults to:
+A hash object to set custom local recipe lookup folders. Defaults to:
 
 ``` javascript
 {
-	production: ['production', 'prod'],
-	development: ['development', 'dev'],
-	staging: ['staging'],
-	default: 'production'
+    lookups: {
+        flows: 'flows',
+        streams: 'streams',
+        tasks: 'tasks'
+    }
 }
 ```
+
+### settings.lookups.flows
+
+The lookup folder for flow controller recipes. Defaults to `"flows"`.
+
+### settings.lookups.streams
+
+The lookup folder for stream processor recipes. Defaults to `"streams"`.
+
+### settings.lookups.tasks
+
+The lookup folder for task recipes. Defaults to `"tasks"`.
 
 ### settings.plugins
 
 Options passed to "[gulp-load-plugins](https://github.com/jackfranklin/gulp-load-plugins)".
 Gulp-chef use "gulp-load-plugins" to load configurable task plugins, i.e. "gulp-ccr" plugins.
-By default any plugins that don't have "gulp-ccr" prefix won't be loaded.
-You can change the "plugins" settings to load these plugins.
+By default any plugins that don't have `"gulp-ccr"` prefix won't be loaded.
+You can change the "`plugins`" settings to load these plugins.
 
 Defaults to:
 
 ``` javascript
 {
-	camelize: false,
-	config: process.cwd() + '/package.json',
-	pattern: ['gulp-ccr-*'],
-	replaceString: /^gulp[-.]ccr[-.]/g
+    plugins: {
+        camelize: false,
+        config: process.cwd() + '/package.json',
+        pattern: ['gulp-ccr-*'],
+        replaceString: /^gulp[-.]ccr[-.]/g
+    }
 }
 ```
 
@@ -1573,7 +1595,7 @@ Where to find the plugins, by default searched up from process.cwd().
 
 ### settings.plugins.pattern
 
-The glob(s) to search for.
+The glob(s) to search for. Defaults to `"gulp-ccr-*"`.
 
 ### settings.plugins.scope
 
@@ -1598,6 +1620,27 @@ A mapping hash object of plugins to rename.
 ### settings.plugins.renameFn
 
 A function to handle the renaming of plugins (the default works).
+
+### settings.modes
+
+A hash object to set custom modes for conditional configurations.
+
+Keys except `default` that denotes default mode, are 'mode' for specific conditional configuration.
+
+Values must be array of 'identifier's, that can be used in configuration and CLI.
+
+Defaults to:
+
+``` javascript
+{
+    modes: {
+        production: ['production', 'prod'],
+        development: ['development', 'dev'],
+        staging: ['staging'],
+        default: 'production'
+    }
+}
+```
 
 ## List of CLI Options
 

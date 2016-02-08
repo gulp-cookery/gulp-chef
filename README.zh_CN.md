@@ -1521,6 +1521,128 @@ module.exports = function () {
 
 任务的可见性。有效值为 `normal` 、 `hidden` 以及 `disabled` 。
 
+
+## <a href="#" id="settings"></a> 设定选项
+
+设定选项可以改变 gulp-chef 的 缺省行为，以及用来定义自订条件式组态配置的执行时期环境模式。
+
+设定选项是经由 `chef()` 方法的第二个参数传递：
+
+``` javascript
+var config = {
+};
+var settings = {
+};
+var meals = chef(config, settings);
+```
+
+### settings.exposeWithPrefix
+
+开关自动附加任务名称功能。 缺省值为 `"auto"`，当发生名称冲突时，gulp-chef 会自动为发生冲突的的任务，在前方附加父任务的名称，像这样："`make:scripts:concat`"。你可以设定为 `true` 强制开启。设定为 `false` 强制关闭，此时若遇到名称冲突时，会抛出错误。
+
+### settings.lookups
+
+设定本地通用任务模组 (recipe) 的查找目录。 缺省值为：
+
+``` javascript
+{
+    lookups: {
+        flows: 'flows',
+        streams: 'streams',
+        tasks: 'tasks'
+    }
+}
+```
+
+### settings.lookups.flows
+
+设定本地流程控制器的查找目录。 缺省值为 `"flows"` 。
+
+### settings.lookups.streams
+
+设定本地串流处理器的查找目录。 缺省值为 `"streams"` 。
+
+### settings.lookups.tasks
+
+设定本地通用任务的查找目录。 缺省值为 `"tasks"` 。
+
+### settings.plugins
+
+传递给 "[gulp-load-plugins](https://github.com/jackfranklin/gulp-load-plugins)" 的选项。
+Gulp-chef 使用 "gulp-load-plugins" 来载入共享任务模组，或称为 "gulp-ccr" 模组。
+ 缺省情形下，不是以 `"gulp-ccr"` 名称开头的共享任务模组将不会被载入。你可以透过更改 "`plugins`" 选项来载入这些模组。
+
+ 缺省选项为：
+
+``` javascript
+{
+    plugins: {
+        camelize: false,
+        config: process.cwd() + '/package.json',
+        pattern: ['gulp-ccr-*'],
+        replaceString: /^gulp[-.]ccr[-.]/g
+    }
+}
+```
+
+### settings.plugins.DEBUG
+
+当设定为 `true` 时，"gulp-load-plugins" 将输出 log 讯息到 console。
+
+### settings.plugins.camelize
+
+若设定为 `true`，使用 `"-"` 连接的名称将被改为驼峰形式。
+
+### settings.plugins.config
+
+由何处查找共享任务模组的资讯。 缺省为专案的 package.json。
+
+### settings.plugins.pattern
+
+共享任务模组的路径匹配表达式 (glob)。 缺省为 `"gulp-ccr-*"`。
+
+### settings.plugins.scope
+
+要查找哪些相依范围。 缺省为：
+
+``` javascript
+['dependencies', 'devDependencies', 'peerDependencies'].
+```
+
+### settings.plugins.replaceString
+
+要移除的模组附加名称。 缺省为： `/^gulp[-.]ccr[-.]/g` 。
+
+### settings.plugins.lazy
+
+是否延迟载入模组。 缺省为 `true`。
+
+### settings.plugins.rename
+
+指定改名。必须为 hash 物件。键为原始名称，值为改名名称。
+
+### settings.plugins.renameFn
+
+改名函数。
+
+### settings.modes
+
+定义自订条件式组态配置的执行时期环境模式。
+
+除了 `default` 属性是用来指定 缺省模式之外，其余的属性名称定义新的模式​​，而值必须是数组，数组的项目是可用于组态配置及命令行的识别字代号。注意不要使用到保留给任务使用的[关键字](#keywords)。 缺省为：
+
+``` javascript
+{
+    modes: {
+        production: ['production', 'prod'],
+        development: ['development', 'dev'],
+        staging: ['staging'],
+        default: 'production'
+    }
+}
+```
+
+
 ## <a href="" id="cli-options"></a> 命令行选项列表
 
 ### --task
