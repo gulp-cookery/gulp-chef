@@ -6,6 +6,8 @@
 
 注意：此专案目前仍处于早期开发阶段，因此可能还存有错误。请协助回报问题并分享您的使用经验，谢谢！
 
+[![加入在https://gitter.im/gulp-cookery/gulp-chef 上的讨论](https://badges.gitter.im/gulp-cookery/gulp-chef.svg)](https:/ /gitter.im/gulp-cookery/gulp-chef?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ## 功能
 
 * 支援 Gulp 4.0，
