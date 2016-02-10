@@ -32,7 +32,7 @@ Gulp-chef 透過簡化以下的工作來提昇使用彈性：
 
 ### 問： 有其它類似的替代方案嗎？
 
-__答__： 有，像 [gulp-cozy](https://github.com/lmammino/gulp-cozy), [gulp-starter](https://github.com/vigetlabs/gulp-starter), [elixir](https://github.com/laravel/elixir)， 還有[更多其他方案](https://github.com/search?utf8=%E2%9C%93&q=gulp+recipes&type=Repositories&ref=searchresults)。
+__答__： 有，像 [gulp-cozy](https://github.com/lmammino/gulp-cozy), [gulp-load-subtasks](https://github.com/skorlir/gulp-load-subtasks), [gulp-starter](https://github.com/vigetlabs/gulp-starter), [elixir](https://github.com/laravel/elixir)， 還有[更多其他方案](https://github.com/search?utf8=%E2%9C%93&q=gulp+recipes&type=Repositories&ref=searchresults)。
 
 ### 問： 那麼，跟其它方案比起來，gulp-chef 的優勢何在？
 

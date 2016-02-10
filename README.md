@@ -4,7 +4,7 @@ Cascading configurable recipes for gulp 4.0. An elegant, and intuitive way to re
 
 DRY (Don’t repeat yourself) your code, why WET (write everything twice) your gulpfile.js?
 
-This project is still in early development stage and likely has some bugs at the moment. Please report issues and let me know how it works for you!
+This project is still in early development stage and likely has some bugs at the moment. Please report issues and let me know how it works for you! Thank you!
 
 ## Features
 
@@ -32,7 +32,7 @@ Gulp-chef adds flexibility by helping:
 
 ### Q. Are there any alternatives?
 
-__A__. Yes, there are [gulp-cozy](https://github.com/lmammino/gulp-cozy), [gulp-starter](https://github.com/vigetlabs/gulp-starter), [elixir](https://github.com/laravel/elixir), and a lot [more](https://github.com/search?utf8=%E2%9C%93&q=gulp+recipes&type=Repositories&ref=searchresults).
+__A__. Yes, there are [gulp-cozy](https://github.com/lmammino/gulp-cozy), [gulp-load-subtasks](https://github.com/skorlir/gulp-load-subtasks), [gulp-starter](https://github.com/vigetlabs/gulp-starter), [elixir](https://github.com/laravel/elixir), and a lot [more](https://github.com/search?utf8=%E2%9C%93&q=gulp+recipes&type=Repositories&ref=searchresults).
 
 ### Q. So, what advantages do gulp-chef have over others?
 
