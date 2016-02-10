@@ -41,7 +41,7 @@ __A__. Yes, there are [gulp-cozy](https://github.com/lmammino/gulp-cozy), [gulp-
 __A__.
 
 * Gulp-chef is non-intrusive. It does not force or restrict you to its API to write recipes.
-* Gulp-chef is powerful yet easy to use. Build in best practices such as merge, and queue streams. This means you can make your task [do one thing and do it well](https://en.wikipedia.org/wiki/Unix_philosophy), and then assemble your tasks via configuration.
+* Gulp-chef is powerful yet easy to use. Build in best practices such as merging, and queuing streams. This means you can keep your task [do one thing and do it well](https://en.wikipedia.org/wiki/Unix_philosophy), and then assemble your tasks via configuration.
 * Gulp-chef itself and its sharable plugins are true node modules. That means you can install and manage dependencies via npm. No more copy and paste, stop worrying about outdated, or out of sync tasks.
 * There is great flexibility you can decide how to use gulp-chef, [minimal](https://github.com/gulp-cookery/example-minimal-configuration) or [maximal](https://github.com/gulp-cookery/example-recipes-demo), whatever you choice.
 
