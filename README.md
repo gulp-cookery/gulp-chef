@@ -1,5 +1,7 @@
 # gulp-chef
 
+[![Join the chat at https://gitter.im/gulp-cookery/gulp-chef](https://badges.gitter.im/gulp-cookery/gulp-chef.svg)](https://gitter.im/gulp-cookery/gulp-chef?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Cascading configurable recipes for gulp 4.0. An elegant, and intuitive way to reuse gulp tasks.
 
 DRY (Don’t repeat yourself) your code, why WET (write everything twice) your gulpfile.js?
