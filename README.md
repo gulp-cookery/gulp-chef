@@ -1,6 +1,6 @@
 # gulp-chef
 
-Cascading configurable recipes for Gulp 4.0. An elegant, and intuitive way to reuse gulp tasks.
+Cascading configurable recipes for gulp 4.0. An elegant, and intuitive way to reuse gulp tasks.
 
 DRY (Don’t repeat yourself) your code, why WET (write everything twice) your gulpfile.js?
 
