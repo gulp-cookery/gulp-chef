@@ -1556,15 +1556,15 @@ var meals = chef(config, settings);
 }
 ```
 
-### settings.lookups.flows
+#### settings.lookups.flows
 
 设定本地流程控制器的查找目录。 缺省值为 `"flows"` 。
 
-### settings.lookups.streams
+#### settings.lookups.streams
 
 设定本地串流处理器的查找目录。 缺省值为 `"streams"` 。
 
-### settings.lookups.tasks
+#### settings.lookups.tasks
 
 设定本地通用任务的查找目录。 缺省值为 `"tasks"` 。
 
@@ -1587,23 +1587,23 @@ Gulp-chef 使用 "gulp-load-plugins" 来载入共享任务模组，或称为 "gu
 }
 ```
 
-### settings.plugins.DEBUG
+#### settings.plugins.DEBUG
 
 当设定为 `true` 时，"gulp-load-plugins" 将输出 log 讯息到 console。
 
-### settings.plugins.camelize
+#### settings.plugins.camelize
 
 若设定为 `true`，使用 `"-"` 连接的名称将被改为驼峰形式。
 
-### settings.plugins.config
+#### settings.plugins.config
 
 由何处查找共享任务模组的资讯。 缺省为专案的 package.json。
 
-### settings.plugins.pattern
+#### settings.plugins.pattern
 
 共享任务模组的路径匹配表达式 (glob)。 缺省为 `"gulp-ccr-*"`。
 
-### settings.plugins.scope
+#### settings.plugins.scope
 
 要查找哪些相依范围。 缺省为：
 
@@ -1611,19 +1611,19 @@ Gulp-chef 使用 "gulp-load-plugins" 来载入共享任务模组，或称为 "gu
 ['dependencies', 'devDependencies', 'peerDependencies'].
 ```
 
-### settings.plugins.replaceString
+#### settings.plugins.replaceString
 
 要移除的模组附加名称。 缺省为： `/^gulp[-.]ccr[-.]/g` 。
 
-### settings.plugins.lazy
+#### settings.plugins.lazy
 
 是否延迟载入模组。 缺省为 `true`。
 
-### settings.plugins.rename
+#### settings.plugins.rename
 
 指定改名。必须为 hash 物件。键为原始名称，值为改名名称。
 
-### settings.plugins.renameFn
+#### settings.plugins.renameFn
 
 改名函数。
 

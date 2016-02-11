@@ -1551,15 +1551,15 @@ A hash object to set custom local recipe lookup folders. Defaults to:
 }
 ```
 
-### settings.lookups.flows
+#### settings.lookups.flows
 
 The lookup folder for flow controller recipes. Defaults to `"flows"`.
 
-### settings.lookups.streams
+#### settings.lookups.streams
 
 The lookup folder for stream processor recipes. Defaults to `"streams"`.
 
-### settings.lookups.tasks
+#### settings.lookups.tasks
 
 The lookup folder for task recipes. Defaults to `"tasks"`.
 
@@ -1583,23 +1583,23 @@ Defaults to:
 }
 ```
 
-### settings.plugins.DEBUG
+#### settings.plugins.DEBUG
 
 When set to true, the plugin will log info to console. Useful for bug reporting and issue debugging.
 
-### settings.plugins.camelize
+#### settings.plugins.camelize
 
 If true, transforms hyphenated plugins names to camel case.
 
-### settings.plugins.config
+#### settings.plugins.config
 
 Where to find the plugins, by default searched up from process.cwd().
 
-### settings.plugins.pattern
+#### settings.plugins.pattern
 
 The glob(s) to search for. Defaults to `"gulp-ccr-*"`.
 
-### settings.plugins.scope
+#### settings.plugins.scope
 
 Which keys in the config to look within. Defaults to
 
@@ -1607,19 +1607,19 @@ Which keys in the config to look within. Defaults to
 ['dependencies', 'devDependencies', 'peerDependencies'].
 ```
 
-### settings.plugins.replaceString
+#### settings.plugins.replaceString
 
 What to remove from the name of the module when adding it to the context. Defaults to  `/^gulp[-.]ccr[-.]/g`.
 
-### settings.plugins.lazy
+#### settings.plugins.lazy
 
 Whether the plugins should be lazy loaded on demand. Defaults to true.
 
-### settings.plugins.rename
+#### settings.plugins.rename
 
 A mapping hash object of plugins to rename.
 
-### settings.plugins.renameFn
+#### settings.plugins.renameFn
 
 A function to handle the renaming of plugins (the default works).
 
