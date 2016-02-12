@@ -2,5 +2,5 @@
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
    <ShortName>Gulp-chef Plugins</ShortName>
    <Image width="16" height="16">http://gulp-chef.github.io/favicon.ico</Image>
-   <Url type="text/html" template="http://gulp-chef.github.io/plugins/#?q={searchTerms}" />
+   <Url type="text/html" template="http://gulp-cookery.github.io/gulp-chef/plugins/#?q={searchTerms}" />
 </OpenSearchDescription>
