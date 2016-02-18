@@ -648,7 +648,7 @@ The plugin property accepts `string` and `function` value. When string provided,
 
 You can apply the "`plugin`" keyword to any gulp plugin that takes 0 or 1 parameter and returns a stream or a promise. Plugins must be installed using `npm install`.
 
-Don't get this confused with [plugins for gulp-chef](#using-plugins), that stand for "Cascading Configurable Recipe for Gulp", or "gulp-ccr" for sort.
+Don't get this confused with [plugins for gulp-chef](#using-plugins), that stand for "Cascading Configurable Recipe for Gulp", or "gulp-ccr" for short.
 
 ### Passing Configuration Values
 
