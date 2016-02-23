@@ -78,14 +78,41 @@ var ingredients = {
     dest: 'dist/',
     clean: {},
     make: {
-        styles: {
-            recipe: 'copy',
-            src: '**/*.js'
+        postcss: {
+            src: 'styles.css',
+            processors: {
+                stylelint: {},
+                import: {},
+                cssnext: {
+                    features: {
+                        autoprefixer: {
+                            browser: 'last 2 versions'
+                        }
+                    }
+                },
+                lost: {},
+                production: {
+                    cssnano: {}
+                }
+            }
         },
         browserify: {
             bundle: {
-                entry: 'main.js'
+                entry: 'main.js',
+                file: 'scripts.js',
+                transform: ['stringify', 'browserify-shim'],
+                production: {
+                    uglify: true
+                }
             }
+        },
+        assets: {
+            src: [
+                'index.html',
+                'favicon.ico',
+                'opensearch.xml'
+            ],
+            recipe: 'copy'
         }
     },
     build: ['clean', 'make'],
