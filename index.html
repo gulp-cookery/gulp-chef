@@ -19,10 +19,20 @@
 
 </head>
 
-<body ng-app="site" ng-view>
-
-	<script src="scripts.js"></script>
-
+<body ng-app="site">
+	<div class="container" ng-view></div>
+	<script async defer src="scripts.js"></script>
+	<div class="footer">
+		<div class="social-buttins">
+			<!-- GutHub Start -->
+			<!-- Follows -->
+			<a class="github-button" href="https://github.com/amobiz" data-style="mega" data-count-href="/amobiz/followers" data-count-api="/users/amobiz#followers" data-count-aria-label="# followers on GitHub" aria-label="Follow @amobiz on GitHub">Follow @amobiz</a>
+			<!-- Stars -->
+			<a class="github-button" href="https://github.com/gulp-cookery/gulp-chef" data-icon="octicon-star" data-style="mega" data-count-href="/gulp-cookery/gulp-chef/stargazers" data-count-api="/repos/gulp-cookery/gulp-chef#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star gulp-cookery/gulp-chef on GitHub">Star</a>
+			<script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>
+			<!-- GutHub End -->
+		</div>
+	</div>
 </body>
 
 </html>
