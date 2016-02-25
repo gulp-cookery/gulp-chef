@@ -1,5 +1,9 @@
 ## gulp-chef changelog
 
+### 2016-02-08: 0.1.2
+
+* Remove function evaluating at realizing stage.
+
 ### 2016-02-08: 0.1.1
 
 * Allow custom local recipe folder via settings.lookups.
