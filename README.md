@@ -49,9 +49,17 @@ __A__.
 
 ### Install gulp cli 4.0 globally
 
+Gulp-chef requires gulp 4.0. If you have a previous version of gulp installed globally, you need to replace it with gulp-cli.
+
+``` bash
+npm uninstall -g gulp
+```
+
 ``` bash
 npm install -g "gulpjs/gulp-cli#4.0"
 ```
+
+Don't worry, the gulp-cli is compatible with gulp 3.x, so you can continue using gulp 3.x for existing projects.
 
 ### Install gulp 4.0 in your project's devDependencies
 
@@ -65,6 +73,12 @@ See this [tutorial](http://blog.reactandbethankful.com/posts/2015/05/01/how-to-i
 
 ``` bash
 $ npm install --save-dev gulp-chef
+```
+
+### Optionally, install required plugins in your project's devDependencies
+
+``` bash
+npm install --save-dev gulp-ccr-browserify gulp-ccr-postcss browserify-shim stringify stylelint postcss-import postcss-cssnext lost cssnano
 ```
 
 ### Create a gulpfile.js at the root of your project

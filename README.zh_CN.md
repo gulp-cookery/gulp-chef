@@ -49,9 +49,17 @@ __答__：
 
 ### 将 gulp cli 4.0 安装为公用程式 (全域安装)
 
+Gulp-chef 目前仅支援 gulp 4.0。如果你还没开始使用 gulp 4.0，你需要先将全域安装的​​旧 gulp 版本替换为新的 gulp-cli。
+
+``` bash
+npm uninstall -g gulp
+```
+
 ``` bash
 npm install -g "gulpjs/gulp-cli#4.0"
 ```
+
+不用担心，新的 gulp-cli 同时支援 gulp 4.0 与 gulp 3.x。所以你可以在既有的专案中继续使用 gulp 3.x。
 
 ### 将 gulp 4.0 安装为专案的 devDependencies
 
@@ -66,6 +74,12 @@ npm install --save-dev "gulpjs/gulp#4.0"
 ``` bash
 $ npm install --save-dev gulp-chef
 ```
+
+### 根据你的专案的需要，安装相关的 plugin 为专案的 devDependencies
+
+``` bash
+npm install --save-dev gulp-ccr-browserify gulp-ccr-postcss browserify-shim stringify stylelint postcss-import postcss-cssnext lost cssnano
+``
 
 ### 在专案根目录建立 gulpfile.js 档案
 

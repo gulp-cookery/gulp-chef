@@ -49,9 +49,17 @@ __答__：
 
 ### 將 gulp cli 4.0 安裝為公用程式 (全域安裝)
 
+Gulp-chef 目前僅支援 gulp 4.0。如果你還沒開始使用 gulp 4.0，你需要先將全域安裝的舊 gulp 版本替換為新的 gulp-cli。
+
+``` bash
+npm uninstall -g gulp
+```
+
 ``` bash
 npm install -g "gulpjs/gulp-cli#4.0"
 ```
+
+不用擔心，新的 gulp-cli 同時支援 gulp 4.0 與 gulp 3.x。所以你可以在既有的專案中繼續使用 gulp 3.x。
 
 ### 將 gulp 4.0 安裝為專案的 devDependencies
 
@@ -65,6 +73,12 @@ npm install --save-dev "gulpjs/gulp#4.0"
 
 ``` bash
 $ npm install --save-dev gulp-chef
+```
+
+### 根據你的專案的需要，安裝相關的 plugin 為專案的 devDependencies
+
+``` bash
+npm install --save-dev gulp-ccr-browserify gulp-ccr-postcss browserify-shim stringify stylelint postcss-import postcss-cssnext lost cssnano
 ```
 
 ### 在專案根目錄建立 gulpfile.js 檔案
