@@ -69,7 +69,7 @@ $ npm install --save-dev gulp-chef
 
 ### Create a gulpfile.js at the root of your project
 
-``` jsavascript
+``` javascript
 var gulp = require('gulp');
 var chef = require('gulp-chef');
 
