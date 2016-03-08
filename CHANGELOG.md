@@ -1,5 +1,9 @@
 ## gulp-chef changelog
 
+### 2016-03-08: 0.1.3
+
+* Bug Fix: Update json-regulator to avoid processing non plain objects.
+
 ### 2016-02-08: 0.1.2
 
 * Remove function evaluating at realizing stage.
